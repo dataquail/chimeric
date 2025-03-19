@@ -17,7 +17,7 @@ export const makeChimericMutation = <
   errorHelpers: ErrorHelpers;
   onSuccess?: (data: TResult, variables: TParams) => Promise<void>;
 }): ChimericMutation<TParams, TResult, E, ErrorHelpers> => {
-  const defaultOnSuccess = onSuccess ?? (async () => {});
+  const defaultOnSuccess = onSuccess ?? (async () => undefined);
   return {
     call: async (args) => {
       const result = await mutationFn(args);

@@ -37,8 +37,5 @@
   },
   "dependencies": {
     "@swc/helpers": "~0.5.11"
-  },
-  "peerDependencies": {
-    "react": ">=18.0.0"
   }
 }
