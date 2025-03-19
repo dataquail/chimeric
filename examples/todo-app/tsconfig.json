@@ -3,6 +3,12 @@
   "include": [],
   "references": [
     {
+      "path": "../../packages/core"
+    },
+    {
+      "path": "../../packages/react-query"
+    },
+    {
       "path": "./tsconfig.app.json"
     },
     {

@@ -1,5 +1,15 @@
 {
   "name": "@chimeric/todo-app",
   "version": "0.0.1",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "@chimeric/react-query": "*",
+    "@chimeric/core": "*"
+  },
+  "msw": {
+    "workerDirectory": [
+      "src",
+      ""
+    ]
+  }
 }
