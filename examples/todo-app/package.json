@@ -3,8 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "@chimeric/react-query": "*",
-    "@chimeric/core": "*"
+    "@chimeric/react-query": "workspace:*",
+    "@chimeric/core": "workspace:*",
+    "msw": "^2.3.1",
+    "react-dom": "19.0.0",
+    "react-router-dom": "6.29.0",
+    "uuid": "^9.0.1"
   },
   "msw": {
     "workerDirectory": [

@@ -36,7 +36,7 @@
     }
   },
   "dependencies": {
-    "@chimeric/core": "*",
+    "@chimeric/core": "workspace:*",
     "@swc/helpers": "~0.5.11"
   },
   "peerDependencies": {

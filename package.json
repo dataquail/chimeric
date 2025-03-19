@@ -2,15 +2,24 @@
   "name": "@chimeric/source",
   "version": "0.0.0",
   "license": "MIT",
-  "author": "Zachary Weidenbach <zach@dataquail.com>",
-  "scripts": {},
-  "private": true,
-  "dependencies": {
-    "msw": "^2.3.1",
-    "react-dom": "19.0.0",
-    "react-router-dom": "6.29.0",
-    "uuid": "^9.0.1"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dataquail/chimeric.git"
   },
+  "packageManager": "pnpm@9.15.0",
+  "type": "module",
+  "scripts": {
+    "build:all": "nx run-many --target=build --exclude=examples/**",
+    "build:examples": "nx run-many --target=build --projects=examples/todo-app",
+    "watch:all": "pnpm run build:all && nx watch --all -- pnpm run build:all",
+    "watch:examples": "pnpm run build:examples && nx watch --projects=examples/todo-app -- pnpm run build:examples",
+    "dev:all": "pnpm run watch:all",
+    "dev:examples": "pnpm run watch:examples",
+    "prettier": "prettier --ignore-unknown '**/*'",
+    "prettier:write": "pnpm run prettier --write",
+    "serve:todo-app": "pnpm run build:examples && npx nx serve examples/todo-app"
+  },
+  "private": true,
   "devDependencies": {
     "@eslint/js": "^9.8.0",
     "@nx/eslint": "20.6.1",
@@ -52,10 +61,6 @@
     "vite": "^6.0.0",
     "vitest": "^3.0.0"
   },
-  "workspaces": [
-    "packages/*",
-    "examples/*"
-  ],
   "nx": {
     "includedScripts": [],
     "targets": {
