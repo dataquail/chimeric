@@ -1,0 +1,53 @@
+{
+  "name": "@chimaric/react-query",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "!**/*.tsbuildinfo"
+  ],
+  "nx": {
+    "sourceRoot": "packages/react-query/src",
+    "targets": {
+      "build": {
+        "executor": "@nx/js:swc",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "options": {
+          "outputPath": "packages/react-query/dist",
+          "main": "packages/react-query/src/index.ts",
+          "tsConfig": "packages/react-query/tsconfig.lib.json",
+          "skipTypeCheck": true,
+          "stripLeadingPaths": true
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@chimeric/core": "*",
+    "@swc/helpers": "~0.5.11"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.69.0"
+  },
+  "devDependencies": {
+    "@tanstack/react-query": "^5.69.0"
+  },
+  "peerDependenciesMeta": {
+    "@tanstack/react-query": {
+      "optional": false
+    }
+  }
+}
