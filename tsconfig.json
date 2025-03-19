@@ -10,19 +10,10 @@
       "path": "./packages/utilities"
     },
     {
-      "path": "./packages/core"
-    },
-    {
-      "path": "./packages/utilities"
-    },
-    {
       "path": "./packages/testing"
     },
     {
       "path": "./packages/react-query"
-    },
-    {
-      "path": "./examples/todo-app"
     }
   ]
 }
