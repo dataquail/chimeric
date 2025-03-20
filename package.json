@@ -17,7 +17,7 @@
     "dev:examples": "pnpm run watch:examples",
     "prettier": "prettier --ignore-unknown '**/*'",
     "prettier:write": "pnpm run prettier --write",
-    "serve:todo-app": "pnpm run build:examples && npx nx serve examples/todo-app"
+    "serve:todo-app": "pnpm run build:examples && npx nx serve examples/todo-app --base=/todo-app"
   },
   "private": true,
   "devDependencies": {

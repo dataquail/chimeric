@@ -1,10 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { getConfig } from '../utils/getConfig';
-// import { ActiveTodoRepository } from './repositories/ActiveTodoRepository';
-// import { CreateTodoBody } from 'src/core/domain/activeTodo/dtos/in/CreateTodoBody';
-
-type ActiveTodoRepository = any;
-type CreateTodoBody = any;
+import { ActiveTodoRepository } from './repositories/ActiveTodoRepository';
+import { CreateTodoBody } from 'src/core/domain/activeTodo/dtos/in/CreateTodoBody';
 
 export const constructActiveTodoEndpointHandlers = (
   activeTodoRepository: ActiveTodoRepository,

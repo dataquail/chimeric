@@ -1,12 +1,9 @@
 import { http, HttpResponse } from 'msw';
-import { getConfig } from '../utils/getConfig';
-import { ActiveTodoRepository } from './repositories/ActiveTodoRepository';
-import { SavedForLaterTodoRepository } from './repositories/SavedForLaterTodoRepository';
-// import { SaveForLaterBody } from 'src/core/domain/savedForLaterTodo/dtos/in/SaveForLaterBody';
-// import { ActivateBody } from 'src/core/domain/savedForLaterTodo/dtos/in/ActivateBody';
-
-type SaveForLaterBody = any;
-type ActivateBody = any;
+import { getConfig } from 'src/utils/getConfig';
+import { ActiveTodoRepository } from 'src/api/repositories/ActiveTodoRepository';
+import { SavedForLaterTodoRepository } from 'src/api/repositories/SavedForLaterTodoRepository';
+import { SaveForLaterBody } from 'src/core/domain/savedForLaterTodo/dtos/in/SaveForLaterBody';
+import { ActivateBody } from 'src/core/domain/savedForLaterTodo/dtos/in/ActivateBody';
 
 export const constructSavedForLaterTodoEndpointHandlers = (
   savedForLaterTodoRepository: SavedForLaterTodoRepository,

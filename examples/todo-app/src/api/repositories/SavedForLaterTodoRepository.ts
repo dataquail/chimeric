@@ -1,9 +1,6 @@
-// import { SavedForLaterTodoDto } from 'src/core/domain/savedForLaterTodo/dtos/out/SavedForLaterTodoDto';
-// import { SavedForLaterTodoListDto } from 'src/core/domain/savedForLaterTodo/dtos/out/SavedForLaterTodoListDto';
+import { SavedForLaterTodoDto } from 'src/core/domain/savedForLaterTodo/dtos/out/SavedForLaterTodoDto';
+import { SavedForLaterTodoListDto } from 'src/core/domain/savedForLaterTodo/dtos/out/SavedForLaterTodoListDto';
 import { v4 } from 'uuid';
-
-type SavedForLaterTodoDto = any;
-type SavedForLaterTodoListDto = any;
 
 export class SavedForLaterTodoRepository {
   private savedForLaterTodoList: SavedForLaterTodoDto[] = [];

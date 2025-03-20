@@ -1,10 +1,6 @@
-// import { CreateTodoBody } from 'src/core/domain/activeTodo/dtos/in/CreateTodoBody';
-// import { TodoDto } from 'src/core/domain/activeTodo/dtos/out/TodoDto';
-// import { TodoListDto } from 'src/core/domain/activeTodo/dtos/out/TodoListDto';
-
-type TodoDto = any;
-type TodoListDto = any;
-type CreateTodoBody = any;
+import { CreateTodoBody } from 'src/core/domain/activeTodo/dtos/in/CreateTodoBody';
+import { TodoDto } from 'src/core/domain/activeTodo/dtos/out/TodoDto';
+import { TodoListDto } from 'src/core/domain/activeTodo/dtos/out/TodoListDto';
 
 import { v4 } from 'uuid';
 
