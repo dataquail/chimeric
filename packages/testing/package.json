@@ -17,30 +17,11 @@
     "dist",
     "!**/*.tsbuildinfo"
   ],
-  "nx": {
-    "sourceRoot": "packages/testing/src",
-    "targets": {
-      "build": {
-        "executor": "@nx/js:swc",
-        "outputs": [
-          "{options.outputPath}"
-        ],
-        "options": {
-          "outputPath": "packages/testing/dist",
-          "main": "packages/testing/src/index.ts",
-          "tsConfig": "packages/testing/tsconfig.lib.json",
-          "skipTypeCheck": true,
-          "stripLeadingPaths": true
-        }
-      }
-    }
-  },
   "dependencies": {
-    "@chimeric/core": "workspace:*",
-    "@swc/helpers": "~0.5.11"
+    "@chimeric/core": "workspace:*"
   },
   "peerDependencies": {
-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+    "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
     "@testing-library/react": "^16.0.0"
   },
   "devDependencies": {

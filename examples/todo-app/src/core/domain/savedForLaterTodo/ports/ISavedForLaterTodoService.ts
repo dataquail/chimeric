@@ -1,5 +1,4 @@
-import { ChimericMutationFactory } from 'src/utils/domain/ChimericMutation';
-import { ChimericQueryFactory } from 'src/utils/domain/ChimericQuery';
+import { ChimericMutationFactory, ChimericQueryFactory } from '@chimeric/core';
 import { SavedForLaterTodo } from 'src/core/domain/savedForLaterTodo/entities/SavedForLaterTodo';
 import { SaveForLaterBody } from 'src/core/domain/savedForLaterTodo/dtos/in/SaveForLaterBody';
 import { ActivateBody } from 'src/core/domain/savedForLaterTodo/dtos/in/ActivateBody';

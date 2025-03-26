@@ -1,4 +1,4 @@
-import { ChimericReadFactory } from 'src/utils/domain/ChimericRead';
+import { ChimericReadFactory } from '@chimeric/core';
 import { Review } from '../entities/Review';
 
 export type IReviewRepository = {

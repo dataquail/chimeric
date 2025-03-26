@@ -8,11 +8,9 @@ import {
   ChimericQueryMethods,
   getChimericQueryTestHarness,
   inferQueryMethod,
-} from 'src/utils/domain/__tests__/getChimericQueryTestHarness';
-import {
   ChimericMutationMethods,
   getChimericMutationTestHarness,
-} from 'src/utils/domain/__tests__/getChimericMutationTestHarness';
+} from '@chimeric/testing';
 import { mockGetAllSavedForLaterTodos } from 'src/__test__/network/savedForLaterTodo/mockGetAllSavedForLaterTodos';
 import { mockGetOneSavedForLaterTodo } from 'src/__test__/network/savedForLaterTodo/mockGetOneSavedForLaterTodo';
 import { mockActivateSavedForLaterTodo } from 'src/__test__/network/savedForLaterTodo/mockActivateSavedForLaterTodo';
@@ -89,7 +87,9 @@ describe('SavedForLaterTodoServiceImpl', () => {
     );
     expect(harness.result.current.isPending).toBe(true);
     expect(harness.result.current.isSuccess).toBe(false);
-    await harness.waitForSuccess();
+    await harness.waitForSuccess(() =>
+      expect(harness.result.current.isPending).toBe(true),
+    );
     expect(harness.result.current.data?.length).toBe(1);
     expect(harness.result.current.data?.[0].id).toBe('1');
     expect(harness.result.current.data?.[0].title).toBe(
@@ -110,7 +110,9 @@ describe('SavedForLaterTodoServiceImpl', () => {
     );
     expect(harness.result.current.isPending).toBe(true);
     expect(harness.result.current.isSuccess).toBe(false);
-    await harness.waitForSuccess();
+    await harness.waitForSuccess(() =>
+      expect(harness.result.current.isPending).toBe(true),
+    );
     expect(harness.result.current.data?.id).toBe('1');
   });
 
@@ -127,14 +129,20 @@ describe('SavedForLaterTodoServiceImpl', () => {
       savedForLaterTodoService.getAll,
       inferQueryMethod(chimericMethod),
     );
-    await getAllHarness.waitForSuccess();
+    await getAllHarness.waitForSuccess(() =>
+      expect(getAllHarness.result.current.isPending).toBe(true),
+    );
     expect(getAllHarness.result.current.data?.length).toBe(1);
     withNoSavedForLaterTodosInList();
     act(() => {
       activateOneHarness.call({ savedForLaterTodoId: '1' });
     });
-    await activateOneHarness.waitForSuccess();
-    await getAllHarness.waitForSuccess();
+    await activateOneHarness.waitForSuccess(() =>
+      expect(activateOneHarness.result.current.isPending).toBe(true),
+    );
+    await getAllHarness.waitForSuccess(() =>
+      expect(getAllHarness.result.current.isPending).toBe(true),
+    );
     expect(getAllHarness.result.current.data?.length).toBe(0);
   });
 
@@ -154,8 +162,12 @@ describe('SavedForLaterTodoServiceImpl', () => {
     act(() => {
       deleteOneHarness.call({ id: '1' });
     });
-    await deleteOneHarness.waitForSuccess();
-    await getAllHarness.waitForSuccess();
+    await deleteOneHarness.waitForSuccess(() =>
+      expect(deleteOneHarness.result.current.isPending).toBe(true),
+    );
+    await getAllHarness.waitForSuccess(() =>
+      expect(getAllHarness.result.current.isPending).toBe(true),
+    );
     expect(getAllHarness.result.current.data?.length).toBe(0);
   });
 
@@ -171,7 +183,9 @@ describe('SavedForLaterTodoServiceImpl', () => {
         savedForLaterTodoService.getAll,
         inferQueryMethod(chimericMethod),
       );
-      await getAllHarness.waitForSuccess();
+      await getAllHarness.waitForSuccess(() =>
+        expect(getAllHarness.result.current.isPending).toBe(true),
+      );
       expect(getAllHarness.result.current.data?.length).toBe(0);
 
       withSuccessfullySavedForLaterTodo();
@@ -179,8 +193,12 @@ describe('SavedForLaterTodoServiceImpl', () => {
       act(() => {
         saveForLaterHarness.call({ activeTodoId: '1' });
       });
-      await saveForLaterHarness.waitForSuccess();
-      await getAllHarness.waitForSuccess();
+      await saveForLaterHarness.waitForSuccess(() =>
+        expect(saveForLaterHarness.result.current.isPending).toBe(true),
+      );
+      await getAllHarness.waitForSuccess(() =>
+        expect(getAllHarness.result.current.isPending).toBe(true),
+      );
       expect(getAllHarness.result.current.data?.length).toBe(1);
     },
   );

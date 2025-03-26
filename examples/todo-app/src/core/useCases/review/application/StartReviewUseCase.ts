@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import { createReview } from 'src/core/domain/review/entities/Review';
-import { ChimericPromiseFactory } from 'src/utils/domain/ChimericPromise';
-import { makeChimericPromise } from 'src/utils/domain/makeChimericPromise';
+import { ChimericPromiseFactory } from '@chimeric/core';
+import { makeChimericPromise } from '@chimeric/utilities';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 
 type StartReviewUseCaseChimeric = ChimericPromiseFactory<

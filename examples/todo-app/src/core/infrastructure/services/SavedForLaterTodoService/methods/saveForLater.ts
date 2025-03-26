@@ -1,6 +1,6 @@
 import { QueryClient } from '@tanstack/react-query';
 import { ISavedForLaterTodoService } from 'src/core/domain/savedForLaterTodo/ports/ISavedForLaterTodoService';
-import { makeChimericMutation } from 'src/utils/domain/makeChimericMutation';
+import { makeChimericMutation } from '@chimeric/react-query';
 import { getQueryOptionsGetAll as getQueryOptionsGetAllActiveTodos } from '../../ActiveTodoService/methods/getAll';
 import { getQueryOptionsGetOneById as getQueryOptionsGetOneByIdActiveTodo } from '../../ActiveTodoService/methods/getOneById';
 import { getQueryOptionsGetOneById } from './getOneById';

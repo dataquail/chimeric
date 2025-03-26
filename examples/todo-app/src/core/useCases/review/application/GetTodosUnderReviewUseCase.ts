@@ -2,8 +2,8 @@ import { inject, injectable } from 'inversify';
 import { ActiveTodo } from 'src/core/domain/activeTodo/entities/ActiveTodo';
 import { Review } from 'src/core/domain/review/entities/Review';
 import { SavedForLaterTodo } from 'src/core/domain/savedForLaterTodo/entities/SavedForLaterTodo';
-import { ChimericAsyncReadFactory } from 'src/utils/domain/ChimericAsyncRead';
-import { makeMetaAggregator } from 'src/utils/domain/makeMetaAggregator';
+import { ChimericAsyncReadFactory } from '@chimeric/core';
+import { makeMetaAggregator } from '@chimeric/utilities';
 import { TodoUnderReview } from 'src/core/domain/review/viewModels/out/TodoUnderReview';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 

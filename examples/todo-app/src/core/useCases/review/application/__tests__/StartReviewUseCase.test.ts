@@ -1,19 +1,17 @@
 import { describe, it, expect, beforeAll, afterEach, afterAll } from 'vitest';
 import { setupServer } from 'msw/node';
 import { act } from '@testing-library/react';
+import {
+  ChimericPromiseMethods,
+  getChimericPromiseTestHarness,
+  getChimericReadTestHarness,
+  inferReadMethod,
+} from '@chimeric/testing';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 import { appContainer } from 'src/core/global/appContainer';
 import { mockGetAllActiveTodos } from 'src/__test__/network/activeTodo/mockGetAllActiveTodos';
 import { getTestWrapper } from 'src/__test__/getTestWrapper';
-import {
-  ChimericPromiseMethods,
-  getChimericPromiseTestHarness,
-} from 'src/utils/domain/__tests__/getChimericPromiseTestHarness';
 import { mockGetAllSavedForLaterTodos } from 'src/__test__/network/savedForLaterTodo/mockGetAllSavedForLaterTodos';
-import {
-  getChimericReadTestHarness,
-  inferReadMethod,
-} from 'src/utils/domain/__tests__/getChimericReadTestHarness';
 
 describe('StartReviewUseCase', () => {
   const server = setupServer();
@@ -88,7 +86,9 @@ describe('StartReviewUseCase', () => {
       startReviewHarness.result?.current.call();
     });
 
-    await startReviewHarness.waitForSuccess();
+    await startReviewHarness.waitForSuccess(() =>
+      expect(startReviewHarness.result.current.isPending).toBe(true),
+    );
     await getReviewHarness.waitFor(
       () => getReviewHarness.result.current !== undefined,
     );

@@ -14,11 +14,9 @@ import {
   ChimericQueryMethods,
   getChimericQueryTestHarness,
   inferQueryMethod,
-} from 'src/utils/domain/__tests__/getChimericQueryTestHarness';
-import {
   ChimericMutationMethods,
   getChimericMutationTestHarness,
-} from 'src/utils/domain/__tests__/getChimericMutationTestHarness';
+} from '@chimeric/testing';
 
 describe('ActiveTodoServiceImpl', () => {
   const server = setupServer();
@@ -392,7 +390,9 @@ describe('ActiveTodoServiceImpl', () => {
       );
       expect(harness.result.current.isPending).toBe(true);
       expect(harness.result.current.isSuccess).toBe(false);
-      await harness.waitForSuccess();
+      await harness.waitForSuccess(() =>
+        expect(harness.result.current.isPending).toBe(true),
+      );
       expect(harness.result.current.data?.length).toBe(1);
       expect(harness.result.current.data?.[0].id).toBe('1');
       expect(harness.result.current.data?.[0].title).toBe('Active Todo 1');
@@ -412,7 +412,9 @@ describe('ActiveTodoServiceImpl', () => {
       );
       expect(harness.result.current.isPending).toBe(true);
       expect(harness.result.current.isSuccess).toBe(false);
-      await harness.waitForSuccess();
+      await harness.waitForSuccess(() =>
+        expect(harness.result.current.isPending).toBe(true),
+      );
       expect(harness.result.current.data?.id).toBe('1');
     });
 
@@ -429,14 +431,20 @@ describe('ActiveTodoServiceImpl', () => {
         activeTodoService.getAll,
         inferQueryMethod(chimericMethod),
       );
-      await getAllHarness.waitForSuccess();
+      await getAllHarness.waitForSuccess(() =>
+        expect(getAllHarness.result.current.isPending).toBe(true),
+      );
       expect(getAllHarness.result.current.data?.length).toBe(0);
       withOneUncompletedActiveTodoInList();
       act(() => {
         createOneHarness.call({ title: 'Active Todo 1' });
       });
-      await createOneHarness.waitForSuccess();
-      await getAllHarness.waitForSuccess();
+      await createOneHarness.waitForSuccess(() =>
+        expect(createOneHarness.result.current.isPending).toBe(true),
+      );
+      await getAllHarness.waitForSuccess(() =>
+        expect(getAllHarness.result.current.isPending).toBe(true),
+      );
       expect(getAllHarness.result.current.data?.length).toBe(1);
       expect(getAllHarness.result.current.data?.[0].id).toBe('1');
       expect(getAllHarness.result.current.data?.[0].title).toBe(
@@ -458,15 +466,21 @@ describe('ActiveTodoServiceImpl', () => {
         activeTodoService.getAll,
         inferQueryMethod(chimericMethod),
       );
-      await getAllHarness.waitForSuccess();
+      await getAllHarness.waitForSuccess(() =>
+        expect(getAllHarness.result.current.isPending).toBe(true),
+      );
       expect(getAllHarness.result.current.data?.length).toBe(1);
       withSuccessfullyDeletedActiveTodo();
       withNoActiveTodosInList();
       act(() => {
         deleteOneHarness.call({ id: '1' });
       });
-      await deleteOneHarness.waitForSuccess();
-      await getAllHarness.waitForSuccess();
+      await deleteOneHarness.waitForSuccess(() =>
+        expect(deleteOneHarness.result.current.isPending).toBe(true),
+      );
+      await getAllHarness.waitForSuccess(() =>
+        expect(getAllHarness.result.current.isPending).toBe(true),
+      );
       expect(getAllHarness.result.current.data?.length).toBe(0);
     });
 
@@ -482,15 +496,21 @@ describe('ActiveTodoServiceImpl', () => {
           activeTodoService.getAll,
           inferQueryMethod(chimericMethod),
         );
-        await getAllHarness.waitForSuccess();
+        await getAllHarness.waitForSuccess(() =>
+          expect(getAllHarness.result.current.isPending).toBe(true),
+        );
         expect(getAllHarness.result.current.data?.length).toBe(1);
         withSuccessfullyCompletedActiveTodo();
         withOneCompletedActiveTodoInList();
         act(() => {
           completeOneHarness.call({ id: '1' });
         });
-        await completeOneHarness.waitForSuccess();
-        await getAllHarness.waitForSuccess();
+        await completeOneHarness.waitForSuccess(() =>
+          expect(completeOneHarness.result.current.isPending).toBe(true),
+        );
+        await getAllHarness.waitForSuccess(() =>
+          expect(getAllHarness.result.current.isPending).toBe(true),
+        );
         expect(
           getAllHarness.result.current.data?.[0].completedAt?.toISOString(),
         ).toBe(nowTimeStamp);
@@ -509,15 +529,21 @@ describe('ActiveTodoServiceImpl', () => {
           activeTodoService.getAll,
           inferQueryMethod(chimericMethod),
         );
-        await getAllHarness.waitForSuccess();
+        await getAllHarness.waitForSuccess(() =>
+          expect(getAllHarness.result.current.isPending).toBe(true),
+        );
         expect(getAllHarness.result.current.data?.length).toBe(1);
         withSuccessfullyUncompletedActiveTodo();
         withOneUncompletedActiveTodoInList();
         act(() => {
           uncompleteOneHarness.call({ id: '1' });
         });
-        await uncompleteOneHarness.waitForSuccess();
-        await getAllHarness.waitForSuccess();
+        await uncompleteOneHarness.waitForSuccess(() =>
+          expect(uncompleteOneHarness.result.current.isPending).toBe(true),
+        );
+        await getAllHarness.waitForSuccess(() =>
+          expect(getAllHarness.result.current.isPending).toBe(true),
+        );
         expect(
           getAllHarness.result.current.data?.[0].completedAt,
         ).toBeUndefined();

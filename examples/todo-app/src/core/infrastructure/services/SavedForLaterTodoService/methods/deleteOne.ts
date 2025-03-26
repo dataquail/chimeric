@@ -1,6 +1,6 @@
 import { QueryClient } from '@tanstack/react-query';
 import { ISavedForLaterTodoService } from 'src/core/domain/savedForLaterTodo/ports/ISavedForLaterTodoService';
-import { makeChimericMutation } from 'src/utils/domain/makeChimericMutation';
+import { makeChimericMutation } from '@chimeric/react-query';
 import { getQueryOptionsGetAll } from './getAll';
 import { getQueryOptionsGetOneById } from './getOneById';
 import { getConfig } from 'src/utils/getConfig';

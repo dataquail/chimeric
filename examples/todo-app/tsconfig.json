@@ -9,11 +9,17 @@
       "path": "../../packages/react-query"
     },
     {
+      "path": "../../packages/utilities"
+    },
+    {
+      "path": "../../packages/testing"
+    },
+    {
       "path": "./tsconfig.spec.json"
     },
     {
       "path": "./tsconfig.app.json"
-    },
+    }
   ],
   "extends": "../../tsconfig.base.json"
 }

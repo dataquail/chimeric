@@ -69,7 +69,7 @@ export default defineConfig(() => ({
   },
   resolve: {
     alias: {
-      src: '/src',
+      src: resolve(__dirname, './src'),
     },
   },
   base: '/todo-app/',

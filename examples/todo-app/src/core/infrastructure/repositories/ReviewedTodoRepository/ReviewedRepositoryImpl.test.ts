@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
-import { appContainer } from 'src/core/global/appContainer';
-import { getTestWrapper } from 'src/__test__/getTestWrapper';
 import {
   getChimericReadTestHarness,
   ChimericReadMethods,
-} from 'src/utils/domain/__tests__/getChimericReadTestHarness';
+} from '@chimeric/testing';
+import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
+import { appContainer } from 'src/core/global/appContainer';
+import { getTestWrapper } from 'src/__test__/getTestWrapper';
 import { act } from '@testing-library/react';
 import { createReviewedTodo } from 'src/core/domain/review/entities/ReviewedTodo';
 

@@ -1,5 +1,4 @@
-import { ChimericMutationFactory } from 'src/utils/domain/ChimericMutation';
-import { ChimericQueryFactory } from 'src/utils/domain/ChimericQuery';
+import { ChimericMutationFactory, ChimericQueryFactory } from '@chimeric/core';
 import { CreateTodoBody } from '../dtos/in/CreateTodoBody';
 import { ActiveTodo } from '../entities/ActiveTodo';
 

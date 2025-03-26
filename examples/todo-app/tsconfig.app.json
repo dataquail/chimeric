@@ -4,7 +4,7 @@
     "outDir": "dist",
     "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
     "jsx": "react-jsx",
-    "lib": ["dom"],
+    "lib": ["dom", "ES2020"],
     "types": [
       "node",
       "@nx/react/typings/cssmodule.d.ts",
@@ -12,13 +12,14 @@
       "vite/client"
     ],
     "rootDir": "src",
-    "module": "esnext",
-    "moduleResolution": "bundler",
     "paths": {
       "src/*": ["./src/*"]
     },
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    "emitDecoratorMetadata": true
   },
   "exclude": [
     "out-tsc",
@@ -49,6 +50,12 @@
   "references": [
     {
       "path": "../../packages/core/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/utilities/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/testing/tsconfig.lib.json"
     },
     {
       "path": "../../packages/react-query/tsconfig.lib.json"

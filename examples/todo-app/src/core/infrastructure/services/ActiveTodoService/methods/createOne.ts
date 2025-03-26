@@ -1,6 +1,6 @@
 import { QueryClient } from '@tanstack/react-query';
 import { IActiveTodoService } from 'src/core/domain/activeTodo/ports/IActiveTodoService';
-import { makeChimericMutation } from 'src/utils/domain/makeChimericMutation';
+import { makeChimericMutation } from '@chimeric/react-query';
 import { getConfig } from 'src/utils/getConfig';
 import { wrappedFetch } from 'src/utils/network/wrappedFetch';
 import { CreateTodoBody } from 'src/core/domain/activeTodo/dtos/in/CreateTodoBody';

@@ -5,7 +5,7 @@ import { getTestWrapper } from 'src/__test__/getTestWrapper';
 import {
   getChimericReadTestHarness,
   ChimericReadMethods,
-} from 'src/utils/domain/__tests__/getChimericReadTestHarness';
+} from '@chimeric/testing';
 import { act } from '@testing-library/react';
 import { createReview } from 'src/core/domain/review/entities/Review';
 

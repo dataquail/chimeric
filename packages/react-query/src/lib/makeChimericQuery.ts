@@ -1,4 +1,8 @@
-import { QueryClient, useQuery, QueryOptions } from '@tanstack/react-query';
+import {
+  type QueryClient,
+  type QueryOptions,
+  useQuery,
+} from '@tanstack/react-query';
 import { ChimericQuery } from '@chimeric/core';
 
 export const MakeChimericQuery =
