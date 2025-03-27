@@ -12,7 +12,7 @@ export const ActiveTodo = () => {
           <AddNewActiveTodoForm />
         </Flex>
         <Space h="lg" />
-        {/* <ActiveTodoList /> */}
+        <ActiveTodoList />
       </>
     </AppShellWrapper>
   );

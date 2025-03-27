@@ -21,12 +21,8 @@
     "@chimeric/core": "workspace:*"
   },
   "peerDependencies": {
-    "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
-    "@testing-library/react": "^16.0.0"
-  },
-  "devDependencies": {
-    "react": "^18.0.0",
-    "@testing-library/react": "^16.2.0"
+    "@testing-library/react": "^16",
+    "react": "^18 || ^19"
   },
   "peerDependenciesMeta": {
     "react": {

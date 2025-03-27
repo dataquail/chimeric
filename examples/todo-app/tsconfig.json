@@ -1,18 +1,22 @@
 {
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
   "files": [],
   "include": [],
   "references": [
-    {
-      "path": "../../packages/core"
-    },
-    {
-      "path": "../../packages/react-query"
-    },
     {
       "path": "../../packages/utilities"
     },
     {
       "path": "../../packages/testing"
+    },
+    {
+      "path": "../../packages/react-query"
+    },
+    {
+      "path": "../../packages/core"
     },
     {
       "path": "./tsconfig.spec.json"

@@ -70,6 +70,7 @@ export default defineConfig(() => ({
   resolve: {
     alias: {
       src: resolve(__dirname, './src'),
+      '@tanstack/react-query': resolve(__dirname, './node_modules/@tanstack/react-query')
     },
   },
   base: '/todo-app/',

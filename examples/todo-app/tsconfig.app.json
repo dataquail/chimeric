@@ -49,9 +49,6 @@
   ],
   "references": [
     {
-      "path": "../../packages/core/tsconfig.lib.json"
-    },
-    {
       "path": "../../packages/utilities/tsconfig.lib.json"
     },
     {
@@ -59,6 +56,9 @@
     },
     {
       "path": "../../packages/react-query/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/core/tsconfig.lib.json"
     }
   ]
 }
