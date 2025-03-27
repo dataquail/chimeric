@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterEach, afterAll } from 'vitest';
 import { setupServer } from 'msw/node';
-import { act } from '@testing-library/react';
+import { act } from 'react';
 import {
   getChimericPromiseTestHarness,
   inferPromiseMethod,
@@ -84,10 +84,10 @@ describe('GetTodosUnderReviewUseCase', () => {
       });
 
       await startReviewHarness.waitForSuccess(() =>
-        expect(startReviewHarness.result.current.isPending).toBe(true),
+        expect(startReviewHarness.result.current.isPending).toBe(false),
       );
       await getTodosUnderReviewHarness.waitForSuccess(() =>
-        expect(getTodosUnderReviewHarness.result.current.isPending).toBe(true),
+        expect(getTodosUnderReviewHarness.result.current.isPending).toBe(false),
       );
 
       const todos = getTodosUnderReviewHarness.result.current.data;

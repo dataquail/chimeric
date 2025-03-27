@@ -6,7 +6,7 @@ import {
   getChimericReadTestHarness,
   ChimericReadMethods,
 } from '@chimeric/testing';
-import { act } from '@testing-library/react';
+import { act } from 'react';
 import { createReview } from 'src/core/domain/review/entities/Review';
 
 describe('ReviewRepositoryImpl', () => {

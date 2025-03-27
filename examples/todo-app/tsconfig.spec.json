@@ -18,6 +18,7 @@
     "paths": {
       "src/*": ["./src/*"]
     },
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
@@ -26,6 +27,7 @@
     "vite.config.mts",
     "vitest.config.ts",
     "vitest.config.mts",
+    "setupTests.ts",
     "src/**/*.test.ts",
     "src/**/*.spec.ts",
     "src/**/*.test.tsx",

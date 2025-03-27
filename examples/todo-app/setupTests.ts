@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import 'src/core/global/inversify.config';
-import { appContainer } from 'src/core/global/appContainer';
 import { vi } from 'vitest';
+import { appContainer } from 'src/core/global/appContainer';
 import { InjectionSymbol } from 'src/core/global/types';
 import { IQueryClientProvider } from 'src/core/global/queryClientProvider/IQueryClientProvider';
 import { IAppStoreProvider } from 'src/core/global/appStoreProvider/IAppStoreProvider';

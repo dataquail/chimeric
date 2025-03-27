@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterEach, afterAll } from 'vitest';
 import { setupServer } from 'msw/node';
-import { act } from '@testing-library/react';
+import { act } from 'react';
 import {
   ChimericPromiseMethods,
   getChimericPromiseTestHarness,
@@ -89,9 +89,10 @@ describe('StartReviewUseCase', () => {
     await startReviewHarness.waitForSuccess(() =>
       expect(startReviewHarness.result.current.isPending).toBe(true),
     );
-    await getReviewHarness.waitFor(
-      () => getReviewHarness.result.current !== undefined,
-    );
+
+    await getReviewHarness.waitFor(() => {
+      expect(getReviewHarness.result.current).not.toBeUndefined();
+    });
     // omits completed activeTodo 2
     expect(getReviewHarness.result.current?.todoIdList).toEqual(['1', '3']);
   });

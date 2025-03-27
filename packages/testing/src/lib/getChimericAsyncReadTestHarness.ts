@@ -65,7 +65,7 @@ export const getChimericAsyncReadTestHarness =
 
       return {
         waitForSuccess: async (cb: () => void) => {
-          return new Promise<void>(async (resolve) => {
+          return new Promise<void>(async (resolve, reject) => {
             if (promiseStatus === 'resolved') {
               // retry promise if it has already been resolved
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -89,33 +89,18 @@ export const getChimericAsyncReadTestHarness =
                 });
             }
             await promise;
-            await checkOnInterval(
-              cb,
-              1,
-              5000,
-              resolve,
-            );
+            await checkOnInterval(cb, 1, 3000, resolve, reject);
           });
         },
         waitForError: async (cb: () => void) => {
-          return new Promise<void>(async (resolve) => {
+          return new Promise<void>(async (resolve, reject) => {
             await promise;
-            await checkOnInterval(
-              cb,
-              1,
-              5000,
-              resolve,
-            );
+            await checkOnInterval(cb, 1, 3000, resolve, reject);
           });
         },
         waitForPending: async (cb: () => void) => {
-          return new Promise<void>(async (resolve) => {
-            await checkOnInterval(
-              cb,
-              1,
-              5000,
-              resolve,
-            );
+          return new Promise<void>(async (resolve, reject) => {
+            await checkOnInterval(cb, 1, 3000, resolve, reject);
           });
         },
         result,

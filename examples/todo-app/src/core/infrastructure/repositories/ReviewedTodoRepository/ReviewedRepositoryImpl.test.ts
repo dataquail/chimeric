@@ -6,7 +6,7 @@ import {
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 import { appContainer } from 'src/core/global/appContainer';
 import { getTestWrapper } from 'src/__test__/getTestWrapper';
-import { act } from '@testing-library/react';
+import { act } from 'react';
 import { createReviewedTodo } from 'src/core/domain/review/entities/ReviewedTodo';
 
 describe('ReviewedTodoRepositoryImpl', () => {

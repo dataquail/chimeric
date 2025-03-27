@@ -3,10 +3,7 @@ import '@mantine/core/styles.css';
 import 'src/core/global/inversify.config';
 import './styles.css';
 import { StrictMode } from 'react';
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import * as ReactDOM from 'react-dom/client';
 import { setupApi } from './api/setupApi';
 import { ErrorPage } from './components/ErrorPage';
@@ -16,10 +13,10 @@ import { SavedForLaterTodo } from './routes/SavedForLaterTodo';
 import { Review } from './routes/Review';
 
 async function prepare() {
-  // @ts-expect-error - async import needed to mock api
-  await import('/mockServiceWorker.js?url&worker');
-  const { setupWorker } = await import('msw/browser');
-  const worker = setupWorker();
+  // Import using a dynamic import instead of a relative path
+  const worker = await import('msw/browser').then(({ setupWorker }) =>
+    setupWorker(),
+  );
   await setupApi(worker);
 }
 
@@ -45,11 +42,14 @@ prepare().then(() => {
     { basename: import.meta.env.BASE_URL },
   );
 
-  ReactDOM.createRoot(document.getElementById('root')!).render(
-    <StrictMode>
-      <Providers>
-        <RouterProvider router={router} />
-      </Providers>
-    </StrictMode>,
-  );
+  const rootElement = document.getElementById('root');
+  if (rootElement) {
+    ReactDOM.createRoot(rootElement).render(
+      <StrictMode>
+        <Providers>
+          <RouterProvider router={router} />
+        </Providers>
+      </StrictMode>,
+    );
+  }
 });

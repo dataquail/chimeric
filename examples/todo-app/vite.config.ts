@@ -23,7 +23,9 @@ export default defineConfig(() => ({
         // During development, serve mockServiceWorker.js from the root
         server.middlewares.use((req, res, next) => {
           if (req.url === '/mockServiceWorker.js') {
-            const workerPath = resolve('./node_modules/msw/lib/mockServiceWorker.js');
+            const workerPath = resolve(
+              './node_modules/msw/lib/mockServiceWorker.js',
+            );
             if (fs.existsSync(workerPath)) {
               res.setHeader('Content-Type', 'application/javascript');
               res.end(fs.readFileSync(workerPath, 'utf8'));
@@ -35,13 +37,15 @@ export default defineConfig(() => ({
       },
       writeBundle() {
         // For production build, copy mockServiceWorker.js to the dist folder root
-        const workerPath = resolve('./node_modules/msw/lib/mockServiceWorker.js');
+        const workerPath = resolve(
+          './node_modules/msw/lib/mockServiceWorker.js',
+        );
         const outputPath = resolve('./dist/mockServiceWorker.js');
         if (fs.existsSync(workerPath)) {
           fs.copyFileSync(workerPath, outputPath);
         }
-      }
-    }
+      },
+    },
   ],
   // Uncomment this if you are using workers.
   // worker: {
@@ -70,7 +74,14 @@ export default defineConfig(() => ({
   resolve: {
     alias: {
       src: resolve(__dirname, './src'),
-      '@tanstack/react-query': resolve(__dirname, './node_modules/@tanstack/react-query')
+      '@tanstack/react-query': resolve(
+        __dirname,
+        './node_modules/@tanstack/react-query',
+      ),
+      '@testing-library/react': resolve(
+        __dirname,
+        './node_modules/@testing-library/react',
+      ),
     },
   },
   base: '/todo-app/',
