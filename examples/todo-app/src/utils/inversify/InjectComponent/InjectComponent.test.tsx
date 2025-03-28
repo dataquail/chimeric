@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import { Container, injectable } from 'inversify';
 import { render, screen } from '@testing-library/react';
-import { injectComponent } from './injectComponent';
+import { InjectComponent } from 'src/utils/inversify/InjectComponent';
 
-describe('injectComponent', () => {
+describe('InjectComponent', () => {
   type OwnProps = {
     ownProp: string;
   };
@@ -72,13 +72,13 @@ describe('injectComponent', () => {
       .bind<IInjectedProp2>(TYPES.InjectedProp2)
       .to(InjectedProp2Impl);
 
-    const TestComponent = injectComponent<InjectedProps, OwnProps>(
-      _TestComponentWithOwnProps,
+    const TestComponent = InjectComponent<InjectedProps, OwnProps>(
       testContainer,
       {
         injectedProp1: TYPES.InjectedProp1,
         injectedProp2: TYPES.InjectedProp2,
       },
+      _TestComponentWithOwnProps,
     );
 
     render(<TestComponent ownProp="ownProp" />);
@@ -96,13 +96,13 @@ describe('injectComponent', () => {
       .bind<IInjectedProp2>(TYPES.InjectedProp2)
       .to(InjectedProp2Impl);
 
-    const TestComponent = injectComponent<InjectedProps>(
-      _TestComponentWithoutOwnProps,
+    const TestComponent = InjectComponent<InjectedProps>(
       testContainer,
       {
         injectedProp1: TYPES.InjectedProp1,
         injectedProp2: TYPES.InjectedProp2,
       },
+      _TestComponentWithoutOwnProps,
     );
 
     render(<TestComponent />);
@@ -124,13 +124,13 @@ describe('injectComponent', () => {
       .bind<IInjectedProp2>(TYPES.InjectedProp2)
       .to(InjectedProp2Impl);
 
-    const TestComponent = injectComponent<InjectedProps>(
-      _TestComponentWithoutOwnProps,
+    const TestComponent = InjectComponent<InjectedProps>(
       testContainer,
       {
         injectedProp1: TYPES.InjectedProp1,
         injectedProp2: TYPES.InjectedProp2,
       },
+      _TestComponentWithoutOwnProps,
     );
 
     render(<TestComponent injectedProp1={{ prop: 'prop override' }} />);

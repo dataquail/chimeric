@@ -1,5 +1,4 @@
-import { appContainer } from 'src/core/global/appContainer';
-import { injectComponent } from 'src/utils/inversify/injectComponent';
+import { injectComponent } from 'src/utils/inversify/InjectComponent/DI';
 import { QueryClientProvider as ReactQueryClientProvider } from '@tanstack/react-query';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 
@@ -12,6 +11,7 @@ type OwnProps = {
 };
 
 export const ReactQueryTestWrapper = injectComponent<InjectedProps, OwnProps>(
+  { queryClientProvider: InjectionSymbol('IQueryClientProvider') },
   (props) => {
     props.queryClientProvider.get().setDefaultOptions({
       queries: {
@@ -26,9 +26,5 @@ export const ReactQueryTestWrapper = injectComponent<InjectedProps, OwnProps>(
         {props.children}
       </ReactQueryClientProvider>
     );
-  },
-  appContainer,
-  {
-    queryClientProvider: InjectionSymbol('IQueryClientProvider'),
   },
 );

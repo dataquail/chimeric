@@ -9,8 +9,7 @@ import {
   Title,
 } from '@mantine/core';
 import { format } from 'date-fns';
-import { injectComponent } from 'src/utils/inversify/injectComponent';
-import { appContainer } from 'src/core/global/appContainer';
+import { injectComponent } from 'src/utils/inversify/InjectComponent/DI';
 import { useViewportSize } from '@mantine/hooks';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 
@@ -22,6 +21,12 @@ type InjectedProps = {
 };
 
 export const ReviewContent = injectComponent<InjectedProps>(
+  {
+    reviewRepository: InjectionSymbol('IReviewRepository'),
+    startReviewUseCase: InjectionSymbol('StartReviewUseCase'),
+    finishReviewUseCase: InjectionSymbol('FinishReviewUseCase'),
+    getTodosUnderReviewUseCase: InjectionSymbol('GetTodosUnderReviewUseCase'),
+  },
   ({
     reviewRepository,
     startReviewUseCase,
@@ -61,12 +66,5 @@ export const ReviewContent = injectComponent<InjectedProps>(
         )}
       </Box>
     );
-  },
-  appContainer,
-  {
-    reviewRepository: InjectionSymbol('IReviewRepository'),
-    startReviewUseCase: InjectionSymbol('StartReviewUseCase'),
-    finishReviewUseCase: InjectionSymbol('FinishReviewUseCase'),
-    getTodosUnderReviewUseCase: InjectionSymbol('GetTodosUnderReviewUseCase'),
   },
 );

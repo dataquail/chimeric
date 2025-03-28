@@ -1,7 +1,10 @@
 import 'reflect-metadata';
 import { Container, injectable } from 'inversify';
 import { renderHook } from '@testing-library/react';
-import { injectHook, injectHookWithArguments } from './injectHook';
+import {
+  InjectHook,
+  InjectHookWithArguments,
+} from 'src/utils/inversify/InjectHook';
 
 describe('injectHook', () => {
   type OwnProps = {
@@ -84,14 +87,18 @@ describe('injectHook', () => {
       .bind<IInjectedProp2>(TYPES.InjectedProp2)
       .to(InjectedProp2Impl);
 
-    const hookWithOwnProps = injectHookWithArguments<
+    const hookWithOwnProps = InjectHookWithArguments<
       InjectedProps,
       OwnProps,
       HookWithOwnPropsResult
-    >(_hookWithOwnProps, testContainer, {
-      injectedProp1: TYPES.InjectedProp1,
-      injectedProp2: TYPES.InjectedProp2,
-    });
+    >(
+      testContainer,
+      {
+        injectedProp1: TYPES.InjectedProp1,
+        injectedProp2: TYPES.InjectedProp2,
+      },
+      _hookWithOwnProps,
+    );
 
     const { result } = renderHook(() =>
       hookWithOwnProps({ ownProp: 'myOwnProp' }),
@@ -111,13 +118,16 @@ describe('injectHook', () => {
       .bind<IInjectedProp2>(TYPES.InjectedProp2)
       .to(InjectedProp2Impl);
 
-    const hookWithoutOwnProps = injectHook(
-      _hookWithoutOwnProps,
+    const hookWithoutOwnProps = InjectHook<
+      InjectedProps,
+      HookWithoutOwnPropsResult
+    >(
       testContainer,
       {
         injectedProp1: TYPES.InjectedProp1,
         injectedProp2: TYPES.InjectedProp2,
       },
+      _hookWithoutOwnProps,
     );
 
     const { result } = renderHook(() => hookWithoutOwnProps());
@@ -134,14 +144,18 @@ describe('injectHook', () => {
       .bind<IInjectedProp2>(TYPES.InjectedProp2)
       .to(InjectedProp2Impl);
 
-    const hookWithOwnProps = injectHookWithArguments<
+    const hookWithOwnProps = InjectHookWithArguments<
       InjectedProps,
       OwnProps,
       HookWithOwnPropsResult
-    >(_hookWithOwnProps, testContainer, {
-      injectedProp1: TYPES.InjectedProp1,
-      injectedProp2: TYPES.InjectedProp2,
-    });
+    >(
+      testContainer,
+      {
+        injectedProp1: TYPES.InjectedProp1,
+        injectedProp2: TYPES.InjectedProp2,
+      },
+      _hookWithOwnProps,
+    );
 
     const { result } = renderHook(() =>
       hookWithOwnProps({

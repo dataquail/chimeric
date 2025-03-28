@@ -18,8 +18,7 @@ import {
   IconTrash,
 } from '@tabler/icons-react';
 import { ActiveTodo } from 'src/core/domain/activeTodo/entities/ActiveTodo';
-import { injectComponent } from 'src/utils/inversify/injectComponent';
-import { appContainer } from 'src/core/global/appContainer';
+import { injectComponent } from 'src/utils/inversify/InjectComponent/DI';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 
 type InjectedProps = {
@@ -32,6 +31,10 @@ type OwnProps = {
 };
 
 export const ActiveTodoCard = injectComponent<InjectedProps, OwnProps>(
+  {
+    activeTodoService: InjectionSymbol('IActiveTodoService'),
+    savedForLaterTodoService: InjectionSymbol('ISavedForLaterTodoService'),
+  },
   ({ todo, activeTodoService, savedForLaterTodoService }) => {
     const saveForLater = savedForLaterTodoService.saveForLater.useMutation();
     const completeOne = activeTodoService.completeOne.useMutation();
@@ -137,10 +140,5 @@ export const ActiveTodoCard = injectComponent<InjectedProps, OwnProps>(
         </Group>
       </Box>
     );
-  },
-  appContainer,
-  {
-    activeTodoService: InjectionSymbol('IActiveTodoService'),
-    savedForLaterTodoService: InjectionSymbol('ISavedForLaterTodoService'),
   },
 );

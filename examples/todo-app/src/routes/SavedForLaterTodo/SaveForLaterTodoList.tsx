@@ -1,7 +1,6 @@
 import { Flex, Loader, ScrollArea } from '@mantine/core';
 import { useViewportSize } from '@mantine/hooks';
-import { injectComponent } from 'src/utils/inversify/injectComponent';
-import { appContainer } from 'src/core/global/appContainer';
+import { injectComponent } from 'src/utils/inversify/InjectComponent/DI';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 import { SavedForLaterTodoCard } from './SavedForLaterTodoCard';
 
@@ -10,6 +9,7 @@ type InjectedProps = {
 };
 
 export const SaveForLaterTodoList = injectComponent<InjectedProps>(
+  { savedForLaterTodoService: InjectionSymbol('ISavedForLaterTodoService') },
   ({ savedForLaterTodoService }) => {
     const { data, isPending } = savedForLaterTodoService.getAll.useQuery();
     const { height } = useViewportSize();
@@ -32,9 +32,5 @@ export const SaveForLaterTodoList = injectComponent<InjectedProps>(
         ))}
       </ScrollArea.Autosize>
     );
-  },
-  appContainer,
-  {
-    savedForLaterTodoService: InjectionSymbol('ISavedForLaterTodoService'),
   },
 );

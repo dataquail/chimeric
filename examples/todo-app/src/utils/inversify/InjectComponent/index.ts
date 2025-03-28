@@ -1,8 +1,8 @@
 import { Container } from 'inversify';
-import { getIsMemoizedComponent, genericMemo, propsInjector } from './utils';
+import { getIsMemoizedComponent, genericMemo, propsInjector } from '../utils';
 import { type PropsWithChildren } from 'react';
 
-export const injectComponent = <
+export const InjectComponent = <
   InjectedProps extends {
     [K in keyof InjectedProps]: K extends keyof OwnProps
       ? never
@@ -15,12 +15,12 @@ export const injectComponent = <
     [K in keyof InjectedProps]: symbol;
   },
 >(
+  container: Container,
+  propMap: PropMap,
   Target: React.FunctionComponent<
     (OwnProps extends never ? object : OwnProps) &
       (InjectedProps extends object ? InjectedProps : never)
   >,
-  container: Container,
-  propMap: PropMap,
 ): React.FunctionComponent<
   OwnProps extends never ? object : OwnProps & Partial<InjectedProps>
 > => {

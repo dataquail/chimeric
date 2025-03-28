@@ -11,8 +11,7 @@ import {
 } from '@mantine/core';
 import { format } from 'date-fns';
 import { IconDots, IconPlus, IconTrash } from '@tabler/icons-react';
-import { injectComponent } from 'src/utils/inversify/injectComponent';
-import { appContainer } from 'src/core/global/appContainer';
+import { injectComponent } from 'src/utils/inversify/InjectComponent/DI';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 import { SavedForLaterTodo } from 'src/core/domain/savedForLaterTodo/entities/SavedForLaterTodo';
 
@@ -25,7 +24,8 @@ type OwnProps = {
 };
 
 export const SavedForLaterTodoCard = injectComponent<InjectedProps, OwnProps>(
-  ({ savedForLaterTodo, savedForLaterTodoService }) => {
+  { savedForLaterTodoService: InjectionSymbol('ISavedForLaterTodoService') },
+  ({ savedForLaterTodoService, savedForLaterTodo }) => {
     const activateOne = savedForLaterTodoService.activate.useMutation();
     const deleteOne = savedForLaterTodoService.deleteOne.useMutation();
 
@@ -78,9 +78,5 @@ export const SavedForLaterTodoCard = injectComponent<InjectedProps, OwnProps>(
         </Group>
       </Box>
     );
-  },
-  appContainer,
-  {
-    savedForLaterTodoService: InjectionSymbol('ISavedForLaterTodoService'),
   },
 );

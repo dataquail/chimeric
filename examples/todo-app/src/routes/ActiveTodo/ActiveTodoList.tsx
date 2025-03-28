@@ -1,8 +1,7 @@
 import { Flex, Loader, ScrollArea } from '@mantine/core';
 import { useViewportSize } from '@mantine/hooks';
 import { ActiveTodoCard } from './ActiveTodoCard';
-import { injectComponent } from 'src/utils/inversify/injectComponent';
-import { appContainer } from 'src/core/global/appContainer';
+import { injectComponent } from 'src/utils/inversify/InjectComponent/DI';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 
 type InjectedProps = {
@@ -10,6 +9,7 @@ type InjectedProps = {
 };
 
 export const ActiveTodoList = injectComponent<InjectedProps>(
+  { activeTodoService: InjectionSymbol('IActiveTodoService') },
   ({ activeTodoService }) => {
     const { data, isPending } = activeTodoService.getAll.useQuery();
     const { height } = useViewportSize();
@@ -30,6 +30,4 @@ export const ActiveTodoList = injectComponent<InjectedProps>(
       </ScrollArea.Autosize>
     );
   },
-  appContainer,
-  { activeTodoService: InjectionSymbol('IActiveTodoService') },
 );
