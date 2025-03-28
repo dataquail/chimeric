@@ -74,33 +74,18 @@ export const getChimericPromiseTestHarness =
     if (chimericMethod === 'call') {
       return {
         waitForSuccess: async (cb: () => void) => {
-          return new Promise<void>(async (resolve) => {
-            await checkOnInterval(
-              cb,
-              1,
-              5000,
-              resolve,
-            );
+          return new Promise<void>(async (resolve, reject) => {
+            await checkOnInterval(cb, 1, 3000, resolve, reject);
           });
         },
         waitForError: async (cb: () => void) => {
-          return new Promise<void>(async (resolve) => {
-            await checkOnInterval(
-              cb,
-              1,
-              5000,
-              resolve,
-            );
+          return new Promise<void>(async (resolve, reject) => {
+            await checkOnInterval(cb, 1, 3000, resolve, reject);
           });
         },
         waitForPending: async (cb: () => void) => {
-          return new Promise<void>(async (resolve) => {
-            await checkOnInterval(
-              cb,
-              1,
-              5000,
-              resolve,
-            );
+          return new Promise<void>(async (resolve, reject) => {
+            await checkOnInterval(cb, 1, 3000, resolve, reject);
           });
         },
         result,

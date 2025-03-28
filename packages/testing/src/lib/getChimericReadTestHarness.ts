@@ -25,21 +25,30 @@ export const getChimericReadTestHarness =
       current: TResult | undefined;
     };
   } => {
+    const result = {
+      current: undefined as TResult | undefined,
+    };
     const returnValue = {
       waitFor: async (cb: () => void) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        returnValue.result = { current: chimericRead.call(params as any) };
-        return new Promise<void>(async (resolve) => {
-          await checkOnInterval(cb, 1, 5000, resolve);
+        return new Promise<void>(async (resolve, reject) => {
+          await checkOnInterval(
+            () => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              result.current = chimericRead.call(params as any);
+              cb();
+            },
+            1,
+            3000,
+            resolve,
+            reject,
+          );
         });
       },
-      result: {
-        current: undefined as TResult | undefined,
-      },
+      result,
     };
     if (chimericMethod === 'call') {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      returnValue.result = { current: chimericRead.call(params as any) };
+      result.current = chimericRead.call(params as any);
       return returnValue;
     } else {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -14,7 +14,7 @@
 ## Generate a library
 
 ```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@chimaric/pkg1
+npx nx g @nx/js:lib packages/testpkg --publishable --importPath=@chimeric/testpkg
 ```
 
 ## Run tasks

@@ -17,25 +17,5 @@
     "dist",
     "!**/*.tsbuildinfo"
   ],
-  "nx": {
-    "sourceRoot": "packages/core/src",
-    "targets": {
-      "build": {
-        "executor": "@nx/js:swc",
-        "outputs": [
-          "{options.outputPath}"
-        ],
-        "options": {
-          "outputPath": "packages/core/dist",
-          "main": "packages/core/src/index.ts",
-          "tsConfig": "packages/core/tsconfig.lib.json",
-          "skipTypeCheck": true,
-          "stripLeadingPaths": true
-        }
-      }
-    }
-  },
-  "dependencies": {
-    "@swc/helpers": "~0.5.11"
-  }
+  "dependencies": {}
 }

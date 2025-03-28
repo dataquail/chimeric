@@ -3,6 +3,7 @@ export const checkOnInterval = async (
   interval: number,
   timeout: number,
   resolve: () => void,
+  reject: (error: Error) => void,
 ) => {
   const startTime = Date.now();
   const check = async () => {
@@ -12,6 +13,8 @@ export const checkOnInterval = async (
     } catch (error) {
       if (Date.now() - startTime < timeout) {
         setTimeout(check, interval);
+      } else {
+        reject(error instanceof Error ? error : new Error(String(error)));
       }
     }
   };

@@ -4,7 +4,7 @@
     "outDir": "dist",
     "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
     "jsx": "react-jsx",
-    "lib": ["dom"],
+    "lib": ["dom", "ES2020"],
     "types": [
       "node",
       "@nx/react/typings/cssmodule.d.ts",
@@ -12,8 +12,14 @@
       "vite/client"
     ],
     "rootDir": "src",
-    "module": "esnext",
-    "moduleResolution": "bundler"
+    "paths": {
+      "src/*": ["./src/*"]
+    },
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "exclude": [
     "out-tsc",
@@ -34,5 +40,25 @@
     "eslint.config.cjs",
     "eslint.config.mjs"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
+  "include": [
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "public/todo-app/mockServiceWorker.js"
+  ],
+  "references": [
+    {
+      "path": "../../packages/utilities/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/testing/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/react-query/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/core/tsconfig.lib.json"
+    }
+  ]
 }
