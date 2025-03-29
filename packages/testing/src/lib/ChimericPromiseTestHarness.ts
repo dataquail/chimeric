@@ -1,9 +1,13 @@
 /* eslint-disable no-async-promise-executor */
-import { waitFor, renderHook } from '@testing-library/react';
+import {
+  waitFor as waitForReactTestingLibrary,
+  renderHook,
+} from '@testing-library/react';
 import { ChimericPromise } from '@chimeric/core';
 import { checkOnInterval } from './checkOnInterval.js';
 import { JSX, ReactNode } from 'react';
 import { chimericMethods } from './chimericMethods.js';
+import { BaseWaitForOptions } from 'src/types/WaitForOptions.js';
 
 export const ChimericPromiseTestHarness = <TParams, TResult, E extends Error>({
   chimericPromise,
@@ -14,9 +18,7 @@ export const ChimericPromiseTestHarness = <TParams, TResult, E extends Error>({
   chimericMethod: (typeof chimericMethods)[number];
   wrapper: ({ children }: { children: ReactNode }) => JSX.Element;
 }): {
-  waitForSuccess: (cb: () => void) => Promise<void>;
-  waitForError: (cb: () => void) => Promise<void>;
-  waitForPending: (cb: () => void) => Promise<void>;
+  waitFor: (cb: () => void, options?: BaseWaitForOptions) => Promise<void>;
   result: {
     current: {
       call: (args: TParams) => Promise<TResult | void>;
@@ -60,19 +62,15 @@ export const ChimericPromiseTestHarness = <TParams, TResult, E extends Error>({
   };
   if (chimericMethod === 'idiomatic') {
     return {
-      waitForSuccess: async (cb: () => void) => {
+      waitFor: async (cb: () => void, options?: BaseWaitForOptions) => {
         return new Promise<void>(async (resolve, reject) => {
-          await checkOnInterval(cb, 1, 3000, resolve, reject);
-        });
-      },
-      waitForError: async (cb: () => void) => {
-        return new Promise<void>(async (resolve, reject) => {
-          await checkOnInterval(cb, 1, 3000, resolve, reject);
-        });
-      },
-      waitForPending: async (cb: () => void) => {
-        return new Promise<void>(async (resolve, reject) => {
-          await checkOnInterval(cb, 1, 3000, resolve, reject);
+          await checkOnInterval(
+            cb,
+            options?.interval ?? 1,
+            options?.timeout ?? 3000,
+            resolve,
+            reject,
+          );
         });
       },
       result,
@@ -82,14 +80,11 @@ export const ChimericPromiseTestHarness = <TParams, TResult, E extends Error>({
       wrapper,
     });
     return {
-      waitForSuccess: async (cb: () => void) => {
-        await waitFor(cb);
-      },
-      waitForError: async (cb: () => void) => {
-        await waitFor(cb);
-      },
-      waitForPending: async (cb: () => void) => {
-        await waitFor(cb);
+      waitFor: async (cb: () => void, options?: BaseWaitForOptions) => {
+        await waitForReactTestingLibrary(cb, {
+          timeout: options?.timeout,
+          interval: options?.interval,
+        });
       },
       result: hook.result,
     };

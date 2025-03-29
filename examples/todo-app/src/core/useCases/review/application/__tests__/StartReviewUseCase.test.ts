@@ -88,13 +88,14 @@ describe('StartReviewUseCase', () => {
       startReviewHarness.result?.current.call();
     });
 
-    await startReviewHarness.waitForSuccess(() =>
+    await startReviewHarness.waitFor(() =>
       expect(startReviewHarness.result.current.isPending).toBe(true),
     );
 
-    await getReviewHarness.waitFor(() => {
-      expect(getReviewHarness.result.current).not.toBeUndefined();
-    });
+    await getReviewHarness.waitFor(
+      () => expect(getReviewHarness.result.current).not.toBeUndefined(),
+      { reinvokeIdiomaticFn: true },
+    );
     // omits completed activeTodo 2
     expect(getReviewHarness.result.current?.todoIdList).toEqual(['1', '3']);
   });
