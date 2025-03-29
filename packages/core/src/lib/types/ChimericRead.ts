@@ -1,13 +1,16 @@
+import { IdiomaticFunction } from './IdiomaticFunction.js';
 import {
   ExtractChimericParameter,
   ExtractChimericReturnType,
-} from './utils.js';
+} from './UtilityTypes.js';
 
-export type ChimericRead<TParams, TResult> = {
-  call: (args: TParams) => TResult;
-  use: (args: TParams) => TResult;
+export type ChimericRead<TParams, TResult> = IdiomaticFunction<
+  TParams,
+  TResult
+> & {
+  use: (params: TParams) => TResult;
 };
 
-export type ChimericReadFactory<
+export type DefineChimericRead<
   T extends (args: Parameters<T>[0]) => ReturnType<T>,
 > = ChimericRead<ExtractChimericParameter<T>, ExtractChimericReturnType<T>>;

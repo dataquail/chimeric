@@ -3,7 +3,7 @@ import { AppStore, useAppSelector } from 'src/lib/store';
 import { IActiveTodoService } from 'src/core/domain/activeTodo/ports/IActiveTodoService';
 import { saveActiveTodo } from '../activeTodoStore';
 import { mapTodoDtoToActiveTodo } from 'src/core/domain/activeTodo/entities/ActiveTodo';
-import { MakeChimericQueryWithManagedStore } from '@chimeric/react-query';
+import { ChimericQueryWithManagedStoreFactory } from '@chimeric/react-query';
 import { getConfig } from 'src/utils/getConfig';
 import { wrappedFetch } from 'src/utils/network/wrappedFetch';
 import { TodoDto } from 'src/core/domain/activeTodo/dtos/out/TodoDto';
@@ -23,24 +23,14 @@ export const GetOneByIdMethodImpl = (
   appStore: AppStore,
   queryClient: QueryClient,
 ): IActiveTodoService['getOneById'] => {
-  return MakeChimericQueryWithManagedStore(queryClient)({
-    getQueryOptions: (args: { id: string }) =>
-      queryOptions({
-        ...getQueryOptionsGetOneById(args),
-        queryFn: async () => {
-          const activeTodoDto = await getActiveTodo(args);
-          appStore.dispatch(
-            saveActiveTodo(mapTodoDtoToActiveTodo(activeTodoDto)),
-          );
-        },
-      }),
-    errorHelpers: {},
-    getFromStore: (args) => {
-      const activeTodo = appStore.getState().todo.activeTodos.dict[args.id];
-      return activeTodo;
+  return ChimericQueryWithManagedStoreFactory(queryClient, {
+    queryFn: async (args: { id: string }) => {
+      const activeTodoDto = await getActiveTodo(args);
+      appStore.dispatch(saveActiveTodo(mapTodoDtoToActiveTodo(activeTodoDto)));
     },
-    useFromStore: (args) => {
-      return useAppSelector((state) => state.todo.activeTodos.dict[args.id]);
-    },
+    getQueryOptions: getQueryOptionsGetOneById,
+    getFromStore: (args) => appStore.getState().todo.activeTodos.dict[args.id],
+    useFromStore: (args) =>
+      useAppSelector((state) => state.todo.activeTodos.dict[args.id]),
   });
 };

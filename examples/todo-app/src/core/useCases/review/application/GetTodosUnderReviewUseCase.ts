@@ -2,23 +2,17 @@ import { inject, injectable } from 'inversify';
 import { ActiveTodo } from 'src/core/domain/activeTodo/entities/ActiveTodo';
 import { Review } from 'src/core/domain/review/entities/Review';
 import { SavedForLaterTodo } from 'src/core/domain/savedForLaterTodo/entities/SavedForLaterTodo';
-import { ChimericAsyncReadFactory } from '@chimeric/core';
-import { makeMetaAggregator } from '@chimeric/utilities';
+import { DefineChimericAsyncRead, fuseChimericAsyncRead } from '@chimeric/core';
+import { MetaAggregatorFactory } from '@chimeric/utilities';
 import { TodoUnderReview } from 'src/core/domain/review/viewModels/out/TodoUnderReview';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 
-type GetTodosUnderReviewUseCaseChimaric = ChimericAsyncReadFactory<
-  () => Promise<TodoUnderReview[]>,
-  Error
->;
-
 @injectable()
-export class GetTodosUnderReviewUseCase
-  implements GetTodosUnderReviewUseCaseChimaric
-{
-  public readonly useAsync: GetTodosUnderReviewUseCaseChimaric['useAsync'];
-  public readonly call: GetTodosUnderReviewUseCaseChimaric['call'];
-  public readonly errorHelpers: GetTodosUnderReviewUseCaseChimaric['errorHelpers'];
+export class GetTodosUnderReviewUseCase {
+  public readonly execute: DefineChimericAsyncRead<
+    () => Promise<TodoUnderReview[]>,
+    Error
+  >;
 
   constructor(
     @inject(InjectionSymbol('IReviewRepository'))
@@ -30,9 +24,10 @@ export class GetTodosUnderReviewUseCase
     @inject(InjectionSymbol('ISavedForLaterTodoService'))
     private readonly savedForLaterTodoService: InjectionType<'ISavedForLaterTodoService'>,
   ) {
-    this.useAsync = this.useAsyncImpl;
-    this.call = this.callImpl;
-    this.errorHelpers = {};
+    this.execute = fuseChimericAsyncRead({
+      fn: this.callImpl.bind(this),
+      useAsync: this.useAsyncImpl.bind(this),
+    });
   }
 
   private useAsyncImpl() {
@@ -41,7 +36,7 @@ export class GetTodosUnderReviewUseCase
       this.savedForLaterTodoService.getAll.useQuery();
     const review = this.reviewRepository.get.use();
 
-    return makeMetaAggregator(
+    return MetaAggregatorFactory(
       [activeTodoListMeta, savedForLaterTodoListMeta],
       (metaList, context) => {
         const [activeTodoList, savedForLaterTodoList] = metaList;
@@ -50,7 +45,7 @@ export class GetTodosUnderReviewUseCase
           return [];
         }
 
-        return this.execute(
+        return this._execute(
           activeTodoList,
           savedForLaterTodoList,
           context.review,
@@ -61,28 +56,26 @@ export class GetTodosUnderReviewUseCase
   }
 
   private async callImpl() {
-    const activeTodoList = await this.activeTodoService.getAll.call();
-    const savedForLaterTodoList =
-      await this.savedForLaterTodoService.getAll.call();
-    const review = this.reviewRepository.get.call();
+    const activeTodoList = await this.activeTodoService.getAll();
+    const savedForLaterTodoList = await this.savedForLaterTodoService.getAll();
+    const review = this.reviewRepository.get();
 
     if (!review) {
       return [];
     }
 
-    return this.execute(activeTodoList, savedForLaterTodoList, review);
+    return this._execute(activeTodoList, savedForLaterTodoList, review);
   }
 
-  private execute(
+  private _execute(
     activeTodoList: ActiveTodo[],
     savedForLaterTodoList: SavedForLaterTodo[],
     review: Review,
   ) {
     return review.todoIdList.reduce((acc, todoUnderReviewId) => {
-      const previouslyReviewedTodo =
-        this.reviewedTodoRepository.getOneById.call({
-          id: todoUnderReviewId,
-        });
+      const previouslyReviewedTodo = this.reviewedTodoRepository.getOneById({
+        id: todoUnderReviewId,
+      });
       const activeTodo = activeTodoList.find(
         (todo) => todo.id === todoUnderReviewId,
       );

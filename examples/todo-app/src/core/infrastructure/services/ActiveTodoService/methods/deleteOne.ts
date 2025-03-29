@@ -2,7 +2,7 @@ import { AppStore } from 'src/lib/store';
 import { QueryClient } from '@tanstack/react-query';
 import { IApplicationEventEmitter } from 'src/core/global/ApplicationEventEmitter/IApplicationEventEmitter';
 import { IActiveTodoService } from 'src/core/domain/activeTodo/ports/IActiveTodoService';
-import { makeChimericMutation } from '@chimeric/react-query';
+import { ChimericMutationFactory } from '@chimeric/react-query';
 import { removeActiveTodo } from '../activeTodoStore';
 import { getConfig } from 'src/utils/getConfig';
 import { wrappedFetch } from 'src/utils/network/wrappedFetch';
@@ -34,11 +34,10 @@ export const DeleteOneMethodImpl = (
   appStore: AppStore,
   applicationEventEmitter: IApplicationEventEmitter,
 ): IActiveTodoService['deleteOne'] => {
-  return makeChimericMutation({
+  return ChimericMutationFactory(queryClient, {
     mutationFn: async (args: { id: string }) => {
       await deleteActiveTodo(args);
     },
-    errorHelpers: {},
     onSuccess: async (_data, args) => {
       applicationEventEmitter.emit(new ActiveTodoDeletedEvent({ id: args.id }));
       appStore.dispatch(removeActiveTodo(args.id));

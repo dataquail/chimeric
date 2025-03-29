@@ -12,11 +12,9 @@ import { mockUncompleteOneActiveTodo } from 'src/__test__/network/activeTodo/moc
 import { getTestWrapper } from 'src/__test__/getTestWrapper';
 import { mockGetOneActiveTodo } from 'src/__test__/network/activeTodo/mockGetOneActiveTodo';
 import {
-  ChimericQueryMethods,
-  getChimericQueryTestHarness,
-  inferQueryMethod,
-  ChimericMutationMethods,
-  getChimericMutationTestHarness,
+  ChimericQueryTestHarness,
+  ChimericMutationTestHarness,
+  chimericMethods,
 } from '@chimeric/testing';
 
 describe('ActiveTodoServiceImpl', () => {
@@ -92,11 +90,11 @@ describe('ActiveTodoServiceImpl', () => {
   const withSuccessfullyUncompletedActiveTodo = () =>
     mockUncompleteOneActiveTodo(server, { message: 'success' });
 
-  describe('imperative methods', () => {
-    it('getAll.call', async () => {
+  describe('idiomatic methods', () => {
+    it('getAll', async () => {
       withOneUncompletedActiveTodoInList();
       const activeTodoService = getActiveTodoService();
-      const allActiveTodos = await activeTodoService.getAll.call();
+      const allActiveTodos = await activeTodoService.getAll();
       expect(allActiveTodos.length).toBe(1);
       expect(allActiveTodos[0].id).toBe('1');
       expect(allActiveTodos[0].title).toBe('Active Todo 1');
@@ -104,69 +102,67 @@ describe('ActiveTodoServiceImpl', () => {
       expect(allActiveTodos[0].completedAt).toBeUndefined();
     });
 
-    it('getOneById.call', async () => {
+    it('getOneById', async () => {
       withOneUncompletedActiveTodo();
       const activeTodoService = getActiveTodoService();
-      const activeTodo = await activeTodoService.getOneById.call({
+      const activeTodo = await activeTodoService.getOneById({
         id: '1',
       });
       expect(activeTodo?.id).toBe('1');
       expect(activeTodo?.title).toBe('Active Todo 1');
     });
 
-    it('createOne.call', async () => {
+    it('createOne', async () => {
       const activeTodoService = getActiveTodoService();
       withNoActiveTodosInList();
-      expect((await activeTodoService.getAll.call()).length).toBe(0);
+      expect((await activeTodoService.getAll()).length).toBe(0);
       withSuccessfullyCreatedActiveTodo();
-      const createActiveTodoResponse = await activeTodoService.createOne.call({
+      const createActiveTodoResponse = await activeTodoService.createOne({
         title: 'Active Todo 1',
       });
       expect(createActiveTodoResponse.id).toBe('1');
       withOneUncompletedActiveTodoInList();
-      expect((await activeTodoService.getAll.call()).length).toBe(1);
+      expect((await activeTodoService.getAll()).length).toBe(1);
     });
 
-    it('deleteOne.call', async () => {
+    it('deleteOne', async () => {
       const activeTodoService = getActiveTodoService();
       withOneUncompletedActiveTodoInList();
-      expect((await activeTodoService.getAll.call()).length).toBe(1);
+      expect((await activeTodoService.getAll()).length).toBe(1);
       withSuccessfullyDeletedActiveTodo();
       withNoActiveTodosInList();
-      await activeTodoService.deleteOne.call({ id: '1' });
-      expect((await activeTodoService.getAll.call()).length).toBe(0);
+      await activeTodoService.deleteOne({ id: '1' });
+      expect((await activeTodoService.getAll()).length).toBe(0);
     });
 
-    it('completeOne.call', async () => {
+    it('completeOne', async () => {
       const activeTodoService = getActiveTodoService();
       withOneUncompletedActiveTodoInList();
-      expect((await activeTodoService.getAll.call()).length).toBe(1);
+      expect((await activeTodoService.getAll()).length).toBe(1);
       withSuccessfullyCompletedActiveTodo();
       withOneCompletedActiveTodoInList();
-      await activeTodoService.completeOne.call({ id: '1' });
-      expect((await activeTodoService.getAll.call()).length).toBe(1);
+      await activeTodoService.completeOne({ id: '1' });
+      expect((await activeTodoService.getAll()).length).toBe(1);
       expect(
-        (await activeTodoService.getAll.call())[0].completedAt?.toISOString(),
+        (await activeTodoService.getAll())[0].completedAt?.toISOString(),
       ).toBe(nowTimeStamp);
     });
 
-    it('uncompleteOne.call', async () => {
+    it('uncompleteOne', async () => {
       const activeTodoService = getActiveTodoService();
       withOneCompletedActiveTodoInList();
-      expect((await activeTodoService.getAll.call()).length).toBe(1);
+      expect((await activeTodoService.getAll()).length).toBe(1);
       withSuccessfullyUncompletedActiveTodo();
-      await activeTodoService.uncompleteOne.call({ id: '1' });
+      await activeTodoService.uncompleteOne({ id: '1' });
       withOneUncompletedActiveTodoInList();
-      expect((await activeTodoService.getAll.call()).length).toBe(1);
-      expect(
-        (await activeTodoService.getAll.call())[0].completedAt,
-      ).toBeUndefined();
+      expect((await activeTodoService.getAll()).length).toBe(1);
+      expect((await activeTodoService.getAll())[0].completedAt).toBeUndefined();
     });
 
     it('prioritize', async () => {
       const activeTodoService = getActiveTodoService();
       withOneUncompletedActiveTodoInList();
-      const allActiveTodos = await activeTodoService.getAll.call();
+      const allActiveTodos = await activeTodoService.getAll();
       expect(allActiveTodos.length).toBe(1);
       expect(allActiveTodos[0].id).toBe('1');
       expect(allActiveTodos[0].title).toBe('Active Todo 1');
@@ -176,7 +172,7 @@ describe('ActiveTodoServiceImpl', () => {
 
       activeTodoService.prioritize({ id: '1' });
       const allActiveTodosAfterPrioritization =
-        await activeTodoService.getAll.call();
+        await activeTodoService.getAll();
       expect(allActiveTodosAfterPrioritization.length).toBe(1);
       expect(allActiveTodosAfterPrioritization[0].isPrioritized).toBe(true);
     });
@@ -184,26 +180,26 @@ describe('ActiveTodoServiceImpl', () => {
     it('deprioritize', async () => {
       const activeTodoService = getActiveTodoService();
       withOneUncompletedActiveTodoInList();
-      const allActiveTodos = await activeTodoService.getAll.call();
+      const allActiveTodos = await activeTodoService.getAll();
       expect(allActiveTodos.length).toBe(1);
       expect(allActiveTodos[0].isPrioritized).toBe(false);
 
       activeTodoService.prioritize({ id: '1' });
       const allActiveTodosAfterPrioritization =
-        await activeTodoService.getAll.call();
+        await activeTodoService.getAll();
       expect(allActiveTodosAfterPrioritization.length).toBe(1);
       expect(allActiveTodosAfterPrioritization[0].isPrioritized).toBe(true);
 
       activeTodoService.deprioritize({ id: '1' });
       const allActiveTodosAfterDeprioritization =
-        await activeTodoService.getAll.call();
+        await activeTodoService.getAll();
       expect(allActiveTodosAfterDeprioritization.length).toBe(1);
       expect(allActiveTodosAfterDeprioritization[0].isPrioritized).toBe(false);
     });
   });
 
   // hooks
-  describe('hooks', () => {
+  describe('reactive hooks', () => {
     it('getAll.useQuery', async () => {
       withOneUncompletedActiveTodoInList();
       const activeTodoService = getActiveTodoService();
@@ -382,13 +378,14 @@ describe('ActiveTodoServiceImpl', () => {
   });
 
   describe('using chimeric test harnesses', () => {
-    it.each(ChimericQueryMethods)('getAll.%s', async (chimericMethod) => {
+    it.each(chimericMethods)('getAll.%s', async (chimericMethod) => {
       withOneUncompletedActiveTodoInList();
       const activeTodoService = getActiveTodoService();
-      const harness = getChimericQueryTestHarness(getTestWrapper())(
-        activeTodoService.getAll,
+      const harness = ChimericQueryTestHarness({
+        chimericQuery: activeTodoService.getAll,
         chimericMethod,
-      );
+        wrapper: getTestWrapper(),
+      });
       expect(harness.result.current.isPending).toBe(true);
       expect(harness.result.current.isSuccess).toBe(false);
       await harness.waitForSuccess(() =>
@@ -403,14 +400,15 @@ describe('ActiveTodoServiceImpl', () => {
       expect(harness.result.current.data?.[0].completedAt).toBeUndefined();
     });
 
-    it.each(ChimericQueryMethods)('getOneById.%s', async (chimericMethod) => {
+    it.each(chimericMethods)('getOneById.%s', async (chimericMethod) => {
       withOneUncompletedActiveTodo();
       const activeTodoService = getActiveTodoService();
-      const harness = getChimericQueryTestHarness(getTestWrapper())(
-        activeTodoService.getOneById,
+      const harness = ChimericQueryTestHarness({
+        chimericQuery: activeTodoService.getOneById,
         chimericMethod,
-        { id: '1' },
-      );
+        params: { id: '1' },
+        wrapper: getTestWrapper(),
+      });
       expect(harness.result.current.isPending).toBe(true);
       expect(harness.result.current.isSuccess).toBe(false);
       await harness.waitForSuccess(() =>
@@ -419,19 +417,21 @@ describe('ActiveTodoServiceImpl', () => {
       expect(harness.result.current.data?.id).toBe('1');
     });
 
-    it.each(ChimericMutationMethods)('createOne.%s', async (chimericMethod) => {
+    it.each(chimericMethods)('createOne.%s', async (chimericMethod) => {
       withNoActiveTodosInList();
       withSuccessfullyCreatedActiveTodo();
       const activeTodoService = getActiveTodoService();
       const testWrapper = getTestWrapper();
-      const createOneHarness = getChimericMutationTestHarness(testWrapper)(
-        activeTodoService.createOne,
+      const createOneHarness = ChimericMutationTestHarness({
+        chimericMutation: activeTodoService.createOne,
         chimericMethod,
-      );
-      const getAllHarness = getChimericQueryTestHarness(testWrapper)(
-        activeTodoService.getAll,
-        inferQueryMethod(chimericMethod),
-      );
+        wrapper: testWrapper,
+      });
+      const getAllHarness = ChimericQueryTestHarness({
+        chimericQuery: activeTodoService.getAll,
+        chimericMethod,
+        wrapper: testWrapper,
+      });
       await getAllHarness.waitForSuccess(() =>
         expect(getAllHarness.result.current.isPending).toBe(false),
       );
@@ -456,17 +456,20 @@ describe('ActiveTodoServiceImpl', () => {
       ).toBe(nowTimeStamp);
     });
 
-    it.each(ChimericMutationMethods)('deleteOne.%s', async (chimericMethod) => {
+    it.each(chimericMethods)('deleteOne.%s', async (chimericMethod) => {
       withOneUncompletedActiveTodoInList();
+      const testWrapper = getTestWrapper();
       const activeTodoService = getActiveTodoService();
-      const deleteOneHarness = getChimericMutationTestHarness(getTestWrapper())(
-        activeTodoService.deleteOne,
+      const deleteOneHarness = ChimericMutationTestHarness({
+        chimericMutation: activeTodoService.deleteOne,
         chimericMethod,
-      );
-      const getAllHarness = getChimericQueryTestHarness(getTestWrapper())(
-        activeTodoService.getAll,
-        inferQueryMethod(chimericMethod),
-      );
+        wrapper: testWrapper,
+      });
+      const getAllHarness = ChimericQueryTestHarness({
+        chimericQuery: activeTodoService.getAll,
+        chimericMethod,
+        wrapper: testWrapper,
+      });
       await getAllHarness.waitForSuccess(() =>
         expect(getAllHarness.result.current.isPending).toBe(false),
       );
@@ -485,76 +488,78 @@ describe('ActiveTodoServiceImpl', () => {
       expect(getAllHarness.result.current.data?.length).toBe(0);
     });
 
-    it.each(ChimericMutationMethods)(
-      'completeOne.%s',
-      async (chimericMethod) => {
-        withOneUncompletedActiveTodoInList();
-        const activeTodoService = getActiveTodoService();
-        const completeOneHarness = getChimericMutationTestHarness(
-          getTestWrapper(),
-        )(activeTodoService.completeOne, chimericMethod);
-        const getAllHarness = getChimericQueryTestHarness(getTestWrapper())(
-          activeTodoService.getAll,
-          inferQueryMethod(chimericMethod),
-        );
-        await getAllHarness.waitForSuccess(() =>
-          expect(getAllHarness.result.current.isPending).toBe(false),
-        );
-        expect(getAllHarness.result.current.data?.length).toBe(1);
-        withSuccessfullyCompletedActiveTodo();
-        withOneCompletedActiveTodoInList();
-        act(() => {
-          completeOneHarness.call({ id: '1' });
-        });
-        await completeOneHarness.waitForSuccess(() =>
-          expect(completeOneHarness.result.current.isPending).toBe(false),
-        );
-        await getAllHarness.waitForSuccess(() =>
-          expect(getAllHarness.result.current.isPending).toBe(false),
-        );
-        expect(
-          getAllHarness.result.current.data?.[0].completedAt?.toISOString(),
-        ).toBe(nowTimeStamp);
-      },
-    );
+    it.each(chimericMethods)('completeOne.%s', async (chimericMethod) => {
+      withOneUncompletedActiveTodoInList();
+      const testWrapper = getTestWrapper();
+      const activeTodoService = getActiveTodoService();
+      const completeOneHarness = ChimericMutationTestHarness({
+        chimericMutation: activeTodoService.completeOne,
+        chimericMethod,
+        wrapper: testWrapper,
+      });
+      const getAllHarness = ChimericQueryTestHarness({
+        chimericQuery: activeTodoService.getAll,
+        chimericMethod,
+        wrapper: testWrapper,
+      });
+      await getAllHarness.waitForSuccess(() =>
+        expect(getAllHarness.result.current.isPending).toBe(false),
+      );
+      expect(getAllHarness.result.current.data?.length).toBe(1);
+      withSuccessfullyCompletedActiveTodo();
+      withOneCompletedActiveTodoInList();
+      act(() => {
+        completeOneHarness.call({ id: '1' });
+      });
+      await completeOneHarness.waitForSuccess(() =>
+        expect(completeOneHarness.result.current.isPending).toBe(false),
+      );
+      await getAllHarness.waitForSuccess(() =>
+        expect(getAllHarness.result.current.isPending).toBe(false),
+      );
+      expect(
+        getAllHarness.result.current.data?.[0].completedAt?.toISOString(),
+      ).toBe(nowTimeStamp);
+    });
 
-    it.each(ChimericMutationMethods)(
-      'uncompleteOne.%s',
-      async (chimericMethod) => {
-        withOneCompletedActiveTodoInList();
-        const activeTodoService = getActiveTodoService();
-        const uncompleteOneHarness = getChimericMutationTestHarness(
-          getTestWrapper(),
-        )(activeTodoService.uncompleteOne, chimericMethod);
-        const getAllHarness = getChimericQueryTestHarness(getTestWrapper())(
-          activeTodoService.getAll,
-          inferQueryMethod(chimericMethod),
-        );
-        await getAllHarness.waitForSuccess(() =>
-          expect(getAllHarness.result.current.isPending).toBe(false),
-        );
-        expect(getAllHarness.result.current.data?.length).toBe(1);
-        withSuccessfullyUncompletedActiveTodo();
-        withOneUncompletedActiveTodoInList();
-        act(() => {
-          uncompleteOneHarness.call({ id: '1' });
-        });
-        await uncompleteOneHarness.waitForSuccess(() =>
-          expect(uncompleteOneHarness.result.current.isPending).toBe(false),
-        );
-        await getAllHarness.waitForSuccess(() =>
-          expect(getAllHarness.result.current.isPending).toBe(false),
-        );
-        expect(
-          getAllHarness.result.current.data?.[0].completedAt,
-        ).toBeUndefined();
-      },
-    );
+    it.each(chimericMethods)('uncompleteOne.%s', async (chimericMethod) => {
+      withOneCompletedActiveTodoInList();
+      const activeTodoService = getActiveTodoService();
+      const testWrapper = getTestWrapper();
+      const uncompleteOneHarness = ChimericMutationTestHarness({
+        chimericMutation: activeTodoService.uncompleteOne,
+        chimericMethod,
+        wrapper: testWrapper,
+      });
+      const getAllHarness = ChimericQueryTestHarness({
+        chimericQuery: activeTodoService.getAll,
+        chimericMethod,
+        wrapper: testWrapper,
+      });
+      await getAllHarness.waitForSuccess(() =>
+        expect(getAllHarness.result.current.isPending).toBe(false),
+      );
+      expect(getAllHarness.result.current.data?.length).toBe(1);
+      withSuccessfullyUncompletedActiveTodo();
+      withOneUncompletedActiveTodoInList();
+      act(() => {
+        uncompleteOneHarness.call({ id: '1' });
+      });
+      await uncompleteOneHarness.waitForSuccess(() =>
+        expect(uncompleteOneHarness.result.current.isPending).toBe(false),
+      );
+      await getAllHarness.waitForSuccess(() =>
+        expect(getAllHarness.result.current.isPending).toBe(false),
+      );
+      expect(
+        getAllHarness.result.current.data?.[0].completedAt,
+      ).toBeUndefined();
+    });
 
     it('prioritize', async () => {
       const activeTodoService = getActiveTodoService();
       withOneUncompletedActiveTodoInList();
-      const allActiveTodos = await activeTodoService.getAll.call();
+      const allActiveTodos = await activeTodoService.getAll();
       expect(allActiveTodos.length).toBe(1);
       expect(allActiveTodos[0].id).toBe('1');
       expect(allActiveTodos[0].title).toBe('Active Todo 1');
@@ -564,7 +569,7 @@ describe('ActiveTodoServiceImpl', () => {
 
       activeTodoService.prioritize({ id: '1' });
       const allActiveTodosAfterPrioritization =
-        await activeTodoService.getAll.call();
+        await activeTodoService.getAll();
       expect(allActiveTodosAfterPrioritization.length).toBe(1);
       expect(allActiveTodosAfterPrioritization[0].isPrioritized).toBe(true);
     });
@@ -572,19 +577,19 @@ describe('ActiveTodoServiceImpl', () => {
     it('deprioritize', async () => {
       const activeTodoService = getActiveTodoService();
       withOneUncompletedActiveTodoInList();
-      const allActiveTodos = await activeTodoService.getAll.call();
+      const allActiveTodos = await activeTodoService.getAll();
       expect(allActiveTodos.length).toBe(1);
       expect(allActiveTodos[0].isPrioritized).toBe(false);
 
       activeTodoService.prioritize({ id: '1' });
       const allActiveTodosAfterPrioritization =
-        await activeTodoService.getAll.call();
+        await activeTodoService.getAll();
       expect(allActiveTodosAfterPrioritization.length).toBe(1);
       expect(allActiveTodosAfterPrioritization[0].isPrioritized).toBe(true);
 
       activeTodoService.deprioritize({ id: '1' });
       const allActiveTodosAfterDeprioritization =
-        await activeTodoService.getAll.call();
+        await activeTodoService.getAll();
       expect(allActiveTodosAfterDeprioritization.length).toBe(1);
       expect(allActiveTodosAfterDeprioritization[0].isPrioritized).toBe(false);
     });

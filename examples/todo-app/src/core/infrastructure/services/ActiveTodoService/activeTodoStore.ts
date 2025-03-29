@@ -1,3 +1,4 @@
+import 'immer';
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { ActiveTodo } from 'src/core/domain/activeTodo/entities/ActiveTodo';

@@ -1,6 +1,6 @@
 import { QueryClient } from '@tanstack/react-query';
 import { ISavedForLaterTodoService } from 'src/core/domain/savedForLaterTodo/ports/ISavedForLaterTodoService';
-import { makeChimericMutation } from '@chimeric/react-query';
+import { ChimericMutationFactory } from '@chimeric/react-query';
 import { getQueryOptionsGetAll as getQueryOptionsGetAllActiveTodos } from '../../ActiveTodoService/methods/getAll';
 import { getQueryOptionsGetOneById as getQueryOptionsGetOneByIdActiveTodo } from '../../ActiveTodoService/methods/getOneById';
 import { getQueryOptionsGetAll } from './getAll';
@@ -32,9 +32,8 @@ export const activateSavedForLaterTodo: IActivateSavedForLaterTodo = async (
 export const ActivateMethodImpl = (
   queryClient: QueryClient,
 ): ISavedForLaterTodoService['activate'] => {
-  return makeChimericMutation({
+  return ChimericMutationFactory(queryClient, {
     mutationFn: activateSavedForLaterTodo,
-    errorHelpers: {},
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({
         queryKey: getQueryOptionsGetAll().queryKey,

@@ -1,27 +1,27 @@
-import { ChimericMutationFactory, ChimericQueryFactory } from '@chimeric/core';
+import { DefineChimericMutation, DefineChimericQuery } from '@chimeric/core';
 import { CreateTodoBody } from '../dtos/in/CreateTodoBody';
 import { ActiveTodo } from '../entities/ActiveTodo';
 
 export type IActiveTodoService = {
-  getAll: ChimericQueryFactory<() => Promise<ActiveTodo[]>, Error>;
-  getOneById: ChimericQueryFactory<
+  getAll: DefineChimericQuery<() => Promise<ActiveTodo[]>, Error>;
+  getOneById: DefineChimericQuery<
     (args: { id: string }) => Promise<ActiveTodo | undefined>,
     Error
   >;
-  createOne: ChimericMutationFactory<
+  createOne: DefineChimericMutation<
     (body: CreateTodoBody) => Promise<{ id: string }>,
     Error
   >;
-  deleteOne: ChimericMutationFactory<
+  deleteOne: DefineChimericMutation<
     (args: { id: string }) => Promise<void>,
     Error
   >;
-  completeOne: ChimericMutationFactory<
+  completeOne: DefineChimericMutation<
     (args: { id: string }) => Promise<void>,
     Error
   >;
-  uncompleteOne: ChimericMutationFactory<
-    (args: { id: string }) => Promise<void>,
+  uncompleteOne: DefineChimericMutation<
+    (args: { id: string }) => Promise<{ id: string }>,
     Error
   >;
   prioritize: (args: { id: string }) => void;

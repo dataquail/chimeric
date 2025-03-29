@@ -2,10 +2,9 @@ import { describe, it, expect, beforeAll, afterEach, afterAll } from 'vitest';
 import { setupServer } from 'msw/node';
 import { act } from 'react';
 import {
-  ChimericPromiseMethods,
-  getChimericPromiseTestHarness,
-  getChimericReadTestHarness,
-  inferReadMethod,
+  chimericMethods,
+  ChimericPromiseTestHarness,
+  ChimericReadTestHarness,
 } from '@chimeric/testing';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 import { appContainer } from 'src/core/global/appContainer';
@@ -67,17 +66,20 @@ describe('StartReviewUseCase', () => {
     });
   };
 
-  it.each(ChimericPromiseMethods)('startReview.%s', async (chimericMethod) => {
+  it.each(chimericMethods)('startReview.%s', async (chimericMethod) => {
     withOneUncompletedAndOneCompletedActiveTodoInList();
     withOneSavedForLaterTodoInList();
-    const startReviewHarness = getChimericPromiseTestHarness(getTestWrapper())(
-      getStartReviewUseCase(),
+    const testWrapper = getTestWrapper();
+    const startReviewHarness = ChimericPromiseTestHarness({
+      chimericPromise: getStartReviewUseCase().execute,
       chimericMethod,
-    );
-    const getReviewHarness = getChimericReadTestHarness(getTestWrapper())(
-      getReviewRepository().get,
-      inferReadMethod(chimericMethod),
-    );
+      wrapper: testWrapper,
+    });
+    const getReviewHarness = ChimericReadTestHarness({
+      chimericRead: getReviewRepository().get,
+      chimericMethod,
+      wrapper: testWrapper,
+    });
 
     expect(startReviewHarness.result?.current.isPending).toBe(false);
     expect(startReviewHarness.result?.current.isSuccess).toBe(false);

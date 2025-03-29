@@ -1,54 +1,46 @@
 import {
   ExtractChimericParameter,
   ExtractChimericPromiseReturnType,
-} from './utils.js';
+} from './UtilityTypes.js';
+import { IdiomaticAsyncFunction } from './IdiomaticAsyncFunction.js';
 
 export type ChimericQuery<
   TParams,
   TResult,
   E extends Error,
-  ErrorHelpers = void extends { [K: string]: (error: unknown) => boolean }
-    ? never
-    : object,
-> = {
-  call: (
-    args: TParams extends void
-      ? {
-          options?: CallQueryOptions;
-        } | void
-      : {
-          options?: CallQueryOptions;
-        } & TParams,
-  ) => Promise<TResult>;
-  useQuery: (
-    args: TParams extends void
-      ? { options?: UseQueryOptions } | void
-      : { options?: UseQueryOptions } & TParams,
-  ) => {
+> = IdiomaticAsyncFunction<IdiomaticQueryParams<TParams>, TResult> & {
+  useQuery: (args: ReactiveQueryParams<TParams>) => {
     isPending: boolean;
     isSuccess: boolean;
     isError: boolean;
     error: E | null;
     data: TResult | undefined;
   };
-  errorHelpers: ErrorHelpers;
 };
 
-type CallQueryOptions = { forceRefetch?: boolean }
+export type IdiomaticQueryParams<TParams> = TParams extends void
+  ? {
+      options?: IdiomaticQueryOptions;
+    } | void
+  : {
+      options?: IdiomaticQueryOptions;
+    } & TParams;
 
-type UseQueryOptions = { enabled?: boolean }
+export type IdiomaticQueryOptions = { forceRefetch?: boolean };
 
-export type ChimericQueryFactory<
+export type ReactiveQueryParams<TParams> = TParams extends void
+  ? { options?: ReactiveQueryOptions } | void
+  : { options?: ReactiveQueryOptions } & TParams;
+
+export type ReactiveQueryOptions = { enabled?: boolean };
+
+export type DefineChimericQuery<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   E extends Error,
-  ErrorHelpers = void extends { [K: string]: (error: unknown) => boolean }
-    ? never
-    : object,
 > = ChimericQuery<
   ExtractChimericParameter<T>,
   ExtractChimericPromiseReturnType<T>,
-  E,
-  ErrorHelpers
+  E
 >;

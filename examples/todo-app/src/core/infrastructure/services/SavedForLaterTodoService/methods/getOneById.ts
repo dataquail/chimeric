@@ -1,5 +1,5 @@
 import { QueryClient, queryOptions } from '@tanstack/react-query';
-import { MakeChimericQuery } from '@chimeric/react-query';
+import { ChimericQueryFactory } from '@chimeric/react-query';
 import { ISavedForLaterTodoService } from 'src/core/domain/savedForLaterTodo/ports/ISavedForLaterTodoService';
 import { mapSavedForLaterTodoDtoToSavedForLaterTodo } from 'src/core/domain/savedForLaterTodo/entities/SavedForLaterTodo';
 import { getConfig } from 'src/utils/getConfig';
@@ -31,8 +31,5 @@ export const getQueryOptionsGetOneById = (args: { id: string }) =>
 export const GetOneByIdMethodImpl = (
   queryClient: QueryClient,
 ): ISavedForLaterTodoService['getOneById'] => {
-  return MakeChimericQuery(queryClient)({
-    getQueryOptions: getQueryOptionsGetOneById,
-    errorHelpers: {},
-  });
+  return ChimericQueryFactory(queryClient, getQueryOptionsGetOneById);
 };

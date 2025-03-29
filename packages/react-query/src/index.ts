@@ -1,3 +1,3 @@
-export * from './lib/makeChimericMutation.js';
-export * from './lib/makeChimericQuery.js';
-export * from './lib/makeChimericQueryWithManagedStore.js';
+export * from './lib/ChimericMutationFactory.js';
+export * from './lib/ChimericQueryFactory.js';
+export * from './lib/ChimericQueryWithManagedStoreFactory.js';

@@ -2,10 +2,9 @@ import { describe, it, expect, beforeAll, afterEach, afterAll } from 'vitest';
 import { setupServer } from 'msw/node';
 import { act } from 'react';
 import {
-  getChimericPromiseTestHarness,
-  inferPromiseMethod,
-  getChimericAsyncReadTestHarness,
-  ChimericAsyncReadMethods,
+  ChimericPromiseTestHarness,
+  ChimericAsyncReadTestHarness,
+  chimericMethods,
 } from '@chimeric/testing';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 import { appContainer } from 'src/core/global/appContainer';
@@ -67,47 +66,49 @@ describe('GetTodosUnderReviewUseCase', () => {
     });
   };
 
-  it.each(ChimericAsyncReadMethods)(
-    'getTodosUnderReview.%s',
-    async (chimericMethod) => {
-      withOneUncompletedAndOneCompletedActiveTodoInList();
-      withOneSavedForLaterTodoInList();
-      const startReviewHarness = getChimericPromiseTestHarness(
-        getTestWrapper(),
-      )(getStartReviewUseCase(), inferPromiseMethod(chimericMethod));
-      const getTodosUnderReviewHarness = getChimericAsyncReadTestHarness(
-        getTestWrapper(),
-      )(getGetTodosUnderReviewUseCase(), chimericMethod);
+  it.each(chimericMethods)('getTodosUnderReview.%s', async (chimericMethod) => {
+    withOneUncompletedAndOneCompletedActiveTodoInList();
+    withOneSavedForLaterTodoInList();
+    const testWrapper = getTestWrapper();
+    const startReviewHarness = ChimericPromiseTestHarness({
+      chimericPromise: getStartReviewUseCase().execute,
+      chimericMethod,
+      wrapper: testWrapper,
+    });
+    const getTodosUnderReviewHarness = ChimericAsyncReadTestHarness({
+      chimericAsyncRead: getGetTodosUnderReviewUseCase().execute,
+      chimericMethod,
+      wrapper: testWrapper,
+    });
 
-      act(() => {
-        startReviewHarness.result?.current.call();
-      });
+    act(() => {
+      startReviewHarness.result?.current.call();
+    });
 
-      await startReviewHarness.waitForSuccess(() =>
-        expect(startReviewHarness.result.current.isPending).toBe(false),
-      );
-      await getTodosUnderReviewHarness.waitForSuccess(() =>
-        expect(getTodosUnderReviewHarness.result.current.isPending).toBe(false),
-      );
+    await startReviewHarness.waitForSuccess(() =>
+      expect(startReviewHarness.result.current.isPending).toBe(false),
+    );
+    await getTodosUnderReviewHarness.waitForSuccess(() =>
+      expect(getTodosUnderReviewHarness.result.current.isPending).toBe(false),
+    );
 
-      const todos = getTodosUnderReviewHarness.result.current.data;
-      expect(todos).toHaveLength(2);
-      expect(todos?.[0]).toEqual({
-        id: '1',
-        title: 'Active Todo 1',
-        createdAt: new Date(nowTimeStamp),
-        completedAt: undefined,
-        isPrioritized: false,
-        lastReviewedAt: undefined,
-      });
-      expect(todos?.[1]).toEqual({
-        id: '3',
-        title: 'Saved For Later Todo 3',
-        createdAt: new Date(nowTimeStamp),
-        completedAt: undefined,
-        isPrioritized: null,
-        lastReviewedAt: undefined,
-      });
-    },
-  );
+    const todos = getTodosUnderReviewHarness.result.current.data;
+    expect(todos).toHaveLength(2);
+    expect(todos?.[0]).toEqual({
+      id: '1',
+      title: 'Active Todo 1',
+      createdAt: new Date(nowTimeStamp),
+      completedAt: undefined,
+      isPrioritized: false,
+      lastReviewedAt: undefined,
+    });
+    expect(todos?.[1]).toEqual({
+      id: '3',
+      title: 'Saved For Later Todo 3',
+      createdAt: new Date(nowTimeStamp),
+      completedAt: undefined,
+      isPrioritized: null,
+      lastReviewedAt: undefined,
+    });
+  });
 });

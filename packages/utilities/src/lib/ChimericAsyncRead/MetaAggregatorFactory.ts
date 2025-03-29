@@ -2,7 +2,7 @@
 
 import { Reactive } from '@chimeric/core';
 
-export const makeMetaAggregator = <
+export const MetaAggregatorFactory = <
   TMeta extends
     | [Reactive<any, any>]
     | [Reactive<any, any>, Reactive<any, any>]

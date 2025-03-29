@@ -1,6 +1,6 @@
 import { QueryClient } from '@tanstack/react-query';
 import { ISavedForLaterTodoService } from 'src/core/domain/savedForLaterTodo/ports/ISavedForLaterTodoService';
-import { makeChimericMutation } from '@chimeric/react-query';
+import { ChimericMutationFactory } from '@chimeric/react-query';
 import { getQueryOptionsGetAll } from './getAll';
 import { getQueryOptionsGetOneById } from './getOneById';
 import { getConfig } from 'src/utils/getConfig';
@@ -31,11 +31,10 @@ export const DeleteOneMethodImpl = (
   queryClient: QueryClient,
   applicationEventEmitter: IApplicationEventEmitter,
 ): ISavedForLaterTodoService['deleteOne'] => {
-  return makeChimericMutation({
+  return ChimericMutationFactory(queryClient, {
     mutationFn: async (args: { id: string }) => {
       await deleteSavedForLaterTodo(args);
     },
-    errorHelpers: {},
     onSuccess: async (_data, args) => {
       applicationEventEmitter.emit(
         new SavedForLaterTodoDeletedEvent({ id: args.id }),

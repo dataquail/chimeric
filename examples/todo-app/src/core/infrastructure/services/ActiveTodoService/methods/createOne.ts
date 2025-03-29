@@ -1,6 +1,6 @@
 import { QueryClient } from '@tanstack/react-query';
 import { IActiveTodoService } from 'src/core/domain/activeTodo/ports/IActiveTodoService';
-import { makeChimericMutation } from '@chimeric/react-query';
+import { ChimericMutationFactory } from '@chimeric/react-query';
 import { getConfig } from 'src/utils/getConfig';
 import { wrappedFetch } from 'src/utils/network/wrappedFetch';
 import { CreateTodoBody } from 'src/core/domain/activeTodo/dtos/in/CreateTodoBody';
@@ -24,9 +24,8 @@ export const createActiveTodo: ICreateActiveTodo = async (createTodoBody) => {
 export const CreateOneMethodImpl = (
   queryClient: QueryClient,
 ): IActiveTodoService['createOne'] => {
-  return makeChimericMutation({
+  return ChimericMutationFactory(queryClient, {
     mutationFn: createActiveTodo,
-    errorHelpers: {},
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: getQueryOptionsGetAll().queryKey,
