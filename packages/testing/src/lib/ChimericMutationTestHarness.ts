@@ -4,6 +4,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { ChimericMutation } from '@chimeric/core';
 import { checkOnInterval } from './checkOnInterval.js';
 import { chimericMethods } from './chimericMethods.js';
+import { BaseWaitForOptions } from 'src/types/WaitForOptions.js';
 
 export const ChimericMutationTestHarness = <TParams, TResult, E extends Error>({
   chimericMutation,
@@ -13,18 +14,21 @@ export const ChimericMutationTestHarness = <TParams, TResult, E extends Error>({
   chimericMutation: ChimericMutation<TParams, TResult, E>;
   chimericMethod: (typeof chimericMethods)[number];
   wrapper: ({ children }: { children: ReactNode }) => JSX.Element;
-}) => {
+}): {
+  waitFor: (cb: () => void, options?: BaseWaitForOptions) => Promise<void>;
+  result: {
+    current: {
+      call: (args: TParams) => Promise<TResult | void>;
+      data: TResult | undefined;
+      isSuccess: boolean;
+      isPending: boolean;
+      isError: boolean;
+      error: E | null;
+    };
+  };
+} => {
   const result = {
     current: {
-      data: undefined as TResult | undefined,
-      isSuccess: false,
-      isPending: true,
-      isError: false,
-      error: null as E | null,
-    },
-  };
-  if (chimericMethod === 'idiomatic') {
-    return {
       call: (args: TParams) => {
         result.current.isPending = true;
         result.current.isSuccess = false;
@@ -49,19 +53,24 @@ export const ChimericMutationTestHarness = <TParams, TResult, E extends Error>({
 
         return promise;
       },
-      waitForSuccess: async (cb: () => void) => {
+      data: undefined as TResult | undefined,
+      isSuccess: false,
+      isPending: true,
+      isError: false,
+      error: null as E | null,
+    },
+  };
+  if (chimericMethod === 'idiomatic') {
+    return {
+      waitFor: async (cb: () => void, options?: BaseWaitForOptions) => {
         return new Promise<void>(async (resolve, reject) => {
-          await checkOnInterval(cb, 1, 3000, resolve, reject);
-        });
-      },
-      waitForError: async (cb: () => void) => {
-        return new Promise<void>(async (resolve, reject) => {
-          await checkOnInterval(cb, 1, 3000, resolve, reject);
-        });
-      },
-      waitForPending: async (cb: () => void) => {
-        return new Promise<void>(async (resolve, reject) => {
-          await checkOnInterval(cb, 1, 3000, resolve, reject);
+          await checkOnInterval(
+            cb,
+            options?.interval ?? 1,
+            options?.timeout ?? 3000,
+            resolve,
+            reject,
+          );
         });
       },
       result,
@@ -71,15 +80,8 @@ export const ChimericMutationTestHarness = <TParams, TResult, E extends Error>({
       wrapper,
     });
     return {
-      call: hook.result.current.call,
-      waitForSuccess: async (cb: () => void) => {
-        await waitFor(cb);
-      },
-      waitForError: async (cb: () => void) => {
-        await waitFor(cb);
-      },
-      waitForPending: async (cb: () => void) => {
-        await waitFor(cb);
+      waitFor: async (cb: () => void, options?: BaseWaitForOptions) => {
+        await waitFor(cb, options);
       },
       result: hook.result,
     };

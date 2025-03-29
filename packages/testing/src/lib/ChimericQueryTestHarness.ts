@@ -1,9 +1,13 @@
 /* eslint-disable no-async-promise-executor */
-import { waitFor, renderHook } from '@testing-library/react';
+import {
+  waitFor as waitForReactTestingLibrary,
+  renderHook,
+} from '@testing-library/react';
 import { ChimericQuery } from '@chimeric/core';
 import { checkOnInterval } from './checkOnInterval.js';
 import { JSX, ReactNode } from 'react';
 import { chimericMethods } from './chimericMethods.js';
+import { WaitForReadOptions } from '../types/WaitForOptions.js';
 
 export const ChimericQueryTestHarness = <TParams, TResult, E extends Error>({
   chimericQuery,
@@ -15,7 +19,18 @@ export const ChimericQueryTestHarness = <TParams, TResult, E extends Error>({
   chimericMethod: (typeof chimericMethods)[number];
   params?: TParams;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}) => {
+}): {
+  waitFor: (cb: () => void, options?: WaitForReadOptions) => Promise<void>;
+  result: {
+    current: {
+      data: TResult | undefined;
+      isSuccess: boolean;
+      isPending: boolean;
+      isError: boolean;
+      error: E | null;
+    };
+  };
+} => {
   const result = {
     current: {
       data: undefined as TResult | undefined,
@@ -53,43 +68,45 @@ export const ChimericQueryTestHarness = <TParams, TResult, E extends Error>({
       });
 
     return {
-      waitForSuccess: async (cb: () => void) => {
+      waitFor: async (cb: () => void, options?: WaitForReadOptions) => {
         return new Promise<void>(async (resolve, reject) => {
-          if (promiseStatus === 'resolved') {
-            // retry promise if it has already been resolved
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            promise = chimericQuery(params as any);
-            promiseStatus = 'pending';
-            promise
-              .then((data) => {
-                result.current.data = data;
-                result.current.isPending = false;
-                result.current.isSuccess = true;
-                result.current.isError = false;
-                result.current.error = null;
-                promiseStatus = 'resolved';
-              })
-              .catch((error) => {
-                result.current.isPending = false;
-                result.current.isSuccess = false;
-                result.current.isError = true;
-                result.current.error = error as E;
-                promiseStatus = 'rejected';
-              });
+          try {
+            if (options?.reinvokeIdiomaticFn && promiseStatus === 'resolved') {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              promise = chimericQuery(params as any);
+              promiseStatus = 'pending';
+              promise
+                .then((data) => {
+                  result.current.data = data;
+                  result.current.isPending = false;
+                  result.current.isSuccess = true;
+                  result.current.isError = false;
+                  result.current.error = null;
+                  promiseStatus = 'resolved';
+                })
+                .catch((error) => {
+                  result.current.isPending = false;
+                  result.current.isSuccess = false;
+                  result.current.isError = true;
+                  result.current.error = error as E;
+                  promiseStatus = 'rejected';
+                });
+            }
+            await promise;
+            await checkOnInterval(
+              cb,
+              options?.interval ?? 1,
+              options?.timeout ?? 3000,
+              resolve,
+              reject,
+            );
+          } catch (error) {
+            if (error instanceof Error) {
+              reject(error);
+            } else {
+              reject(new Error(String(error)));
+            }
           }
-          await promise;
-          await checkOnInterval(cb, 1, 3000, resolve, reject);
-        });
-      },
-      waitForError: async (cb: () => void) => {
-        return new Promise<void>(async (resolve, reject) => {
-          await promise;
-          await checkOnInterval(cb, 1, 3000, resolve, reject);
-        });
-      },
-      waitForPending: async (cb: () => void) => {
-        return new Promise<void>(async (resolve, reject) => {
-          await checkOnInterval(cb, 1, 3000, resolve, reject);
         });
       },
       result,
@@ -100,14 +117,11 @@ export const ChimericQueryTestHarness = <TParams, TResult, E extends Error>({
       wrapper,
     });
     return {
-      waitForSuccess: async (cb: () => void) => {
-        await waitFor(cb);
-      },
-      waitForError: async (cb: () => void) => {
-        await waitFor(cb);
-      },
-      waitForPending: async (cb: () => void) => {
-        await waitFor(cb);
+      waitFor: async (cb: () => void, options?: WaitForReadOptions) => {
+        await waitForReactTestingLibrary(cb, {
+          timeout: options?.timeout,
+          interval: options?.interval,
+        });
       },
       result: hook.result,
     };

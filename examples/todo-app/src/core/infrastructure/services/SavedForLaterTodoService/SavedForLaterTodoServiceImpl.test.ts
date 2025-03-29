@@ -86,7 +86,7 @@ describe('SavedForLaterTodoServiceImpl', () => {
     });
     expect(harness.result.current.isPending).toBe(true);
     expect(harness.result.current.isSuccess).toBe(false);
-    await harness.waitForSuccess(() =>
+    await harness.waitFor(() =>
       expect(harness.result.current.isPending).toBe(false),
     );
     expect(harness.result.current.data?.length).toBe(1);
@@ -110,7 +110,7 @@ describe('SavedForLaterTodoServiceImpl', () => {
     });
     expect(harness.result.current.isPending).toBe(true);
     expect(harness.result.current.isSuccess).toBe(false);
-    await harness.waitForSuccess(() =>
+    await harness.waitFor(() =>
       expect(harness.result.current.isPending).toBe(false),
     );
     expect(harness.result.current.data?.id).toBe('1');
@@ -131,19 +131,20 @@ describe('SavedForLaterTodoServiceImpl', () => {
       chimericMethod,
       wrapper: testWrapper,
     });
-    await getAllHarness.waitForSuccess(() =>
+    await getAllHarness.waitFor(() =>
       expect(getAllHarness.result.current.isPending).toBe(false),
     );
     expect(getAllHarness.result.current.data?.length).toBe(1);
     withNoSavedForLaterTodosInList();
     act(() => {
-      activateOneHarness.call({ savedForLaterTodoId: '1' });
+      activateOneHarness.result.current.call({ savedForLaterTodoId: '1' });
     });
-    await activateOneHarness.waitForSuccess(() =>
+    await activateOneHarness.waitFor(() =>
       expect(activateOneHarness.result.current.isPending).toBe(false),
     );
-    await getAllHarness.waitForSuccess(() =>
-      expect(getAllHarness.result.current.isPending).toBe(false),
+    await getAllHarness.waitFor(
+      () => expect(getAllHarness.result.current.isPending).toBe(false),
+      { reinvokeIdiomaticFn: true },
     );
     expect(getAllHarness.result.current.data?.length).toBe(0);
   });
@@ -165,13 +166,14 @@ describe('SavedForLaterTodoServiceImpl', () => {
     withSuccessfullyDeletedSavedForLaterTodo();
     withNoSavedForLaterTodosInList();
     act(() => {
-      deleteOneHarness.call({ id: '1' });
+      deleteOneHarness.result.current.call({ id: '1' });
     });
-    await deleteOneHarness.waitForSuccess(() =>
+    await deleteOneHarness.waitFor(() =>
       expect(deleteOneHarness.result.current.isPending).toBe(false),
     );
-    await getAllHarness.waitForSuccess(() =>
-      expect(getAllHarness.result.current.isPending).toBe(false),
+    await getAllHarness.waitFor(
+      () => expect(getAllHarness.result.current.isPending).toBe(false),
+      { reinvokeIdiomaticFn: true },
     );
     expect(getAllHarness.result.current.data?.length).toBe(0);
   });
@@ -190,7 +192,7 @@ describe('SavedForLaterTodoServiceImpl', () => {
       chimericMethod,
       wrapper: testWrapper,
     });
-    await getAllHarness.waitForSuccess(() =>
+    await getAllHarness.waitFor(() =>
       expect(getAllHarness.result.current.isPending).toBe(false),
     );
     expect(getAllHarness.result.current.data?.length).toBe(0);
@@ -198,13 +200,14 @@ describe('SavedForLaterTodoServiceImpl', () => {
     withSuccessfullySavedForLaterTodo();
     withOneSavedForLaterTodoInList();
     act(() => {
-      saveForLaterHarness.call({ activeTodoId: '1' });
+      saveForLaterHarness.result.current.call({ activeTodoId: '1' });
     });
-    await saveForLaterHarness.waitForSuccess(() =>
+    await saveForLaterHarness.waitFor(() =>
       expect(saveForLaterHarness.result.current.isPending).toBe(false),
     );
-    await getAllHarness.waitForSuccess(() =>
-      expect(getAllHarness.result.current.isPending).toBe(false),
+    await getAllHarness.waitFor(
+      () => expect(getAllHarness.result.current.isPending).toBe(false),
+      { reinvokeIdiomaticFn: true },
     );
     expect(getAllHarness.result.current.data?.length).toBe(1);
   });
