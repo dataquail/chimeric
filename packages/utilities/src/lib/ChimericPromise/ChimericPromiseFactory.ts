@@ -1,22 +1,13 @@
 import { useState } from 'react';
-import { ChimericPromise } from '@chimeric/core';
+import { ChimericPromise, fuseChimericPromise } from '@chimeric/core';
 
-export const makeChimericPromise = <
-  TParams,
-  TResult,
-  E extends Error,
-  ErrorHelpers = void extends { [K: string]: (error: unknown) => boolean }
-    ? never
-    : object,
->({
+export const ChimericPromiseFactory = <TParams, TResult, E extends Error>({
   promiseFn,
-  errorHelpers,
 }: {
   promiseFn: (args: TParams) => Promise<TResult>;
-  errorHelpers: ErrorHelpers;
-}): ChimericPromise<TParams, TResult, E, ErrorHelpers> => {
-  return {
-    call: promiseFn,
+}): ChimericPromise<TParams, TResult, E> => {
+  return fuseChimericPromise({
+    fn: promiseFn,
     usePromise: () => {
       const [meta, setMeta] = useState<{
         isPending: boolean;
@@ -69,6 +60,5 @@ export const makeChimericPromise = <
         data: meta.data,
       };
     },
-    errorHelpers,
-  };
+  });
 };

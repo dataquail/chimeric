@@ -17,7 +17,7 @@ export class HandleSavedForLaterTodoDelete {
 
   public execute(event: unknown) {
     if (event instanceof SavedForLaterTodoDeletedEvent) {
-      const review = this.reviewRepository.get.call();
+      const review = this.reviewRepository.get();
 
       if (review) {
         this.reviewRepository.save({

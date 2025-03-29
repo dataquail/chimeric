@@ -12,7 +12,7 @@ export class FinishReviewUseCase {
   ) {}
 
   public execute() {
-    const review = this.reviewRepository.get.call();
+    const review = this.reviewRepository.get();
 
     if (!review) {
       throw new Error('No review found');

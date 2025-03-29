@@ -1,6 +1,6 @@
 import { QueryClient } from '@tanstack/react-query';
 import { IActiveTodoService } from 'src/core/domain/activeTodo/ports/IActiveTodoService';
-import { makeChimericMutation } from '@chimeric/react-query';
+import { ChimericMutationFactory } from '@chimeric/react-query';
 import { getConfig } from 'src/utils/getConfig';
 import { wrappedFetch } from 'src/utils/network/wrappedFetch';
 import { getQueryOptionsGetAll } from './getAll';
@@ -28,11 +28,12 @@ export const uncompleteActiveTodo: IUncompleteActiveTodo = async (args: {
 export const UncompleteOneMethodImpl = (
   queryClient: QueryClient,
 ): IActiveTodoService['uncompleteOne'] => {
-  return makeChimericMutation({
+  return ChimericMutationFactory(queryClient, {
     mutationFn: async (args: { id: string }) => {
       await uncompleteActiveTodo(args);
+      return args;
     },
-    errorHelpers: {},
+    mutationKey: ['uncompleteOne'],
     onSuccess: async (_data, args) => {
       await queryClient.invalidateQueries({
         queryKey: getQueryOptionsGetAll().queryKey,

@@ -1,7 +1,7 @@
 import { QueryClient, queryOptions } from '@tanstack/react-query';
 import { ISavedForLaterTodoService } from 'src/core/domain/savedForLaterTodo/ports/ISavedForLaterTodoService';
 import { mapSavedForLaterTodoDtoToSavedForLaterTodo } from 'src/core/domain/savedForLaterTodo/entities/SavedForLaterTodo';
-import { MakeChimericQuery } from '@chimeric/react-query';
+import { ChimericQueryFactory } from '@chimeric/react-query';
 import { getConfig } from 'src/utils/getConfig';
 import { TodoListDto } from 'src/core/domain/activeTodo/dtos/out/TodoListDto';
 import { wrappedFetch } from 'src/utils/network/wrappedFetch';
@@ -29,8 +29,5 @@ export const getQueryOptionsGetAll = () =>
 export const GetAllMethodImpl = (
   queryClient: QueryClient,
 ): ISavedForLaterTodoService['getAll'] => {
-  return MakeChimericQuery(queryClient)({
-    getQueryOptions: getQueryOptionsGetAll,
-    errorHelpers: {},
-  });
+  return ChimericQueryFactory(queryClient, getQueryOptionsGetAll);
 };

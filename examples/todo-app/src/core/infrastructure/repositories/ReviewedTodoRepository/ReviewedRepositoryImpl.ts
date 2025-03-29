@@ -9,6 +9,7 @@ import {
 } from './reviewedTodoStore';
 import { ReviewedTodo } from 'src/core/domain/review/entities/ReviewedTodo';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
+import { fuseChimericRead } from '@chimeric/core';
 
 @injectable()
 export class ReviewedTodoRepositoryImpl implements IReviewedTodoRepository {
@@ -39,20 +40,21 @@ export class ReviewedTodoRepositoryImpl implements IReviewedTodoRepository {
     this.appStoreProvider.get().dispatch(saveManyReviewedTodos(reviewedTodos));
   }
 
-  private readonly getOneByIdImpl: IReviewedTodoRepository['getOneById'] = {
-    call: (args) => {
-      const record = this.appStoreProvider.get().getState().todo.reviewedTodo[
-        args.id
-      ];
-      return record ? ReviewedTodoRepositoryImpl.toDomain(record) : undefined;
-    },
-    use: (args) => {
-      const record = useAppSelector(
-        (state) => state.todo.reviewedTodo[args.id],
-      );
-      return record ? ReviewedTodoRepositoryImpl.toDomain(record) : undefined;
-    },
-  };
+  private readonly getOneByIdImpl: IReviewedTodoRepository['getOneById'] =
+    fuseChimericRead({
+      fn: (args) => {
+        const record = this.appStoreProvider.get().getState().todo.reviewedTodo[
+          args.id
+        ];
+        return record ? ReviewedTodoRepositoryImpl.toDomain(record) : undefined;
+      },
+      use: (args) => {
+        const record = useAppSelector(
+          (state) => state.todo.reviewedTodo[args.id],
+        );
+        return record ? ReviewedTodoRepositoryImpl.toDomain(record) : undefined;
+      },
+    });
 
   private static toDomain(record: ReviewedTodoRecord): ReviewedTodo {
     return {

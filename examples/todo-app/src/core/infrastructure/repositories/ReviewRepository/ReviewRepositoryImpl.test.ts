@@ -2,10 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 import { appContainer } from 'src/core/global/appContainer';
 import { getTestWrapper } from 'src/__test__/getTestWrapper';
-import {
-  getChimericReadTestHarness,
-  ChimericReadMethods,
-} from '@chimeric/testing';
+import { ChimericReadTestHarness, chimericMethods } from '@chimeric/testing';
 import { act } from 'react';
 import { createReview } from 'src/core/domain/review/entities/Review';
 
@@ -16,21 +13,23 @@ describe('ReviewRepositoryImpl', () => {
     );
   };
 
-  it.each(ChimericReadMethods)('get.%s', async (chimericMethod) => {
+  it.each(chimericMethods)('get.%s', async (chimericMethod) => {
     const reviewRepository = getReviewRepository();
-    const getHarness = getChimericReadTestHarness(getTestWrapper())(
-      reviewRepository.get,
+    const getHarness = ChimericReadTestHarness({
+      chimericRead: reviewRepository.get,
       chimericMethod,
-    );
+      wrapper: getTestWrapper(),
+    });
     expect(getHarness.result.current).toBeUndefined();
   });
 
-  it.each(ChimericReadMethods)('save.%s', async (chimericMethod) => {
+  it.each(chimericMethods)('save.%s', async (chimericMethod) => {
     const reviewRepository = getReviewRepository();
-    const getHarness = getChimericReadTestHarness(getTestWrapper())(
-      reviewRepository.get,
+    const getHarness = ChimericReadTestHarness({
+      chimericRead: reviewRepository.get,
       chimericMethod,
-    );
+      wrapper: getTestWrapper(),
+    });
 
     act(() => {
       reviewRepository.save(createReview(['1', '2', '3']));
@@ -43,10 +42,11 @@ describe('ReviewRepositoryImpl', () => {
 
   it('delete', async () => {
     const reviewRepository = getReviewRepository();
-    const getHarness = getChimericReadTestHarness(getTestWrapper())(
-      reviewRepository.get,
-      'call',
-    );
+    const getHarness = ChimericReadTestHarness({
+      chimericRead: reviewRepository.get,
+      chimericMethod: 'idiomatic',
+      wrapper: getTestWrapper(),
+    });
 
     act(() => {
       reviewRepository.save(createReview(['1', '2', '3']));

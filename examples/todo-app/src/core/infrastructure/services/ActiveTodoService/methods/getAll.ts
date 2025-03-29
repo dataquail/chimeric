@@ -7,7 +7,7 @@ import {
   mapTodoDtoToActiveTodo,
 } from 'src/core/domain/activeTodo/entities/ActiveTodo';
 import { saveAllActiveTodos } from '../activeTodoStore';
-import { MakeChimericQueryWithManagedStore } from '@chimeric/react-query';
+import { ChimericQueryWithManagedStoreFactory } from '@chimeric/react-query';
 import { getConfig } from 'src/utils/getConfig';
 import { TodoListDto } from 'src/core/domain/activeTodo/dtos/out/TodoListDto';
 import { wrappedFetch } from 'src/utils/network/wrappedFetch';
@@ -27,18 +27,14 @@ export const GetAllMethodImpl = (
   appStore: AppStore,
   queryClient: QueryClient,
 ): IActiveTodoService['getAll'] => {
-  return MakeChimericQueryWithManagedStore(queryClient)({
-    getQueryOptions: () =>
-      queryOptions({
-        ...getQueryOptionsGetAll(),
-        queryFn: async () => {
-          const todoListDto = await getTodoList();
-          appStore.dispatch(
-            saveAllActiveTodos(todoListDto.list.map(mapTodoDtoToActiveTodo)),
-          );
-        },
-      }),
-    errorHelpers: {},
+  return ChimericQueryWithManagedStoreFactory(queryClient, {
+    queryFn: async () => {
+      const todoListDto = await getTodoList();
+      appStore.dispatch(
+        saveAllActiveTodos(todoListDto.list.map(mapTodoDtoToActiveTodo)),
+      );
+    },
+    getQueryOptions: getQueryOptionsGetAll,
     getFromStore: () =>
       Object.values(appStore.getState().todo.activeTodos.dict).filter(
         Boolean,

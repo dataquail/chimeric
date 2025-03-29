@@ -1,2 +1,2 @@
-export * from './lib/ChimericAsyncRead/makeMetaAggregator.js';
-export * from './lib/ChimericPromise/makeChimericPromise.js';
+export * from './lib/ChimericAsyncRead/MetaAggregatorFactory.js';
+export * from './lib/ChimericPromise/ChimericPromiseFactory.js';

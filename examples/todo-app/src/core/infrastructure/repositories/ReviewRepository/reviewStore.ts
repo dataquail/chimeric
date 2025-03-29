@@ -1,3 +1,4 @@
+import 'immer';
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { Review } from 'src/core/domain/review/entities/Review';
