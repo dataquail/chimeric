@@ -27,8 +27,9 @@ describe('ReviewedTodoRepositoryImpl', () => {
       reviewedTodoRepository.save(createReviewedTodo('1'));
     });
 
-    await getOneByIdHarness.waitFor(() =>
-      expect(getOneByIdHarness.result.current).toBeDefined(),
+    await getOneByIdHarness.waitFor(
+      () => expect(getOneByIdHarness.result.current).toBeDefined(),
+      { reinvokeIdiomaticFn: true },
     );
 
     expect(getOneByIdHarness.result.current).toBeDefined();
@@ -61,11 +62,13 @@ describe('ReviewedTodoRepositoryImpl', () => {
       ]);
     });
 
-    await getOneById1Harness.waitFor(() =>
-      expect(getOneById1Harness.result.current).toBeDefined(),
+    await getOneById1Harness.waitFor(
+      () => expect(getOneById1Harness.result.current).toBeDefined(),
+      { reinvokeIdiomaticFn: true },
     );
-    await getOneById2Harness.waitFor(() =>
-      expect(getOneById2Harness.result.current).toBeDefined(),
+    await getOneById2Harness.waitFor(
+      () => expect(getOneById2Harness.result.current).toBeDefined(),
+      { reinvokeIdiomaticFn: true },
     );
 
     expect(getOneById1Harness.result.current).toBeDefined();
@@ -89,8 +92,9 @@ describe('ReviewedTodoRepositoryImpl', () => {
       reviewedTodoRepository.save(createReviewedTodo('1'));
     });
 
-    await getOneByIdHarness.waitFor(() =>
-      expect(getOneByIdHarness.result.current).toBeDefined(),
+    await getOneByIdHarness.waitFor(
+      () => expect(getOneByIdHarness.result.current).toBeDefined(),
+      { reinvokeIdiomaticFn: true },
     );
 
     expect(getOneByIdHarness.result.current).toBeDefined();
@@ -100,8 +104,9 @@ describe('ReviewedTodoRepositoryImpl', () => {
       reviewedTodoRepository.delete({ id: '1' });
     });
 
-    await getOneByIdHarness.waitFor(() =>
-      expect(getOneByIdHarness.result.current).toBeUndefined(),
+    await getOneByIdHarness.waitFor(
+      () => expect(getOneByIdHarness.result.current).toBeUndefined(),
+      { reinvokeIdiomaticFn: true },
     );
 
     expect(getOneByIdHarness.result.current).toBeUndefined();

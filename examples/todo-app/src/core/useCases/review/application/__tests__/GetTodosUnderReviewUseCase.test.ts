@@ -85,11 +85,13 @@ describe('GetTodosUnderReviewUseCase', () => {
       startReviewHarness.result?.current.call();
     });
 
-    await startReviewHarness.waitForSuccess(() =>
+    await startReviewHarness.waitFor(() =>
       expect(startReviewHarness.result.current.isPending).toBe(false),
     );
-    await getTodosUnderReviewHarness.waitForSuccess(() =>
-      expect(getTodosUnderReviewHarness.result.current.isPending).toBe(false),
+    await getTodosUnderReviewHarness.waitFor(
+      () =>
+        expect(getTodosUnderReviewHarness.result.current.isPending).toBe(false),
+      { reinvokeIdiomaticFn: true },
     );
 
     const todos = getTodosUnderReviewHarness.result.current.data;

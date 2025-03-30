@@ -35,7 +35,12 @@ describe('ReviewRepositoryImpl', () => {
       reviewRepository.save(createReview(['1', '2', '3']));
     });
 
-    await getHarness.waitFor(() => getHarness.result.current !== undefined);
+    await getHarness.waitFor(
+      () => expect(getHarness.result.current).toBeDefined(),
+      {
+        reinvokeIdiomaticFn: true,
+      },
+    );
     expect(getHarness.result.current).toBeDefined();
     expect(getHarness.result.current?.todoIdList).toEqual(['1', '2', '3']);
   });
@@ -52,7 +57,12 @@ describe('ReviewRepositoryImpl', () => {
       reviewRepository.save(createReview(['1', '2', '3']));
     });
 
-    await getHarness.waitFor(() => getHarness.result.current !== undefined);
+    await getHarness.waitFor(
+      () => expect(getHarness.result.current).toBeDefined(),
+      {
+        reinvokeIdiomaticFn: true,
+      },
+    );
 
     expect(getHarness.result.current).toBeDefined();
     expect(getHarness.result.current?.todoIdList).toEqual(['1', '2', '3']);
@@ -61,7 +71,12 @@ describe('ReviewRepositoryImpl', () => {
       reviewRepository.delete();
     });
 
-    await getHarness.waitFor(() => getHarness.result.current === undefined);
+    await getHarness.waitFor(
+      () => expect(getHarness.result.current).toBeUndefined(),
+      {
+        reinvokeIdiomaticFn: true,
+      },
+    );
 
     expect(getHarness.result.current).toBeUndefined();
   });
