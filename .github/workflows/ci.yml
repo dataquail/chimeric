@@ -26,7 +26,14 @@ jobs:
       # Fetch the base branch
       - name: Fetch base branch
         run: |
-          git fetch origin main:main --no-tags
+          # Check if current branch is main
+          if [[ "$(git branch --show-current)" == "main" ]]; then
+            # If on main, just fetch without trying to update the local branch
+            git fetch origin main --no-tags
+          else
+            # Otherwise, fetch and update the local reference as before
+            git fetch origin main:main --no-tags
+          fi
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4.1.0
