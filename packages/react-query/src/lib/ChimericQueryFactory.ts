@@ -44,12 +44,7 @@ export const ChimericQueryFactory = <TParams, TResult, E extends Error>(
       if (!queryOptions.queryKey) {
         throw new Error('queryKey is required');
       }
-      const { isPending, isSuccess, isError, error, data } = useQuery<
-        TResult,
-        E,
-        TResult,
-        string[]
-      >({
+      const query = useQuery<TResult, E, TResult, string[]>({
         queryFn: queryOptions.queryFn,
         queryKey: queryOptions.queryKey,
         ...queryOptions,
@@ -57,11 +52,21 @@ export const ChimericQueryFactory = <TParams, TResult, E extends Error>(
       });
 
       return {
-        isPending,
-        isSuccess,
-        isError,
-        error,
-        data,
+        isIdle: !query.isFetched,
+        isPending: query.isPending,
+        isSuccess: query.isSuccess,
+        isError: query.isError,
+        error: query.error,
+        data: query.data,
+        refetch: async () => {
+          const result = await query.refetch();
+
+          if (result.data === undefined) {
+            throw new Error('No data returned from refetch');
+          }
+
+          return result.data;
+        },
       };
     },
   });

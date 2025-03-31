@@ -10,12 +10,14 @@ export const ChimericPromiseFactory = <TParams, TResult, E extends Error>({
     fn: promiseFn,
     usePromise: () => {
       const [meta, setMeta] = useState<{
+        isIdle: boolean;
         isPending: boolean;
         isSuccess: boolean;
         isError: boolean;
         error: E | null;
         data: TResult | undefined;
       }>({
+        isIdle: true,
         isPending: false,
         isSuccess: false,
         isError: false,
@@ -26,6 +28,7 @@ export const ChimericPromiseFactory = <TParams, TResult, E extends Error>({
       return {
         call: async (args) => {
           setMeta({
+            isIdle: false,
             isPending: true,
             isSuccess: false,
             isError: false,
@@ -35,6 +38,7 @@ export const ChimericPromiseFactory = <TParams, TResult, E extends Error>({
           try {
             const result = await promiseFn(args);
             setMeta({
+              isIdle: false,
               isPending: false,
               isSuccess: true,
               isError: false,
@@ -44,6 +48,7 @@ export const ChimericPromiseFactory = <TParams, TResult, E extends Error>({
             return result;
           } catch (error) {
             setMeta({
+              isIdle: false,
               isPending: false,
               isSuccess: false,
               isError: true,
@@ -53,6 +58,7 @@ export const ChimericPromiseFactory = <TParams, TResult, E extends Error>({
             throw error;
           }
         },
+        isIdle: meta.isIdle,
         isPending: meta.isPending,
         isSuccess: meta.isSuccess,
         isError: meta.isError,

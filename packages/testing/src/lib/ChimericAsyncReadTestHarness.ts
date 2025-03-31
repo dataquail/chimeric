@@ -25,6 +25,7 @@ export const ChimericAsyncReadTestHarness = <
   result: {
     current: {
       data: TResult | undefined;
+      isIdle: boolean;
       isSuccess: boolean;
       isPending: boolean;
       isError: boolean;
@@ -35,6 +36,7 @@ export const ChimericAsyncReadTestHarness = <
   const result = {
     current: {
       data: undefined as TResult | undefined,
+      isIdle: true,
       isSuccess: false,
       isPending: true,
       isError: false,
@@ -47,6 +49,7 @@ export const ChimericAsyncReadTestHarness = <
     | 'resolved'
     | 'rejected';
   if (chimericMethod === 'idiomatic') {
+    result.current.isIdle = false;
     result.current.isPending = true;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let promise = chimericAsyncRead(args as any);
@@ -54,6 +57,7 @@ export const ChimericAsyncReadTestHarness = <
     promise
       .then((data) => {
         result.current.data = data;
+        result.current.isIdle = false;
         result.current.isPending = false;
         result.current.isSuccess = true;
         result.current.isError = false;
@@ -61,6 +65,7 @@ export const ChimericAsyncReadTestHarness = <
         promiseStatus = 'resolved';
       })
       .catch((error) => {
+        result.current.isIdle = false;
         result.current.isPending = false;
         result.current.isSuccess = false;
         result.current.isError = true;
@@ -79,6 +84,7 @@ export const ChimericAsyncReadTestHarness = <
               promise
                 .then((data) => {
                   result.current.data = data;
+                  result.current.isIdle = false;
                   result.current.isPending = false;
                   result.current.isSuccess = true;
                   result.current.isError = false;
@@ -86,6 +92,7 @@ export const ChimericAsyncReadTestHarness = <
                   promiseStatus = 'resolved';
                 })
                 .catch((error) => {
+                  result.current.isIdle = false;
                   result.current.isPending = false;
                   result.current.isSuccess = false;
                   result.current.isError = true;

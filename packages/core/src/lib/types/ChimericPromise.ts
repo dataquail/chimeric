@@ -11,6 +11,7 @@ export type ChimericPromise<
 > = IdiomaticAsyncFunction<TParams, TResult> & {
   usePromise: () => {
     call: IdiomaticAsyncFunction<TParams, TResult>;
+    isIdle: boolean;
     isPending: boolean;
     isSuccess: boolean;
     isError: boolean;

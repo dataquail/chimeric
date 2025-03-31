@@ -10,6 +10,7 @@ export type ChimericAsyncRead<
   E extends Error,
 > = IdiomaticAsyncFunction<TParams, TResult> & {
   useAsync: (args: TParams) => {
+    isIdle: boolean;
     isPending: boolean;
     isSuccess: boolean;
     isError: boolean;

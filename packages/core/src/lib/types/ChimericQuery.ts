@@ -10,11 +10,13 @@ export type ChimericQuery<
   E extends Error,
 > = IdiomaticAsyncFunction<IdiomaticQueryParams<TParams>, TResult> & {
   useQuery: (args: ReactiveQueryParams<TParams>) => {
+    isIdle: boolean;
     isPending: boolean;
     isSuccess: boolean;
     isError: boolean;
     error: E | null;
     data: TResult | undefined;
+    refetch: () => Promise<TResult>;
   };
 };
 

@@ -24,6 +24,7 @@ export const ChimericQueryTestHarness = <TParams, TResult, E extends Error>({
   result: {
     current: {
       data: TResult | undefined;
+      isIdle: boolean;
       isSuccess: boolean;
       isPending: boolean;
       isError: boolean;
@@ -34,6 +35,7 @@ export const ChimericQueryTestHarness = <TParams, TResult, E extends Error>({
   const result = {
     current: {
       data: undefined as TResult | undefined,
+      isIdle: true,
       isSuccess: false,
       isPending: true,
       isError: false,
@@ -46,6 +48,7 @@ export const ChimericQueryTestHarness = <TParams, TResult, E extends Error>({
     | 'resolved'
     | 'rejected';
   if (chimericMethod === 'idiomatic') {
+    result.current.isIdle = false;
     result.current.isPending = true;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let promise = chimericQuery(params as any);
@@ -53,6 +56,7 @@ export const ChimericQueryTestHarness = <TParams, TResult, E extends Error>({
     promise
       .then((data) => {
         result.current.data = data;
+        result.current.isIdle = false;
         result.current.isPending = false;
         result.current.isSuccess = true;
         result.current.isError = false;
@@ -60,6 +64,7 @@ export const ChimericQueryTestHarness = <TParams, TResult, E extends Error>({
         promiseStatus = 'resolved';
       })
       .catch((error) => {
+        result.current.isIdle = false;
         result.current.isPending = false;
         result.current.isSuccess = false;
         result.current.isError = true;
@@ -78,6 +83,7 @@ export const ChimericQueryTestHarness = <TParams, TResult, E extends Error>({
               promise
                 .then((data) => {
                   result.current.data = data;
+                  result.current.isIdle = false;
                   result.current.isPending = false;
                   result.current.isSuccess = true;
                   result.current.isError = false;
@@ -85,6 +91,7 @@ export const ChimericQueryTestHarness = <TParams, TResult, E extends Error>({
                   promiseStatus = 'resolved';
                 })
                 .catch((error) => {
+                  result.current.isIdle = false;
                   result.current.isPending = false;
                   result.current.isSuccess = false;
                   result.current.isError = true;
