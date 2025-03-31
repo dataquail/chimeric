@@ -66,7 +66,7 @@ export const ChimericQueryWithManagedStoreFactory = <
       if (!queryOptions.queryKey) {
         throw new Error('queryKey is required');
       }
-      const { isPending, isSuccess, isError, error } = useTanstackQuery({
+      const query = useTanstackQuery({
         ...(queryOptions as QueryOptions<unknown, E, unknown, string[]>),
         ...(options as UseQueryOptions<unknown, E, unknown, string[]>),
         queryFn: async () => {
@@ -74,13 +74,19 @@ export const ChimericQueryWithManagedStoreFactory = <
           return null;
         },
       });
+      const dataFromStore = useFromStore(params as TParams);
 
       return {
-        isPending,
-        isSuccess,
-        isError,
-        error,
-        data: useFromStore(params as TParams),
+        isIdle: !query.isFetched,
+        isPending: query.isPending,
+        isSuccess: query.isSuccess,
+        isError: query.isError,
+        error: query.error,
+        data: dataFromStore,
+        refetch: async () => {
+          await query.refetch();
+          return dataFromStore;
+        },
       };
     },
   });

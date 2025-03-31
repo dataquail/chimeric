@@ -11,11 +11,13 @@ export type ChimericMutation<
 > = IdiomaticAsyncFunction<TParams, TResult> & {
   useMutation: (config?: { options: UseMutationOptions }) => {
     call: (args: TParams, options?: MutateOptions) => Promise<TResult>;
+    isIdle: boolean;
     isPending: boolean;
     isSuccess: boolean;
     isError: boolean;
     error: E | null;
     data: TResult | undefined;
+    reset: () => void;
   };
 };
 

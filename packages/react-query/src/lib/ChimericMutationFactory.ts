@@ -83,11 +83,13 @@ export const ChimericMutationFactory = <TParams, TResult, E extends Error>(
 
       return {
         call: mutation.mutateAsync,
+        isIdle: mutation.isIdle,
         isPending: mutation.isPending,
         isSuccess: mutation.isSuccess,
         isError: mutation.isError,
         error: mutation.error,
         data: mutation.data,
+        reset: mutation.reset,
       };
     },
   });

@@ -20,6 +20,7 @@ export const ChimericMutationTestHarness = <TParams, TResult, E extends Error>({
     current: {
       call: (args: TParams) => Promise<TResult | void>;
       data: TResult | undefined;
+      isIdle: boolean;
       isSuccess: boolean;
       isPending: boolean;
       isError: boolean;
@@ -30,6 +31,7 @@ export const ChimericMutationTestHarness = <TParams, TResult, E extends Error>({
   const result = {
     current: {
       call: (args: TParams) => {
+        result.current.isIdle = false;
         result.current.isPending = true;
         result.current.isSuccess = false;
         result.current.isError = false;
@@ -39,12 +41,14 @@ export const ChimericMutationTestHarness = <TParams, TResult, E extends Error>({
         promise
           .then((data) => {
             result.current.data = data;
+            result.current.isIdle = false;
             result.current.isPending = false;
             result.current.isSuccess = true;
             result.current.isError = false;
             result.current.error = null;
           })
           .catch((error) => {
+            result.current.isIdle = false;
             result.current.isPending = false;
             result.current.isSuccess = false;
             result.current.isError = true;
@@ -54,6 +58,7 @@ export const ChimericMutationTestHarness = <TParams, TResult, E extends Error>({
         return promise;
       },
       data: undefined as TResult | undefined,
+      isIdle: true,
       isSuccess: false,
       isPending: true,
       isError: false,

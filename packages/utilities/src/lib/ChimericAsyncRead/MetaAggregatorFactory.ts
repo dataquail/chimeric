@@ -158,6 +158,7 @@ export const MetaAggregatorFactory = <
   context: Context extends void ? undefined : Context,
 ) => {
   const aggregatedMeta = {
+    isIdle: metaList.some((meta) => meta?.isIdle),
     isPending: metaList.some((meta) => meta?.isPending),
     isError: metaList.some((meta) => meta?.isError),
     isSuccess: metaList.every((meta) => meta?.isSuccess),
@@ -175,6 +176,7 @@ export const MetaAggregatorFactory = <
   };
 
   return {
+    isIdle: aggregatedMeta.isIdle,
     isPending: aggregatedMeta.isPending,
     isError: aggregatedMeta.isError,
     isSuccess: aggregatedMeta.isSuccess,
