@@ -2,14 +2,23 @@ import { inject, injectable } from 'inversify';
 import { ActiveTodo } from 'src/core/domain/activeTodo/entities/ActiveTodo';
 import { Review } from 'src/core/domain/review/entities/Review';
 import { SavedForLaterTodo } from 'src/core/domain/savedForLaterTodo/entities/SavedForLaterTodo';
-import { DefineChimericAsyncRead, fuseChimericAsyncRead } from '@chimeric/core';
+import {
+  // DefineChimericAsyncRead,
+  // fuseChimericAsyncRead,
+  DefineReactiveAsyncRead,
+  createReactiveAsyncRead,
+} from '@chimeric/core';
 import { MetaAggregatorFactory } from '@chimeric/utilities';
 import { TodoUnderReview } from 'src/core/domain/review/viewModels/out/TodoUnderReview';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 
 @injectable()
 export class GetTodosUnderReviewUseCase {
-  public readonly execute: DefineChimericAsyncRead<
+  // public readonly execute: DefineChimericAsyncRead<
+  //   () => Promise<TodoUnderReview[]>,
+  //   Error
+  // >;
+  public readonly execute: DefineReactiveAsyncRead<
     () => Promise<TodoUnderReview[]>,
     Error
   >;
@@ -24,13 +33,15 @@ export class GetTodosUnderReviewUseCase {
     @inject(InjectionSymbol('ISavedForLaterTodoService'))
     private readonly savedForLaterTodoService: InjectionType<'ISavedForLaterTodoService'>,
   ) {
-    this.execute = fuseChimericAsyncRead({
-      fn: this.callImpl.bind(this),
-      useAsync: this.useAsyncImpl.bind(this),
-    });
+    // this.execute = fuseChimericAsyncRead({
+    //   idiomatic: this.idiomaticImpl.bind(this),
+    //   reactive: this.reactiveImpl.bind(this),
+    // });
+
+    this.execute = createReactiveAsyncRead(this.reactiveImpl.bind(this));
   }
 
-  private useAsyncImpl() {
+  private reactiveImpl() {
     const activeTodoListMeta = this.activeTodoService.getAll.useQuery();
     const savedForLaterTodoListMeta =
       this.savedForLaterTodoService.getAll.useQuery();
@@ -38,34 +49,29 @@ export class GetTodosUnderReviewUseCase {
 
     return MetaAggregatorFactory(
       [activeTodoListMeta, savedForLaterTodoListMeta],
-      (metaList, context) => {
+      (metaList) => {
         const [activeTodoList, savedForLaterTodoList] = metaList;
 
-        if (!activeTodoList || !savedForLaterTodoList || !context.review) {
+        if (!activeTodoList || !savedForLaterTodoList || !review) {
           return [];
         }
 
-        return this._execute(
-          activeTodoList,
-          savedForLaterTodoList,
-          context.review,
-        );
+        return this._execute(activeTodoList, savedForLaterTodoList, review);
       },
-      { review },
     );
   }
 
-  private async callImpl() {
-    const activeTodoList = await this.activeTodoService.getAll();
-    const savedForLaterTodoList = await this.savedForLaterTodoService.getAll();
-    const review = this.reviewRepository.get();
+  // private async idiomaticImpl() {
+  //   const activeTodoList = await this.activeTodoService.getAll();
+  //   const savedForLaterTodoList = await this.savedForLaterTodoService.getAll();
+  //   const review = this.reviewRepository.get();
 
-    if (!review) {
-      return [];
-    }
+  //   if (!review) {
+  //     return [];
+  //   }
 
-    return this._execute(activeTodoList, savedForLaterTodoList, review);
-  }
+  //   return this._execute(activeTodoList, savedForLaterTodoList, review);
+  // }
 
   private _execute(
     activeTodoList: ActiveTodo[],

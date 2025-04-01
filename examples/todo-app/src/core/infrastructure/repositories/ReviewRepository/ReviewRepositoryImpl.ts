@@ -29,11 +29,11 @@ export class ReviewRepositoryImpl implements IReviewRepository {
   }
 
   private readonly getImpl: IReviewRepository['get'] = fuseChimericRead({
-    fn: () => {
+    idiomatic: () => {
       const record = this.appStoreProvider.get().getState().todo.review.record;
       return record ? ReviewRepositoryImpl.toDomain(record) : undefined;
     },
-    use: () => {
+    reactive: () => {
       const record = useAppSelector((state) => state.todo.review.record);
       return record ? ReviewRepositoryImpl.toDomain(record) : undefined;
     },

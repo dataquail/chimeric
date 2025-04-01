@@ -3,8 +3,8 @@ import { setupServer } from 'msw/node';
 import { act } from 'react';
 import {
   ChimericPromiseTestHarness,
-  ChimericAsyncReadTestHarness,
-  chimericMethods,
+  ReactiveAsyncReadTestHarness,
+  reactiveMethods,
 } from '@chimeric/testing';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 import { appContainer } from 'src/core/global/appContainer';
@@ -66,18 +66,17 @@ describe('GetTodosUnderReviewUseCase', () => {
     });
   };
 
-  it.each(chimericMethods)('getTodosUnderReview.%s', async (chimericMethod) => {
+  it.each(reactiveMethods)('getTodosUnderReview.%s', async (method) => {
     withOneUncompletedAndOneCompletedActiveTodoInList();
     withOneSavedForLaterTodoInList();
     const testWrapper = getTestWrapper();
     const startReviewHarness = ChimericPromiseTestHarness({
       chimericPromise: getStartReviewUseCase().execute,
-      chimericMethod,
+      method,
       wrapper: testWrapper,
     });
-    const getTodosUnderReviewHarness = ChimericAsyncReadTestHarness({
-      chimericAsyncRead: getGetTodosUnderReviewUseCase().execute,
-      chimericMethod,
+    const getTodosUnderReviewHarness = ReactiveAsyncReadTestHarness({
+      reactiveAsyncRead: getGetTodosUnderReviewUseCase().execute,
       wrapper: testWrapper,
     });
 
