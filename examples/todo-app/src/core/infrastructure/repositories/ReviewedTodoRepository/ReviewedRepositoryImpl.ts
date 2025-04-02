@@ -42,13 +42,14 @@ export class ReviewedTodoRepositoryImpl implements IReviewedTodoRepository {
 
   private readonly getOneByIdImpl: IReviewedTodoRepository['getOneById'] =
     fuseChimericRead({
-      fn: (args) => {
+      idiomatic: (args) => {
         const record = this.appStoreProvider.get().getState().todo.reviewedTodo[
           args.id
         ];
         return record ? ReviewedTodoRepositoryImpl.toDomain(record) : undefined;
       },
-      use: (args) => {
+      reactive: (args) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         const record = useAppSelector(
           (state) => state.todo.reviewedTodo[args.id],
         );

@@ -378,12 +378,12 @@ describe('ActiveTodoServiceImpl', () => {
   });
 
   describe('using chimeric test harnesses', () => {
-    it.each(chimericMethods)('getAll.%s', async (chimericMethod) => {
+    it.each(chimericMethods)('getAll.%s', async (method) => {
       withOneUncompletedActiveTodoInList();
       const activeTodoService = getActiveTodoService();
       const harness = ChimericQueryTestHarness({
         chimericQuery: activeTodoService.getAll,
-        chimericMethod,
+        method,
         wrapper: getTestWrapper(),
       });
       expect(harness.result.current.isPending).toBe(true);
@@ -400,12 +400,12 @@ describe('ActiveTodoServiceImpl', () => {
       expect(harness.result.current.data?.[0].completedAt).toBeUndefined();
     });
 
-    it.each(chimericMethods)('getOneById.%s', async (chimericMethod) => {
+    it.each(chimericMethods)('getOneById.%s', async (method) => {
       withOneUncompletedActiveTodo();
       const activeTodoService = getActiveTodoService();
       const harness = ChimericQueryTestHarness({
         chimericQuery: activeTodoService.getOneById,
-        chimericMethod,
+        method,
         params: { id: '1' },
         wrapper: getTestWrapper(),
       });
@@ -417,19 +417,19 @@ describe('ActiveTodoServiceImpl', () => {
       expect(harness.result.current.data?.id).toBe('1');
     });
 
-    it.each(chimericMethods)('createOne.%s', async (chimericMethod) => {
+    it.each(chimericMethods)('createOne.%s', async (method) => {
       withNoActiveTodosInList();
       withSuccessfullyCreatedActiveTodo();
       const activeTodoService = getActiveTodoService();
       const testWrapper = getTestWrapper();
       const createOneHarness = ChimericMutationTestHarness({
         chimericMutation: activeTodoService.createOne,
-        chimericMethod,
+        method,
         wrapper: testWrapper,
       });
       const getAllHarness = ChimericQueryTestHarness({
         chimericQuery: activeTodoService.getAll,
-        chimericMethod,
+        method,
         wrapper: testWrapper,
       });
       await getAllHarness.waitFor(() =>
@@ -457,18 +457,18 @@ describe('ActiveTodoServiceImpl', () => {
       ).toBe(nowTimeStamp);
     });
 
-    it.each(chimericMethods)('deleteOne.%s', async (chimericMethod) => {
+    it.each(chimericMethods)('deleteOne.%s', async (method) => {
       withOneUncompletedActiveTodoInList();
       const testWrapper = getTestWrapper();
       const activeTodoService = getActiveTodoService();
       const deleteOneHarness = ChimericMutationTestHarness({
         chimericMutation: activeTodoService.deleteOne,
-        chimericMethod,
+        method,
         wrapper: testWrapper,
       });
       const getAllHarness = ChimericQueryTestHarness({
         chimericQuery: activeTodoService.getAll,
-        chimericMethod,
+        method,
         wrapper: testWrapper,
       });
       await getAllHarness.waitFor(() =>
@@ -490,18 +490,18 @@ describe('ActiveTodoServiceImpl', () => {
       expect(getAllHarness.result.current.data?.length).toBe(0);
     });
 
-    it.each(chimericMethods)('completeOne.%s', async (chimericMethod) => {
+    it.each(chimericMethods)('completeOne.%s', async (method) => {
       withOneUncompletedActiveTodoInList();
       const testWrapper = getTestWrapper();
       const activeTodoService = getActiveTodoService();
       const completeOneHarness = ChimericMutationTestHarness({
         chimericMutation: activeTodoService.completeOne,
-        chimericMethod,
+        method,
         wrapper: testWrapper,
       });
       const getAllHarness = ChimericQueryTestHarness({
         chimericQuery: activeTodoService.getAll,
-        chimericMethod,
+        method,
         wrapper: testWrapper,
       });
       await getAllHarness.waitFor(() =>
@@ -525,18 +525,18 @@ describe('ActiveTodoServiceImpl', () => {
       ).toBe(nowTimeStamp);
     });
 
-    it.each(chimericMethods)('uncompleteOne.%s', async (chimericMethod) => {
+    it.each(chimericMethods)('uncompleteOne.%s', async (method) => {
       withOneCompletedActiveTodoInList();
       const activeTodoService = getActiveTodoService();
       const testWrapper = getTestWrapper();
       const uncompleteOneHarness = ChimericMutationTestHarness({
         chimericMutation: activeTodoService.uncompleteOne,
-        chimericMethod,
+        method,
         wrapper: testWrapper,
       });
       const getAllHarness = ChimericQueryTestHarness({
         chimericQuery: activeTodoService.getAll,
-        chimericMethod,
+        method,
         wrapper: testWrapper,
       });
       await getAllHarness.waitFor(() =>

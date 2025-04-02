@@ -9,7 +9,8 @@
       "node",
       "vitest"
     ],
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx"
   },
   "include": [
     "vite.config.ts",

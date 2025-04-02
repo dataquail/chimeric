@@ -153,12 +153,12 @@ export const MetaAggregatorFactory = <
           TMeta[8] extends Reactive<any, any> ? TMeta[8]['data'] : never,
           TMeta[9] extends Reactive<any, any> ? TMeta[9]['data'] : never,
         ],
-    context: Context extends void ? undefined : Context,
+    context?: Context extends void ? undefined : Context,
   ) => TData,
-  context: Context extends void ? undefined : Context,
+  context?: Context extends void ? undefined : Context,
 ) => {
   const aggregatedMeta = {
-    isIdle: metaList.some((meta) => meta?.isIdle),
+    isIdle: metaList.every((meta) => meta?.isIdle),
     isPending: metaList.some((meta) => meta?.isPending),
     isError: metaList.some((meta) => meta?.isError),
     isSuccess: metaList.every((meta) => meta?.isSuccess),

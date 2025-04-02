@@ -76,12 +76,12 @@ describe('SavedForLaterTodoServiceImpl', () => {
     });
   };
 
-  it.each(chimericMethods)('getAll.%s', async (chimericMethod) => {
+  it.each(chimericMethods)('getAll.%s', async (method) => {
     withOneSavedForLaterTodoInList();
     const savedForLaterTodoService = getSavedForLaterTodoService();
     const harness = ChimericQueryTestHarness({
       chimericQuery: savedForLaterTodoService.getAll,
-      chimericMethod,
+      method,
       wrapper: getTestWrapper(),
     });
     expect(harness.result.current.isPending).toBe(true);
@@ -99,12 +99,12 @@ describe('SavedForLaterTodoServiceImpl', () => {
     );
   });
 
-  it.each(chimericMethods)('getOneById.%s', async (chimericMethod) => {
+  it.each(chimericMethods)('getOneById.%s', async (method) => {
     withOneSavedForLaterTodo();
     const savedForLaterTodoService = getSavedForLaterTodoService();
     const harness = ChimericQueryTestHarness({
       chimericQuery: savedForLaterTodoService.getOneById,
-      chimericMethod,
+      method,
       params: { id: '1' },
       wrapper: getTestWrapper(),
     });
@@ -116,19 +116,19 @@ describe('SavedForLaterTodoServiceImpl', () => {
     expect(harness.result.current.data?.id).toBe('1');
   });
 
-  it.each(chimericMethods)('activate.%s', async (chimericMethod) => {
+  it.each(chimericMethods)('activate.%s', async (method) => {
     withOneSavedForLaterTodoInList();
     withSuccessfullyActivatedSavedForLaterTodo();
     const savedForLaterTodoService = getSavedForLaterTodoService();
     const testWrapper = getTestWrapper();
     const activateOneHarness = ChimericMutationTestHarness({
       chimericMutation: savedForLaterTodoService.activate,
-      chimericMethod,
+      method,
       wrapper: testWrapper,
     });
     const getAllHarness = ChimericQueryTestHarness({
       chimericQuery: savedForLaterTodoService.getAll,
-      chimericMethod,
+      method,
       wrapper: testWrapper,
     });
     await getAllHarness.waitFor(() =>
@@ -149,18 +149,18 @@ describe('SavedForLaterTodoServiceImpl', () => {
     expect(getAllHarness.result.current.data?.length).toBe(0);
   });
 
-  it.each(chimericMethods)('deleteOne.%s', async (chimericMethod) => {
+  it.each(chimericMethods)('deleteOne.%s', async (method) => {
     withOneSavedForLaterTodoInList();
     const testWrapper = getTestWrapper();
     const savedForLaterTodoService = getSavedForLaterTodoService();
     const deleteOneHarness = ChimericMutationTestHarness({
       chimericMutation: savedForLaterTodoService.deleteOne,
-      chimericMethod,
+      method,
       wrapper: testWrapper,
     });
     const getAllHarness = ChimericQueryTestHarness({
       chimericQuery: savedForLaterTodoService.getAll,
-      chimericMethod,
+      method,
       wrapper: testWrapper,
     });
     withSuccessfullyDeletedSavedForLaterTodo();
@@ -178,18 +178,18 @@ describe('SavedForLaterTodoServiceImpl', () => {
     expect(getAllHarness.result.current.data?.length).toBe(0);
   });
 
-  it.each(chimericMethods)('saveForLater.%s', async (chimericMethod) => {
+  it.each(chimericMethods)('saveForLater.%s', async (method) => {
     withNoSavedForLaterTodosInList();
     const testWrapper = getTestWrapper();
     const savedForLaterTodoService = getSavedForLaterTodoService();
     const saveForLaterHarness = ChimericMutationTestHarness({
       chimericMutation: savedForLaterTodoService.saveForLater,
-      chimericMethod,
+      method,
       wrapper: testWrapper,
     });
     const getAllHarness = ChimericQueryTestHarness({
       chimericQuery: savedForLaterTodoService.getAll,
-      chimericMethod,
+      method,
       wrapper: testWrapper,
     });
     await getAllHarness.waitFor(() =>

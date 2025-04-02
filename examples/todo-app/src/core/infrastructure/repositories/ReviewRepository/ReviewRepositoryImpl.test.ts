@@ -13,21 +13,21 @@ describe('ReviewRepositoryImpl', () => {
     );
   };
 
-  it.each(chimericMethods)('get.%s', async (chimericMethod) => {
+  it.each(chimericMethods)('get.%s', async (method) => {
     const reviewRepository = getReviewRepository();
     const getHarness = ChimericReadTestHarness({
       chimericRead: reviewRepository.get,
-      chimericMethod,
+      method,
       wrapper: getTestWrapper(),
     });
     expect(getHarness.result.current).toBeUndefined();
   });
 
-  it.each(chimericMethods)('save.%s', async (chimericMethod) => {
+  it.each(chimericMethods)('save.%s', async (method) => {
     const reviewRepository = getReviewRepository();
     const getHarness = ChimericReadTestHarness({
       chimericRead: reviewRepository.get,
-      chimericMethod,
+      method,
       wrapper: getTestWrapper(),
     });
 
@@ -49,7 +49,7 @@ describe('ReviewRepositoryImpl', () => {
     const reviewRepository = getReviewRepository();
     const getHarness = ChimericReadTestHarness({
       chimericRead: reviewRepository.get,
-      chimericMethod: 'idiomatic',
+      method: 'idiomatic',
       wrapper: getTestWrapper(),
     });
 

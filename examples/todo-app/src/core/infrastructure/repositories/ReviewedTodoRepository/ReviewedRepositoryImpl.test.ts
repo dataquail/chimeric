@@ -13,11 +13,11 @@ describe('ReviewedTodoRepositoryImpl', () => {
     );
   };
 
-  it.each(chimericMethods)('getOneById.%s', async (chimericMethod) => {
+  it.each(chimericMethods)('getOneById.%s', async (method) => {
     const reviewedTodoRepository = getReviewedTodoRepository();
     const getOneByIdHarness = ChimericReadTestHarness({
       chimericRead: reviewedTodoRepository.getOneById,
-      chimericMethod,
+      method,
       params: { id: '1' },
       wrapper: getTestWrapper(),
     });
@@ -36,18 +36,18 @@ describe('ReviewedTodoRepositoryImpl', () => {
     expect(getOneByIdHarness.result.current?.id).toEqual('1');
   });
 
-  it.each(chimericMethods)('saveMany.%s', async (chimericMethod) => {
+  it.each(chimericMethods)('saveMany.%s', async (method) => {
     const reviewedTodoRepository = getReviewedTodoRepository();
     const getOneById1Harness = ChimericReadTestHarness({
       chimericRead: reviewedTodoRepository.getOneById,
-      chimericMethod,
+      method,
       params: { id: '1' },
       wrapper: getTestWrapper(),
     });
 
     const getOneById2Harness = ChimericReadTestHarness({
       chimericRead: reviewedTodoRepository.getOneById,
-      chimericMethod,
+      method,
       params: { id: '2' },
       wrapper: getTestWrapper(),
     });
@@ -77,11 +77,11 @@ describe('ReviewedTodoRepositoryImpl', () => {
     expect(getOneById2Harness.result.current).toBeDefined();
   });
 
-  it.each(chimericMethods)('delete.%s', async (chimericMethod) => {
+  it.each(chimericMethods)('delete.%s', async (method) => {
     const reviewedTodoRepository = getReviewedTodoRepository();
     const getOneByIdHarness = ChimericReadTestHarness({
       chimericRead: reviewedTodoRepository.getOneById,
-      chimericMethod,
+      method,
       params: { id: '1' },
       wrapper: getTestWrapper(),
     });
