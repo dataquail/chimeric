@@ -34,7 +34,7 @@ export type DefineChimericMutation<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
-  E extends Error,
+  E extends Error = Error,
 > = ChimericMutation<
   ExtractChimericParameter<T>,
   ExtractChimericPromiseReturnType<T>,
@@ -54,7 +54,7 @@ export type DefineReactiveMutation<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
-  E extends Error,
+  E extends Error = Error,
 > = ReactiveMutation<
   ExtractChimericParameter<T>,
   ExtractChimericPromiseReturnType<T>,

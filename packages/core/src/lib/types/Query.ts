@@ -45,7 +45,7 @@ export type DefineChimericQuery<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
-  E extends Error,
+  E extends Error = Error,
 > = ChimericQuery<
   ExtractChimericParameter<T>,
   ExtractChimericPromiseReturnType<T>,
@@ -65,7 +65,7 @@ export type DefineReactiveQuery<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
-  E extends Error,
+  E extends Error = Error,
 > = ReactiveQuery<
   ExtractChimericParameter<T>,
   ExtractChimericPromiseReturnType<T>,

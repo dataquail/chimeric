@@ -29,7 +29,7 @@ export type DefineChimericAsyncRead<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
-  E extends Error,
+  E extends Error = Error,
 > = ChimericAsyncRead<
   ExtractChimericParameter<T>,
   ExtractChimericPromiseReturnType<T>,
@@ -49,7 +49,7 @@ export type DefineReactiveAsyncRead<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
-  E extends Error,
+  E extends Error = Error,
 > = ReactiveAsyncRead<
   ExtractChimericParameter<T>,
   ExtractChimericPromiseReturnType<T>,
