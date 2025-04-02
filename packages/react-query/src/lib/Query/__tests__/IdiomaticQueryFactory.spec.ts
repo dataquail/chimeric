@@ -35,4 +35,31 @@ describe('IdiomaticQueryFactory', () => {
     expect(result).toBe('Hello John');
     expect(mockQueryFn).toHaveBeenCalledWith({ name: 'John' });
   });
+
+  it('should refetch when forceRefetch is true', async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          staleTime: 60 * 1000,
+        },
+      },
+    });
+    const mockQueryFn = vi.fn((name: string) => Promise.resolve(name));
+    const idiomaticQuery = IdiomaticQueryFactory(queryClient, (name: string) =>
+      queryOptions({ queryKey: ['test'], queryFn: () => mockQueryFn(name) }),
+    );
+    const result = await idiomaticQuery('John');
+
+    expect(result).toBe('John');
+    expect(mockQueryFn).toHaveBeenCalledWith('John');
+
+    const result2 = await idiomaticQuery('Paul');
+
+    expect(result2).toBe('John');
+
+    const result3 = await idiomaticQuery('Ringo', { forceRefetch: true });
+
+    expect(result3).toBe('Ringo');
+    expect(mockQueryFn).toHaveBeenCalledTimes(2);
+  });
 });

@@ -4,11 +4,15 @@ import {
 } from './UtilityTypes.js';
 
 export type IdiomaticQuery<TParams, TResult> = (
-  params: IdiomaticQueryParams<TParams>,
+  paramsOrOptions?: IdiomaticQueryParams<TParams>,
+  optionsOrNever?: IdiomaticQueryOptionsOrNever<TParams>,
 ) => Promise<TResult>;
 
 export type ReactiveQuery<TParams, TResult, E extends Error> = {
-  useQuery: (args: ReactiveQueryParams<TParams>) => {
+  useQuery: (
+    paramsOrOptions?: ReactiveQueryParamsOrOptions<TParams>,
+    optionsOrNever?: ReactiveQueryOptionsOrNever<TParams>,
+  ) => {
     isIdle: boolean;
     isPending: boolean;
     isSuccess: boolean;
@@ -26,18 +30,26 @@ export type ChimericQuery<TParams, TResult, E extends Error> = IdiomaticQuery<
   ReactiveQuery<TParams, TResult, E>;
 
 export type IdiomaticQueryParams<TParams> = TParams extends void
-  ? {
-      options?: IdiomaticQueryOptions;
-    } | void
-  : {
-      options?: IdiomaticQueryOptions;
-    } & TParams;
+  ? IdiomaticQueryOptions | void
+  : TParams extends IdiomaticQueryOptions
+  ? never
+  : TParams;
+
+export type IdiomaticQueryOptionsOrNever<TParams> = TParams extends void
+  ? never
+  : IdiomaticQueryOptions | void;
 
 export type IdiomaticQueryOptions = { forceRefetch?: boolean };
 
-export type ReactiveQueryParams<TParams> = TParams extends void
-  ? { options?: ReactiveQueryOptions } | void
-  : { options?: ReactiveQueryOptions } & TParams;
+export type ReactiveQueryParamsOrOptions<TParams> = TParams extends void
+  ? ReactiveQueryOptions | void
+  : TParams extends ReactiveQueryOptions
+  ? never
+  : TParams;
+
+export type ReactiveQueryOptionsOrNever<TParams> = TParams extends void
+  ? never
+  : ReactiveQueryOptions | void;
 
 export type ReactiveQueryOptions = { enabled?: boolean };
 

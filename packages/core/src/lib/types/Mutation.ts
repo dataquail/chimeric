@@ -8,8 +8,8 @@ export type IdiomaticMutation<TParams, TResult> = (
 ) => Promise<TResult>;
 
 export type ReactiveMutation<TParams, TResult, E extends Error> = {
-  useMutation: (config?: { options: UseMutationOptions }) => {
-    call: (args: TParams, options?: MutateOptions) => Promise<TResult>;
+  useMutation: () => {
+    call: (args: TParams) => Promise<TResult>;
     isIdle: boolean;
     isPending: boolean;
     isSuccess: boolean;
@@ -25,10 +25,6 @@ export type ChimericMutation<
   TResult,
   E extends Error,
 > = IdiomaticMutation<TParams, TResult> & ReactiveMutation<TParams, TResult, E>;
-
-type UseMutationOptions = object;
-
-type MutateOptions = object;
 
 export type DefineChimericMutation<
   T extends (
