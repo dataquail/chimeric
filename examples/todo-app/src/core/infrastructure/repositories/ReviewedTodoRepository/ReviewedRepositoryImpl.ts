@@ -49,6 +49,7 @@ export class ReviewedTodoRepositoryImpl implements IReviewedTodoRepository {
         return record ? ReviewedTodoRepositoryImpl.toDomain(record) : undefined;
       },
       reactive: (args) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         const record = useAppSelector(
           (state) => state.todo.reviewedTodo[args.id],
         );
