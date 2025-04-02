@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import {
   ReactivePromise,
   createReactivePromise,
-  ReactivePromiseParams,
+  ReactivePromiseParamsOrOptions,
+  ReactivePromiseOptionsOrNever,
 } from '@chimeric/core';
+import { getParamsAndOptionsFromReactivePromise } from '../utils';
 
 export const ReactivePromiseFactory = <
   TParams = void,
@@ -15,13 +17,13 @@ export const ReactivePromiseFactory = <
   promiseFn: (params: TParams) => Promise<TResult>;
 }): ReactivePromise<TParams, TResult, E> => {
   const usePromise = (
-    maybeParamsAndOptions?: ReactivePromiseParams<TParams>,
+    paramsOrOptions?: ReactivePromiseParamsOrOptions<TParams>,
+    optionsOrNever?: ReactivePromiseOptionsOrNever<TParams>,
   ) => {
-    const paramsAndOptions = {
-      options: { invokeOnMount: false },
-      ...maybeParamsAndOptions,
-    };
-    const { options, ...params } = paramsAndOptions;
+    const { params, options } = getParamsAndOptionsFromReactivePromise(
+      paramsOrOptions,
+      optionsOrNever,
+    );
 
     const [meta, setMeta] = useState<{
       isIdle: boolean;

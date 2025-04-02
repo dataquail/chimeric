@@ -8,7 +8,10 @@ export type IdiomaticPromise<TParams, TResult> = (
 ) => Promise<TResult>;
 
 export type ReactivePromise<TParams, TResult, E extends Error> = {
-  usePromise: (args?: ReactivePromiseParams<TParams>) => {
+  usePromise: (
+    paramsOrOptions?: ReactivePromiseParamsOrOptions<TParams>,
+    optionsOrNever?: ReactivePromiseOptionsOrNever<TParams>,
+  ) => {
     call: IdiomaticPromise<TParams, TResult>;
     isIdle: boolean;
     isPending: boolean;
@@ -25,9 +28,15 @@ export type ChimericPromise<
   E extends Error,
 > = IdiomaticPromise<TParams, TResult> & ReactivePromise<TParams, TResult, E>;
 
-export type ReactivePromiseParams<TParams> = TParams extends void
-  ? { options?: ReactivePromiseOptions } | void
-  : { options?: ReactivePromiseOptions } & TParams;
+export type ReactivePromiseParamsOrOptions<TParams> = TParams extends void
+  ? ReactivePromiseOptions | void
+  : TParams extends ReactivePromiseOptions
+  ? never
+  : TParams;
+
+export type ReactivePromiseOptionsOrNever<TParams> = TParams extends void
+  ? never
+  : ReactivePromiseOptions | void;
 
 export type ReactivePromiseOptions = { invokeOnMount?: boolean };
 

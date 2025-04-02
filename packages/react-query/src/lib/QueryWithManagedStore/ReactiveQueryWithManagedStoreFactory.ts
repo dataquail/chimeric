@@ -5,6 +5,7 @@ import {
   OmitKeyof,
 } from '@tanstack/react-query';
 import { ReactiveQuery, createReactiveQuery } from '@chimeric/core';
+import { getParamsAndOptionsFromReactiveQuery } from '../utils';
 
 export const ReactiveQueryWithManagedStoreFactory = <
   TParams = void,
@@ -21,8 +22,11 @@ export const ReactiveQueryWithManagedStoreFactory = <
   ) => OmitKeyof<UseQueryOptions<unknown, Error, unknown, string[]>, 'queryFn'>;
   useFromStore: (args: TParams) => TResult;
 }): ReactiveQuery<TParams, TResult, E> => {
-  return createReactiveQuery((args) => {
-    const { options, ...params } = args ?? {};
+  return createReactiveQuery((paramsOrOptions, optionsOrNever) => {
+    const { params, options } = getParamsAndOptionsFromReactiveQuery(
+      paramsOrOptions,
+      optionsOrNever,
+    );
     const queryOptions = getQueryOptions(params as TParams);
     if (!queryOptions.queryKey) {
       throw new Error('queryKey is required');

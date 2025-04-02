@@ -25,7 +25,7 @@ describe('ReactiveQueryFactory', () => {
     expect(mockQueryFn).toHaveBeenCalled();
   });
 
-  it('should invoke the reactive hook with params', async () => {
+  it('should invoke the reactive hook with object params', async () => {
     const queryClient = new QueryClient();
     const mockQueryFn = vi.fn((args: { name: string }) =>
       Promise.resolve(`Hello ${args.name}`),
@@ -48,4 +48,107 @@ describe('ReactiveQueryFactory', () => {
     expect(result.current.data).toBe('Hello John');
     expect(mockQueryFn).toHaveBeenCalledWith({ name: 'John' });
   });
+
+  it('should invoke the reactive hook with non-object params', async () => {
+    const queryClient = new QueryClient();
+    const mockQueryFn = vi.fn((name: string) =>
+      Promise.resolve(`Hello ${name}`),
+    );
+    const chimericQuery = ReactiveQueryFactory((name: string) =>
+      queryOptions({
+        queryKey: ['test', name],
+        queryFn: async () => mockQueryFn(name),
+      }),
+    );
+    const { result } = renderHook(() => chimericQuery.useQuery('John'), {
+      wrapper: getTestWrapper(queryClient),
+    });
+
+    await waitFor(() => {
+      expect(result.current.isPending).toBe(false);
+    });
+
+    expect(result.current.data).toBe('Hello John');
+    expect(mockQueryFn).toHaveBeenCalledWith('John');
+  });
+
+  it('should disable the reactive hook', async () => {
+    const queryClient = new QueryClient();
+    const mockQueryFn = vi.fn(() => Promise.resolve('test'));
+    const reactiveQuery = ReactiveQueryFactory(() =>
+      queryOptions({
+        queryKey: ['test'],
+        queryFn: mockQueryFn,
+      }),
+    );
+    const { result } = renderHook(
+      () => reactiveQuery.useQuery({ enabled: false }),
+      { wrapper: getTestWrapper(queryClient) },
+    );
+
+    expect(result.current.data).toBeUndefined();
+    expect(mockQueryFn).not.toHaveBeenCalled();
+  });
+
+  it('should disable the reactive hook with params', async () => {
+    const queryClient = new QueryClient();
+    const mockQueryFn = vi.fn((args: { name: string }) =>
+      Promise.resolve(`Hello ${args.name}`),
+    );
+    const reactiveQuery = ReactiveQueryFactory((args: { name: string }) =>
+      queryOptions({
+        queryKey: ['test', args.name],
+        queryFn: async () => mockQueryFn(args),
+      }),
+    );
+    const { result } = renderHook(
+      () => reactiveQuery.useQuery({ name: 'John' }, { enabled: false }),
+      { wrapper: getTestWrapper(queryClient) },
+    );
+
+    expect(result.current.data).toBeUndefined();
+    expect(mockQueryFn).not.toHaveBeenCalled();
+  });
+
+  it('should disable the reactive hook with non-object params', async () => {
+    const queryClient = new QueryClient();
+    const mockQueryFn = vi.fn((name: string) =>
+      Promise.resolve(`Hello ${name}`),
+    );
+    const reactiveQuery = ReactiveQueryFactory((name: string) =>
+      queryOptions({
+        queryKey: ['test', name],
+        queryFn: async () => mockQueryFn(name),
+      }),
+    );
+    const { result } = renderHook(
+      () => reactiveQuery.useQuery('John', { enabled: false }),
+      { wrapper: getTestWrapper(queryClient) },
+    );
+
+    expect(result.current.data).toBeUndefined();
+    expect(mockQueryFn).not.toHaveBeenCalled();
+  });
+
+  // it('should throw type error when params include enabled', async () => {
+  //   const queryClient = new QueryClient();
+  //   const mockQueryFn = vi.fn((args: { name: string; enabled: boolean }) =>
+  //     Promise.resolve(`Hello ${args.name}`),
+  //   );
+  //   const reactiveQuery = ReactiveQueryFactory(
+  //     (args: { name: string; enabled: boolean }) =>
+  //       queryOptions({
+  //         queryKey: ['test', args.name],
+  //         queryFn: async () => mockQueryFn(args),
+  //       }),
+  //   );
+  //   renderHook(
+  //     () =>
+  //       reactiveQuery.useQuery(
+  //         { name: 'John', enabled: true },
+  //         { enabled: false },
+  //       ),
+  //     { wrapper: getTestWrapper(queryClient) },
+  //   );
+  // });
 });

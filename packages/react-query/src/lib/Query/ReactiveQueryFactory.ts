@@ -1,5 +1,6 @@
 import { type QueryOptions, useQuery } from '@tanstack/react-query';
 import { createReactiveQuery, ReactiveQuery } from '@chimeric/core';
+import { getParamsAndOptionsFromReactiveQuery } from '../utils';
 
 export const ReactiveQueryFactory = <
   TParams = void,
@@ -10,9 +11,13 @@ export const ReactiveQueryFactory = <
     allParams: TParams,
   ) => QueryOptions<TResult, E, TResult, string[]>,
 ): ReactiveQuery<TParams, TResult, E> => {
-  return createReactiveQuery((allParams) => {
-    const { options, ...params } = allParams ?? {};
-    const queryOptions = getQueryOptions(params as TParams);
+  return createReactiveQuery((paramsOrOptions, optionsOrNever) => {
+    const { params, options } = getParamsAndOptionsFromReactiveQuery(
+      paramsOrOptions,
+      optionsOrNever,
+    );
+
+    const queryOptions = getQueryOptions(params);
     if (!queryOptions.queryKey) {
       throw new Error('queryKey is required');
     }
