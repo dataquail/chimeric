@@ -137,9 +137,6 @@ importers:
       '@chimeric/react-query':
         specifier: workspace:*
         version: link:../../packages/react-query
-      '@chimeric/testing':
-        specifier: workspace:*
-        version: link:../../packages/testing
       '@chimeric/utilities':
         specifier: workspace:*
         version: link:../../packages/utilities
@@ -198,6 +195,9 @@ importers:
         specifier: ^9.0.1
         version: 9.0.1
     devDependencies:
+      '@chimeric/testing':
+        specifier: workspace:*
+        version: link:../../packages/testing
       '@testing-library/dom':
         specifier: ^10.4.0
         version: 10.4.0

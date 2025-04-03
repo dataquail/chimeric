@@ -2,9 +2,6 @@ name: CI
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
   pull_request:
 
 env:
@@ -21,40 +18,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha }}
 
-      # Fetch the base branch
-      - name: Fetch base branch
-        run: |
-          # Check if current branch is main
-          if [[ "$(git branch --show-current)" == "main" ]]; then
-            # If on main, just fetch without trying to update the local branch
-            git fetch origin main --no-tags
-          else
-            # Otherwise, fetch and update the local reference as before
-            git fetch origin main:main --no-tags
-          fi
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4.1.0
+      - uses: pnpm/action-setup@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4.3.0
         with:
           node-version-file: .nvmrc
-
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Setup pnpm cache
-        uses: actions/cache@v4.2.3
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          cache: 'pnpm'
 
       - name: Install dependencies
         shell: bash
@@ -62,4 +33,4 @@ jobs:
 
       - name: Run tests
         shell: bash
-        run: npx nx affected -t build lint test --base=origin/main --head=${{ github.event.pull_request.head.sha || github.sha }}
+        run: pnpm exec nx affected -t lint test build --base=origin/main --head=${{ github.event.pull_request.head.sha || github.sha }}

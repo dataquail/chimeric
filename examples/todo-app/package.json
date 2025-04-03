@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build --base=/react-todo-app-ddd-service",
+    "build": "tsc && vite build --base=/todo-app",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write .",
     "format:ci": "prettier --check .",
@@ -15,7 +15,6 @@
   "dependencies": {
     "@chimeric/core": "workspace:*",
     "@chimeric/react-query": "workspace:*",
-    "@chimeric/testing": "workspace:*",
     "@chimeric/utilities": "workspace:*",
     "@mantine/core": "^7.10.0",
     "@mantine/form": "^7.10.0",
@@ -37,6 +36,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@chimeric/testing": "workspace:*",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.4.5",
     "@testing-library/react": "^14.3.1",
