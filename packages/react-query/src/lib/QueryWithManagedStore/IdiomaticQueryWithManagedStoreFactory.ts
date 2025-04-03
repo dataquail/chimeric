@@ -1,5 +1,6 @@
 import { QueryClient, UseQueryOptions, OmitKeyof } from '@tanstack/react-query';
 import { IdiomaticQuery, createIdiomaticQuery } from '@chimeric/core';
+import { getParamsAndOptionsFromIdiomaticQuery } from '../utils';
 
 export const IdiomaticQueryWithManagedStoreFactory = <
   TParams = void,
@@ -21,16 +22,13 @@ export const IdiomaticQueryWithManagedStoreFactory = <
     getFromStore: (args: TParams) => TResult;
   },
 ): IdiomaticQuery<TParams, TResult> => {
-  return createIdiomaticQuery(async (args) => {
-    const { options, ...params } = args ?? {};
+  return createIdiomaticQuery(async (paramsOrOptions, optionsOrNever) => {
+    const { params, options } = getParamsAndOptionsFromIdiomaticQuery(
+      paramsOrOptions,
+      optionsOrNever,
+    );
     const queryOptions = getQueryOptions(params as TParams);
-    const optionsWithOverridesApplied = args?.options ?? {
-      forceRefetch: false,
-      ...options,
-    };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { forceRefetch, ...fetchQueryOptions } = optionsWithOverridesApplied;
-    if (optionsWithOverridesApplied.forceRefetch) {
+    if (options.forceRefetch) {
       await queryClient.invalidateQueries({
         queryKey: queryOptions.queryKey,
       });
@@ -39,8 +37,9 @@ export const IdiomaticQueryWithManagedStoreFactory = <
     if (!queryOptions.queryKey) {
       throw new Error('queryKey is required');
     }
+
     await queryClient.fetchQuery({
-      ...fetchQueryOptions,
+      ...queryOptions,
       queryKey: queryOptions.queryKey,
       queryFn: async () => {
         await queryFn(params as TParams);
