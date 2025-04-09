@@ -8,6 +8,7 @@ export type ReactiveAsync<
   TParams,
   TResult,
   E extends Error,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 > = TParams extends Record<'options', any>
   ? never
   : TParams extends void

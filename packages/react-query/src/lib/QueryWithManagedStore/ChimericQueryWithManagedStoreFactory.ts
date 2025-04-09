@@ -27,18 +27,15 @@ export const ChimericQueryWithManagedStoreFactory = <
   },
 ): ChimericQuery<TParams, TResult, E> => {
   return fuseChimericQuery({
-    idiomatic: IdiomaticQueryWithManagedStoreFactory<TParams, TResult>(
-      queryClient,
-      {
-        queryFn,
-        getQueryOptions,
-        getFromStore,
-      },
-    ),
-    reactive: ReactiveQueryWithManagedStoreFactory<TParams, TResult, E>({
+    idiomatic: IdiomaticQueryWithManagedStoreFactory(queryClient, {
+      queryFn,
+      getQueryOptions,
+      getFromStore,
+    }),
+    reactive: ReactiveQueryWithManagedStoreFactory({
       queryFn,
       getQueryOptions,
       useFromStore,
-    }).useQuery,
+    }),
   });
 };

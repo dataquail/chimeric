@@ -1,5 +1,6 @@
 export type IdiomaticQuery<TParams, TResult> = TParams extends Record<
   'options',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   any
 >
   ? never
@@ -13,6 +14,7 @@ export type ReactiveQuery<
   TParams,
   TResult,
   E extends Error,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 > = TParams extends Record<'options', any>
   ? never
   : TParams extends void

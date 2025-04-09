@@ -14,7 +14,7 @@ export const fuseChimericSync = <TParams = void, TResult = unknown>(args: {
 };
 
 export const createIdiomaticSync = <TParams = void, TResult = unknown>(
-  idiomaticFn: (params: TParams) => ReturnType<IdiomaticSync<TParams, TResult>>,
+  idiomaticFn: (params: TParams) => TResult,
 ): IdiomaticSync<TParams, TResult> => {
   if (isIdiomaticSync<TParams, TResult>(idiomaticFn)) {
     return idiomaticFn as IdiomaticSync<TParams, TResult>;
@@ -24,9 +24,7 @@ export const createIdiomaticSync = <TParams = void, TResult = unknown>(
 };
 
 export const createReactiveSync = <TParams = void, TResult = unknown>(
-  reactiveFn: (
-    params: TParams,
-  ) => ReturnType<ReactiveSync<TParams, TResult>['useSync']>,
+  reactiveFn: (params: TParams) => TResult,
 ): ReactiveSync<TParams, TResult> => {
   const reactiveSync = {
     useSync: reactiveFn,

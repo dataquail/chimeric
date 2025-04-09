@@ -9,7 +9,11 @@ import {
 } from './reviewedTodoStore';
 import { ReviewedTodo } from 'src/core/domain/review/entities/ReviewedTodo';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
-import { fuseChimericSync } from '@chimeric/core';
+import {
+  createIdiomaticSync,
+  createReactiveSync,
+  fuseChimericSync,
+} from '@chimeric/core';
 
 @injectable()
 export class ReviewedTodoRepositoryImpl implements IReviewedTodoRepository {
@@ -42,19 +46,19 @@ export class ReviewedTodoRepositoryImpl implements IReviewedTodoRepository {
 
   private readonly getOneByIdImpl: IReviewedTodoRepository['getOneById'] =
     fuseChimericSync({
-      idiomatic: (args) => {
+      idiomatic: createIdiomaticSync((args) => {
         const record = this.appStoreProvider.get().getState().todo.reviewedTodo[
           args.id
         ];
         return record ? ReviewedTodoRepositoryImpl.toDomain(record) : undefined;
-      },
-      reactive: (args) => {
+      }),
+      reactive: createReactiveSync((args) => {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const record = useAppSelector(
           (state) => state.todo.reviewedTodo[args.id],
         );
         return record ? ReviewedTodoRepositoryImpl.toDomain(record) : undefined;
-      },
+      }),
     });
 
   private static toDomain(record: ReviewedTodoRecord): ReviewedTodo {
