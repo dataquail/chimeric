@@ -38,7 +38,6 @@ export class ReviewRepositoryImpl implements IReviewRepository {
       return record ? ReviewRepositoryImpl.toDomain(record) : undefined;
     }),
     reactive: createReactiveSync(() => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       const record = useAppSelector((state) => state.todo.review.record);
       return record ? ReviewRepositoryImpl.toDomain(record) : undefined;
     }),

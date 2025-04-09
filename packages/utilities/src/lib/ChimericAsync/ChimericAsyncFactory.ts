@@ -7,6 +7,7 @@ export const ChimericAsyncFactory = <
   TResult = unknown,
   E extends Error = Error,
 >(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   asyncFn: TParams extends Record<'options', any>
     ? never
     : TParams extends void
