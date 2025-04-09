@@ -22,7 +22,7 @@ export const IdiomaticQueryWithManagedStoreFactory = <
     getFromStore: (args: TParams) => TResult;
   },
 ): IdiomaticQuery<TParams, TResult> => {
-  return createIdiomaticQuery(async (paramsOrOptions, optionsOrNever) => {
+  return createIdiomaticQuery((async (paramsOrOptions, optionsOrNever) => {
     const { params, options } = getParamsAndOptionsFromIdiomaticQuery(
       paramsOrOptions,
       optionsOrNever,
@@ -47,5 +47,5 @@ export const IdiomaticQueryWithManagedStoreFactory = <
       },
     });
     return getFromStore(params as TParams);
-  });
+  }) as IdiomaticQuery<TParams, TResult>);
 };

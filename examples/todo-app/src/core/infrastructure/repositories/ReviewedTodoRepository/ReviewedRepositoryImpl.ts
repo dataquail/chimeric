@@ -9,7 +9,7 @@ import {
 } from './reviewedTodoStore';
 import { ReviewedTodo } from 'src/core/domain/review/entities/ReviewedTodo';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
-import { fuseChimericRead } from '@chimeric/core';
+import { fuseChimericSync } from '@chimeric/core';
 
 @injectable()
 export class ReviewedTodoRepositoryImpl implements IReviewedTodoRepository {
@@ -41,7 +41,7 @@ export class ReviewedTodoRepositoryImpl implements IReviewedTodoRepository {
   }
 
   private readonly getOneByIdImpl: IReviewedTodoRepository['getOneById'] =
-    fuseChimericRead({
+    fuseChimericSync({
       idiomatic: (args) => {
         const record = this.appStoreProvider.get().getState().todo.reviewedTodo[
           args.id

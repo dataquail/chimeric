@@ -1,15 +1,8 @@
-import {
-  IdiomaticQueryOptions,
-  IdiomaticQueryOptionsOrNever,
-  IdiomaticQueryParams,
-  ReactiveQueryOptions,
-  ReactiveQueryOptionsOrNever,
-  ReactiveQueryParamsOrOptions,
-} from '@chimeric/core';
+import { IdiomaticQueryOptions, ReactiveQueryOptions } from '@chimeric/core';
 
 export const getParamsAndOptionsFromReactiveQuery = <TParams>(
-  paramsOrOptions: ReactiveQueryParamsOrOptions<TParams> | undefined,
-  optionsOrNever: ReactiveQueryOptionsOrNever<TParams> | undefined,
+  paramsOrOptions: TParams | ReactiveQueryOptions,
+  optionsOrNever: ReactiveQueryOptions | void,
 ) => {
   let params = undefined as TParams;
   let options: ReactiveQueryOptions = {
@@ -27,14 +20,14 @@ export const getParamsAndOptionsFromReactiveQuery = <TParams>(
     }
   } else if (paramsOrOptions && optionsOrNever) {
     params = paramsOrOptions as TParams;
-    options = optionsOrNever as ReactiveQueryOptions;
+    options = optionsOrNever;
   }
   return { params, options };
 };
 
 export const getParamsAndOptionsFromIdiomaticQuery = <TParams>(
-  paramsOrOptions: IdiomaticQueryParams<TParams> | undefined,
-  optionsOrNever: IdiomaticQueryOptionsOrNever<TParams> | undefined,
+  paramsOrOptions: TParams | IdiomaticQueryOptions,
+  optionsOrNever: IdiomaticQueryOptions | void,
 ) => {
   let params = undefined as TParams;
   let options: IdiomaticQueryOptions = {
@@ -52,7 +45,7 @@ export const getParamsAndOptionsFromIdiomaticQuery = <TParams>(
     }
   } else if (paramsOrOptions && optionsOrNever) {
     params = paramsOrOptions as TParams;
-    options = optionsOrNever as IdiomaticQueryOptions;
+    options = optionsOrNever;
   }
   return { params, options };
 };

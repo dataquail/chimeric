@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ChimericReadTestHarness, chimericMethods } from '@chimeric/testing';
+import { ChimericSyncTestHarness, chimericMethods } from '@chimeric/testing';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 import { appContainer } from 'src/core/global/appContainer';
 import { getTestWrapper } from 'src/__test__/getTestWrapper';
@@ -15,8 +15,8 @@ describe('ReviewedTodoRepositoryImpl', () => {
 
   it.each(chimericMethods)('getOneById.%s', async (method) => {
     const reviewedTodoRepository = getReviewedTodoRepository();
-    const getOneByIdHarness = ChimericReadTestHarness({
-      chimericRead: reviewedTodoRepository.getOneById,
+    const getOneByIdHarness = ChimericSyncTestHarness({
+      chimericSync: reviewedTodoRepository.getOneById,
       method,
       params: { id: '1' },
       wrapper: getTestWrapper(),
@@ -38,15 +38,15 @@ describe('ReviewedTodoRepositoryImpl', () => {
 
   it.each(chimericMethods)('saveMany.%s', async (method) => {
     const reviewedTodoRepository = getReviewedTodoRepository();
-    const getOneById1Harness = ChimericReadTestHarness({
-      chimericRead: reviewedTodoRepository.getOneById,
+    const getOneById1Harness = ChimericSyncTestHarness({
+      chimericSync: reviewedTodoRepository.getOneById,
       method,
       params: { id: '1' },
       wrapper: getTestWrapper(),
     });
 
-    const getOneById2Harness = ChimericReadTestHarness({
-      chimericRead: reviewedTodoRepository.getOneById,
+    const getOneById2Harness = ChimericSyncTestHarness({
+      chimericSync: reviewedTodoRepository.getOneById,
       method,
       params: { id: '2' },
       wrapper: getTestWrapper(),
@@ -79,8 +79,8 @@ describe('ReviewedTodoRepositoryImpl', () => {
 
   it.each(chimericMethods)('delete.%s', async (method) => {
     const reviewedTodoRepository = getReviewedTodoRepository();
-    const getOneByIdHarness = ChimericReadTestHarness({
-      chimericRead: reviewedTodoRepository.getOneById,
+    const getOneByIdHarness = ChimericSyncTestHarness({
+      chimericSync: reviewedTodoRepository.getOneById,
       method,
       params: { id: '1' },
       wrapper: getTestWrapper(),

@@ -3,8 +3,8 @@ import { setupServer } from 'msw/node';
 import { act } from 'react';
 import {
   chimericMethods,
-  ChimericPromiseTestHarness,
-  ChimericReadTestHarness,
+  ChimericAsyncTestHarness,
+  ChimericSyncTestHarness,
 } from '@chimeric/testing';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 import { appContainer } from 'src/core/global/appContainer';
@@ -70,14 +70,14 @@ describe('StartReviewUseCase', () => {
     withOneUncompletedAndOneCompletedActiveTodoInList();
     withOneSavedForLaterTodoInList();
     const testWrapper = getTestWrapper();
-    const startReviewHarness = ChimericPromiseTestHarness({
-      chimericPromise: getStartReviewUseCase().execute,
-      chimericMethod,
+    const startReviewHarness = ChimericAsyncTestHarness({
+      chimericAsync: getStartReviewUseCase().execute,
+      method: chimericMethod,
       wrapper: testWrapper,
     });
-    const getReviewHarness = ChimericReadTestHarness({
-      chimericRead: getReviewRepository().get,
-      chimericMethod,
+    const getReviewHarness = ChimericSyncTestHarness({
+      chimericSync: getReviewRepository().get,
+      method: chimericMethod,
       wrapper: testWrapper,
     });
 

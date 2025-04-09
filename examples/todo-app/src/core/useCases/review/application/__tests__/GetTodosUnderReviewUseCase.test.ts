@@ -2,8 +2,8 @@ import { describe, it, expect, beforeAll, afterEach, afterAll } from 'vitest';
 import { setupServer } from 'msw/node';
 import { act } from 'react';
 import {
-  ChimericPromiseTestHarness,
-  ReactiveAsyncReadTestHarness,
+  ChimericAsyncTestHarness,
+  ReactiveEagerAsyncTestHarness,
   reactiveMethods,
 } from '@chimeric/testing';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
@@ -70,13 +70,13 @@ describe('GetTodosUnderReviewUseCase', () => {
     withOneUncompletedAndOneCompletedActiveTodoInList();
     withOneSavedForLaterTodoInList();
     const testWrapper = getTestWrapper();
-    const startReviewHarness = ChimericPromiseTestHarness({
-      chimericPromise: getStartReviewUseCase().execute,
+    const startReviewHarness = ChimericAsyncTestHarness({
+      chimericAsync: getStartReviewUseCase().execute,
       method,
       wrapper: testWrapper,
     });
-    const getTodosUnderReviewHarness = ReactiveAsyncReadTestHarness({
-      reactiveAsyncRead: getGetTodosUnderReviewUseCase().execute,
+    const getTodosUnderReviewHarness = ReactiveEagerAsyncTestHarness({
+      reactiveEagerAsync: getGetTodosUnderReviewUseCase().execute,
       wrapper: testWrapper,
     });
 

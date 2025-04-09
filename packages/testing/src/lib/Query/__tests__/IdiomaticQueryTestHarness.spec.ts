@@ -1,5 +1,4 @@
 import { IdiomaticQueryTestHarness } from '../IdiomaticQueryTestHarness';
-import { createIdiomaticQuery } from '@chimeric/core';
 
 describe('IdiomaticQueryTestHarness', () => {
   const wait = (ms: number) =>
@@ -11,7 +10,7 @@ describe('IdiomaticQueryTestHarness', () => {
       return 'test';
     });
     const query = IdiomaticQueryTestHarness({
-      idiomaticQuery: createIdiomaticQuery(mockPromise),
+      idiomaticQuery: mockPromise,
     });
 
     expect(query.result.current.isIdle).toBe(false);
@@ -36,7 +35,7 @@ describe('IdiomaticQueryTestHarness', () => {
   it('should reinvokeIdiomaticFn', async () => {
     const mockPromise = vi.fn(() => Promise.resolve('test'));
     const query = IdiomaticQueryTestHarness({
-      idiomaticQuery: createIdiomaticQuery(mockPromise),
+      idiomaticQuery: mockPromise,
     });
 
     expect(query.result.current.isIdle).toBe(false);

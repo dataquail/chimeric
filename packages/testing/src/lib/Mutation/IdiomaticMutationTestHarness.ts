@@ -5,9 +5,9 @@ import { BaseWaitForOptions } from 'src/types/WaitForOptions.js';
 import { MutationTestHarness } from './types.js';
 
 export const IdiomaticMutationTestHarness = <
-  TParams,
-  TResult,
-  E extends Error,
+  TParams = void,
+  TResult = unknown,
+  E extends Error = Error,
 >({
   idiomaticMutation,
 }: {
@@ -21,8 +21,7 @@ export const IdiomaticMutationTestHarness = <
         result.current.isSuccess = false;
         result.current.isError = false;
         result.current.error = null;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const promise = idiomaticMutation(args as any);
+        const promise = idiomaticMutation(args);
         promise
           .then((data) => {
             result.current.data = data;
@@ -63,5 +62,5 @@ export const IdiomaticMutationTestHarness = <
       });
     },
     result,
-  };
+  } as MutationTestHarness<TParams, TResult, E>;
 };

@@ -14,6 +14,6 @@ export const ChimericMutationFactory = <
 ): ChimericMutation<TParams, TResult, E> => {
   return fuseChimericMutation({
     idiomatic: IdiomaticMutationFactory(queryClient, mutationOptions),
-    reactive: ReactiveMutationFactory(mutationOptions).useMutation,
+    reactive: ReactiveMutationFactory(mutationOptions),
   });
 };

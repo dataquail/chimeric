@@ -45,19 +45,27 @@ describe('IdiomaticQueryFactory', () => {
       },
     });
     const mockQueryFn = vi.fn((name: string) => Promise.resolve(name));
-    const idiomaticQuery = IdiomaticQueryFactory(queryClient, (name: string) =>
-      queryOptions({ queryKey: ['test'], queryFn: () => mockQueryFn(name) }),
+    const idiomaticQuery = IdiomaticQueryFactory(
+      queryClient,
+      (args: { name: string }) =>
+        queryOptions({
+          queryKey: ['test'],
+          queryFn: () => mockQueryFn(args.name),
+        }),
     );
-    const result = await idiomaticQuery('John');
+    const result = await idiomaticQuery({ name: 'John' });
 
     expect(result).toBe('John');
     expect(mockQueryFn).toHaveBeenCalledWith('John');
 
-    const result2 = await idiomaticQuery('Paul');
+    const result2 = await idiomaticQuery({ name: 'Paul' });
 
     expect(result2).toBe('John');
 
-    const result3 = await idiomaticQuery('Ringo', { forceRefetch: true });
+    const result3 = await idiomaticQuery({
+      name: 'Ringo',
+      options: { forceRefetch: true },
+    });
 
     expect(result3).toBe('Ringo');
     expect(mockQueryFn).toHaveBeenCalledTimes(2);

@@ -15,6 +15,6 @@ export const ChimericQueryFactory = <
 ): ChimericQuery<TParams, TResult, E> => {
   return fuseChimericQuery({
     idiomatic: IdiomaticQueryFactory(queryClient, getQueryOptions),
-    reactive: ReactiveQueryFactory(getQueryOptions).useQuery,
+    reactive: ReactiveQueryFactory(getQueryOptions),
   });
 };

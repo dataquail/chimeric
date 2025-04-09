@@ -4,7 +4,7 @@ import { Review } from 'src/core/domain/review/entities/Review';
 import { saveReview, deleteReview, ReviewRecord } from './reviewStore';
 import { useAppSelector } from 'src/lib/store';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
-import { fuseChimericRead } from '@chimeric/core';
+import { fuseChimericSync } from '@chimeric/core';
 @injectable()
 export class ReviewRepositoryImpl implements IReviewRepository {
   public readonly save: IReviewRepository['save'];
@@ -28,7 +28,7 @@ export class ReviewRepositoryImpl implements IReviewRepository {
     this.appStoreProvider.get().dispatch(deleteReview());
   }
 
-  private readonly getImpl: IReviewRepository['get'] = fuseChimericRead({
+  private readonly getImpl: IReviewRepository['get'] = fuseChimericSync({
     idiomatic: () => {
       const record = this.appStoreProvider.get().getState().todo.review.record;
       return record ? ReviewRepositoryImpl.toDomain(record) : undefined;
