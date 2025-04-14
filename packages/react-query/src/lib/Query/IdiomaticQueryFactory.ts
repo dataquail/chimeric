@@ -1,6 +1,9 @@
 import { type QueryClient, type QueryOptions } from '@tanstack/react-query';
-import { IdiomaticQuery, createIdiomaticQuery } from '@chimeric/core';
-import { getParamsAndOptionsFromIdiomaticQuery } from '../utils';
+import {
+  IdiomaticQuery,
+  IdiomaticQueryOptions,
+  isIdiomaticQuery,
+} from '@chimeric/core';
 
 export const IdiomaticQueryFactory = <
   TParams = void,
@@ -12,13 +15,12 @@ export const IdiomaticQueryFactory = <
     args: TParams,
   ) => QueryOptions<TResult, E, TResult, string[]>,
 ): IdiomaticQuery<TParams, TResult> => {
-  return createIdiomaticQuery(async (paramsOrOptions, optionsOrNever) => {
-    const { params, options } = getParamsAndOptionsFromIdiomaticQuery(
-      paramsOrOptions,
-      optionsOrNever,
-    );
+  const idiomaticQuery = async (
+    paramsAndOptions?: TParams & { options?: IdiomaticQueryOptions },
+  ) => {
+    const { options, ...params } = paramsAndOptions ?? {};
     const queryOptions = getQueryOptions(params as TParams);
-    if (options.forceRefetch) {
+    if (options?.forceRefetch) {
       await queryClient.invalidateQueries({
         queryKey: queryOptions.queryKey,
       });
@@ -33,5 +35,11 @@ export const IdiomaticQueryFactory = <
       queryKey: queryOptions.queryKey,
       queryFn: queryOptions.queryFn,
     });
-  });
+  };
+
+  if (isIdiomaticQuery<TParams, TResult>(idiomaticQuery)) {
+    return idiomaticQuery;
+  } else {
+    throw new Error('idiomaticQuery is not qualified to be idiomatic query');
+  }
 };

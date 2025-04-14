@@ -1,24 +1,40 @@
-import {
-  ExtractChimericParameter,
-  ExtractChimericPromiseReturnType,
-} from './UtilityTypes.js';
+export type IdiomaticMutation<TParams, TResult> = TParams extends void
+  ? () => Promise<TResult>
+  : TParams extends object
+  ? (params: TParams) => Promise<TResult>
+  : never;
 
-export type IdiomaticMutation<TParams, TResult> = (
-  params: TParams,
-) => Promise<TResult>;
-
-export type ReactiveMutation<TParams, TResult, E extends Error> = {
-  useMutation: () => {
-    call: (args: TParams) => Promise<TResult>;
-    isIdle: boolean;
-    isPending: boolean;
-    isSuccess: boolean;
-    isError: boolean;
-    error: E | null;
-    data: TResult | undefined;
-    reset: () => void;
-  };
-};
+export type ReactiveMutation<
+  TParams,
+  TResult,
+  E extends Error,
+> = TParams extends void
+  ? {
+      useMutation: () => {
+        call: () => Promise<TResult>;
+        isIdle: boolean;
+        isPending: boolean;
+        isSuccess: boolean;
+        isError: boolean;
+        error: E | null;
+        data: TResult | undefined;
+        reset: () => void;
+      };
+    }
+  : TParams extends object
+  ? {
+      useMutation: () => {
+        call: (params: TParams) => Promise<TResult>;
+        isIdle: boolean;
+        isPending: boolean;
+        isSuccess: boolean;
+        isError: boolean;
+        error: E | null;
+        data: TResult | undefined;
+        reset: () => void;
+      };
+    }
+  : never;
 
 export type ChimericMutation<
   TParams,
@@ -31,28 +47,17 @@ export type DefineChimericMutation<
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   E extends Error = Error,
-> = ChimericMutation<
-  ExtractChimericParameter<T>,
-  ExtractChimericPromiseReturnType<T>,
-  E
->;
+> = ChimericMutation<Parameters<T>[0], Awaited<ReturnType<T>>, E>;
 
 export type DefineIdiomaticMutation<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
-> = IdiomaticMutation<
-  ExtractChimericParameter<T>,
-  ExtractChimericPromiseReturnType<T>
->;
+> = IdiomaticMutation<Parameters<T>[0], Awaited<ReturnType<T>>>;
 
 export type DefineReactiveMutation<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   E extends Error = Error,
-> = ReactiveMutation<
-  ExtractChimericParameter<T>,
-  ExtractChimericPromiseReturnType<T>,
-  E
->;
+> = ReactiveMutation<Parameters<T>[0], Awaited<ReturnType<T>>, E>;

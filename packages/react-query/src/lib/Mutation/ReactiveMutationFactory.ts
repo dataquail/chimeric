@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { createReactiveMutation, ReactiveMutation } from '@chimeric/core';
+import { ReactiveMutation, isReactiveMutation } from '@chimeric/core';
 import { MutationOptions, ReactiveMutationOptions } from '../types';
 
 export const ReactiveMutationFactory = <
@@ -9,8 +9,10 @@ export const ReactiveMutationFactory = <
 >(
   mutationOptions: MutationOptions<TParams, TResult, E>,
 ): ReactiveMutation<TParams, TResult, E> => {
-  return createReactiveMutation(
-    (config?: { options: ReactiveMutationOptions<TParams, TResult, E> }) => {
+  const reactiveMutation = {
+    useMutation: (config?: {
+      options: ReactiveMutationOptions<TParams, TResult, E>;
+    }) => {
       const mutation = useMutation<TResult, E, TParams, unknown>({
         ...mutationOptions,
         ...(config?.options ?? {}),
@@ -26,5 +28,12 @@ export const ReactiveMutationFactory = <
         reset: mutation.reset,
       };
     },
-  );
+  };
+  if (isReactiveMutation<TParams, TResult, E>(reactiveMutation)) {
+    return reactiveMutation;
+  } else {
+    throw new Error(
+      'reactiveMutation is not qualified to be reactive mutation',
+    );
+  }
 };

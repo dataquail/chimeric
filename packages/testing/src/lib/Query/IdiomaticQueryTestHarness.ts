@@ -1,15 +1,21 @@
 /* eslint-disable no-async-promise-executor */
-import { IdiomaticQuery } from '@chimeric/core';
+import { IdiomaticQuery, IdiomaticQueryOptions } from '@chimeric/core';
 import { checkOnInterval } from '../checkOnInterval.js';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
 import { QueryTestHarness } from './types.js';
 
-export const IdiomaticQueryTestHarness = <TParams, TResult, E extends Error>({
+export const IdiomaticQueryTestHarness = <
+  TParams = void,
+  TResult = void,
+  E extends Error = Error,
+>({
   idiomaticQuery,
   params,
+  options,
 }: {
   idiomaticQuery: IdiomaticQuery<TParams, TResult>;
   params?: TParams;
+  options?: IdiomaticQueryOptions;
 }): QueryTestHarness<TResult, E> => {
   const result = {
     current: {
@@ -28,8 +34,16 @@ export const IdiomaticQueryTestHarness = <TParams, TResult, E extends Error>({
     | 'rejected';
   result.current.isIdle = false;
   result.current.isPending = true;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let promise = idiomaticQuery(params as any);
+  let promise = idiomaticQuery({
+    ...params,
+    options: {
+      ...options,
+    },
+  } as {
+    options: IdiomaticQueryOptions;
+  } & TParams & {
+      options?: IdiomaticQueryOptions;
+    });
   promiseStatus = 'pending';
   promise
     .then((data) => {
@@ -55,8 +69,16 @@ export const IdiomaticQueryTestHarness = <TParams, TResult, E extends Error>({
       return new Promise<void>(async (resolve, reject) => {
         try {
           if (options?.reinvokeIdiomaticFn && promiseStatus === 'resolved') {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            promise = idiomaticQuery(params as any);
+            promise = idiomaticQuery({
+              ...params,
+              options: {
+                ...options,
+              },
+            } as {
+              options: IdiomaticQueryOptions;
+            } & TParams & {
+                options?: IdiomaticQueryOptions;
+              });
             promiseStatus = 'pending';
             promise
               .then((data) => {

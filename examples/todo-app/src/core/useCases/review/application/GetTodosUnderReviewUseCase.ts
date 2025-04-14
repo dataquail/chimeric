@@ -3,10 +3,10 @@ import { ActiveTodo } from 'src/core/domain/activeTodo/entities/ActiveTodo';
 import { Review } from 'src/core/domain/review/entities/Review';
 import { SavedForLaterTodo } from 'src/core/domain/savedForLaterTodo/entities/SavedForLaterTodo';
 import {
-  // DefineChimericAsyncRead,
-  // fuseChimericAsyncRead,
-  DefineReactiveAsyncRead,
-  createReactiveAsyncRead,
+  // DefineChimericEagerAsync,
+  // fuseChimericEagerAsync,
+  DefineReactiveEagerAsync,
+  createReactiveEagerAsync,
 } from '@chimeric/core';
 import { MetaAggregatorFactory } from '@chimeric/utilities';
 import { TodoUnderReview } from 'src/core/domain/review/viewModels/out/TodoUnderReview';
@@ -14,11 +14,11 @@ import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 
 @injectable()
 export class GetTodosUnderReviewUseCase {
-  // public readonly execute: DefineChimericAsyncRead<
+  // public readonly execute: DefineChimericEagerAsync<
   //   () => Promise<TodoUnderReview[]>,
   //   Error
   // >;
-  public readonly execute: DefineReactiveAsyncRead<
+  public readonly execute: DefineReactiveEagerAsync<
     () => Promise<TodoUnderReview[]>,
     Error
   >;
@@ -33,19 +33,39 @@ export class GetTodosUnderReviewUseCase {
     @inject(InjectionSymbol('ISavedForLaterTodoService'))
     private readonly savedForLaterTodoService: InjectionType<'ISavedForLaterTodoService'>,
   ) {
-    // this.execute = fuseChimericAsyncRead({
+    // this.execute = fuseChimericEagerAsync({
     //   idiomatic: this.idiomaticImpl.bind(this),
     //   reactive: this.reactiveImpl.bind(this),
     // });
+    // this.execute = { useEagerAsync: this.reactiveImpl.bind(this) };
+    this.execute = createReactiveEagerAsync(this.reactiveImpl.bind(this));
 
-    this.execute = createReactiveAsyncRead(this.reactiveImpl.bind(this));
+    // NOTE: ideal api for eager async operations that aggregate data from multiple async sources
+    // such as this use-case
+    // this.execute = createChimericEagerAsyncFromMany(
+    //   [
+    //     [this.activeTodoService.getAll, { enabled: true}],
+    //     [this.savedForLaterTodoService.getAll],
+    //     [this.reviewRepository.get],
+    //   ],
+    //   ([
+    //     activeTodoListMeta,
+    //     savedForLaterTodoListMeta,
+    //     reviewMeta,
+    //   ]) => {
+    //     if (!activeTodoList || !savedForLaterTodoList || !review) {
+    //       return [];
+    //     }
+
+    //     return this._execute(metaList);
+    //   },
+    // );
   }
-
   private reactiveImpl() {
     const activeTodoListMeta = this.activeTodoService.getAll.useQuery();
     const savedForLaterTodoListMeta =
       this.savedForLaterTodoService.getAll.useQuery();
-    const review = this.reviewRepository.get.use();
+    const review = this.reviewRepository.get.useSync();
 
     return MetaAggregatorFactory(
       [activeTodoListMeta, savedForLaterTodoListMeta],

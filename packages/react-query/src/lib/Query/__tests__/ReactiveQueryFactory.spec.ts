@@ -51,25 +51,28 @@ describe('ReactiveQueryFactory', () => {
 
   it('should invoke the reactive hook with non-object params', async () => {
     const queryClient = new QueryClient();
-    const mockQueryFn = vi.fn((name: string) =>
-      Promise.resolve(`Hello ${name}`),
+    const mockQueryFn = vi.fn((args: { name: string }) =>
+      Promise.resolve(`Hello ${args.name}`),
     );
-    const chimericQuery = ReactiveQueryFactory((name: string) =>
+    const chimericQuery = ReactiveQueryFactory((args: { name: string }) =>
       queryOptions({
-        queryKey: ['test', name],
-        queryFn: async () => mockQueryFn(name),
+        queryKey: ['test', args.name],
+        queryFn: async () => mockQueryFn(args),
       }),
     );
-    const { result } = renderHook(() => chimericQuery.useQuery('John'), {
-      wrapper: getTestWrapper(queryClient),
-    });
+    const { result } = renderHook(
+      () => chimericQuery.useQuery({ name: 'John' }),
+      {
+        wrapper: getTestWrapper(queryClient),
+      },
+    );
 
     await waitFor(() => {
       expect(result.current.isPending).toBe(false);
     });
 
     expect(result.current.data).toBe('Hello John');
-    expect(mockQueryFn).toHaveBeenCalledWith('John');
+    expect(mockQueryFn).toHaveBeenCalledWith({ name: 'John' });
   });
 
   it('should disable the reactive hook', async () => {
@@ -82,7 +85,7 @@ describe('ReactiveQueryFactory', () => {
       }),
     );
     const { result } = renderHook(
-      () => reactiveQuery.useQuery({ enabled: false }),
+      () => reactiveQuery.useQuery({ options: { enabled: false } }),
       { wrapper: getTestWrapper(queryClient) },
     );
 
@@ -102,7 +105,8 @@ describe('ReactiveQueryFactory', () => {
       }),
     );
     const { result } = renderHook(
-      () => reactiveQuery.useQuery({ name: 'John' }, { enabled: false }),
+      () =>
+        reactiveQuery.useQuery({ name: 'John', options: { enabled: false } }),
       { wrapper: getTestWrapper(queryClient) },
     );
 
@@ -112,17 +116,18 @@ describe('ReactiveQueryFactory', () => {
 
   it('should disable the reactive hook with non-object params', async () => {
     const queryClient = new QueryClient();
-    const mockQueryFn = vi.fn((name: string) =>
-      Promise.resolve(`Hello ${name}`),
+    const mockQueryFn = vi.fn((args: { name: string }) =>
+      Promise.resolve(`Hello ${args.name}`),
     );
-    const reactiveQuery = ReactiveQueryFactory((name: string) =>
+    const reactiveQuery = ReactiveQueryFactory((args: { name: string }) =>
       queryOptions({
-        queryKey: ['test', name],
-        queryFn: async () => mockQueryFn(name),
+        queryKey: ['test', args.name],
+        queryFn: async () => mockQueryFn(args),
       }),
     );
     const { result } = renderHook(
-      () => reactiveQuery.useQuery('John', { enabled: false }),
+      () =>
+        reactiveQuery.useQuery({ name: 'John', options: { enabled: false } }),
       { wrapper: getTestWrapper(queryClient) },
     );
 

@@ -1,12 +1,12 @@
 import { inject, injectable } from 'inversify';
 import { createReview } from 'src/core/domain/review/entities/Review';
-import { DefineChimericPromise } from '@chimeric/core';
-import { ChimericPromiseFactory } from '@chimeric/utilities';
+import { DefineChimericAsync } from '@chimeric/core';
+import { ChimericAsyncFactory } from '@chimeric/utilities';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 
 @injectable()
 export class StartReviewUseCase {
-  public readonly execute: DefineChimericPromise<() => Promise<void>, Error>;
+  public readonly execute: DefineChimericAsync<() => Promise<void>>;
 
   constructor(
     @inject(InjectionSymbol('IReviewRepository'))
@@ -16,9 +16,7 @@ export class StartReviewUseCase {
     @inject(InjectionSymbol('ISavedForLaterTodoService'))
     private readonly savedForLaterTodoService: InjectionType<'ISavedForLaterTodoService'>,
   ) {
-    this.execute = ChimericPromiseFactory({
-      promiseFn: this._execute.bind(this),
-    });
+    this.execute = ChimericAsyncFactory(this._execute.bind(this));
   }
 
   private async _execute() {

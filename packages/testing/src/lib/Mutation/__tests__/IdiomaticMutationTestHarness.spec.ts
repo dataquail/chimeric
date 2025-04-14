@@ -1,5 +1,4 @@
 import { IdiomaticMutationTestHarness } from '../IdiomaticMutationTestHarness';
-import { createIdiomaticMutation } from '@chimeric/core';
 
 describe('IdiomaticMutationTestHarness', () => {
   const wait = (ms: number) =>
@@ -11,7 +10,7 @@ describe('IdiomaticMutationTestHarness', () => {
       return 'test';
     });
     const mutation = IdiomaticMutationTestHarness({
-      idiomaticMutation: createIdiomaticMutation(mockPromise),
+      idiomaticMutation: mockPromise,
     });
 
     expect(mutation.result.current.isIdle).toBe(true);

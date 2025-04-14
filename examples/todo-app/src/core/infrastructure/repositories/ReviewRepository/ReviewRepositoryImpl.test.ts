@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 import { appContainer } from 'src/core/global/appContainer';
 import { getTestWrapper } from 'src/__test__/getTestWrapper';
-import { ChimericReadTestHarness, chimericMethods } from '@chimeric/testing';
+import { ChimericSyncTestHarness, chimericMethods } from '@chimeric/testing';
 import { act } from 'react';
 import { createReview } from 'src/core/domain/review/entities/Review';
 
@@ -15,8 +15,8 @@ describe('ReviewRepositoryImpl', () => {
 
   it.each(chimericMethods)('get.%s', async (method) => {
     const reviewRepository = getReviewRepository();
-    const getHarness = ChimericReadTestHarness({
-      chimericRead: reviewRepository.get,
+    const getHarness = ChimericSyncTestHarness({
+      chimericSync: reviewRepository.get,
       method,
       wrapper: getTestWrapper(),
     });
@@ -25,8 +25,8 @@ describe('ReviewRepositoryImpl', () => {
 
   it.each(chimericMethods)('save.%s', async (method) => {
     const reviewRepository = getReviewRepository();
-    const getHarness = ChimericReadTestHarness({
-      chimericRead: reviewRepository.get,
+    const getHarness = ChimericSyncTestHarness({
+      chimericSync: reviewRepository.get,
       method,
       wrapper: getTestWrapper(),
     });
@@ -47,8 +47,8 @@ describe('ReviewRepositoryImpl', () => {
 
   it('delete', async () => {
     const reviewRepository = getReviewRepository();
-    const getHarness = ChimericReadTestHarness({
-      chimericRead: reviewRepository.get,
+    const getHarness = ChimericSyncTestHarness({
+      chimericSync: reviewRepository.get,
       method: 'idiomatic',
       wrapper: getTestWrapper(),
     });
