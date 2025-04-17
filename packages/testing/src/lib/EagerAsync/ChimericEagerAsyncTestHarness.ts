@@ -7,7 +7,6 @@ import { EagerAsyncTestHarness } from './types.js';
 
 // Overloads
 export function ChimericEagerAsyncTestHarness<
-  TParams extends void,
   TResult = unknown,
   E extends Error = Error,
 >(args: {

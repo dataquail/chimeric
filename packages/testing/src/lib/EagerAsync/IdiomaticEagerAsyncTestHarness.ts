@@ -6,7 +6,6 @@ import { EagerAsyncTestHarness } from './types.js';
 
 // Overloads
 export function IdiomaticEagerAsyncTestHarness<
-  TParams extends void,
   TResult = unknown,
   E extends Error = Error,
 >(args: {

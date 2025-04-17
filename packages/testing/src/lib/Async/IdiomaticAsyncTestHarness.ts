@@ -48,7 +48,9 @@ export function IdiomaticAsyncTestHarness<
           .idiomaticAsync({
             ...(params || {}),
             options: args.idiomaticOptions || {},
-          } as any)
+          } as {
+            options: IdiomaticAsyncOptions;
+          } & object)
           .then((data: TResult) => {
             result.current.data = data;
             result.current.isIdle = false;

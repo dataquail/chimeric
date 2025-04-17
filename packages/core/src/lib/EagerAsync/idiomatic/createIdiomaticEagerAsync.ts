@@ -2,10 +2,9 @@ import { isIdiomaticEagerAsync } from './isIdiomaticEagerAsync';
 import { IdiomaticEagerAsync } from './types';
 
 // Overloads
-export function createIdiomaticEagerAsync<
-  TParams extends void,
-  TResult = unknown,
->(idiomaticFn: () => Promise<TResult>): IdiomaticEagerAsync<void, TResult>;
+export function createIdiomaticEagerAsync<TResult = unknown>(
+  idiomaticFn: () => Promise<TResult>,
+): IdiomaticEagerAsync<void, TResult>;
 export function createIdiomaticEagerAsync<
   TParams extends object,
   TResult = unknown,

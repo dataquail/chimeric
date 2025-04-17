@@ -2,26 +2,27 @@ import { useState } from 'react';
 import { ReactiveAsync, ReactiveAsyncOptions } from '@chimeric/core';
 import { executeWithRetry } from './utils';
 
-interface ReactiveAsyncFactoryType {
-  <TParams extends void, TResult = unknown, E extends Error = Error>(
-    asyncFn: () => Promise<TResult>,
-  ): ReactiveAsync<TParams, TResult, E>;
-  <TParams extends object, TResult = unknown, E extends Error = Error>(
-    asyncFn: (params: TParams) => Promise<TResult>,
-  ): ReactiveAsync<TParams, TResult, E>;
-}
+export function ReactiveAsyncFactory<
+  TResult = unknown,
+  E extends Error = Error,
+>(asyncFn: () => Promise<TResult>): ReactiveAsync<void, TResult, E>;
+export function ReactiveAsyncFactory<
+  TParams extends object,
+  TResult = unknown,
+  E extends Error = Error,
+>(
+  asyncFn: (params: TParams) => Promise<TResult>,
+): ReactiveAsync<TParams, TResult, E>;
 
-export const ReactiveAsyncFactory: ReactiveAsyncFactoryType = <
+export function ReactiveAsyncFactory<
   TParams extends void | object,
   TResult = unknown,
   E extends Error = Error,
 >(
   asyncFn: TParams extends void
     ? () => Promise<TResult>
-    : TParams extends object
-    ? (params: TParams) => Promise<TResult>
-    : never,
-): ReactiveAsync<TParams, TResult, E> => {
+    : (params: TParams) => Promise<TResult>,
+): ReactiveAsync<TParams, TResult, E> {
   const reactiveAsync = {
     useAsync: (options?: ReactiveAsyncOptions) => {
       const [meta, setMeta] = useState<{
@@ -87,4 +88,4 @@ export const ReactiveAsyncFactory: ReactiveAsyncFactoryType = <
   };
 
   return reactiveAsync as ReactiveAsync<TParams, TResult, E>;
-};
+}

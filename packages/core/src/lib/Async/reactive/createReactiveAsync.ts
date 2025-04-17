@@ -2,11 +2,7 @@ import { isReactiveAsync } from './isReactiveAsync';
 import { ReactiveAsync } from './types';
 
 // Overloads
-export function createReactiveAsync<
-  TParams extends void,
-  TResult = unknown,
-  E extends Error = Error,
->(
+export function createReactiveAsync<TResult = unknown, E extends Error = Error>(
   reactiveFn: ReactiveAsync<void, TResult, E>['useAsync'],
 ): ReactiveAsync<void, TResult, E>;
 export function createReactiveAsync<

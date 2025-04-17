@@ -9,9 +9,7 @@ export type ReactiveAsync<
       useAsync: (options?: ReactiveAsyncOptions) => {
         call: TParams extends void
           ? () => Promise<TResult>
-          : TParams extends object
-          ? (params: TParams) => Promise<TResult>
-          : never;
+          : (params: TParams) => Promise<TResult>;
         isIdle: boolean;
         isPending: boolean;
         isSuccess: boolean;
@@ -27,6 +25,7 @@ export type ReactiveAsyncOptions = {
 
 export type DefineReactiveAsync<
   T extends (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     args: Parameters<T>[0] extends Record<'options', any>
       ? never
       : Parameters<T>[0],

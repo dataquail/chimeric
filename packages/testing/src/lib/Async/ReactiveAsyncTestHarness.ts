@@ -9,7 +9,6 @@ import { AsyncTestHarnessType } from './types';
 
 // Overloads
 export function ReactiveAsyncTestHarness<
-  TParams extends void,
   TResult = unknown,
   E extends Error = Error,
 >(args: {

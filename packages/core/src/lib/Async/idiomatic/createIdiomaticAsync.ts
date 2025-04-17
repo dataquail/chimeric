@@ -2,7 +2,7 @@ import { isIdiomaticAsync } from './isIdiomaticAsync';
 import { IdiomaticAsync } from './types';
 
 // Overloads
-export function createIdiomaticAsync<TParams extends void, TResult = unknown>(
+export function createIdiomaticAsync<TResult = unknown>(
   idiomaticFn: () => Promise<TResult>,
 ): IdiomaticAsync<void, TResult>;
 export function createIdiomaticAsync<TParams extends object, TResult = unknown>(

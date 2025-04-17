@@ -3,7 +3,6 @@ import { ReactiveEagerAsync } from './types';
 
 // Overloads
 export function createReactiveEagerAsync<
-  TParams extends void,
   TResult = unknown,
   E extends Error = Error,
 >(
