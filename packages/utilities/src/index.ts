@@ -1,4 +1,4 @@
 export * from './lib/ChimericEagerAsync/MetaAggregatorFactory.js';
-export * from './lib/ChimericAsync/ChimericAsyncFactory.js';
-export * from './lib/ChimericAsync/IdiomaticAsyncFactory.js';
-export * from './lib/ChimericAsync/ReactiveAsyncFactory.js';
+export * from './lib/Async/ChimericAsyncFactory.js';
+export * from './lib/Async/IdiomaticAsyncFactory.js';
+export * from './lib/Async/ReactiveAsyncFactory.js';

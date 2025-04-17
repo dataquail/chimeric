@@ -1,20 +1,39 @@
 /* eslint-disable no-async-promise-executor */
-import { IdiomaticAsync } from '@chimeric/core';
+import { IdiomaticEagerAsync } from '@chimeric/core';
 import { checkOnInterval } from '../checkOnInterval.js';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
 import { EagerAsyncTestHarness } from './types.js';
 
-export const IdiomaticEagerAsyncTestHarness = <
-  TParams = void,
-  TResult = void,
+// Overloads
+export function IdiomaticEagerAsyncTestHarness<
+  TParams extends void,
+  TResult = unknown,
+  E extends Error = Error,
+>(args: {
+  idiomaticEagerAsync: IdiomaticEagerAsync<void, TResult>;
+  params?: void;
+}): EagerAsyncTestHarness<TResult, E>;
+export function IdiomaticEagerAsyncTestHarness<
+  TParams extends object,
+  TResult = unknown,
+  E extends Error = Error,
+>(args: {
+  idiomaticEagerAsync: IdiomaticEagerAsync<TParams, TResult>;
+  params?: TParams;
+}): EagerAsyncTestHarness<TResult, E>;
+
+// Implementation
+export function IdiomaticEagerAsyncTestHarness<
+  TParams extends void | object,
+  TResult = unknown,
   E extends Error = Error,
 >({
   idiomaticEagerAsync,
   params,
 }: {
-  idiomaticEagerAsync: IdiomaticAsync<TParams, TResult>;
+  idiomaticEagerAsync: IdiomaticEagerAsync<TParams, TResult>;
   params?: TParams;
-}): EagerAsyncTestHarness<TResult, E> => {
+}): EagerAsyncTestHarness<TResult, E> {
   const result = {
     current: {
       data: undefined as TResult | undefined,
@@ -32,7 +51,7 @@ export const IdiomaticEagerAsyncTestHarness = <
     | 'rejected';
   result.current.isIdle = false;
   result.current.isPending = true;
-  let promise = idiomaticEagerAsync(params as TParams);
+  let promise = idiomaticEagerAsync(params as object);
   promiseStatus = 'pending';
   promise
     .then((data) => {
@@ -58,7 +77,7 @@ export const IdiomaticEagerAsyncTestHarness = <
       return new Promise<void>(async (resolve, reject) => {
         try {
           if (options?.reinvokeIdiomaticFn && promiseStatus === 'resolved') {
-            promise = idiomaticEagerAsync(params as TParams);
+            promise = idiomaticEagerAsync(params as object);
             promiseStatus = 'pending';
             promise
               .then((data) => {
@@ -98,4 +117,4 @@ export const IdiomaticEagerAsyncTestHarness = <
     },
     result,
   };
-};
+}

@@ -40,4 +40,43 @@ describe('IdiomaticAsyncTestHarness', () => {
     expect(promise.result.current.data).toBe('test');
     expect(mockPromise).toHaveBeenCalledTimes(1);
   });
+
+  it('should take options', async () => {
+    const mockPromise = vi.fn(async () => {
+      await wait(100);
+      return 'test';
+    });
+    const promise = IdiomaticAsyncTestHarness({
+      idiomaticAsync: mockPromise,
+      idiomaticOptions: { retry: 3 },
+    });
+
+    expect(promise.result.current.isIdle).toBe(true);
+    expect(promise.result.current.isPending).toBe(false);
+    expect(promise.result.current.isSuccess).toBe(false);
+    expect(promise.result.current.isError).toBe(false);
+    expect(promise.result.current.error).toBe(null);
+    expect(promise.result.current.data).toBe(undefined);
+
+    promise.result.current.call();
+
+    expect(promise.result.current.isIdle).toBe(false);
+    expect(promise.result.current.isPending).toBe(true);
+    expect(promise.result.current.isSuccess).toBe(false);
+    expect(promise.result.current.isError).toBe(false);
+    expect(promise.result.current.error).toBe(null);
+    expect(promise.result.current.data).toBe(undefined);
+
+    await promise.waitFor(() =>
+      expect(promise.result.current.isSuccess).toBe(true),
+    );
+
+    expect(promise.result.current.isSuccess).toBe(true);
+    expect(promise.result.current.isPending).toBe(false);
+    expect(promise.result.current.isError).toBe(false);
+    expect(promise.result.current.error).toBe(null);
+    expect(promise.result.current.data).toBe('test');
+    expect(mockPromise).toHaveBeenCalledTimes(1);
+    expect(mockPromise).toHaveBeenCalledWith({ options: { retry: 3 } });
+  });
 });
