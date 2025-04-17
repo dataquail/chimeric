@@ -309,6 +309,13 @@ importers:
       '@chimeric/core':
         specifier: workspace:*
         version: link:../core
+    devDependencies:
+      '@testing-library/dom':
+        specifier: ^10.4.0
+        version: 10.4.0
+      '@testing-library/jest-dom':
+        specifier: ^6.4.5
+        version: 6.6.3
       '@testing-library/react':
         specifier: ^14.3.1
         version: 14.3.1(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)

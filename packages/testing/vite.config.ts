@@ -36,13 +36,19 @@ export default defineConfig(() => ({
     },
     rollupOptions: {
       // External packages that should not be bundled into your library.
-      external: ['react', 'react-dom', '@chimeric/core', '@testing-library/react'],
+      external: [
+        'react',
+        'react-dom',
+        '@chimeric/core',
+        '@testing-library/react',
+      ],
     },
   },
   test: {
     watch: false,
     globals: true,
-    environment: 'node',
+    environment: 'jsdom',
+    setupFiles: './setupTests.ts',
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     reporters: ['default'],
     coverage: {

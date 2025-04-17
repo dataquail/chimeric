@@ -33,10 +33,10 @@ export const ReviewContent = injectComponent<InjectedProps>(
     finishReviewUseCase,
     getTodosUnderReviewUseCase,
   }) => {
-    const review = reviewRepository.get.use();
+    const review = reviewRepository.get.useSync();
     const hasStartedReview = Boolean(review);
-    const startReview = startReviewUseCase.execute.usePromise();
-    const getTodosUnderReview = getTodosUnderReviewUseCase.execute.useAsync();
+    const startReview = startReviewUseCase.execute.useAsync();
+    const todosUnderReview = getTodosUnderReviewUseCase.execute.useEagerAsync();
     const { height } = useViewportSize();
 
     return (
@@ -52,11 +52,11 @@ export const ReviewContent = injectComponent<InjectedProps>(
           )}
         </Group>
         <Space h="lg" />
-        {startReview.isPending || getTodosUnderReview.isPending ? (
+        {startReview.isPending || todosUnderReview.isPending ? (
           <Loader />
         ) : (
           <ScrollArea.Autosize mah={`calc(${height}px - 172px`}>
-            {getTodosUnderReview.data?.map((todo) => (
+            {todosUnderReview.data?.map((todo) => (
               <Box key={todo.id}>
                 <Title order={4}>{todo.title}</Title>
                 <Text size="sm">{`Created At: ${format(todo.createdAt, 'M/d/yyyy h:m aaa')}`}</Text>

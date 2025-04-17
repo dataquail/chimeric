@@ -1,8 +1,7 @@
-import { ReactiveAsyncOptions } from '@chimeric/core';
 import { BaseWaitForOptions } from 'src/types/WaitForOptions';
 
-export type AsyncTestHarness<
-  TParams = void,
+export type AsyncTestHarnessType<
+  TParams extends void | object,
   TResult = unknown,
   E extends Error = Error,
 > = {
@@ -11,15 +10,13 @@ export type AsyncTestHarness<
     current: {
       call: TParams extends void
         ? () => Promise<TResult>
-        : TParams extends { options: ReactiveAsyncOptions }
-        ? never
         : (params: TParams) => Promise<TResult>;
-      data: TResult | undefined;
       isIdle: boolean;
-      isSuccess: boolean;
       isPending: boolean;
+      isSuccess: boolean;
       isError: boolean;
       error: E | null;
+      data: TResult | undefined;
     };
   };
 };

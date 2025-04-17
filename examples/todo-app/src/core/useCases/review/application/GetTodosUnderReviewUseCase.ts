@@ -5,6 +5,7 @@ import { SavedForLaterTodo } from 'src/core/domain/savedForLaterTodo/entities/Sa
 import {
   // DefineChimericEagerAsync,
   // fuseChimericEagerAsync,
+  // createIdiomaticEagerAsync,
   DefineReactiveEagerAsync,
   createReactiveEagerAsync,
 } from '@chimeric/core';
@@ -34,10 +35,9 @@ export class GetTodosUnderReviewUseCase {
     private readonly savedForLaterTodoService: InjectionType<'ISavedForLaterTodoService'>,
   ) {
     // this.execute = fuseChimericEagerAsync({
-    //   idiomatic: this.idiomaticImpl.bind(this),
-    //   reactive: this.reactiveImpl.bind(this),
+    //   idiomatic: createIdiomaticEagerAsync(this.idiomaticImpl.bind(this)),
+    //   reactive: createReactiveEagerAsync(this.reactiveImpl.bind(this)),
     // });
-    // this.execute = { useEagerAsync: this.reactiveImpl.bind(this) };
     this.execute = createReactiveEagerAsync(this.reactiveImpl.bind(this));
 
     // NOTE: ideal api for eager async operations that aggregate data from multiple async sources

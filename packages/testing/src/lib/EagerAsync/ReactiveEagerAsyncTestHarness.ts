@@ -4,9 +4,29 @@ import { JSX, ReactNode } from 'react';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
 import { EagerAsyncTestHarness } from './types.js';
 
-export const ReactiveEagerAsyncTestHarness = <
-  TParams = void,
-  TResult = void,
+// Overloads
+export function ReactiveEagerAsyncTestHarness<
+  TResult = unknown,
+  E extends Error = Error,
+>(args: {
+  reactiveEagerAsync: ReactiveEagerAsync<void, TResult, E>;
+  params?: void;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): EagerAsyncTestHarness<TResult, E>;
+export function ReactiveEagerAsyncTestHarness<
+  TParams extends object,
+  TResult = unknown,
+  E extends Error = Error,
+>(args: {
+  reactiveEagerAsync: ReactiveEagerAsync<TParams, TResult, E>;
+  params?: TParams;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): EagerAsyncTestHarness<TResult, E>;
+
+// Implementation
+export function ReactiveEagerAsyncTestHarness<
+  TParams extends void | object,
+  TResult = unknown,
   E extends Error = Error,
 >({
   reactiveEagerAsync,
@@ -16,9 +36,9 @@ export const ReactiveEagerAsyncTestHarness = <
   reactiveEagerAsync: ReactiveEagerAsync<TParams, TResult, E>;
   params?: TParams;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): EagerAsyncTestHarness<TResult, E> => {
+}): EagerAsyncTestHarness<TResult, E> {
   const hook = renderHook(
-    () => reactiveEagerAsync.useEagerAsync(params as TParams),
+    () => reactiveEagerAsync.useEagerAsync(params as object),
     {
       wrapper,
     },
@@ -29,4 +49,4 @@ export const ReactiveEagerAsyncTestHarness = <
     },
     result: hook.result,
   };
-};
+}
