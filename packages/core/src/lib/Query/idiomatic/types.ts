@@ -1,11 +1,8 @@
 export type IdiomaticQuery<
   TParams extends void | object,
   TResult = unknown,
-> = TParams extends Record<
-  'options',
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  any
->
+> = TParams extends Record<'options', any>
   ? never
   : TParams extends void
   ? (params?: { options: IdiomaticQueryOptions }) => Promise<TResult>
@@ -17,6 +14,7 @@ export type IdiomaticQueryOptions = { forceRefetch?: boolean };
 
 export type DefineIdiomaticQuery<
   T extends (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     args: Parameters<T>[0] extends Record<'options', any>
       ? never
       : Parameters<T>[0],

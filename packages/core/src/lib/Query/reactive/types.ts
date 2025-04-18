@@ -35,6 +35,7 @@ export type ReactiveQueryOptions = { enabled?: boolean };
 
 export type DefineReactiveQuery<
   T extends (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     args: Parameters<T>[0] extends Record<'options', any>
       ? never
       : Parameters<T>[0],

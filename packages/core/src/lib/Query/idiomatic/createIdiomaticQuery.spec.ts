@@ -18,23 +18,23 @@ describe('createIdiomaticQuery', () => {
     }).toThrow('idiomaticFn is not qualified to be idiomatic query');
   });
 
-  it('should invoke the idiomatic function without params', () => {
+  it('should invoke the idiomatic function without params', async () => {
     const mockQueryFn = vi.fn(async () => 'test');
     const idiomaticQuery = createIdiomaticQuery(mockQueryFn);
 
-    const result = idiomaticQuery();
+    const result = await idiomaticQuery();
 
     expect(result).toBe('test');
     expect(mockQueryFn).toHaveBeenCalled();
   });
 
-  it('should invoke the idiomatic function with params', () => {
+  it('should invoke the idiomatic function with params', async () => {
     const mockQueryFn = vi.fn(
       async (params: { name: string }) => `Hello ${params.name}`,
     );
     const idiomaticQuery = createIdiomaticQuery(mockQueryFn);
 
-    const result = idiomaticQuery({ name: 'John' });
+    const result = await idiomaticQuery({ name: 'John' });
 
     expect(result).toBe('Hello John');
     expect(mockQueryFn).toHaveBeenCalledWith({ name: 'John' });
