@@ -4,15 +4,39 @@ import { checkOnInterval } from '../checkOnInterval.js';
 import { BaseWaitForOptions } from 'src/types/WaitForOptions.js';
 import { MutationTestHarness } from './types.js';
 
-export const IdiomaticMutationTestHarness = <
-  TParams = void,
+// Overloads
+export function IdiomaticMutationTestHarness<
+  TParams extends void,
+  TResult = unknown,
+  E extends Error = Error,
+>(args: {
+  idiomaticMutation: IdiomaticMutation<TParams, TResult>;
+}): MutationTestHarness<TParams, TResult, E>;
+export function IdiomaticMutationTestHarness<
+  TParams extends object,
+  TResult = unknown,
+  E extends Error = Error,
+>(args: {
+  idiomaticMutation: IdiomaticMutation<TParams, TResult>;
+}): MutationTestHarness<TParams, TResult, E>;
+
+// Implementation
+export function IdiomaticMutationTestHarness<
+  TParams extends void | object,
+  TResult = unknown,
+  E extends Error = Error,
+>(args: {
+  idiomaticMutation: IdiomaticMutation<TParams, TResult>;
+}): MutationTestHarness<TParams, TResult, E>;
+export function IdiomaticMutationTestHarness<
+  TParams extends object,
   TResult = unknown,
   E extends Error = Error,
 >({
   idiomaticMutation,
 }: {
   idiomaticMutation: IdiomaticMutation<TParams, TResult>;
-}): MutationTestHarness<TParams, TResult, E> => {
+}): MutationTestHarness<TParams, TResult, E> {
   const result = {
     current: {
       call: (args: TParams) => {
@@ -63,4 +87,4 @@ export const IdiomaticMutationTestHarness = <
     },
     result,
   } as MutationTestHarness<TParams, TResult, E>;
-};
+}

@@ -5,7 +5,6 @@ describe('isChimericEagerAsync', () => {
   it('should return true for a chimeric eager async function', () => {
     const mockChimericEagerAsync = vi.fn(async () => 'test') as any;
     mockChimericEagerAsync.useEagerAsync = vi.fn(() => ({
-      call: vi.fn(() => Promise.resolve('test')),
       isIdle: true,
       isPending: false,
       isSuccess: false,
@@ -28,7 +27,6 @@ describe('isChimericEagerAsync', () => {
     // Object with useEagerAsync but not a function
     const mockReactiveEagerAsync = {
       useEagerAsync: vi.fn(() => ({
-        call: vi.fn(() => Promise.resolve('test')),
         isIdle: true,
         isPending: false,
         isSuccess: false,

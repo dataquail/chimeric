@@ -17,4 +17,26 @@ describe('createIdiomaticMutation', () => {
       createIdiomaticMutation(invalidInput as any);
     }).toThrow('idiomaticFn is not qualified to be idiomatic mutation');
   });
+
+  it('should invoke the idiomatic mutation function without params', async () => {
+    const mockMutationFn = vi.fn(async () => 'test');
+    const idiomaticMutation = createIdiomaticMutation(mockMutationFn);
+
+    const result = await idiomaticMutation();
+
+    expect(result).toBe('test');
+    expect(mockMutationFn).toHaveBeenCalled();
+  });
+
+  it('should invoke the idiomatic mutation function with params', async () => {
+    const mockMutationFn = vi.fn(
+      async (params: { name: string }) => `Hello ${params.name}`,
+    );
+    const idiomaticMutation = createIdiomaticMutation(mockMutationFn);
+
+    const result = await idiomaticMutation({ name: 'John' });
+
+    expect(result).toBe('Hello John');
+    expect(mockMutationFn).toHaveBeenCalledWith({ name: 'John' });
+  });
 });

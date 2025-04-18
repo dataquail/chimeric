@@ -6,4 +6,4 @@ export type IdiomaticSync<TParams, TResult> = TParams extends void
 
 export type DefineIdiomaticSync<
   T extends (args: Parameters<T>[0]) => ReturnType<T>,
-> = IdiomaticSync<Parameters<T>[0], Awaited<ReturnType<T>>>;
+> = IdiomaticSync<Parameters<T>[0], ReturnType<T>>;

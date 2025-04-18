@@ -3,8 +3,30 @@ import { ChimericQuery, fuseChimericQuery } from '@chimeric/core';
 import { IdiomaticQueryWithManagedStoreFactory } from './IdiomaticQueryWithManagedStoreFactory';
 import { ReactiveQueryWithManagedStoreFactory } from './ReactiveQueryWithManagedStoreFactory';
 
-export const ChimericQueryWithManagedStoreFactory = <
-  TParams = void,
+// Overloads
+export function ChimericQueryWithManagedStoreFactory<
+  TResult = unknown,
+  E extends Error = Error,
+>(
+  queryClient: QueryClient,
+  {
+    queryFn,
+    getQueryOptions,
+    getFromStore,
+    useFromStore,
+  }: {
+    queryFn: () => Promise<void>;
+    getQueryOptions: () => OmitKeyof<
+      UseQueryOptions<unknown, Error, unknown, string[]>,
+      'queryFn'
+    >;
+    getFromStore: () => TResult;
+    useFromStore: () => TResult;
+  },
+): ChimericQuery<void, TResult, E>;
+
+export function ChimericQueryWithManagedStoreFactory<
+  TParams extends object,
   TResult = unknown,
   E extends Error = Error,
 >(
@@ -25,17 +47,56 @@ export const ChimericQueryWithManagedStoreFactory = <
     getFromStore: (args: TParams) => TResult;
     useFromStore: (args: TParams) => TResult;
   },
-): ChimericQuery<TParams, TResult, E> => {
+): ChimericQuery<TParams, TResult, E>;
+
+// Implementation
+export function ChimericQueryWithManagedStoreFactory<
+  TParams extends void | object,
+  TResult = unknown,
+  E extends Error = Error,
+>(
+  queryClient: QueryClient,
+  {
+    queryFn,
+    getQueryOptions,
+    getFromStore,
+    useFromStore,
+  }: {
+    queryFn: (args: TParams) => Promise<void>;
+    getQueryOptions: (
+      args: TParams,
+    ) => OmitKeyof<
+      UseQueryOptions<unknown, Error, unknown, string[]>,
+      'queryFn'
+    >;
+    getFromStore: (args: TParams) => TResult;
+    useFromStore: (args: TParams) => TResult;
+  },
+): ChimericQuery<TParams, TResult, E> {
   return fuseChimericQuery({
     idiomatic: IdiomaticQueryWithManagedStoreFactory(queryClient, {
       queryFn,
       getQueryOptions,
       getFromStore,
+    } as {
+      queryFn: () => Promise<void>;
+      getQueryOptions: () => OmitKeyof<
+        UseQueryOptions<unknown, Error, unknown, string[]>,
+        'queryFn'
+      >;
+      getFromStore: () => TResult;
     }),
     reactive: ReactiveQueryWithManagedStoreFactory({
       queryFn,
       getQueryOptions,
       useFromStore,
+    } as {
+      queryFn: () => Promise<void>;
+      getQueryOptions: () => OmitKeyof<
+        UseQueryOptions<unknown, Error, unknown, string[]>,
+        'queryFn'
+      >;
+      useFromStore: () => TResult;
     }),
-  });
-};
+  }) as ChimericQuery<TParams, TResult, E>;
+}

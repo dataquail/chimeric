@@ -5,15 +5,33 @@ import {
   isReactiveQuery,
 } from '@chimeric/core';
 
-export const ReactiveQueryFactory = <
-  TParams = void,
+// Overloads
+export function ReactiveQueryFactory<
+  TResult = unknown,
+  E extends Error = Error,
+>(
+  getQueryOptions: () => QueryOptions<TResult, E, TResult, string[]>,
+): ReactiveQuery<void, TResult, E>;
+export function ReactiveQueryFactory<
+  TParams extends object,
+  TResult = unknown,
+  E extends Error = Error,
+>(
+  getQueryOptions: (
+    args: TParams,
+  ) => QueryOptions<TResult, E, TResult, string[]>,
+): ReactiveQuery<TParams, TResult, E>;
+
+// Implementation
+export function ReactiveQueryFactory<
+  TParams extends void | object,
   TResult = unknown,
   E extends Error = Error,
 >(
   getQueryOptions: (
     allParams: TParams,
   ) => QueryOptions<TResult, E, TResult, string[]>,
-): ReactiveQuery<TParams, TResult, E> => {
+): ReactiveQuery<TParams, TResult, E> {
   const reactiveQuery = {
     useQuery: (
       paramsAndOptions?: TParams & { options?: ReactiveQueryOptions },
@@ -47,4 +65,4 @@ export const ReactiveQueryFactory = <
   } else {
     throw new Error('reactiveQuery is not qualified to be reactive query');
   }
-};
+}

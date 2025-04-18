@@ -28,4 +28,52 @@ describe('createReactiveQuery', () => {
       createReactiveQuery(invalidInput as any);
     }).toThrow('reactiveFn is not qualified to be reactive query');
   });
+
+  it('should invoke the reactive function with params', () => {
+    const mockReactiveFn = vi.fn((params: { name: string }) => ({
+      isIdle: true,
+      isPending: false,
+      isSuccess: false,
+      isError: false,
+      error: null,
+      data: undefined,
+      refetch: vi.fn(() => Promise.resolve(`Hello ${params.name}`)),
+    }));
+
+    const reactiveQuery = createReactiveQuery(mockReactiveFn);
+
+    const result = reactiveQuery.useQuery({ name: 'John' });
+
+    expect(result.isIdle).toBe(true);
+    expect(result.isPending).toBe(false);
+    expect(result.isSuccess).toBe(false);
+    expect(result.isError).toBe(false);
+    expect(result.error).toBeNull();
+    expect(result.data).toBeUndefined();
+    expect(result.refetch).toBeDefined();
+  });
+
+  it('should invoke the reactive function without params', () => {
+    const mockReactiveFn = vi.fn(() => ({
+      isIdle: true,
+      isPending: false,
+      isSuccess: false,
+      isError: false,
+      error: null,
+      data: undefined,
+      refetch: vi.fn(() => Promise.resolve('test')),
+    }));
+
+    const reactiveQuery = createReactiveQuery(mockReactiveFn);
+
+    const result = reactiveQuery.useQuery();
+
+    expect(result.isIdle).toBe(true);
+    expect(result.isPending).toBe(false);
+    expect(result.isSuccess).toBe(false);
+    expect(result.isError).toBe(false);
+    expect(result.error).toBeNull();
+    expect(result.data).toBeUndefined();
+    expect(result.refetch).toBeDefined();
+  });
 });

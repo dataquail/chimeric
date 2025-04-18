@@ -4,16 +4,39 @@ import { MutationOptions } from '../types';
 import { IdiomaticMutationFactory } from './IdiomaticMutationFactory';
 import { ReactiveMutationFactory } from './ReactiveMutationFactory';
 
-export const ChimericMutationFactory = <
-  TParams = void,
+// Overloads
+export function ChimericMutationFactory<
+  TResult = unknown,
+  E extends Error = Error,
+>(
+  queryClient: QueryClient,
+  mutationOptions: MutationOptions<void, TResult, E>,
+): ChimericMutation<void, TResult, E>;
+export function ChimericMutationFactory<
+  TParams extends object,
   TResult = unknown,
   E extends Error = Error,
 >(
   queryClient: QueryClient,
   mutationOptions: MutationOptions<TParams, TResult, E>,
-): ChimericMutation<TParams, TResult, E> => {
+): ChimericMutation<TParams, TResult, E>;
+
+// Implementation
+export function ChimericMutationFactory<
+  TParams extends void | object,
+  TResult = unknown,
+  E extends Error = Error,
+>(
+  queryClient: QueryClient,
+  mutationOptions: MutationOptions<TParams, TResult, E>,
+): ChimericMutation<TParams, TResult, E> {
   return fuseChimericMutation({
-    idiomatic: IdiomaticMutationFactory(queryClient, mutationOptions),
-    reactive: ReactiveMutationFactory(mutationOptions),
-  });
-};
+    idiomatic: IdiomaticMutationFactory(
+      queryClient,
+      mutationOptions as MutationOptions<void, TResult, E>,
+    ),
+    reactive: ReactiveMutationFactory(
+      mutationOptions as MutationOptions<void, TResult, E>,
+    ),
+  }) as ChimericMutation<TParams, TResult, E>;
+}

@@ -7,9 +7,31 @@ import { JSX, ReactNode } from 'react';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
 import { QueryTestHarness } from './types.js';
 
-export const ReactiveQueryTestHarness = <
-  TParams = void,
-  TResult = void,
+// Overloads
+export function ReactiveQueryTestHarness<
+  TResult = unknown,
+  E extends Error = Error,
+>(args: {
+  reactiveQuery: ReactiveQuery<void, TResult, E>;
+  params?: void;
+  options?: ReactiveQueryOptions;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): QueryTestHarness<TResult, E>;
+export function ReactiveQueryTestHarness<
+  TParams extends object,
+  TResult = unknown,
+  E extends Error = Error,
+>(args: {
+  reactiveQuery: ReactiveQuery<TParams, TResult, E>;
+  params?: TParams;
+  options?: ReactiveQueryOptions;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): QueryTestHarness<TResult, E>;
+
+// Implementation
+export function ReactiveQueryTestHarness<
+  TParams extends void | object,
+  TResult = unknown,
   E extends Error = Error,
 >({
   reactiveQuery,
@@ -21,7 +43,7 @@ export const ReactiveQueryTestHarness = <
   params?: TParams;
   options?: ReactiveQueryOptions;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): QueryTestHarness<TResult, E> => {
+}): QueryTestHarness<TResult, E> {
   const hook = renderHook(
     () =>
       reactiveQuery.useQuery({
@@ -47,4 +69,4 @@ export const ReactiveQueryTestHarness = <
     },
     result: hook.result,
   };
-};
+}
