@@ -5,8 +5,24 @@ import {
   isIdiomaticQuery,
 } from '@chimeric/core';
 
-export const IdiomaticQueryWithManagedStoreFactory = <
-  TParams = void,
+// Overloads
+export function IdiomaticQueryWithManagedStoreFactory<TResult = unknown>(
+  queryClient: QueryClient,
+  {
+    queryFn,
+    getQueryOptions,
+    getFromStore,
+  }: {
+    queryFn: () => Promise<void>;
+    getQueryOptions: () => OmitKeyof<
+      UseQueryOptions<unknown, Error, unknown, string[]>,
+      'queryFn'
+    >;
+    getFromStore: () => TResult;
+  },
+): IdiomaticQuery<void, TResult>;
+export function IdiomaticQueryWithManagedStoreFactory<
+  TParams extends object,
   TResult = unknown,
 >(
   queryClient: QueryClient,
@@ -24,7 +40,29 @@ export const IdiomaticQueryWithManagedStoreFactory = <
     >;
     getFromStore: (args: TParams) => TResult;
   },
-): IdiomaticQuery<TParams, TResult> => {
+): IdiomaticQuery<TParams, TResult>;
+
+// Implementation
+export function IdiomaticQueryWithManagedStoreFactory<
+  TParams extends void | object,
+  TResult = unknown,
+>(
+  queryClient: QueryClient,
+  {
+    queryFn,
+    getQueryOptions,
+    getFromStore,
+  }: {
+    queryFn: (args: TParams) => Promise<void>;
+    getQueryOptions: (
+      args: TParams,
+    ) => OmitKeyof<
+      UseQueryOptions<unknown, Error, unknown, string[]>,
+      'queryFn'
+    >;
+    getFromStore: (args: TParams) => TResult;
+  },
+): IdiomaticQuery<TParams, TResult> {
   const idiomaticQuery = async (
     paramsAndOptions?: TParams & { options?: IdiomaticQueryOptions },
   ) => {
@@ -56,4 +94,4 @@ export const IdiomaticQueryWithManagedStoreFactory = <
   } else {
     throw new Error('idiomaticQuery is not qualified to be idiomatic query');
   }
-};
+}

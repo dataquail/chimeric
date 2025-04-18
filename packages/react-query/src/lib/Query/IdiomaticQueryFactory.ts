@@ -5,8 +5,16 @@ import {
   isIdiomaticQuery,
 } from '@chimeric/core';
 
-export const IdiomaticQueryFactory = <
-  TParams = void,
+// Overloads
+export function IdiomaticQueryFactory<
+  TResult = unknown,
+  E extends Error = Error,
+>(
+  queryClient: QueryClient,
+  getQueryOptions: () => QueryOptions<TResult, E, TResult, string[]>,
+): IdiomaticQuery<void, TResult>;
+export function IdiomaticQueryFactory<
+  TParams extends object,
   TResult = unknown,
   E extends Error = Error,
 >(
@@ -14,7 +22,19 @@ export const IdiomaticQueryFactory = <
   getQueryOptions: (
     args: TParams,
   ) => QueryOptions<TResult, E, TResult, string[]>,
-): IdiomaticQuery<TParams, TResult> => {
+): IdiomaticQuery<TParams, TResult>;
+
+// Implementation
+export function IdiomaticQueryFactory<
+  TParams extends void | object,
+  TResult = unknown,
+  E extends Error = Error,
+>(
+  queryClient: QueryClient,
+  getQueryOptions: (
+    args: TParams,
+  ) => QueryOptions<TResult, E, TResult, string[]>,
+): IdiomaticQuery<TParams, TResult> {
   const idiomaticQuery = async (
     paramsAndOptions?: TParams & { options?: IdiomaticQueryOptions },
   ) => {
@@ -42,4 +62,4 @@ export const IdiomaticQueryFactory = <
   } else {
     throw new Error('idiomaticQuery is not qualified to be idiomatic query');
   }
-};
+}

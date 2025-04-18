@@ -4,9 +4,29 @@ import { checkOnInterval } from '../checkOnInterval.js';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
 import { QueryTestHarness } from './types.js';
 
-export const IdiomaticQueryTestHarness = <
-  TParams = void,
-  TResult = void,
+// Overloads
+export function IdiomaticQueryTestHarness<
+  TResult = unknown,
+  E extends Error = Error,
+>(args: {
+  idiomaticQuery: IdiomaticQuery<void, TResult>;
+  params?: void;
+  options?: IdiomaticQueryOptions;
+}): QueryTestHarness<TResult, E>;
+export function IdiomaticQueryTestHarness<
+  TParams extends object,
+  TResult = unknown,
+  E extends Error = Error,
+>(args: {
+  idiomaticQuery: IdiomaticQuery<TParams, TResult>;
+  params?: TParams;
+  options?: IdiomaticQueryOptions;
+}): QueryTestHarness<TResult, E>;
+
+// Implementation
+export function IdiomaticQueryTestHarness<
+  TParams extends void | object,
+  TResult = unknown,
   E extends Error = Error,
 >({
   idiomaticQuery,
@@ -16,7 +36,7 @@ export const IdiomaticQueryTestHarness = <
   idiomaticQuery: IdiomaticQuery<TParams, TResult>;
   params?: TParams;
   options?: IdiomaticQueryOptions;
-}): QueryTestHarness<TResult, E> => {
+}): QueryTestHarness<TResult, E> {
   const result = {
     current: {
       data: undefined as TResult | undefined,
@@ -118,4 +138,4 @@ export const IdiomaticQueryTestHarness = <
     },
     result,
   };
-};
+}

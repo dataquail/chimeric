@@ -6,14 +6,32 @@ import {
 import { IdiomaticMutation, isIdiomaticMutation } from '@chimeric/core';
 import { MutationOptions } from '../types';
 
-export const IdiomaticMutationFactory = <
-  TParams = void,
+// Overloads
+export function IdiomaticMutationFactory<
+  TResult = unknown,
+  E extends Error = Error,
+>(
+  queryClient: QueryClient,
+  mutationOptions: MutationOptions<void, TResult, E>,
+): IdiomaticMutation<void, TResult>;
+export function IdiomaticMutationFactory<
+  TParams extends object,
   TResult = unknown,
   E extends Error = Error,
 >(
   queryClient: QueryClient,
   mutationOptions: MutationOptions<TParams, TResult, E>,
-): IdiomaticMutation<TParams, TResult> => {
+): IdiomaticMutation<TParams, TResult>;
+
+// Implementation
+export function IdiomaticMutationFactory<
+  TParams extends void | object,
+  TResult = unknown,
+  E extends Error = Error,
+>(
+  queryClient: QueryClient,
+  mutationOptions: MutationOptions<TParams, TResult, E>,
+): IdiomaticMutation<TParams, TResult> {
   const idiomaticMutation = async (args: TParams) => {
     const mutationId = mutationOptions.mutationKey
       ? queryClient
@@ -40,4 +58,4 @@ export const IdiomaticMutationFactory = <
       'idiomaticMutation is not qualified to be idiomatic mutation',
     );
   }
-};
+}

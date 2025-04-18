@@ -1,16 +1,32 @@
 import { isReactiveAsync } from './isReactiveAsync';
-import { ReactiveAsync } from './types';
+import { ReactiveAsync, ReactiveAsyncOptions } from './types';
 
 // Overloads
 export function createReactiveAsync<TResult = unknown, E extends Error = Error>(
-  reactiveFn: ReactiveAsync<void, TResult, E>['useAsync'],
+  reactiveFn: (options?: ReactiveAsyncOptions) => {
+    call: () => Promise<TResult>;
+    isIdle: boolean;
+    isPending: boolean;
+    isSuccess: boolean;
+    isError: boolean;
+    error: E | null;
+    data: TResult | undefined;
+  },
 ): ReactiveAsync<void, TResult, E>;
 export function createReactiveAsync<
   TParams extends object,
   TResult = unknown,
   E extends Error = Error,
 >(
-  reactiveFn: ReactiveAsync<TParams, TResult, E>['useAsync'],
+  reactiveFn: (options?: ReactiveAsyncOptions) => {
+    call: (params: TParams) => Promise<TResult>;
+    isIdle: boolean;
+    isPending: boolean;
+    isSuccess: boolean;
+    isError: boolean;
+    error: E | null;
+    data: TResult | undefined;
+  },
 ): ReactiveAsync<TParams, TResult, E>;
 
 // Implementation

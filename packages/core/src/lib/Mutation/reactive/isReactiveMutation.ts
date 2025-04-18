@@ -1,7 +1,7 @@
 import { ReactiveMutation } from './types';
 
 export const isReactiveMutation = <
-  TParams = void,
+  TParams extends void | object,
   TResult = unknown,
   E extends Error = Error,
 >(

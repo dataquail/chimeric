@@ -2,13 +2,29 @@ import { useMutation } from '@tanstack/react-query';
 import { ReactiveMutation, isReactiveMutation } from '@chimeric/core';
 import { MutationOptions, ReactiveMutationOptions } from '../types';
 
-export const ReactiveMutationFactory = <
-  TParams = void,
+// Overloads
+export function ReactiveMutationFactory<
+  TResult = unknown,
+  E extends Error = Error,
+>(
+  mutationOptions: MutationOptions<void, TResult, E>,
+): ReactiveMutation<void, TResult, E>;
+export function ReactiveMutationFactory<
+  TParams extends object,
   TResult = unknown,
   E extends Error = Error,
 >(
   mutationOptions: MutationOptions<TParams, TResult, E>,
-): ReactiveMutation<TParams, TResult, E> => {
+): ReactiveMutation<TParams, TResult, E>;
+
+// Implementation
+export function ReactiveMutationFactory<
+  TParams extends void | object,
+  TResult = unknown,
+  E extends Error = Error,
+>(
+  mutationOptions: MutationOptions<TParams, TResult, E>,
+): ReactiveMutation<TParams, TResult, E> {
   const reactiveMutation = {
     useMutation: (config?: {
       options: ReactiveMutationOptions<TParams, TResult, E>;
@@ -36,4 +52,4 @@ export const ReactiveMutationFactory = <
       'reactiveMutation is not qualified to be reactive mutation',
     );
   }
-};
+}

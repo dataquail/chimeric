@@ -8,6 +8,6 @@ export type ReactiveSync<TParams, TResult> = TParams extends void
     }
   : never;
 
-export type DefineReactiveRead<
+export type DefineReactiveSync<
   T extends (args: Parameters<T>[0]) => ReturnType<T>,
-> = ReactiveSync<Parameters<T>[0], Awaited<ReturnType<T>>>;
+> = ReactiveSync<Parameters<T>[0], ReturnType<T>>;

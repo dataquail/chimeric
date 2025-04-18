@@ -5,7 +5,6 @@ describe('isReactiveEagerAsync', () => {
   it('should return true for an object with useEagerAsync function', () => {
     const mockReactiveEagerAsync = {
       useEagerAsync: vi.fn(() => ({
-        call: vi.fn(() => Promise.resolve('test')),
         isIdle: true,
         isPending: false,
         isSuccess: false,
@@ -21,7 +20,6 @@ describe('isReactiveEagerAsync', () => {
   it('should return true for a function with useEagerAsync property', () => {
     const mockReactiveEagerAsync = vi.fn(() => 'test') as any;
     mockReactiveEagerAsync.useEagerAsync = vi.fn(() => ({
-      call: vi.fn(() => Promise.resolve('test')),
       isIdle: true,
       isPending: false,
       isSuccess: false,

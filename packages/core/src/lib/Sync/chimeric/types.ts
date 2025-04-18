@@ -6,4 +6,4 @@ export type ChimericSync<TParams, TResult> = IdiomaticSync<TParams, TResult> &
 
 export type DefineChimericSync<
   T extends (args: Parameters<T>[0]) => ReturnType<T>,
-> = ChimericSync<Parameters<T>[0], Awaited<ReturnType<T>>>;
+> = ChimericSync<Parameters<T>[0], ReturnType<T>>;

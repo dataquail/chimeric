@@ -10,8 +10,21 @@ import {
   isReactiveQuery,
 } from '@chimeric/core';
 
-export const ReactiveQueryWithManagedStoreFactory = <
-  TParams = void,
+// Overloads
+export function ReactiveQueryWithManagedStoreFactory<TResult = unknown>({
+  queryFn,
+  getQueryOptions,
+  useFromStore,
+}: {
+  queryFn: () => Promise<void>;
+  getQueryOptions: () => OmitKeyof<
+    UseQueryOptions<unknown, Error, unknown, string[]>,
+    'queryFn'
+  >;
+  useFromStore: () => TResult;
+}): ReactiveQuery<void, TResult>;
+export function ReactiveQueryWithManagedStoreFactory<
+  TParams extends object,
   TResult = unknown,
   E extends Error = Error,
 >({
@@ -24,7 +37,24 @@ export const ReactiveQueryWithManagedStoreFactory = <
     args: TParams,
   ) => OmitKeyof<UseQueryOptions<unknown, Error, unknown, string[]>, 'queryFn'>;
   useFromStore: (args: TParams) => TResult;
-}): ReactiveQuery<TParams, TResult, E> => {
+}): ReactiveQuery<TParams, TResult, E>;
+
+// Implementation
+export function ReactiveQueryWithManagedStoreFactory<
+  TParams extends void | object,
+  TResult = unknown,
+  E extends Error = Error,
+>({
+  queryFn,
+  getQueryOptions,
+  useFromStore,
+}: {
+  queryFn: (args: TParams) => Promise<void>;
+  getQueryOptions: (
+    args: TParams,
+  ) => OmitKeyof<UseQueryOptions<unknown, Error, unknown, string[]>, 'queryFn'>;
+  useFromStore: (args: TParams) => TResult;
+}): ReactiveQuery<TParams, TResult, E> {
   const reactiveQuery = {
     useQuery: (
       paramsAndOptions?: TParams & { options?: ReactiveQueryOptions },
@@ -64,4 +94,4 @@ export const ReactiveQueryWithManagedStoreFactory = <
   } else {
     throw new Error('reactiveQuery is not qualified to be reactive query');
   }
-};
+}
