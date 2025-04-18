@@ -3,8 +3,8 @@ import { isReactiveQuery } from './isReactiveQuery';
 
 // Overloads
 export function createReactiveQuery<TResult = unknown>(
-  reactiveFn: () => ReturnType<ReactiveQuery<void, TResult>['useQuery']>,
-): ReactiveQuery<void, TResult>;
+  reactiveFn: () => ReturnType<ReactiveQuery<undefined, TResult>['useQuery']>,
+): ReactiveQuery<undefined, TResult>;
 export function createReactiveQuery<
   TParams extends object,
   TResult = unknown,
@@ -17,7 +17,7 @@ export function createReactiveQuery<
 
 // Implementation
 export function createReactiveQuery<
-  TParams extends object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
 >(

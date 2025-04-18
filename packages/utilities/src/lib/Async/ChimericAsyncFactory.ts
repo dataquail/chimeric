@@ -6,7 +6,7 @@ import { ReactiveAsyncFactory } from './ReactiveAsyncFactory';
 export function ChimericAsyncFactory<
   TResult = unknown,
   E extends Error = Error,
->(asyncFn: () => Promise<TResult>): ChimericAsync<void, TResult, E>;
+>(asyncFn: () => Promise<TResult>): ChimericAsync<undefined, TResult, E>;
 export function ChimericAsyncFactory<
   TParams extends object,
   TResult = unknown,
@@ -17,7 +17,7 @@ export function ChimericAsyncFactory<
 
 // Implementation
 export function ChimericAsyncFactory<
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
 >(

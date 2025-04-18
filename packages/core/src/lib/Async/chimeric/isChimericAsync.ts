@@ -3,7 +3,7 @@ import { isReactiveAsync } from '../reactive/isReactiveAsync';
 import { ChimericAsync } from './types';
 
 export const isChimericAsync = <
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
 >(

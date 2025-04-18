@@ -11,7 +11,7 @@ export function ReactiveQueryFactory<
   E extends Error = Error,
 >(
   getQueryOptions: () => QueryOptions<TResult, E, TResult, string[]>,
-): ReactiveQuery<void, TResult, E>;
+): ReactiveQuery<undefined, TResult, E>;
 export function ReactiveQueryFactory<
   TParams extends object,
   TResult = unknown,
@@ -24,7 +24,7 @@ export function ReactiveQueryFactory<
 
 // Implementation
 export function ReactiveQueryFactory<
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
 >(

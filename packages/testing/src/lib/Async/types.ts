@@ -1,14 +1,14 @@
 import { BaseWaitForOptions } from 'src/types/WaitForOptions';
 
 export type AsyncTestHarnessType<
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
 > = {
   waitFor: (cb: () => void, options?: BaseWaitForOptions) => Promise<void>;
   result: {
     current: {
-      call: TParams extends void
+      call: TParams extends undefined
         ? () => Promise<TResult>
         : (params: TParams) => Promise<TResult>;
       isIdle: boolean;

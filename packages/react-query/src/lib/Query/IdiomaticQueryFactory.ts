@@ -12,7 +12,7 @@ export function IdiomaticQueryFactory<
 >(
   queryClient: QueryClient,
   getQueryOptions: () => QueryOptions<TResult, E, TResult, string[]>,
-): IdiomaticQuery<void, TResult>;
+): IdiomaticQuery<undefined, TResult>;
 export function IdiomaticQueryFactory<
   TParams extends object,
   TResult = unknown,
@@ -26,7 +26,7 @@ export function IdiomaticQueryFactory<
 
 // Implementation
 export function IdiomaticQueryFactory<
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
 >(

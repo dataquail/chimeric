@@ -13,13 +13,12 @@ import { ReactiveQueryTestHarness } from './ReactiveQueryTestHarness.js';
 
 // Overloads
 export function ChimericQueryTestHarness<
-  TParams extends void,
   TResult = unknown,
   E extends Error = Error,
 >(args: {
-  chimericQuery: ChimericQuery<TParams, TResult, E>;
+  chimericQuery: ChimericQuery<undefined, TResult, E>;
   method: (typeof chimericMethods)[number];
-  params?: TParams;
+  params?: undefined;
   reactiveOptions?: ReactiveQueryOptions;
   idiomaticOptions?: IdiomaticQueryOptions;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
@@ -31,7 +30,7 @@ export function ChimericQueryTestHarness<
 >(args: {
   chimericQuery: ChimericQuery<TParams, TResult, E>;
   method: (typeof chimericMethods)[number];
-  params?: TParams;
+  params: TParams;
   reactiveOptions?: ReactiveQueryOptions;
   idiomaticOptions?: IdiomaticQueryOptions;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
@@ -39,7 +38,7 @@ export function ChimericQueryTestHarness<
 
 // Implementation
 export function ChimericQueryTestHarness<
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
 >({

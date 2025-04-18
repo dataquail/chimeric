@@ -9,8 +9,8 @@ export function IdiomaticEagerAsyncTestHarness<
   TResult = unknown,
   E extends Error = Error,
 >(args: {
-  idiomaticEagerAsync: IdiomaticEagerAsync<void, TResult>;
-  params?: void;
+  idiomaticEagerAsync: IdiomaticEagerAsync<undefined, TResult>;
+  params?: undefined;
 }): EagerAsyncTestHarness<TResult, E>;
 export function IdiomaticEagerAsyncTestHarness<
   TParams extends object,
@@ -18,12 +18,12 @@ export function IdiomaticEagerAsyncTestHarness<
   E extends Error = Error,
 >(args: {
   idiomaticEagerAsync: IdiomaticEagerAsync<TParams, TResult>;
-  params?: TParams;
+  params: TParams;
 }): EagerAsyncTestHarness<TResult, E>;
 
 // Implementation
 export function IdiomaticEagerAsyncTestHarness<
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
 >({

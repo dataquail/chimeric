@@ -3,8 +3,8 @@ import { isIdiomaticQuery } from './isIdiomaticQuery';
 
 // Overloads
 export function createIdiomaticQuery<TResult = unknown>(
-  idiomaticFn: () => ReturnType<IdiomaticQuery<void, TResult>>,
-): IdiomaticQuery<void, TResult>;
+  idiomaticFn: () => ReturnType<IdiomaticQuery<undefined, TResult>>,
+): IdiomaticQuery<undefined, TResult>;
 export function createIdiomaticQuery<TParams extends object, TResult = unknown>(
   idiomaticFn: (
     params: TParams,
@@ -13,7 +13,7 @@ export function createIdiomaticQuery<TParams extends object, TResult = unknown>(
 
 // Implementation
 export function createIdiomaticQuery<
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
 >(
   idiomaticFn: (

@@ -4,7 +4,7 @@ import { IdiomaticMutation } from './types';
 // Overloads
 export function createIdiomaticMutation<TResult = unknown>(
   idiomaticFn: () => Promise<TResult>,
-): IdiomaticMutation<void, TResult>;
+): IdiomaticMutation<undefined, TResult>;
 export function createIdiomaticMutation<
   TParams extends object,
   TResult = unknown,
@@ -14,7 +14,7 @@ export function createIdiomaticMutation<
 
 // Implementation
 export function createIdiomaticMutation<
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
 >(
   idiomaticFn: (

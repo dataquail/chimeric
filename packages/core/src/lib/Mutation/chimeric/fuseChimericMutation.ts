@@ -8,9 +8,9 @@ export function fuseChimericMutation<
   TResult = unknown,
   E extends Error = Error,
 >(args: {
-  idiomatic: IdiomaticMutation<void, TResult>;
-  reactive: ReactiveMutation<void, TResult, E>;
-}): ChimericMutation<void, TResult, E>;
+  idiomatic: IdiomaticMutation<undefined, TResult>;
+  reactive: ReactiveMutation<undefined, TResult, E>;
+}): ChimericMutation<undefined, TResult, E>;
 export function fuseChimericMutation<
   TParams extends object,
   TResult = unknown,
@@ -22,7 +22,7 @@ export function fuseChimericMutation<
 
 // Implementation
 export function fuseChimericMutation<
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
 >(args: {

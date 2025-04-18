@@ -6,13 +6,12 @@ import { MutationTestHarness } from './types.js';
 
 // Overloads
 export function ReactiveMutationTestHarness<
-  TParams extends void,
   TResult = unknown,
   E extends Error = Error,
 >(args: {
-  reactiveMutation: ReactiveMutation<TParams, TResult, E>;
+  reactiveMutation: ReactiveMutation<undefined, TResult, E>;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): MutationTestHarness<TParams, TResult, E>;
+}): MutationTestHarness<undefined, TResult, E>;
 export function ReactiveMutationTestHarness<
   TParams extends object,
   TResult = unknown,
@@ -23,7 +22,7 @@ export function ReactiveMutationTestHarness<
 }): MutationTestHarness<TParams, TResult, E>;
 
 export function ReactiveMutationTestHarness<
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
 >({

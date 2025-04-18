@@ -1,7 +1,7 @@
 import { ReactiveQuery } from './types';
 
 export const isReactiveQuery = <
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
 >(

@@ -9,8 +9,8 @@ export function IdiomaticQueryTestHarness<
   TResult = unknown,
   E extends Error = Error,
 >(args: {
-  idiomaticQuery: IdiomaticQuery<void, TResult>;
-  params?: void;
+  idiomaticQuery: IdiomaticQuery<undefined, TResult>;
+  params?: undefined;
   options?: IdiomaticQueryOptions;
 }): QueryTestHarness<TResult, E>;
 export function IdiomaticQueryTestHarness<
@@ -19,13 +19,13 @@ export function IdiomaticQueryTestHarness<
   E extends Error = Error,
 >(args: {
   idiomaticQuery: IdiomaticQuery<TParams, TResult>;
-  params?: TParams;
+  params: TParams;
   options?: IdiomaticQueryOptions;
 }): QueryTestHarness<TResult, E>;
 
 // Implementation
 export function IdiomaticQueryTestHarness<
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
 >({

@@ -12,8 +12,8 @@ export function ReactiveQueryTestHarness<
   TResult = unknown,
   E extends Error = Error,
 >(args: {
-  reactiveQuery: ReactiveQuery<void, TResult, E>;
-  params?: void;
+  reactiveQuery: ReactiveQuery<undefined, TResult, E>;
+  params?: undefined;
   options?: ReactiveQueryOptions;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
 }): QueryTestHarness<TResult, E>;
@@ -23,14 +23,14 @@ export function ReactiveQueryTestHarness<
   E extends Error = Error,
 >(args: {
   reactiveQuery: ReactiveQuery<TParams, TResult, E>;
-  params?: TParams;
+  params: TParams;
   options?: ReactiveQueryOptions;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
 }): QueryTestHarness<TResult, E>;
 
 // Implementation
 export function ReactiveQueryTestHarness<
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
 >({

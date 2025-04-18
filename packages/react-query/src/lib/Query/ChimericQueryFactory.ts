@@ -10,7 +10,7 @@ export function ChimericQueryFactory<
 >(
   queryClient: QueryClient,
   getQueryOptions: () => QueryOptions<TResult, E, TResult, string[]>,
-): ChimericQuery<void, TResult, E>;
+): ChimericQuery<undefined, TResult, E>;
 export function ChimericQueryFactory<
   TParams extends object,
   TResult = unknown,
@@ -24,7 +24,7 @@ export function ChimericQueryFactory<
 
 // Implementation
 export function ChimericQueryFactory<
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
 >(
