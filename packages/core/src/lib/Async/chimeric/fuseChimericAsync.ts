@@ -8,9 +8,9 @@ export function fuseChimericAsync<
   TResult = unknown,
   E extends Error = Error,
 >(args: {
-  idiomatic: IdiomaticAsync<void, TResult>;
-  reactive: ReactiveAsync<void, TResult, E>;
-}): ChimericAsync<void, TResult, E>;
+  idiomatic: IdiomaticAsync<undefined, TResult>;
+  reactive: ReactiveAsync<undefined, TResult, E>;
+}): ChimericAsync<undefined, TResult, E>;
 export function fuseChimericAsync<
   TParams extends object,
   TResult = unknown,
@@ -22,7 +22,7 @@ export function fuseChimericAsync<
 
 // Implementation
 export function fuseChimericAsync<
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
 >(args: {

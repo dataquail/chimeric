@@ -6,12 +6,11 @@ import { MutationTestHarness } from './types.js';
 
 // Overloads
 export function IdiomaticMutationTestHarness<
-  TParams extends void,
   TResult = unknown,
   E extends Error = Error,
 >(args: {
-  idiomaticMutation: IdiomaticMutation<TParams, TResult>;
-}): MutationTestHarness<TParams, TResult, E>;
+  idiomaticMutation: IdiomaticMutation<undefined, TResult>;
+}): MutationTestHarness<undefined, TResult, E>;
 export function IdiomaticMutationTestHarness<
   TParams extends object,
   TResult = unknown,
@@ -22,7 +21,7 @@ export function IdiomaticMutationTestHarness<
 
 // Implementation
 export function IdiomaticMutationTestHarness<
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
 >(args: {

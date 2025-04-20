@@ -3,7 +3,7 @@ import { isIdiomaticQuery } from '../idiomatic/isIdiomaticQuery';
 import { isReactiveQuery } from '../reactive/isReactiveQuery';
 
 export const isChimericQuery = <
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
 >(

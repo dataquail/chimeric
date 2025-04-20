@@ -8,9 +8,9 @@ export function fuseChimericQuery<
   TResult = unknown,
   E extends Error = Error,
 >(args: {
-  idiomatic: IdiomaticQuery<void, TResult>;
-  reactive: ReactiveQuery<void, TResult, E>;
-}): ChimericQuery<void, TResult, E>;
+  idiomatic: IdiomaticQuery<undefined, TResult>;
+  reactive: ReactiveQuery<undefined, TResult, E>;
+}): ChimericQuery<undefined, TResult, E>;
 export function fuseChimericQuery<
   TParams extends object,
   TResult = unknown,
@@ -22,7 +22,7 @@ export function fuseChimericQuery<
 
 // Implementation
 export function fuseChimericQuery<
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
 >(args: {

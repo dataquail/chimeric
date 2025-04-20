@@ -20,7 +20,7 @@ export function IdiomaticQueryWithManagedStoreFactory<TResult = unknown>(
     >;
     getFromStore: () => TResult;
   },
-): IdiomaticQuery<void, TResult>;
+): IdiomaticQuery<undefined, TResult>;
 export function IdiomaticQueryWithManagedStoreFactory<
   TParams extends object,
   TResult = unknown,
@@ -44,7 +44,7 @@ export function IdiomaticQueryWithManagedStoreFactory<
 
 // Implementation
 export function IdiomaticQueryWithManagedStoreFactory<
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
 >(
   queryClient: QueryClient,

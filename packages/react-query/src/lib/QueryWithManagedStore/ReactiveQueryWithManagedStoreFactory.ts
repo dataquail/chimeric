@@ -22,7 +22,7 @@ export function ReactiveQueryWithManagedStoreFactory<TResult = unknown>({
     'queryFn'
   >;
   useFromStore: () => TResult;
-}): ReactiveQuery<void, TResult>;
+}): ReactiveQuery<undefined, TResult>;
 export function ReactiveQueryWithManagedStoreFactory<
   TParams extends object,
   TResult = unknown,
@@ -41,7 +41,7 @@ export function ReactiveQueryWithManagedStoreFactory<
 
 // Implementation
 export function ReactiveQueryWithManagedStoreFactory<
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
 >({

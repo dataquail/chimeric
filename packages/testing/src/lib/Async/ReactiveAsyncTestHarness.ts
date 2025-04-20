@@ -12,10 +12,10 @@ export function ReactiveAsyncTestHarness<
   TResult = unknown,
   E extends Error = Error,
 >(args: {
-  reactiveAsync: ReactiveAsync<void, TResult, E>;
+  reactiveAsync: ReactiveAsync<undefined, TResult, E>;
   reactiveOptions?: ReactiveAsyncOptions;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): AsyncTestHarnessType<void, TResult, E>;
+}): AsyncTestHarnessType<undefined, TResult, E>;
 export function ReactiveAsyncTestHarness<
   TParams extends object,
   TResult = unknown,
@@ -28,7 +28,7 @@ export function ReactiveAsyncTestHarness<
 
 // Implementation
 export function ReactiveAsyncTestHarness<
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
 >({

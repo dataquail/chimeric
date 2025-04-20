@@ -1,10 +1,10 @@
 import { BaseWaitForOptions } from 'src/types/WaitForOptions';
 
 export type MutationTestHarness<
-  TParams = void,
-  TResult = void,
+  TParams extends object | undefined,
+  TResult = unknown,
   E extends Error = Error,
-> = TParams extends void
+> = TParams extends undefined
   ? {
       waitFor: (cb: () => void, options?: BaseWaitForOptions) => Promise<void>;
       result: {

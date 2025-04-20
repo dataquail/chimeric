@@ -4,7 +4,10 @@ import { JSX, ReactNode } from 'react';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
 import { SyncTestHarness } from './types .js';
 
-export const ReactiveSyncTestHarness = <TParams = void, TResult = unknown>({
+export const ReactiveSyncTestHarness = <
+  TParams = undefined,
+  TResult = unknown,
+>({
   reactiveSync,
   params,
   wrapper,

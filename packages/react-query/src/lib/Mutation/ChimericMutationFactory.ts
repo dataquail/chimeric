@@ -10,8 +10,8 @@ export function ChimericMutationFactory<
   E extends Error = Error,
 >(
   queryClient: QueryClient,
-  mutationOptions: MutationOptions<void, TResult, E>,
-): ChimericMutation<void, TResult, E>;
+  mutationOptions: MutationOptions<undefined, TResult, E>,
+): ChimericMutation<undefined, TResult, E>;
 export function ChimericMutationFactory<
   TParams extends object,
   TResult = unknown,
@@ -23,7 +23,7 @@ export function ChimericMutationFactory<
 
 // Implementation
 export function ChimericMutationFactory<
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
 >(

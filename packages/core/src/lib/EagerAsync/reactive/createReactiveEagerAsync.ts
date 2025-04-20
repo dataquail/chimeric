@@ -7,9 +7,9 @@ export function createReactiveEagerAsync<
   E extends Error = Error,
 >(
   reactiveFn: () => ReturnType<
-    ReactiveEagerAsync<void, TResult, E>['useEagerAsync']
+    ReactiveEagerAsync<undefined, TResult, E>['useEagerAsync']
   >,
-): ReactiveEagerAsync<void, TResult, E>;
+): ReactiveEagerAsync<undefined, TResult, E>;
 export function createReactiveEagerAsync<
   TParams extends object,
   TResult = unknown,
@@ -22,7 +22,7 @@ export function createReactiveEagerAsync<
 
 // Implementation
 export function createReactiveEagerAsync<
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
 >(

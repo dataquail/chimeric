@@ -12,7 +12,7 @@ export function createReactiveAsync<TResult = unknown, E extends Error = Error>(
     error: E | null;
     data: TResult | undefined;
   },
-): ReactiveAsync<void, TResult, E>;
+): ReactiveAsync<undefined, TResult, E>;
 export function createReactiveAsync<
   TParams extends object,
   TResult = unknown,
@@ -31,7 +31,7 @@ export function createReactiveAsync<
 
 // Implementation
 export function createReactiveAsync<
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
 >(

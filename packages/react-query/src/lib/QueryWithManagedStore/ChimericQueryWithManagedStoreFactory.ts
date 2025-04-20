@@ -23,7 +23,7 @@ export function ChimericQueryWithManagedStoreFactory<
     getFromStore: () => TResult;
     useFromStore: () => TResult;
   },
-): ChimericQuery<void, TResult, E>;
+): ChimericQuery<undefined, TResult, E>;
 
 export function ChimericQueryWithManagedStoreFactory<
   TParams extends object,
@@ -51,7 +51,7 @@ export function ChimericQueryWithManagedStoreFactory<
 
 // Implementation
 export function ChimericQueryWithManagedStoreFactory<
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
 >(

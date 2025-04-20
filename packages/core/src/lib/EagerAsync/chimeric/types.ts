@@ -2,7 +2,7 @@ import { IdiomaticEagerAsync } from 'src/lib/EagerAsync/idiomatic/types';
 import { ReactiveEagerAsync } from 'src/lib/EagerAsync/reactive/types';
 
 export type ChimericEagerAsync<
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
 > = IdiomaticEagerAsync<TParams, TResult> &
@@ -10,18 +10,11 @@ export type ChimericEagerAsync<
 
 export type DefineChimericEagerAsync<
   T extends (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    args: Parameters<T>[0] extends Record<'options', any>
-      ? never
-      : Parameters<T>[0],
+    args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   E extends Error = Error,
 > = ChimericEagerAsync<
-  Parameters<T>[0] extends void
-    ? void
-    : Parameters<T>[0] extends object
-    ? Parameters<T>[0]
-    : never,
+  Parameters<T>[0] extends undefined | object ? Parameters<T>[0] : never,
   Awaited<ReturnType<T>>,
   E
 >;

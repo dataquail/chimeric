@@ -1,13 +1,12 @@
 export type ReactiveAsync<
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-> = TParams extends Record<'options', any>
+> = TParams extends Record<'options', unknown>
   ? never
   : {
       useAsync: (options?: ReactiveAsyncOptions) => {
-        call: TParams extends void
+        call: TParams extends undefined
           ? () => Promise<TResult>
           : (params: TParams) => Promise<TResult>;
         isIdle: boolean;
@@ -25,18 +24,11 @@ export type ReactiveAsyncOptions = {
 
 export type DefineReactiveAsync<
   T extends (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    args: Parameters<T>[0] extends Record<'options', any>
-      ? never
-      : Parameters<T>[0],
+    args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   E extends Error = Error,
 > = ReactiveAsync<
-  Parameters<T>[0] extends void
-    ? void
-    : Parameters<T>[0] extends object
-    ? Parameters<T>[0]
-    : never,
+  Parameters<T>[0] extends undefined | object ? Parameters<T>[0] : never,
   Awaited<ReturnType<T>>,
   E
 >;

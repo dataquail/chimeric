@@ -1,7 +1,7 @@
 import { ReactiveEagerAsync } from './types';
 
 export const isReactiveEagerAsync = <
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
 >(

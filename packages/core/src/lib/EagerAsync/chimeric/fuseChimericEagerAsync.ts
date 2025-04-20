@@ -3,14 +3,14 @@ import { ReactiveEagerAsync } from '../reactive/types';
 import { isChimericEagerAsync } from './isChimericEagerAsync';
 import { ChimericEagerAsync } from './types';
 
-// Define separate implementations for void and object parameters
+// Overloads
 export function fuseChimericEagerAsync<
   TResult = unknown,
   E extends Error = Error,
 >(args: {
-  idiomatic: IdiomaticEagerAsync<void, TResult>;
-  reactive: ReactiveEagerAsync<void, TResult, E>;
-}): ChimericEagerAsync<void, TResult, E>;
+  idiomatic: IdiomaticEagerAsync<undefined, TResult>;
+  reactive: ReactiveEagerAsync<undefined, TResult, E>;
+}): ChimericEagerAsync<undefined, TResult, E>;
 export function fuseChimericEagerAsync<
   TParams extends object,
   TResult = unknown,
@@ -22,7 +22,7 @@ export function fuseChimericEagerAsync<
 
 // Implementation
 export function fuseChimericEagerAsync<
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
 >(args: {

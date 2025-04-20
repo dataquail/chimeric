@@ -12,8 +12,8 @@ export function IdiomaticMutationFactory<
   E extends Error = Error,
 >(
   queryClient: QueryClient,
-  mutationOptions: MutationOptions<void, TResult, E>,
-): IdiomaticMutation<void, TResult>;
+  mutationOptions: MutationOptions<undefined, TResult, E>,
+): IdiomaticMutation<undefined, TResult>;
 export function IdiomaticMutationFactory<
   TParams extends object,
   TResult = unknown,
@@ -25,7 +25,7 @@ export function IdiomaticMutationFactory<
 
 // Implementation
 export function IdiomaticMutationFactory<
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
 >(

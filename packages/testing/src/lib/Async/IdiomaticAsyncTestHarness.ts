@@ -9,9 +9,9 @@ export function IdiomaticAsyncTestHarness<
   TResult = unknown,
   E extends Error = Error,
 >(args: {
-  idiomaticAsync: IdiomaticAsync<void, TResult>;
+  idiomaticAsync: IdiomaticAsync<undefined, TResult>;
   idiomaticOptions?: IdiomaticAsyncOptions;
-}): AsyncTestHarnessType<void, TResult, E>;
+}): AsyncTestHarnessType<undefined, TResult, E>;
 
 // Overload for object params
 export function IdiomaticAsyncTestHarness<
@@ -25,14 +25,14 @@ export function IdiomaticAsyncTestHarness<
 
 // Implementation
 export function IdiomaticAsyncTestHarness<
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
 >(args: {
   idiomaticAsync: IdiomaticAsync<TParams, TResult>;
   idiomaticOptions?: IdiomaticAsyncOptions;
 }): AsyncTestHarnessType<TParams, TResult, E> {
-  type CallFn = TParams extends void
+  type CallFn = TParams extends undefined
     ? () => Promise<TResult>
     : (params: TParams) => Promise<TResult>;
 

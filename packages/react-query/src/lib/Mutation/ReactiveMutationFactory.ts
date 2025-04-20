@@ -7,8 +7,8 @@ export function ReactiveMutationFactory<
   TResult = unknown,
   E extends Error = Error,
 >(
-  mutationOptions: MutationOptions<void, TResult, E>,
-): ReactiveMutation<void, TResult, E>;
+  mutationOptions: MutationOptions<undefined, TResult, E>,
+): ReactiveMutation<undefined, TResult, E>;
 export function ReactiveMutationFactory<
   TParams extends object,
   TResult = unknown,
@@ -19,7 +19,7 @@ export function ReactiveMutationFactory<
 
 // Implementation
 export function ReactiveMutationFactory<
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
 >(

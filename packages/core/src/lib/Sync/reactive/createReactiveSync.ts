@@ -1,7 +1,7 @@
 import { isReactiveSync } from './isReactiveSync';
 import { ReactiveSync } from './types';
 
-export const createReactiveSync = <TParams = void, TResult = unknown>(
+export const createReactiveSync = <TParams = undefined, TResult = unknown>(
   reactiveFn: (params: TParams) => TResult,
 ): ReactiveSync<TParams, TResult> => {
   const reactiveSync = {

@@ -4,7 +4,7 @@ import { IdiomaticEagerAsync } from './types';
 // Overloads
 export function createIdiomaticEagerAsync<TResult = unknown>(
   idiomaticFn: () => Promise<TResult>,
-): IdiomaticEagerAsync<void, TResult>;
+): IdiomaticEagerAsync<undefined, TResult>;
 export function createIdiomaticEagerAsync<
   TParams extends object,
   TResult = unknown,
@@ -14,7 +14,7 @@ export function createIdiomaticEagerAsync<
 
 // Implementation
 export function createIdiomaticEagerAsync<
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
 >(
   idiomaticFn: (params: TParams) => Promise<TResult>,
