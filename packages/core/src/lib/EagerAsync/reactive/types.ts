@@ -15,8 +15,7 @@ export type ReactiveEagerAsync<
         data: TResult | undefined;
       };
     }
-  : TParams extends object
-  ? {
+  : {
       useEagerAsync: (params: TParams) => {
         isIdle: boolean;
         isPending: boolean;
@@ -25,8 +24,7 @@ export type ReactiveEagerAsync<
         error: E | null;
         data: TResult | undefined;
       };
-    }
-  : never;
+    };
 
 export type DefineReactiveEagerAsync<
   T extends (

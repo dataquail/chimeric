@@ -1,5 +1,11 @@
 # Chimeric
 
+## Foreward
+
+Interfaces are useful for hiding complexity. Idiomatic code is better than non-idiomatic code for orchestrating complex operations across many interfaces. React Hooks are non-idiomatic code. Therefore, interfaces implemented with React Hooks necessarily prohibit idiomatic orchestration.
+
+React Hooks are convenient for simple use-cases. The best of both worlds would be interfaces that could be used non-idiomatically as React Hooks for simple use-cases, but also idiomatically, when complexity increases sufficiently to warrant it.
+
 ## What is it?
 
 Chimeric is an interface library for React. A “Chimeric Interface” is one that contains both a an idiomatic function that can be called like any other function in JS/TS. But it also contains a reactive function (a hook) that can be called within React components and hooks. This duality inspired the name of the library. The end result is a signature that looks like this:
