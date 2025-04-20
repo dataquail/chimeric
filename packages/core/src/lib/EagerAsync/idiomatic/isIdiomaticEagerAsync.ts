@@ -1,7 +1,7 @@
 import { IdiomaticEagerAsync } from './types';
 
 export const isIdiomaticEagerAsync = <
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
 >(
   maybeIdiomaticEagerAsync: unknown,

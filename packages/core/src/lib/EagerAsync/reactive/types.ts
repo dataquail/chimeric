@@ -1,11 +1,10 @@
 export type ReactiveEagerAsync<
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-> = TParams extends Record<'options', any>
+> = TParams extends Record<'options', unknown>
   ? never
-  : TParams extends void
+  : TParams extends undefined
   ? {
       useEagerAsync: () => {
         isIdle: boolean;
@@ -16,8 +15,7 @@ export type ReactiveEagerAsync<
         data: TResult | undefined;
       };
     }
-  : TParams extends object
-  ? {
+  : {
       useEagerAsync: (params: TParams) => {
         isIdle: boolean;
         isPending: boolean;
@@ -26,23 +24,15 @@ export type ReactiveEagerAsync<
         error: E | null;
         data: TResult | undefined;
       };
-    }
-  : never;
+    };
 
 export type DefineReactiveEagerAsync<
   T extends (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    args: Parameters<T>[0] extends Record<'options', any>
-      ? never
-      : Parameters<T>[0],
+    args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   E extends Error = Error,
 > = ReactiveEagerAsync<
-  Parameters<T>[0] extends void
-    ? void
-    : Parameters<T>[0] extends object
-    ? Parameters<T>[0]
-    : never,
+  Parameters<T>[0] extends undefined | object ? Parameters<T>[0] : never,
   Awaited<ReturnType<T>>,
   E
 >;

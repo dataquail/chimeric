@@ -7,14 +7,13 @@ import { MutationTestHarness } from './types.js';
 
 // Overloads
 export function ChimericMutationTestHarness<
-  TParams extends void,
   TResult = unknown,
   E extends Error = Error,
 >(args: {
-  chimericMutation: ChimericMutation<TParams, TResult, E>;
+  chimericMutation: ChimericMutation<undefined, TResult, E>;
   method: (typeof chimericMethods)[number];
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): MutationTestHarness<TParams, TResult, E>;
+}): MutationTestHarness<undefined, TResult, E>;
 export function ChimericMutationTestHarness<
   TParams extends object,
   TResult = unknown,
@@ -27,7 +26,7 @@ export function ChimericMutationTestHarness<
 
 // Implementation
 export function ChimericMutationTestHarness<
-  TParams extends object,
+  TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
 >({

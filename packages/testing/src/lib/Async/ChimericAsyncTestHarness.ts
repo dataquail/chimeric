@@ -12,16 +12,15 @@ import { ReactiveAsyncTestHarness } from './ReactiveAsyncTestHarness';
 
 // Define separate implementations for void and object parameters
 export function ChimericAsyncTestHarness<
-  TParams extends void,
   TResult = unknown,
   E extends Error = Error,
 >(args: {
-  chimericAsync: ChimericAsync<TParams, TResult, E>;
+  chimericAsync: ChimericAsync<undefined, TResult, E>;
   method: 'idiomatic' | 'reactive';
   reactiveOptions?: ReactiveAsyncOptions;
   idiomaticOptions?: IdiomaticAsyncOptions;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): AsyncTestHarnessType<TParams, TResult, E>;
+}): AsyncTestHarnessType<undefined, TResult, E>;
 export function ChimericAsyncTestHarness<
   TParams extends object,
   TResult = unknown,
@@ -36,7 +35,7 @@ export function ChimericAsyncTestHarness<
 
 // Implementation
 export function ChimericAsyncTestHarness<
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
 >({

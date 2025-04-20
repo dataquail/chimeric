@@ -5,7 +5,7 @@ import { executeWithRetry } from './utils';
 export function ReactiveAsyncFactory<
   TResult = unknown,
   E extends Error = Error,
->(asyncFn: () => Promise<TResult>): ReactiveAsync<void, TResult, E>;
+>(asyncFn: () => Promise<TResult>): ReactiveAsync<undefined, TResult, E>;
 export function ReactiveAsyncFactory<
   TParams extends object,
   TResult = unknown,
@@ -15,11 +15,11 @@ export function ReactiveAsyncFactory<
 ): ReactiveAsync<TParams, TResult, E>;
 
 export function ReactiveAsyncFactory<
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
 >(
-  asyncFn: TParams extends void
+  asyncFn: TParams extends undefined
     ? () => Promise<TResult>
     : (params: TParams) => Promise<TResult>,
 ): ReactiveAsync<TParams, TResult, E> {

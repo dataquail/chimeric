@@ -10,9 +10,9 @@ export function ChimericEagerAsyncTestHarness<
   TResult = unknown,
   E extends Error = Error,
 >(args: {
-  chimericEagerAsync: ChimericEagerAsync<void, TResult, E>;
+  chimericEagerAsync: ChimericEagerAsync<undefined, TResult, E>;
   method: (typeof chimericMethods)[number];
-  params?: void;
+  params?: undefined;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
 }): EagerAsyncTestHarness<TResult, E>;
 export function ChimericEagerAsyncTestHarness<
@@ -22,13 +22,13 @@ export function ChimericEagerAsyncTestHarness<
 >(args: {
   chimericEagerAsync: ChimericEagerAsync<TParams, TResult, E>;
   method: (typeof chimericMethods)[number];
-  params?: TParams;
+  params: TParams;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
 }): EagerAsyncTestHarness<TResult, E>;
 
 // Implementation
 export function ChimericEagerAsyncTestHarness<
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
 >({

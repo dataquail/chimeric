@@ -1,7 +1,7 @@
 import { IdiomaticMutation } from './types';
 
 export const isIdiomaticMutation = <
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
 >(
   maybeIdiomaticMutation: unknown,

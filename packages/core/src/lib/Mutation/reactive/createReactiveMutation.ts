@@ -3,7 +3,6 @@ import { ReactiveMutation } from './types';
 
 // Overloads
 export function createReactiveMutation<
-  TParams extends void,
   TResult = unknown,
   E extends Error = Error,
 >(
@@ -17,7 +16,7 @@ export function createReactiveMutation<
     data: TResult | undefined;
     reset: () => void;
   },
-): ReactiveMutation<TParams, TResult, E>;
+): ReactiveMutation<undefined, TResult, E>;
 export function createReactiveMutation<
   TParams extends object,
   TResult = unknown,
@@ -37,7 +36,7 @@ export function createReactiveMutation<
 
 // Implementation
 export function createReactiveMutation<
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
 >(

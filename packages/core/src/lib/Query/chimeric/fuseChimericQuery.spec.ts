@@ -132,7 +132,7 @@ describe('fuseChimericQuery', () => {
 
   it('should throw an error for invalid inputs', () => {
     const mockIdiomaticQuery = vi.fn(async () => 'test') as IdiomaticQuery<
-      void,
+      undefined,
       string
     >;
     const invalidReactive = {

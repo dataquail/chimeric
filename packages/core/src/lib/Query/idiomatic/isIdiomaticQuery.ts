@@ -1,7 +1,7 @@
 import { IdiomaticQuery } from './types';
 
 export const isIdiomaticQuery = <
-  TParams extends void | object,
+  TParams extends object | undefined,
   TResult = unknown,
 >(
   maybeIdiomaticQuery: unknown,

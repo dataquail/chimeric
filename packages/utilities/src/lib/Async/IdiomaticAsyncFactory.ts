@@ -3,7 +3,7 @@ import { executeWithRetry } from './utils';
 
 export function IdiomaticAsyncFactory<TResult = unknown>(
   asyncFn: () => Promise<TResult>,
-): IdiomaticAsync<void, TResult>;
+): IdiomaticAsync<undefined, TResult>;
 export function IdiomaticAsyncFactory<
   TParams extends object,
   TResult = unknown,
@@ -12,7 +12,7 @@ export function IdiomaticAsyncFactory<
 ): IdiomaticAsync<TParams, TResult>;
 
 export function IdiomaticAsyncFactory<
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
 >(
   asyncFn: TParams extends void

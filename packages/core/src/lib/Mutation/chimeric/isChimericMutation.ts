@@ -3,7 +3,7 @@ import { isReactiveMutation } from '../reactive/isReactiveMutation';
 import { ChimericMutation } from './types';
 
 export const isChimericMutation = <
-  TParams extends void | object,
+  TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
 >(
