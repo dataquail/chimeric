@@ -1,97 +1,95 @@
 import {
-  QueryOptions,
+  type QueryKey,
+  type QueryClient,
   useQuery as useTanstackQuery,
-  UseQueryOptions,
-  OmitKeyof,
+  queryOptions,
 } from '@tanstack/react-query';
-import {
-  ReactiveQuery,
-  ReactiveQueryOptions,
-  isReactiveQuery,
-} from '@chimeric/core';
+import { ReactiveQuery } from '../Query/reactive/types';
+import { createReactiveQuery } from '../Query/reactive/createReactiveQuery';
 
 // Overloads
-export function ReactiveQueryWithManagedStoreFactory<TResult = unknown>({
-  queryFn,
+export function ReactiveQueryWithManagedStoreFactory<
+  TResult = unknown,
+  E extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
+>({
   getQueryOptions,
   useFromStore,
 }: {
-  queryFn: () => Promise<void>;
-  getQueryOptions: () => OmitKeyof<
-    UseQueryOptions<unknown, Error, unknown, string[]>,
-    'queryFn'
+  getQueryOptions: () => ReturnType<
+    typeof queryOptions<TResult, E, TResult, TQueryKey>
   >;
   useFromStore: () => TResult;
-}): ReactiveQuery<undefined, TResult>;
+}): ReactiveQuery<undefined, TResult, E, TQueryKey>;
 export function ReactiveQueryWithManagedStoreFactory<
   TParams extends object,
   TResult = unknown,
   E extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
 >({
-  queryFn,
   getQueryOptions,
   useFromStore,
 }: {
-  queryFn: (args: TParams) => Promise<void>;
   getQueryOptions: (
-    args: TParams,
-  ) => OmitKeyof<UseQueryOptions<unknown, Error, unknown, string[]>, 'queryFn'>;
+    params: TParams,
+  ) => ReturnType<typeof queryOptions<TResult, E, TResult, TQueryKey>>;
   useFromStore: (args: TParams) => TResult;
-}): ReactiveQuery<TParams, TResult, E>;
+}): ReactiveQuery<TParams, TResult, E, TQueryKey>;
 
 // Implementation
 export function ReactiveQueryWithManagedStoreFactory<
   TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
 >({
-  queryFn,
   getQueryOptions,
   useFromStore,
 }: {
-  queryFn: (args: TParams) => Promise<void>;
   getQueryOptions: (
-    args: TParams,
-  ) => OmitKeyof<UseQueryOptions<unknown, Error, unknown, string[]>, 'queryFn'>;
+    params: TParams,
+  ) => ReturnType<typeof queryOptions<TResult, E, TResult, TQueryKey>>;
   useFromStore: (args: TParams) => TResult;
-}): ReactiveQuery<TParams, TResult, E> {
-  const reactiveQuery = {
-    useQuery: (
-      paramsAndOptions?: TParams & { options?: ReactiveQueryOptions },
-    ) => {
-      const { options, ...params } = paramsAndOptions ?? {};
-      const queryOptions = getQueryOptions(params as TParams);
-      if (!queryOptions.queryKey) {
-        throw new Error('queryKey is required');
-      }
-      const query = useTanstackQuery({
-        ...(queryOptions as QueryOptions<unknown, E, unknown, string[]>),
-        ...(options as UseQueryOptions<unknown, E, unknown, string[]>),
-        queryFn: async () => {
-          await queryFn(params as TParams);
-          return null;
-        },
-      });
-      const dataFromStore = useFromStore(params as TParams);
+}): ReactiveQuery<TParams, TResult, E, TQueryKey> {
+  return createReactiveQuery((paramsAndOptions) => {
+    const { options, nativeOptions, ...params } = paramsAndOptions ?? {};
+    const { queryFn, ...restQueryOptions } = getQueryOptions(params as TParams);
+    const query = useTanstackQuery({
+      ...restQueryOptions,
+      enabled: options?.enabled ?? true,
+      ...nativeOptions,
+      // ensures queryFn returns a value (null) so caller doesn't need to remember to
+      // write their queryFn to return a value
+      queryFn: async (): Promise<TResult> => {
+        if (queryFn && typeof queryFn === 'function') {
+          await queryFn(
+            params as {
+              client: QueryClient;
+              queryKey: TQueryKey;
+              signal: AbortSignal;
+              meta: Record<string, unknown> | undefined;
+              pageParam?: unknown;
+              direction?: unknown;
+            },
+          );
+        }
+        return null as unknown as TResult;
+      },
+    });
+    const dataFromStore = useFromStore(params as TParams);
 
-      return {
-        isIdle: !query.isFetched,
-        isPending: query.isPending,
-        isSuccess: query.isSuccess,
-        isError: query.isError,
-        error: query.error,
-        data: dataFromStore,
-        refetch: async () => {
-          await query.refetch();
-          return dataFromStore;
-        },
-      };
-    },
-  };
-
-  if (isReactiveQuery<TParams, TResult, E>(reactiveQuery)) {
-    return reactiveQuery;
-  } else {
-    throw new Error('reactiveQuery is not qualified to be reactive query');
-  }
+    return {
+      isIdle: !query.isFetched,
+      isPending: query.isPending,
+      isSuccess: query.isSuccess,
+      isError: query.isError,
+      error: query.error,
+      data: dataFromStore,
+      refetch: async () => {
+        await query.refetch();
+        return dataFromStore;
+      },
+      native: query,
+    };
+  }) as ReactiveQuery<TParams, TResult, E, TQueryKey>;
 }

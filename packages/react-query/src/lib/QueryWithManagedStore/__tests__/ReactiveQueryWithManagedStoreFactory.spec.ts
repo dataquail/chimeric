@@ -9,13 +9,13 @@ describe('ReactiveQueryWithManagedStoreFactory', () => {
     const mockQueryFn = vi.fn(() => Promise.resolve('test'));
     let storeValue: string | null = null;
     const reactiveQuery = ReactiveQueryWithManagedStoreFactory({
-      queryFn: async () => {
-        await mockQueryFn();
-        storeValue = 'test';
-      },
       getQueryOptions: () =>
         queryOptions({
           queryKey: ['test'],
+          queryFn: async () => {
+            await mockQueryFn();
+            storeValue = 'test';
+          },
         }),
       useFromStore: () => storeValue,
     });
@@ -38,12 +38,12 @@ describe('ReactiveQueryWithManagedStoreFactory', () => {
     );
     let storeValue: string | null = null;
     const reactiveQuery = ReactiveQueryWithManagedStoreFactory({
-      queryFn: async (args: { name: string }) => {
-        storeValue = await mockQueryFn(args);
-      },
-      getQueryOptions: () =>
+      getQueryOptions: (args: { name: string }) =>
         queryOptions({
           queryKey: ['test'],
+          queryFn: async () => {
+            storeValue = await mockQueryFn(args);
+          },
         }),
       useFromStore: () => storeValue,
     });

@@ -1,6 +1,6 @@
 import { QueryClient, queryOptions } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
-import { ReactiveQueryFactory } from '../ReactiveQueryFactory';
+import { ReactiveQueryFactory } from './ReactiveQueryFactory';
 import { getTestWrapper } from '../../__tests__/getTestWrapper';
 
 describe('ReactiveQueryFactory', () => {
@@ -13,6 +13,7 @@ describe('ReactiveQueryFactory', () => {
         queryFn: mockQueryFn,
       }),
     );
+
     const { result } = renderHook(reactiveQuery.useQuery, {
       wrapper: getTestWrapper(queryClient),
     });

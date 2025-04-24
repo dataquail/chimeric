@@ -5,15 +5,31 @@ export type ChimericMutation<
   TParams extends undefined | object,
   TResult,
   E extends Error,
-> = IdiomaticMutation<TParams, TResult> & ReactiveMutation<TParams, TResult, E>;
+  TNativeIdiomaticOptions = unknown,
+  TNativeReactiveOptions = unknown,
+  TNativeReturnType = unknown,
+> = IdiomaticMutation<TParams, TResult, TNativeIdiomaticOptions> &
+  ReactiveMutation<
+    TParams,
+    TResult,
+    E,
+    TNativeReactiveOptions,
+    TNativeReturnType
+  >;
 
 export type DefineChimericMutation<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   E extends Error = Error,
+  TNativeIdiomaticOptions = unknown,
+  TNativeReactiveOptions = unknown,
+  TNativeReturnType = unknown,
 > = ChimericMutation<
   Parameters<T>[0] extends undefined | object ? Parameters<T>[0] : never,
   Awaited<ReturnType<T>>,
-  E
+  E,
+  TNativeIdiomaticOptions,
+  TNativeReactiveOptions,
+  TNativeReturnType
 >;

@@ -5,15 +5,31 @@ export type ChimericQuery<
   TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
-> = IdiomaticQuery<TParams, TResult> & ReactiveQuery<TParams, TResult, E>;
+  TNativeIdiomaticOptions = unknown,
+  TNativeReactiveOptions = unknown,
+  TNativeReactiveResult = unknown,
+> = IdiomaticQuery<TParams, TResult, TNativeIdiomaticOptions> &
+  ReactiveQuery<
+    TParams,
+    TResult,
+    E,
+    TNativeReactiveOptions,
+    TNativeReactiveResult
+  >;
 
 export type DefineChimericQuery<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   E extends Error = Error,
+  TNativeIdiomaticOptions = unknown,
+  TNativeReactiveOptions = unknown,
+  TNativeReactiveResult = unknown,
 > = ChimericQuery<
   Parameters<T>[0] extends object | undefined ? Parameters<T>[0] : never,
   Awaited<ReturnType<T>>,
-  E
+  E,
+  TNativeIdiomaticOptions,
+  TNativeReactiveOptions,
+  TNativeReactiveResult
 >;

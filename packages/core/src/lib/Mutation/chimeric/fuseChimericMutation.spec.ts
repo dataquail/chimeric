@@ -13,6 +13,7 @@ describe('fuseChimericMutation', () => {
         error: null,
         data: undefined,
         reset: vi.fn(),
+        native: 'test',
       })),
     };
     const testChimericMutation = fuseChimericMutation({
@@ -41,6 +42,7 @@ describe('fuseChimericMutation', () => {
         error: null,
         data: undefined,
         reset: vi.fn(),
+        native: 'test',
       })),
     };
     const testChimericMutation = fuseChimericMutation({
@@ -65,6 +67,7 @@ describe('fuseChimericMutation', () => {
         error: null,
         data: 'test',
         reset: vi.fn(),
+        native: 'test',
       })),
     };
     const testChimericMutation = fuseChimericMutation({
@@ -93,6 +96,7 @@ describe('fuseChimericMutation', () => {
         error: null,
         data: 'Hello John',
         reset: vi.fn(),
+        native: 'test',
       })),
     };
     const testChimericMutation = fuseChimericMutation({
@@ -122,6 +126,7 @@ describe('fuseChimericMutation', () => {
         error: null,
         data: 'Hello John',
         reset: vi.fn(),
+        native: 'test',
       })),
     };
     const testChimericMutation = fuseChimericMutation({

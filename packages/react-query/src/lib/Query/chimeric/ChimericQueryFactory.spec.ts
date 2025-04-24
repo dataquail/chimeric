@@ -1,5 +1,5 @@
 import { QueryClient, queryOptions } from '@tanstack/react-query';
-import { ChimericQueryFactory } from '../ChimericQueryFactory';
+import { ChimericQueryFactory } from '../chimeric/ChimericQueryFactory';
 import { renderHook, waitFor } from '@testing-library/react';
 import { getTestWrapper } from '../../__tests__/getTestWrapper';
 

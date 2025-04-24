@@ -17,6 +17,7 @@ describe('fuseChimericQuery', () => {
         isError: false,
         error: null,
         data: undefined,
+        native: undefined,
       })),
     };
     const testChimericQuery: TestChimericQuery = fuseChimericQuery({
@@ -42,6 +43,7 @@ describe('fuseChimericQuery', () => {
         isError: false,
         error: null,
         data: undefined,
+        native: undefined,
       })),
     };
     const testChimericQuery = fuseChimericQuery({
@@ -65,6 +67,7 @@ describe('fuseChimericQuery', () => {
         isError: false,
         error: null,
         data: 'test',
+        native: undefined,
       })),
     };
     const testChimericQuery = fuseChimericQuery({
@@ -90,6 +93,7 @@ describe('fuseChimericQuery', () => {
         isError: false,
         error: null,
         data: 'Hello John',
+        native: undefined,
       })),
     };
     const testChimericQuery = fuseChimericQuery({
@@ -117,6 +121,7 @@ describe('fuseChimericQuery', () => {
         error: null,
         data: 'Hello John',
         reset: vi.fn(),
+        native: undefined,
       })),
     };
     const testChimericQuery = fuseChimericQuery({

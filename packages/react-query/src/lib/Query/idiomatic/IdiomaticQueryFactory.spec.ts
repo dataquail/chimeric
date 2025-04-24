@@ -1,5 +1,5 @@
 import { QueryClient, queryOptions } from '@tanstack/react-query';
-import { IdiomaticQueryFactory } from '../IdiomaticQueryFactory';
+import { IdiomaticQueryFactory } from '../idiomatic/IdiomaticQueryFactory';
 
 describe('IdiomaticQueryFactory', () => {
   it('should invoke the idiomatic fn', async () => {
