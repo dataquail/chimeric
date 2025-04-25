@@ -1,8 +1,12 @@
-import { QueryClient } from '@tanstack/react-query';
-import { ChimericMutation, fuseChimericMutation } from '@chimeric/core';
-import { MutationOptions } from '../types';
-import { IdiomaticMutationFactory } from './IdiomaticMutationFactory';
-import { ReactiveMutationFactory } from './ReactiveMutationFactory';
+import {
+  type MutationOptions,
+  type QueryClient,
+  type UseMutationOptions,
+} from '@tanstack/react-query';
+import { IdiomaticMutationFactory } from '../idiomatic/IdiomaticMutationFactory';
+import { ReactiveMutationFactory } from '../reactive/ReactiveMutationFactory';
+import { ChimericMutation } from './types';
+import { fuseChimericMutation } from './fuseChimericMutation';
 
 // Overloads
 export function ChimericMutationFactory<
@@ -10,7 +14,9 @@ export function ChimericMutationFactory<
   E extends Error = Error,
 >(
   queryClient: QueryClient,
-  mutationOptions: MutationOptions<undefined, TResult, E>,
+  mutationOptions: {
+    mutationFn: () => Promise<TResult>;
+  } & Omit<MutationOptions<TResult, E, undefined>, 'mutationFn'>,
 ): ChimericMutation<undefined, TResult, E>;
 export function ChimericMutationFactory<
   TParams extends object,
@@ -18,7 +24,9 @@ export function ChimericMutationFactory<
   E extends Error = Error,
 >(
   queryClient: QueryClient,
-  mutationOptions: MutationOptions<TParams, TResult, E>,
+  mutationOptions: {
+    mutationFn: (params: TParams) => Promise<TResult>;
+  } & Omit<MutationOptions<TResult, E, TParams>, 'mutationFn'>,
 ): ChimericMutation<TParams, TResult, E>;
 
 // Implementation
@@ -28,15 +36,21 @@ export function ChimericMutationFactory<
   E extends Error = Error,
 >(
   queryClient: QueryClient,
-  mutationOptions: MutationOptions<TParams, TResult, E>,
+  mutationOptions: {
+    mutationFn: (params: TParams) => Promise<TResult>;
+  } & Omit<MutationOptions<TResult, E, TParams>, 'mutationFn'>,
 ): ChimericMutation<TParams, TResult, E> {
   return fuseChimericMutation({
     idiomatic: IdiomaticMutationFactory(
       queryClient,
-      mutationOptions as MutationOptions<void, TResult, E>,
+      mutationOptions as {
+        mutationFn: () => Promise<TResult>;
+      } & Omit<MutationOptions<TResult, E, undefined>, 'mutationFn'>,
     ),
     reactive: ReactiveMutationFactory(
-      mutationOptions as MutationOptions<void, TResult, E>,
+      mutationOptions as {
+        mutationFn: () => Promise<TResult>;
+      } & Omit<UseMutationOptions<TResult, E, undefined>, 'mutationFn'>,
     ),
   }) as ChimericMutation<TParams, TResult, E>;
 }

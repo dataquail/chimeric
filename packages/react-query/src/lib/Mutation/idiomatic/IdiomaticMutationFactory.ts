@@ -1,10 +1,10 @@
 import {
   Mutation,
-  QueryClient,
-  MutationOptions as TanstackMutationOptions,
+  type QueryClient,
+  type MutationOptions,
 } from '@tanstack/react-query';
-import { IdiomaticMutation, isIdiomaticMutation } from '@chimeric/core';
-import { MutationOptions } from '../types';
+import { IdiomaticMutation } from './types';
+import { createIdiomaticMutation } from './createIdiomaticMutation';
 
 // Overloads
 export function IdiomaticMutationFactory<
@@ -12,7 +12,9 @@ export function IdiomaticMutationFactory<
   E extends Error = Error,
 >(
   queryClient: QueryClient,
-  mutationOptions: MutationOptions<undefined, TResult, E>,
+  mutationOptions: {
+    mutationFn: () => Promise<TResult>;
+  } & Omit<MutationOptions<TResult, E, undefined>, 'mutationFn'>,
 ): IdiomaticMutation<undefined, TResult>;
 export function IdiomaticMutationFactory<
   TParams extends object,
@@ -20,7 +22,9 @@ export function IdiomaticMutationFactory<
   E extends Error = Error,
 >(
   queryClient: QueryClient,
-  mutationOptions: MutationOptions<TParams, TResult, E>,
+  mutationOptions: {
+    mutationFn: (params: TParams) => Promise<TResult>;
+  } & Omit<MutationOptions<TResult, E, TParams>, 'mutationFn'>,
 ): IdiomaticMutation<TParams, TResult>;
 
 // Implementation
@@ -30,32 +34,32 @@ export function IdiomaticMutationFactory<
   E extends Error = Error,
 >(
   queryClient: QueryClient,
-  mutationOptions: MutationOptions<TParams, TResult, E>,
+  mutationOptions: {
+    mutationFn: (params: TParams) => Promise<TResult>;
+  } & Omit<MutationOptions<TResult, E, TParams>, 'mutationFn'>,
 ): IdiomaticMutation<TParams, TResult> {
-  const idiomaticMutation = async (args: TParams) => {
-    const mutationId = mutationOptions.mutationKey
-      ? queryClient
-          .getMutationCache()
-          .find({ mutationKey: mutationOptions.mutationKey })?.mutationId ?? 0
-      : 0;
-    const mutation = new Mutation({
-      mutationId,
-      mutationCache: queryClient.getMutationCache(),
-      options: mutationOptions as TanstackMutationOptions<
-        TResult,
-        E,
-        TParams,
-        unknown
-      >,
+  const mutationId = mutationOptions.mutationKey
+    ? queryClient
+        .getMutationCache()
+        .find({ mutationKey: mutationOptions.mutationKey })?.mutationId ?? 0
+    : 0;
+  const mutation = new Mutation({
+    mutationId,
+    mutationCache: queryClient.getMutationCache(),
+    options: {
+      ...(mutationOptions as MutationOptions<TResult, E, TParams>),
+    },
+  });
+  return createIdiomaticMutation(async (idiomaticAndNativeOptions) => {
+    const { options, nativeOptions, ...params } =
+      idiomaticAndNativeOptions ?? {};
+    mutation.setOptions({
+      ...(options ?? {}),
+      ...((nativeOptions ?? {}) as Omit<
+        MutationOptions<TResult, E, TParams>,
+        'mutationFn'
+      >),
     });
-    return mutation.execute(args);
-  };
-
-  if (isIdiomaticMutation<TParams, TResult>(idiomaticMutation)) {
-    return idiomaticMutation;
-  } else {
-    throw new Error(
-      'idiomaticMutation is not qualified to be idiomatic mutation',
-    );
-  }
+    return mutation.execute(params as TParams);
+  }) as IdiomaticMutation<TParams, TResult>;
 }

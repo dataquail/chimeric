@@ -8,6 +8,7 @@ export const isChimericMutation = <
   E extends Error = Error,
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
+  TNativeCallOptions = unknown,
   TNativeReactiveReturnType = unknown,
 >(
   maybeChimericMutation: unknown,
@@ -17,6 +18,7 @@ export const isChimericMutation = <
   E,
   TNativeIdiomaticOptions,
   TNativeReactiveOptions,
+  TNativeCallOptions,
   TNativeReactiveReturnType
 > => {
   return (

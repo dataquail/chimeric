@@ -1,18 +1,26 @@
 import { isReactiveMutation } from './isReactiveMutation';
-import { ReactiveMutation, ReactiveMutationOptions } from './types';
+import {
+  ReactiveMutation,
+  ReactiveMutationCallOptions,
+  ReactiveMutationOptions,
+} from './types';
 
 // Overloads
 export function createReactiveMutation<
   TResult = unknown,
   E extends Error = Error,
   TNativeOptions = unknown,
+  TNativeCallOptions = unknown,
   TNativeReturnType = unknown,
 >(
   reactiveFn: (config?: {
     options?: ReactiveMutationOptions;
     nativeOptions?: TNativeOptions;
   }) => {
-    call: () => Promise<TResult>;
+    call: (params?: {
+      options?: ReactiveMutationCallOptions;
+      nativeOptions?: TNativeCallOptions;
+    }) => Promise<TResult>;
     isIdle: boolean;
     isPending: boolean;
     isSuccess: boolean;
@@ -28,13 +36,19 @@ export function createReactiveMutation<
   TResult = unknown,
   E extends Error = Error,
   TNativeOptions = unknown,
+  TNativeCallOptions = unknown,
   TNativeReturnType = unknown,
 >(
   reactiveFn: (config?: {
     options?: ReactiveMutationOptions;
     nativeOptions?: TNativeOptions;
   }) => {
-    call: (params: TParams) => Promise<TResult>;
+    call: (
+      params: TParams & {
+        options?: ReactiveMutationCallOptions;
+        nativeOptions?: TNativeCallOptions;
+      },
+    ) => Promise<TResult>;
     isIdle: boolean;
     isPending: boolean;
     isSuccess: boolean;
@@ -52,6 +66,7 @@ export function createReactiveMutation<
   TResult = unknown,
   E extends Error = Error,
   TNativeOptions = unknown,
+  TNativeCallOptions = unknown,
   TNativeReturnType = unknown,
 >(
   reactiveFn: ReactiveMutation<
@@ -59,16 +74,29 @@ export function createReactiveMutation<
     TResult,
     E,
     TNativeOptions,
+    TNativeCallOptions,
     TNativeReturnType
   >['useMutation'],
-): ReactiveMutation<TParams, TResult, E, TNativeOptions, TNativeReturnType> {
+): ReactiveMutation<
+  TParams,
+  TResult,
+  E,
+  TNativeOptions,
+  TNativeCallOptions,
+  TNativeReturnType
+> {
   const reactiveMutation = {
     useMutation: reactiveFn,
   };
   if (
-    isReactiveMutation<TParams, TResult, E, TNativeOptions, TNativeReturnType>(
-      reactiveMutation,
-    )
+    isReactiveMutation<
+      TParams,
+      TResult,
+      E,
+      TNativeOptions,
+      TNativeCallOptions,
+      TNativeReturnType
+    >(reactiveMutation)
   ) {
     return reactiveMutation;
   } else {

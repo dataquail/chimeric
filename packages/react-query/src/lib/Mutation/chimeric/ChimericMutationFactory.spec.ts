@@ -2,7 +2,7 @@ import { act } from 'react';
 import { QueryClient } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
 import { getTestWrapper } from '../../__tests__/getTestWrapper';
-import { ChimericMutationFactory } from '../ChimericMutationFactory';
+import { ChimericMutationFactory } from './ChimericMutationFactory';
 
 describe('ChimericMutationFactory', () => {
   it('should invoke the reactive hook', async () => {

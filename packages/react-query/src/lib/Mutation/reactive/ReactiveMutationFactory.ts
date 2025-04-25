@@ -1,20 +1,29 @@
-import { useMutation } from '@tanstack/react-query';
-import { ReactiveMutation, isReactiveMutation } from '@chimeric/core';
-import { MutationOptions, ReactiveMutationOptions } from '../types';
+import {
+  MutateOptions,
+  useMutation,
+  UseMutationResult,
+  type UseMutationOptions,
+} from '@tanstack/react-query';
+import { ReactiveMutation } from './types';
+import { createReactiveMutation } from './createReactiveMutation';
 
 // Overloads
 export function ReactiveMutationFactory<
   TResult = unknown,
   E extends Error = Error,
 >(
-  mutationOptions: MutationOptions<undefined, TResult, E>,
+  mutationOptions: {
+    mutationFn: () => Promise<TResult>;
+  } & Omit<UseMutationOptions<TResult, E, undefined>, 'mutationFn'>,
 ): ReactiveMutation<undefined, TResult, E>;
 export function ReactiveMutationFactory<
   TParams extends object,
   TResult = unknown,
   E extends Error = Error,
 >(
-  mutationOptions: MutationOptions<TParams, TResult, E>,
+  mutationOptions: {
+    mutationFn: (params: TParams) => Promise<TResult>;
+  } & Omit<UseMutationOptions<TResult, E, TParams>, 'mutationFn'>,
 ): ReactiveMutation<TParams, TResult, E>;
 
 // Implementation
@@ -23,33 +32,37 @@ export function ReactiveMutationFactory<
   TResult = unknown,
   E extends Error = Error,
 >(
-  mutationOptions: MutationOptions<TParams, TResult, E>,
-): ReactiveMutation<TParams, TResult, E> {
-  const reactiveMutation = {
-    useMutation: (config?: {
-      options: ReactiveMutationOptions<TParams, TResult, E>;
-    }) => {
-      const mutation = useMutation<TResult, E, TParams, unknown>({
-        ...mutationOptions,
-        ...(config?.options ?? {}),
-      });
-      return {
-        call: mutation.mutateAsync,
-        isIdle: mutation.isIdle,
-        isPending: mutation.isPending,
-        isSuccess: mutation.isSuccess,
-        isError: mutation.isError,
-        error: mutation.error,
-        data: mutation.data,
-        reset: mutation.reset,
-      };
-    },
-  };
-  if (isReactiveMutation<TParams, TResult, E>(reactiveMutation)) {
-    return reactiveMutation;
-  } else {
-    throw new Error(
-      'reactiveMutation is not qualified to be reactive mutation',
-    );
-  }
+  reactiveMutationOptions: {
+    mutationFn: (params: TParams) => Promise<TResult>;
+  } & Omit<UseMutationOptions<TResult, E, TParams>, 'mutationFn'>,
+): ReactiveMutation<undefined, TResult, E> {
+  return createReactiveMutation((reactiveAndNativeOptions) => {
+    const { options, nativeOptions } = reactiveAndNativeOptions ?? {};
+    const mutation = useMutation({
+      ...reactiveMutationOptions,
+      ...options,
+      ...(nativeOptions as Omit<
+        UseMutationOptions<TResult, E, TParams>,
+        'mutationFn'
+      >),
+    });
+
+    return {
+      call: (paramsAndOptions) => {
+        const { options, nativeOptions, ...params } = paramsAndOptions ?? {};
+        return mutation.mutateAsync(
+          params as TParams,
+          nativeOptions as MutateOptions<TResult, E, TParams>,
+        );
+      },
+      isIdle: mutation.isIdle,
+      isPending: mutation.isPending,
+      isSuccess: mutation.isSuccess,
+      isError: mutation.isError,
+      error: mutation.error,
+      data: mutation.data,
+      reset: mutation.reset,
+      native: mutation as unknown as UseMutationResult<TResult, E, undefined>,
+    };
+  });
 }

@@ -1,5 +1,5 @@
 import { QueryClient } from '@tanstack/react-query';
-import { IdiomaticMutationFactory } from '../IdiomaticMutationFactory';
+import { IdiomaticMutationFactory } from './IdiomaticMutationFactory';
 
 describe('IdiomaticMutationFactory', () => {
   it('should invoke the idiomatic fn', async () => {

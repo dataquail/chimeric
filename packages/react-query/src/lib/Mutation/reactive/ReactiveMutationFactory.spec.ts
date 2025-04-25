@@ -2,7 +2,7 @@ import { act } from 'react';
 import { QueryClient } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
 import { getTestWrapper } from '../../__tests__/getTestWrapper';
-import { ReactiveMutationFactory } from '../ReactiveMutationFactory';
+import { ReactiveMutationFactory } from './ReactiveMutationFactory';
 
 describe('ReactiveMutationFactory', () => {
   it('should invoke the reactive hook', async () => {

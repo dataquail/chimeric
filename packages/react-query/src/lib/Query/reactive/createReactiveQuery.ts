@@ -56,8 +56,8 @@ export function createReactiveQuery<
 export function createReactiveQuery<
   TParams extends undefined | object,
   TResult = unknown,
-  TQueryKey extends QueryKey = QueryKey,
   E extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
 >(
   reactiveFn: CoreReactiveQuery<
     TParams,

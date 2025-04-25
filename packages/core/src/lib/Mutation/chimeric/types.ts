@@ -7,6 +7,7 @@ export type ChimericMutation<
   E extends Error,
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
+  TNativeCallOptions = unknown,
   TNativeReturnType = unknown,
 > = IdiomaticMutation<TParams, TResult, TNativeIdiomaticOptions> &
   ReactiveMutation<
@@ -14,6 +15,7 @@ export type ChimericMutation<
     TResult,
     E,
     TNativeReactiveOptions,
+    TNativeCallOptions,
     TNativeReturnType
   >;
 
@@ -24,6 +26,7 @@ export type DefineChimericMutation<
   E extends Error = Error,
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
+  TNativeCallOptions = unknown,
   TNativeReturnType = unknown,
 > = ChimericMutation<
   Parameters<T>[0] extends undefined | object ? Parameters<T>[0] : never,
@@ -31,5 +34,6 @@ export type DefineChimericMutation<
   E,
   TNativeIdiomaticOptions,
   TNativeReactiveOptions,
+  TNativeCallOptions,
   TNativeReturnType
 >;
