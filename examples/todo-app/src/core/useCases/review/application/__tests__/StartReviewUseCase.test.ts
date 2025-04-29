@@ -5,7 +5,7 @@ import {
   chimericMethods,
   ChimericAsyncTestHarness,
   ChimericSyncTestHarness,
-} from '@chimeric/testing';
+} from '@chimeric/testing-react';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 import { appContainer } from 'src/core/global/appContainer';
 import { mockGetAllActiveTodos } from 'src/__test__/network/activeTodo/mockGetAllActiveTodos';

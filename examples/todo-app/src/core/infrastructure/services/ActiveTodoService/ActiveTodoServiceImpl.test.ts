@@ -15,7 +15,7 @@ import {
   ChimericQueryTestHarness,
   ChimericMutationTestHarness,
   chimericMethods,
-} from '@chimeric/testing';
+} from '@chimeric/testing-react-query';
 
 describe('ActiveTodoServiceImpl', () => {
   const server = setupServer();
