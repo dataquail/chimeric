@@ -14,23 +14,26 @@ export const getActiveTodo: IGetActiveTodo = async (args: { id: string }) => {
   return wrappedFetch<TodoDto>(`${getConfig().API_URL}/active-todo/${args.id}`);
 };
 
-export const getQueryOptionsGetOneById = (args: { id: string }) =>
-  queryOptions({
-    queryKey: ['GET_TODO', args.id],
-  });
+export const getQueryOptionsGetOneById =
+  (appStore: AppStore) => (args: { id: string }) =>
+    queryOptions({
+      queryKey: ['GET_TODO', args.id],
+      queryFn: async () => {
+        const activeTodoDto = await getActiveTodo(args);
+        appStore.dispatch(
+          saveActiveTodo(mapTodoDtoToActiveTodo(activeTodoDto)),
+        );
+      },
+    });
 
 export const GetOneByIdMethodImpl = (
   appStore: AppStore,
   queryClient: QueryClient,
 ): IActiveTodoService['getOneById'] => {
   return ChimericQueryWithManagedStoreFactory(queryClient, {
-    queryFn: async (args: { id: string }) => {
-      const activeTodoDto = await getActiveTodo(args);
-      appStore.dispatch(saveActiveTodo(mapTodoDtoToActiveTodo(activeTodoDto)));
-    },
-    getQueryOptions: getQueryOptionsGetOneById,
     getFromStore: (args) => appStore.getState().todo.activeTodos.dict[args.id],
     useFromStore: (args) =>
       useAppSelector((state) => state.todo.activeTodos.dict[args.id]),
+    getQueryOptions: getQueryOptionsGetOneById(appStore),
   });
 };

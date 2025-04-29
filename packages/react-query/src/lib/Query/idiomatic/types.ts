@@ -19,7 +19,7 @@ export type IdiomaticQuery<
   >
 >;
 
-export type DefineReactiveQuery<
+export type DefineIdiomaticQuery<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,

@@ -7,7 +7,7 @@
       "path": "./packages/core"
     },
     {
-      "path": "./packages/utilities"
+      "path": "./packages/react"
     },
     {
       "path": "./packages/testing"

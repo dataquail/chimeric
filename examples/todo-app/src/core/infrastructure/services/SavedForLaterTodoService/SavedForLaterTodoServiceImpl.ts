@@ -20,11 +20,19 @@ export class SavedForLaterTodoServiceImpl implements ISavedForLaterTodoService {
     queryClientProvider: InjectionType<'IQueryClientProvider'>,
     @inject(InjectionSymbol('IApplicationEventEmitter'))
     applicationEventEmitter: InjectionType<'IApplicationEventEmitter'>,
+    @inject(InjectionSymbol('IAppStoreProvider'))
+    appStoreProvider: InjectionType<'IAppStoreProvider'>,
   ) {
     this.getAll = GetAllMethodImpl(queryClientProvider.get());
     this.getOneById = GetOneByIdMethodImpl(queryClientProvider.get());
-    this.saveForLater = SaveForLaterMethodImpl(queryClientProvider.get());
-    this.activate = ActivateMethodImpl(queryClientProvider.get());
+    this.saveForLater = SaveForLaterMethodImpl(
+      appStoreProvider.get(),
+      queryClientProvider.get(),
+    );
+    this.activate = ActivateMethodImpl(
+      appStoreProvider.get(),
+      queryClientProvider.get(),
+    );
     this.deleteOne = DeleteOneMethodImpl(
       queryClientProvider.get(),
       applicationEventEmitter,

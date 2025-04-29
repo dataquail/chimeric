@@ -1,4 +1,7 @@
-import { DefineChimericMutation, DefineChimericQuery } from '@chimeric/core';
+import {
+  DefineChimericMutation,
+  DefineChimericQuery,
+} from '@chimeric/react-query';
 import { SavedForLaterTodo } from 'src/core/domain/savedForLaterTodo/entities/SavedForLaterTodo';
 import { SaveForLaterBody } from 'src/core/domain/savedForLaterTodo/dtos/in/SaveForLaterBody';
 import { ActivateBody } from 'src/core/domain/savedForLaterTodo/dtos/in/ActivateBody';

@@ -13,14 +13,11 @@ export function IdiomaticQueryWithManagedStoreFactory<
   TQueryKey extends QueryKey = QueryKey,
 >(
   queryClient: QueryClient,
-  {
-    getQueryOptions,
-    getFromStore,
-  }: {
-    getQueryOptions: () => ReturnType<
-      typeof queryOptions<TResult, E, TResult, TQueryKey>
-    >;
+  initialOptions: {
     getFromStore: () => TResult;
+    getQueryOptions: () => ReturnType<
+      typeof queryOptions<void, E, void, TQueryKey>
+    >;
   },
 ): IdiomaticQuery<undefined, TResult, E, TQueryKey>;
 export function IdiomaticQueryWithManagedStoreFactory<
@@ -30,14 +27,11 @@ export function IdiomaticQueryWithManagedStoreFactory<
   TQueryKey extends QueryKey = QueryKey,
 >(
   queryClient: QueryClient,
-  {
-    getQueryOptions,
-    getFromStore,
-  }: {
+  initialOptions: {
+    getFromStore: (args: TParams) => TResult;
     getQueryOptions: (
       params: TParams,
-    ) => ReturnType<typeof queryOptions<TResult, E, TResult, TQueryKey>>;
-    getFromStore: (args: TParams) => TResult;
+    ) => ReturnType<typeof queryOptions<void, E, void, TQueryKey>>;
   },
 ): IdiomaticQuery<TParams, TResult, E, TQueryKey>;
 
@@ -49,44 +43,45 @@ export function IdiomaticQueryWithManagedStoreFactory<
   TQueryKey extends QueryKey = QueryKey,
 >(
   queryClient: QueryClient,
-  {
-    getQueryOptions,
-    getFromStore,
-  }: {
+  initialOptions: {
+    getFromStore: (args: TParams) => TResult;
     getQueryOptions: (
       params: TParams,
-    ) => ReturnType<typeof queryOptions<TResult, E, TResult, TQueryKey>>;
-    getFromStore: (args: TParams) => TResult;
+    ) => ReturnType<typeof queryOptions<void, E, void, TQueryKey>>;
   },
 ): IdiomaticQuery<TParams, TResult, E, TQueryKey> {
   return createIdiomaticQuery(async (paramsAndOptions) => {
     const { options, nativeOptions, ...params } = paramsAndOptions ?? {};
-    const { queryFn, ...restQueryOptions } = getQueryOptions(params as TParams);
+    const { getQueryOptions, getFromStore, ...restQueryOptions } =
+      initialOptions;
+    const { queryFn, queryKey, ...restInitialQueryOptions } = getQueryOptions(
+      params as TParams,
+    );
 
     if (options?.forceRefetch) {
       await queryClient.invalidateQueries({
-        queryKey: restQueryOptions.queryKey,
+        queryKey,
       });
     }
 
     await queryClient.fetchQuery({
+      queryKey,
+      ...(restInitialQueryOptions as Omit<
+        ReturnType<
+          (
+            params: TParams,
+          ) => ReturnType<typeof queryOptions<TResult, E, TResult, TQueryKey>>
+        >,
+        'queryFn' | 'queryKey'
+      >),
       ...restQueryOptions,
       // currently the only chimeric option is 'forceRefetch', which has no
       // equivalent in the idiomatic query options
       // ...options,
       ...nativeOptions,
-      queryFn: async (): Promise<TResult> => {
+      queryFn: async (context): Promise<TResult> => {
         if (queryFn && typeof queryFn === 'function') {
-          await queryFn(
-            params as {
-              client: QueryClient;
-              queryKey: TQueryKey;
-              signal: AbortSignal;
-              meta: Record<string, unknown> | undefined;
-              pageParam?: unknown;
-              direction?: unknown;
-            },
-          );
+          await queryFn(context);
         }
         return null as unknown as TResult;
       },

@@ -131,15 +131,12 @@ importers:
 
   examples/todo-app:
     dependencies:
-      '@chimeric/core':
+      '@chimeric/react':
         specifier: workspace:*
-        version: link:../../packages/core
+        version: link:../../packages/react
       '@chimeric/react-query':
         specifier: workspace:*
         version: link:../../packages/react-query
-      '@chimeric/utilities':
-        specifier: workspace:*
-        version: link:../../packages/utilities
       '@mantine/core':
         specifier: ^7.10.0
         version: 7.17.2(@mantine/hooks@7.17.2(react@19.0.0))(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -273,6 +270,34 @@ importers:
 
   packages/core: {}
 
+  packages/react:
+    dependencies:
+      '@chimeric/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@testing-library/dom':
+        specifier: ^10.4.0
+        version: 10.4.0
+      '@testing-library/jest-dom':
+        specifier: ^6.4.5
+        version: 6.6.3
+      '@testing-library/react':
+        specifier: ^14.3.1
+        version: 14.3.1(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@types/react':
+        specifier: ^19.0.12
+        version: 19.0.12
+      '@types/react-dom':
+        specifier: ^19.0.4
+        version: 19.0.4(@types/react@19.0.12)
+      react:
+        specifier: 19.0.0
+        version: 19.0.0
+      react-dom:
+        specifier: 19.0.0
+        version: 19.0.0(react@19.0.0)
+
   packages/react-query:
     dependencies:
       '@chimeric/core':
@@ -322,34 +347,6 @@ importers:
       react:
         specifier: ^18 || ^19
         version: 19.0.0
-
-  packages/utilities:
-    dependencies:
-      '@chimeric/core':
-        specifier: workspace:*
-        version: link:../core
-    devDependencies:
-      '@testing-library/dom':
-        specifier: ^10.4.0
-        version: 10.4.0
-      '@testing-library/jest-dom':
-        specifier: ^6.4.5
-        version: 6.6.3
-      '@testing-library/react':
-        specifier: ^14.3.1
-        version: 14.3.1(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      '@types/react':
-        specifier: ^19.0.12
-        version: 19.0.12
-      '@types/react-dom':
-        specifier: ^19.0.4
-        version: 19.0.4(@types/react@19.0.12)
-      react:
-        specifier: 19.0.0
-        version: 19.0.0
-      react-dom:
-        specifier: 19.0.0
-        version: 19.0.0(react@19.0.0)
 
 packages:
 

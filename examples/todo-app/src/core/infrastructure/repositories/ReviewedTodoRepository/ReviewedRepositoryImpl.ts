@@ -13,7 +13,7 @@ import {
   createIdiomaticSync,
   createReactiveSync,
   fuseChimericSync,
-} from '@chimeric/core';
+} from '@chimeric/react';
 
 @injectable()
 export class ReviewedTodoRepositoryImpl implements IReviewedTodoRepository {

@@ -2,6 +2,7 @@ import { QueryClient, queryOptions } from '@tanstack/react-query';
 import { ChimericQueryWithManagedStoreFactory } from '../ChimericQueryWithManagedStoreFactory';
 import { renderHook, waitFor } from '@testing-library/react';
 import { getTestWrapper } from '../../__tests__/getTestWrapper';
+import { DefineChimericQuery } from '../../Query/chimeric/types';
 
 describe('ChimericQueryWithManagedStoreFactory', () => {
   it('should invoke the reactive hook', async () => {
@@ -105,5 +106,51 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
 
     expect(result).toBe('Hello John');
     expect(mockQueryFn).toHaveBeenCalledWith({ name: 'John' });
+  });
+
+  it('should handle type annotations with no params', async () => {
+    type TestChimericQuery = DefineChimericQuery<() => Promise<string>>;
+    const queryClient = new QueryClient();
+    const chimericQuery: TestChimericQuery =
+      ChimericQueryWithManagedStoreFactory(queryClient, {
+        getQueryOptions: () =>
+          queryOptions({
+            queryKey: ['test'],
+            queryFn: async () => {
+              return;
+            },
+          }),
+        getFromStore: () => 'test',
+        useFromStore: () => 'test',
+      });
+
+    const result = await chimericQuery();
+
+    expect(result).toBeNull();
+  });
+
+  it('should handle type annotations with params', async () => {
+    type TestChimericQuery = DefineChimericQuery<
+      (args: { name: string }) => Promise<string>
+    >;
+    const queryClient = new QueryClient();
+    const chimericQuery: TestChimericQuery =
+      ChimericQueryWithManagedStoreFactory(queryClient, {
+        getQueryOptions: (args: { name: string }) =>
+          queryOptions({
+            queryKey: ['test', args.name],
+            queryFn: async () => {
+              return;
+            },
+          }),
+        getFromStore: (args) => `Hello ${args.name}`,
+        useFromStore: (args) => `Hello ${args.name}`,
+      });
+
+    const result = await chimericQuery({
+      name: 'John',
+    });
+
+    expect(result).toBe('Hello John');
   });
 });

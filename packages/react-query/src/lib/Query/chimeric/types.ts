@@ -28,7 +28,8 @@ export type DefineChimericQuery<
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   E extends Error = Error,
-  TQueryKey extends QueryKey = QueryKey,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  TQueryKey extends QueryKey = any[],
 > = CoreDefineChimericQuery<
   T,
   E,

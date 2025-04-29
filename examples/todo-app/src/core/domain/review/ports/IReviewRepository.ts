@@ -1,4 +1,4 @@
-import { DefineChimericSync } from '@chimeric/core';
+import { DefineChimericSync } from '@chimeric/react';
 import { Review } from '../entities/Review';
 
 export type IReviewRepository = {

@@ -38,7 +38,6 @@ export function IdiomaticMutationFactory<
     mutationFn: (params: TParams) => Promise<TResult>;
   } & Omit<MutationOptions<TResult, E, TParams>, 'mutationFn'>,
 ): IdiomaticMutation<TParams, TResult> {
-  console.log('mutationOptions', mutationOptions);
   const mutationId = mutationOptions.mutationKey
     ? queryClient
         .getMutationCache()

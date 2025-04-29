@@ -1,9 +1,4 @@
-import {
-  type QueryKey,
-  type QueryClient,
-  useQuery as useTanstackQuery,
-  queryOptions,
-} from '@tanstack/react-query';
+import { type QueryKey, useQuery, queryOptions } from '@tanstack/react-query';
 import { ReactiveQuery } from '../Query/reactive/types';
 import { createReactiveQuery } from '../Query/reactive/createReactiveQuery';
 
@@ -12,12 +7,9 @@ export function ReactiveQueryWithManagedStoreFactory<
   TResult = unknown,
   E extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
->({
-  getQueryOptions,
-  useFromStore,
-}: {
+>(options: {
   getQueryOptions: () => ReturnType<
-    typeof queryOptions<TResult, E, TResult, TQueryKey>
+    typeof queryOptions<void, E, void, TQueryKey>
   >;
   useFromStore: () => TResult;
 }): ReactiveQuery<undefined, TResult, E, TQueryKey>;
@@ -26,13 +18,10 @@ export function ReactiveQueryWithManagedStoreFactory<
   TResult = unknown,
   E extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
->({
-  getQueryOptions,
-  useFromStore,
-}: {
+>(options: {
   getQueryOptions: (
     params: TParams,
-  ) => ReturnType<typeof queryOptions<TResult, E, TResult, TQueryKey>>;
+  ) => ReturnType<typeof queryOptions<void, E, void, TQueryKey>>;
   useFromStore: (args: TParams) => TResult;
 }): ReactiveQuery<TParams, TResult, E, TQueryKey>;
 
@@ -42,37 +31,33 @@ export function ReactiveQueryWithManagedStoreFactory<
   TResult = unknown,
   E extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
->({
-  getQueryOptions,
-  useFromStore,
-}: {
+>(initialOptions: {
   getQueryOptions: (
     params: TParams,
-  ) => ReturnType<typeof queryOptions<TResult, E, TResult, TQueryKey>>;
+  ) => ReturnType<typeof queryOptions<void, E, void, TQueryKey>>;
   useFromStore: (args: TParams) => TResult;
 }): ReactiveQuery<TParams, TResult, E, TQueryKey> {
+  const { useFromStore, getQueryOptions } = initialOptions;
   return createReactiveQuery((paramsAndOptions) => {
     const { options, nativeOptions, ...params } = paramsAndOptions ?? {};
-    const { queryFn, ...restQueryOptions } = getQueryOptions(params as TParams);
-    const query = useTanstackQuery({
-      ...restQueryOptions,
+    const { queryFn, ...restInitialQueryOptions } = getQueryOptions(
+      params as TParams,
+    );
+    const query = useQuery<TResult, E, TResult, TQueryKey>({
+      ...(restInitialQueryOptions as Omit<
+        ReturnType<typeof queryOptions<TResult, E, TResult, TQueryKey>>,
+        'queryFn'
+      >),
       enabled: options?.enabled ?? true,
       ...nativeOptions,
-      // ensures queryFn returns a value (null) so caller doesn't need to remember to
-      // write their queryFn to return a value
-      queryFn: async (): Promise<TResult> => {
-        if (queryFn && typeof queryFn === 'function') {
-          await queryFn(
-            params as {
-              client: QueryClient;
-              queryKey: TQueryKey;
-              signal: AbortSignal;
-              meta: Record<string, unknown> | undefined;
-              pageParam?: unknown;
-              direction?: unknown;
-            },
-          );
+      queryFn: async (context): Promise<TResult> => {
+        if (typeof queryFn === 'function') {
+          await queryFn(context);
         }
+        // ensures queryFn returns a value (null) so caller doesn't need to remember to
+        // write their queryFn to return a value. The return value is ideally void,
+        // but tanstack query doesn't support void. The return value does not matter
+        // because the store is managed by the user directly.
         return null as unknown as TResult;
       },
     });
