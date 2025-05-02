@@ -3,7 +3,7 @@ import { JSX, ReactNode } from 'react';
 import { chimericMethods } from '../methods.js';
 import { IdiomaticEagerAsyncTestHarness } from './IdiomaticEagerAsyncTestHarness.js';
 import { ReactiveEagerAsyncTestHarness } from './ReactiveEagerAsyncTestHarness.js';
-import { EagerAsyncTestHarness } from './types.js';
+import { EagerAsyncTestHarnessReturnType } from './types.js';
 
 // Overloads
 export function ChimericEagerAsyncTestHarness<
@@ -14,7 +14,7 @@ export function ChimericEagerAsyncTestHarness<
   method: (typeof chimericMethods)[number];
   params?: undefined;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): EagerAsyncTestHarness<TResult, E>;
+}): EagerAsyncTestHarnessReturnType<TResult, E>;
 export function ChimericEagerAsyncTestHarness<
   TParams extends object,
   TResult = unknown,
@@ -24,7 +24,7 @@ export function ChimericEagerAsyncTestHarness<
   method: (typeof chimericMethods)[number];
   params: TParams;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): EagerAsyncTestHarness<TResult, E>;
+}): EagerAsyncTestHarnessReturnType<TResult, E>;
 
 // Implementation
 export function ChimericEagerAsyncTestHarness<
@@ -41,7 +41,7 @@ export function ChimericEagerAsyncTestHarness<
   method: (typeof chimericMethods)[number];
   params?: TParams;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): EagerAsyncTestHarness<TResult, E> {
+}): EagerAsyncTestHarnessReturnType<TResult, E> {
   if (method === 'idiomatic') {
     return IdiomaticEagerAsyncTestHarness({
       idiomaticEagerAsync: chimericEagerAsync,

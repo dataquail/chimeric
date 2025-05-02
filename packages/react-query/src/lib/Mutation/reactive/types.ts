@@ -36,3 +36,21 @@ export type DefineReactiveMutation<
   MutationOptions<Awaited<ReturnType<T>>, E, Parameters<T>[0]>,
   UseMutationResult<Awaited<ReturnType<T>>, E, Parameters<T>[0]>
 >;
+
+export type TanstackMutationReactiveNativeOptions<
+  TParams extends object | undefined,
+  TResult,
+  E extends Error,
+> = Omit<UseMutationOptions<TResult, E, TParams>, 'mutationFn'>;
+
+export type TanstackMutationReactiveCallOptions<
+  TParams extends object | undefined,
+  TResult,
+  E extends Error,
+> = MutationOptions<TResult, E, TParams>;
+
+export type TanstackMutationReactiveReturnType<
+  TParams extends object | undefined,
+  TResult,
+  E extends Error,
+> = UseMutationResult<TResult, E, TParams>;

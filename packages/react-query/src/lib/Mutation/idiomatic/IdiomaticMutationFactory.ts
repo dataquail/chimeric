@@ -1,8 +1,4 @@
-import {
-  Mutation,
-  type QueryClient,
-  type MutationOptions,
-} from '@tanstack/react-query';
+import { type QueryClient, type MutationOptions } from '@tanstack/react-query';
 import { IdiomaticMutation } from './types';
 import { createIdiomaticMutation } from './createIdiomaticMutation';
 
@@ -38,23 +34,14 @@ export function IdiomaticMutationFactory<
     mutationFn: (params: TParams) => Promise<TResult>;
   } & Omit<MutationOptions<TResult, E, TParams>, 'mutationFn'>,
 ): IdiomaticMutation<TParams, TResult> {
-  const mutationId = mutationOptions.mutationKey
-    ? queryClient
-        .getMutationCache()
-        .find({ mutationKey: mutationOptions.mutationKey })?.mutationId ?? 0
-    : 0;
-  const mutation = new Mutation({
-    mutationId,
-    mutationCache: queryClient.getMutationCache(),
-    options: {
-      ...(mutationOptions as MutationOptions<TResult, E, TParams>),
-    },
-  });
+  const mutation = queryClient
+    .getMutationCache()
+    .build(queryClient, mutationOptions);
   return createIdiomaticMutation(async (idiomaticAndNativeOptions) => {
     const { options, nativeOptions, ...params } =
       idiomaticAndNativeOptions ?? {};
     mutation.setOptions({
-      mutationFn: mutationOptions.mutationFn,
+      ...mutationOptions,
       ...(options ?? {}),
       ...((nativeOptions ?? {}) as Omit<
         MutationOptions<TResult, E, TParams>,

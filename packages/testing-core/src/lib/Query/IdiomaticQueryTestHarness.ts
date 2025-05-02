@@ -2,41 +2,48 @@
 import { IdiomaticQuery, IdiomaticQueryOptions } from '@chimeric/core';
 import { checkOnInterval } from '../checkOnInterval.js';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
-import { QueryTestHarness } from './types.js';
+import { IdiomaticQueryTestHarnessReturnType } from './types.js';
 
 // Overloads
 export function IdiomaticQueryTestHarness<
   TResult = unknown,
   E extends Error = Error,
+  TIdiomaticNativeOptions = unknown,
 >(args: {
-  idiomaticQuery: IdiomaticQuery<undefined, TResult>;
+  idiomaticQuery: IdiomaticQuery<undefined, TResult, TIdiomaticNativeOptions>;
   params?: undefined;
   options?: IdiomaticQueryOptions;
-}): QueryTestHarness<TResult, E>;
+  nativeOptions?: TIdiomaticNativeOptions;
+}): IdiomaticQueryTestHarnessReturnType<TResult, E>;
 export function IdiomaticQueryTestHarness<
   TParams extends object,
   TResult = unknown,
   E extends Error = Error,
+  TIdiomaticNativeOptions = unknown,
 >(args: {
-  idiomaticQuery: IdiomaticQuery<TParams, TResult>;
+  idiomaticQuery: IdiomaticQuery<TParams, TResult, TIdiomaticNativeOptions>;
   params: TParams;
   options?: IdiomaticQueryOptions;
-}): QueryTestHarness<TResult, E>;
+  nativeOptions?: TIdiomaticNativeOptions;
+}): IdiomaticQueryTestHarnessReturnType<TResult, E>;
 
 // Implementation
 export function IdiomaticQueryTestHarness<
   TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
+  TIdiomaticNativeOptions = unknown,
 >({
   idiomaticQuery,
   params,
   options,
+  nativeOptions,
 }: {
-  idiomaticQuery: IdiomaticQuery<TParams, TResult>;
+  idiomaticQuery: IdiomaticQuery<TParams, TResult, TIdiomaticNativeOptions>;
   params?: TParams;
   options?: IdiomaticQueryOptions;
-}): QueryTestHarness<TResult, E> {
+  nativeOptions?: TIdiomaticNativeOptions;
+}): IdiomaticQueryTestHarnessReturnType<TResult, E> {
   const result = {
     current: {
       data: undefined as TResult | undefined,
@@ -56,13 +63,14 @@ export function IdiomaticQueryTestHarness<
   result.current.isPending = true;
   let promise = idiomaticQuery({
     ...params,
-    options: {
-      ...options,
-    },
+    options,
+    nativeOptions,
   } as {
     options: IdiomaticQueryOptions;
+    nativeOptions: TIdiomaticNativeOptions;
   } & TParams & {
       options?: IdiomaticQueryOptions;
+      nativeOptions?: TIdiomaticNativeOptions;
     });
   promiseStatus = 'pending';
   promise
@@ -91,13 +99,14 @@ export function IdiomaticQueryTestHarness<
           if (options?.reinvokeIdiomaticFn && promiseStatus === 'resolved') {
             promise = idiomaticQuery({
               ...params,
-              options: {
-                ...options,
-              },
+              options,
+              nativeOptions,
             } as {
               options: IdiomaticQueryOptions;
+              nativeOptions: TIdiomaticNativeOptions;
             } & TParams & {
                 options?: IdiomaticQueryOptions;
+                nativeOptions?: TIdiomaticNativeOptions;
               });
             promiseStatus = 'pending';
             promise

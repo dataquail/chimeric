@@ -13,7 +13,10 @@
       "path": "../../packages/react-query"
     },
     {
-      "path": "../../packages/testing"
+      "path": "../../packages/testing-react"
+    },
+    {
+      "path": "../../packages/testing-react-query"
     },
     {
       "path": "./tsconfig.spec.json"

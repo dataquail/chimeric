@@ -2,7 +2,7 @@ import { waitFor, renderHook } from '@testing-library/react';
 import { ReactiveSync } from '@chimeric/core';
 import { JSX, ReactNode } from 'react';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
-import { SyncTestHarness } from './types .js';
+import { SyncTestHarnessReturnType } from './types.js';
 
 export const ReactiveSyncTestHarness = <
   TParams = undefined,
@@ -15,7 +15,7 @@ export const ReactiveSyncTestHarness = <
   reactiveSync: ReactiveSync<TParams, TResult>;
   params?: TParams;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): SyncTestHarness<TResult> => {
+}): SyncTestHarnessReturnType<TResult> => {
   const hook = renderHook(() => reactiveSync.useSync(params as TParams), {
     wrapper,
   });

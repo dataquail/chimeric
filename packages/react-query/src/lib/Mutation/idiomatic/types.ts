@@ -26,3 +26,9 @@ export type DefineIdiomaticMutation<
     'mutationFn'
   >
 >;
+
+export type TanstackIdiomaticNativeOptions<
+  TParams extends object | undefined,
+  TResult,
+  E extends Error,
+> = Omit<MutationOptions<TResult, E, TParams>, 'mutationFn'>;

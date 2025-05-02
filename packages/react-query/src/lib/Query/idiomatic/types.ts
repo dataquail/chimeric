@@ -37,3 +37,12 @@ export type DefineIdiomaticQuery<
     'queryKey' | 'queryFn'
   >
 >;
+
+export type TanstackQueryIdiomaticNativeOptions<
+  TResult = unknown,
+  E extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
+> = Omit<
+  FetchQueryOptions<TResult, E, TResult, TQueryKey>,
+  'queryKey' | 'queryFn'
+>;

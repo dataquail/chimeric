@@ -2,7 +2,7 @@
 import { IdiomaticSync } from '@chimeric/core';
 import { checkOnInterval } from '../checkOnInterval.js';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
-import { SyncTestHarness } from './types .js';
+import { SyncTestHarnessReturnType } from './types.js';
 
 export const IdiomaticSyncTestHarness = <
   TParams = undefined,
@@ -13,7 +13,7 @@ export const IdiomaticSyncTestHarness = <
 }: {
   idiomaticSync: IdiomaticSync<TParams, TResult>;
   params?: TParams;
-}): SyncTestHarness<TResult> => {
+}): SyncTestHarnessReturnType<TResult> => {
   const result = {
     current: undefined as TResult | undefined,
   };

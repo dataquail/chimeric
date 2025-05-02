@@ -45,18 +45,15 @@ export function IdiomaticQueryFactory<
     const { options, nativeOptions, ...params } = paramsAndOptions ?? {};
     const queryOptions = getQueryOptions(params as TParams);
 
+    const fetchQueryOptions = {
+      ...queryOptions,
+      ...nativeOptions,
+    };
+
     if (options?.forceRefetch) {
-      await queryClient.invalidateQueries({
-        queryKey: queryOptions.queryKey,
-      });
+      fetchQueryOptions.staleTime = 0;
     }
 
-    return queryClient.fetchQuery({
-      ...queryOptions,
-      // currently the only chimeric option is 'forceRefetch', which has no
-      // equivalent in the idiomatic query options
-      // ...options,
-      ...nativeOptions,
-    });
+    return queryClient.fetchQuery(fetchQueryOptions);
   }) as IdiomaticQuery<TParams, TResult, E, TQueryKey>;
 }

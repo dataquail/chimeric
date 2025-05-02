@@ -1,18 +1,18 @@
 export type IdiomaticMutation<
   TParams extends undefined | object,
   TResult,
-  TNativeOptions = unknown,
+  TIdiomaticNativeOptions = unknown,
 > = TParams extends Record<'options' | 'nativeOptions', unknown>
   ? never
   : TParams extends undefined
   ? (params?: {
       options?: IdiomaticMutationOptions;
-      nativeOptions?: TNativeOptions;
+      nativeOptions?: TIdiomaticNativeOptions;
     }) => Promise<TResult>
   : (
       params: TParams & {
         options?: IdiomaticMutationOptions;
-        nativeOptions?: TNativeOptions;
+        nativeOptions?: TIdiomaticNativeOptions;
       },
     ) => Promise<TResult>;
 

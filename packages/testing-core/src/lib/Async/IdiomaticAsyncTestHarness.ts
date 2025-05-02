@@ -2,7 +2,7 @@
 import { IdiomaticAsync, IdiomaticAsyncOptions } from '@chimeric/core';
 import { checkOnInterval } from '../checkOnInterval';
 import { BaseWaitForOptions } from 'src/types/WaitForOptions';
-import { AsyncTestHarnessType } from './types';
+import { AsyncTestHarnessReturnType } from './types';
 
 // Overload for void params
 export function IdiomaticAsyncTestHarness<
@@ -11,7 +11,7 @@ export function IdiomaticAsyncTestHarness<
 >(args: {
   idiomaticAsync: IdiomaticAsync<undefined, TResult>;
   idiomaticOptions?: IdiomaticAsyncOptions;
-}): AsyncTestHarnessType<undefined, TResult, E>;
+}): AsyncTestHarnessReturnType<undefined, TResult, E>;
 
 // Overload for object params
 export function IdiomaticAsyncTestHarness<
@@ -21,7 +21,7 @@ export function IdiomaticAsyncTestHarness<
 >(args: {
   idiomaticAsync: IdiomaticAsync<TParams, TResult>;
   idiomaticOptions?: IdiomaticAsyncOptions;
-}): AsyncTestHarnessType<TParams, TResult, E>;
+}): AsyncTestHarnessReturnType<TParams, TResult, E>;
 
 // Implementation
 export function IdiomaticAsyncTestHarness<
@@ -31,12 +31,12 @@ export function IdiomaticAsyncTestHarness<
 >(args: {
   idiomaticAsync: IdiomaticAsync<TParams, TResult>;
   idiomaticOptions?: IdiomaticAsyncOptions;
-}): AsyncTestHarnessType<TParams, TResult, E> {
+}): AsyncTestHarnessReturnType<TParams, TResult, E> {
   type CallFn = TParams extends undefined
     ? () => Promise<TResult>
     : (params: TParams) => Promise<TResult>;
 
-  const result: AsyncTestHarnessType<TParams, TResult, E>['result'] = {
+  const result: AsyncTestHarnessReturnType<TParams, TResult, E>['result'] = {
     current: {
       call: (async (params: TParams) => {
         result.current.isIdle = false;

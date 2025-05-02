@@ -1,6 +1,6 @@
 import { BaseWaitForOptions } from 'src/types/WaitForOptions';
 
-export type AsyncTestHarnessType<
+export type AsyncTestHarnessReturnType<
   TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,

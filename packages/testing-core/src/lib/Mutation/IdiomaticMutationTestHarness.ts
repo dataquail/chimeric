@@ -1,50 +1,90 @@
 /* eslint-disable no-async-promise-executor */
-import { IdiomaticMutation } from '@chimeric/core';
+import { IdiomaticMutation, IdiomaticMutationOptions } from '@chimeric/core';
 import { checkOnInterval } from '../checkOnInterval.js';
 import { BaseWaitForOptions } from 'src/types/WaitForOptions.js';
-import { MutationTestHarness } from './types.js';
+import { IdiomaticMutationTestHarnessReturnType } from './types.js';
 
 // Overloads
 export function IdiomaticMutationTestHarness<
   TResult = unknown,
   E extends Error = Error,
+  TIdiomaticNativeOptions = unknown,
 >(args: {
-  idiomaticMutation: IdiomaticMutation<undefined, TResult>;
-}): MutationTestHarness<undefined, TResult, E>;
+  idiomaticMutation: IdiomaticMutation<
+    undefined,
+    TResult,
+    TIdiomaticNativeOptions
+  >;
+}): IdiomaticMutationTestHarnessReturnType<undefined, TResult, E>;
 export function IdiomaticMutationTestHarness<
   TParams extends object,
   TResult = unknown,
   E extends Error = Error,
+  TIdiomaticNativeOptions = unknown,
 >(args: {
-  idiomaticMutation: IdiomaticMutation<TParams, TResult>;
-}): MutationTestHarness<TParams, TResult, E>;
+  idiomaticMutation: IdiomaticMutation<
+    TParams,
+    TResult,
+    TIdiomaticNativeOptions
+  >;
+}): IdiomaticMutationTestHarnessReturnType<
+  TParams,
+  TResult,
+  E,
+  TIdiomaticNativeOptions
+>;
 
 // Implementation
 export function IdiomaticMutationTestHarness<
   TParams extends object | undefined,
   TResult = unknown,
   E extends Error = Error,
+  TIdiomaticNativeOptions = unknown,
 >(args: {
-  idiomaticMutation: IdiomaticMutation<TParams, TResult>;
-}): MutationTestHarness<TParams, TResult, E>;
+  idiomaticMutation: IdiomaticMutation<
+    TParams,
+    TResult,
+    TIdiomaticNativeOptions
+  >;
+}): IdiomaticMutationTestHarnessReturnType<
+  TParams,
+  TResult,
+  E,
+  TIdiomaticNativeOptions
+>;
 export function IdiomaticMutationTestHarness<
   TParams extends object,
   TResult = unknown,
   E extends Error = Error,
+  TIdiomaticNativeOptions = unknown,
 >({
   idiomaticMutation,
 }: {
-  idiomaticMutation: IdiomaticMutation<TParams, TResult>;
-}): MutationTestHarness<TParams, TResult, E> {
+  idiomaticMutation: IdiomaticMutation<
+    TParams,
+    TResult,
+    TIdiomaticNativeOptions
+  >;
+}): IdiomaticMutationTestHarnessReturnType<
+  TParams,
+  TResult,
+  E,
+  TIdiomaticNativeOptions
+> {
   const result = {
     current: {
-      call: (args: TParams) => {
+      call: (
+        params: TParams & {
+          options?: IdiomaticMutationOptions;
+          nativeOptions?: TIdiomaticNativeOptions;
+        },
+      ) => {
         result.current.isIdle = false;
         result.current.isPending = true;
         result.current.isSuccess = false;
         result.current.isError = false;
         result.current.error = null;
-        const promise = idiomaticMutation(args);
+        const promise = idiomaticMutation(params);
         promise
           .then((data) => {
             result.current.data = data;
@@ -85,5 +125,10 @@ export function IdiomaticMutationTestHarness<
       });
     },
     result,
-  } as MutationTestHarness<TParams, TResult, E>;
+  } as IdiomaticMutationTestHarnessReturnType<
+    TParams,
+    TResult,
+    E,
+    TIdiomaticNativeOptions
+  >;
 }

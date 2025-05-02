@@ -28,3 +28,5 @@ export * from './lib/Query/reactive/createReactiveQuery.js';
 export * from './lib/QueryWithManagedStore/ChimericQueryWithManagedStoreFactory.js';
 export * from './lib/QueryWithManagedStore/IdiomaticQueryWithManagedStoreFactory.js';
 export * from './lib/QueryWithManagedStore/ReactiveQueryWithManagedStoreFactory.js';
+// external types
+export * from './lib/externalTypes.js';

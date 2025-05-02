@@ -126,7 +126,7 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
 
     const result = await chimericQuery();
 
-    expect(result).toBeNull();
+    expect(result).toBe('test');
   });
 
   it('should handle type annotations with params', async () => {

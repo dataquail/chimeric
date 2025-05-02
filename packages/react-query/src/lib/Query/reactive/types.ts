@@ -42,3 +42,17 @@ export type DefineReactiveQuery<
   >,
   UseQueryResult<Awaited<ReturnType<T>>, E>
 >;
+
+export type TanstackQueryReactiveNativeOptions<
+  TResult = unknown,
+  E extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
+> = Omit<
+  UseQueryOptions<TResult, E, TResult, TQueryKey>,
+  'queryKey' | 'queryFn'
+>;
+
+export type TanstackQueryReactiveReturnType<
+  TResult = unknown,
+  E extends Error = Error,
+> = UseQueryResult<TResult, E>;

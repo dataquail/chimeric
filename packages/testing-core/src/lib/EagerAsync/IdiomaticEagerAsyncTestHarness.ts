@@ -2,7 +2,7 @@
 import { IdiomaticEagerAsync } from '@chimeric/core';
 import { checkOnInterval } from '../checkOnInterval.js';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
-import { EagerAsyncTestHarness } from './types.js';
+import { EagerAsyncTestHarnessReturnType } from './types.js';
 
 // Overloads
 export function IdiomaticEagerAsyncTestHarness<
@@ -11,7 +11,7 @@ export function IdiomaticEagerAsyncTestHarness<
 >(args: {
   idiomaticEagerAsync: IdiomaticEagerAsync<undefined, TResult>;
   params?: undefined;
-}): EagerAsyncTestHarness<TResult, E>;
+}): EagerAsyncTestHarnessReturnType<TResult, E>;
 export function IdiomaticEagerAsyncTestHarness<
   TParams extends object,
   TResult = unknown,
@@ -19,7 +19,7 @@ export function IdiomaticEagerAsyncTestHarness<
 >(args: {
   idiomaticEagerAsync: IdiomaticEagerAsync<TParams, TResult>;
   params: TParams;
-}): EagerAsyncTestHarness<TResult, E>;
+}): EagerAsyncTestHarnessReturnType<TResult, E>;
 
 // Implementation
 export function IdiomaticEagerAsyncTestHarness<
@@ -32,7 +32,7 @@ export function IdiomaticEagerAsyncTestHarness<
 }: {
   idiomaticEagerAsync: IdiomaticEagerAsync<TParams, TResult>;
   params?: TParams;
-}): EagerAsyncTestHarness<TResult, E> {
+}): EagerAsyncTestHarnessReturnType<TResult, E> {
   const result = {
     current: {
       data: undefined as TResult | undefined,

@@ -6,7 +6,7 @@ import {
   IdiomaticAsync,
 } from '@chimeric/core';
 import { JSX, ReactNode } from 'react';
-import { AsyncTestHarnessType } from './types';
+import { AsyncTestHarnessReturnType } from './types';
 import { IdiomaticAsyncTestHarness } from './IdiomaticAsyncTestHarness';
 import { ReactiveAsyncTestHarness } from './ReactiveAsyncTestHarness';
 
@@ -20,7 +20,7 @@ export function ChimericAsyncTestHarness<
   reactiveOptions?: ReactiveAsyncOptions;
   idiomaticOptions?: IdiomaticAsyncOptions;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): AsyncTestHarnessType<undefined, TResult, E>;
+}): AsyncTestHarnessReturnType<undefined, TResult, E>;
 export function ChimericAsyncTestHarness<
   TParams extends object,
   TResult = unknown,
@@ -31,7 +31,7 @@ export function ChimericAsyncTestHarness<
   reactiveOptions?: ReactiveAsyncOptions;
   idiomaticOptions?: IdiomaticAsyncOptions;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): AsyncTestHarnessType<TParams, TResult, E>;
+}): AsyncTestHarnessReturnType<TParams, TResult, E>;
 
 // Implementation
 export function ChimericAsyncTestHarness<
@@ -50,19 +50,19 @@ export function ChimericAsyncTestHarness<
   reactiveOptions?: ReactiveAsyncOptions;
   idiomaticOptions?: IdiomaticAsyncOptions;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): AsyncTestHarnessType<TParams, TResult, E> {
+}): AsyncTestHarnessReturnType<TParams, TResult, E> {
   if (method === 'idiomatic') {
     return IdiomaticAsyncTestHarness({
       idiomaticAsync: chimericAsync as IdiomaticAsync<object, TResult>,
       idiomaticOptions,
-    }) as AsyncTestHarnessType<TParams, TResult, E>;
+    }) as AsyncTestHarnessReturnType<TParams, TResult, E>;
   }
   if (method === 'reactive') {
     return ReactiveAsyncTestHarness({
       reactiveAsync: chimericAsync as ReactiveAsync<object, TResult, E>,
       reactiveOptions,
       wrapper,
-    }) as AsyncTestHarnessType<TParams, TResult, E>;
+    }) as AsyncTestHarnessReturnType<TParams, TResult, E>;
   } else {
     throw new Error('Invalid method');
   }

@@ -5,7 +5,7 @@ import {
 import { ReactiveAsyncOptions, ReactiveAsync } from '@chimeric/core';
 import { JSX, ReactNode } from 'react';
 import { BaseWaitForOptions } from 'src/types/WaitForOptions.js';
-import { AsyncTestHarnessType } from './types';
+import { AsyncTestHarnessReturnType } from './types';
 
 // Overloads
 export function ReactiveAsyncTestHarness<
@@ -15,7 +15,7 @@ export function ReactiveAsyncTestHarness<
   reactiveAsync: ReactiveAsync<undefined, TResult, E>;
   reactiveOptions?: ReactiveAsyncOptions;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): AsyncTestHarnessType<undefined, TResult, E>;
+}): AsyncTestHarnessReturnType<undefined, TResult, E>;
 export function ReactiveAsyncTestHarness<
   TParams extends object,
   TResult = unknown,
@@ -24,7 +24,7 @@ export function ReactiveAsyncTestHarness<
   reactiveAsync: ReactiveAsync<TParams, TResult, E>;
   reactiveOptions?: ReactiveAsyncOptions;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): AsyncTestHarnessType<TParams, TResult, E>;
+}): AsyncTestHarnessReturnType<TParams, TResult, E>;
 
 // Implementation
 export function ReactiveAsyncTestHarness<
@@ -39,7 +39,7 @@ export function ReactiveAsyncTestHarness<
   reactiveAsync: ReactiveAsync<TParams, TResult, E>;
   reactiveOptions?: ReactiveAsyncOptions;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): AsyncTestHarnessType<TParams, TResult, E> {
+}): AsyncTestHarnessReturnType<TParams, TResult, E> {
   const hook = renderHook(() => reactiveAsync.useAsync(reactiveOptions ?? {}), {
     wrapper,
   });
@@ -50,6 +50,10 @@ export function ReactiveAsyncTestHarness<
         interval: options?.interval,
       });
     },
-    result: hook.result as AsyncTestHarnessType<TParams, TResult, E>['result'],
+    result: hook.result as AsyncTestHarnessReturnType<
+      TParams,
+      TResult,
+      E
+    >['result'],
   };
 }

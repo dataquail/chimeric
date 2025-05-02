@@ -31,6 +31,10 @@ describe('fuseChimericQuery', () => {
   });
 
   it('should invoke the idiomatic function with params', async () => {
+    // Should be ts error
+    // const mockIdiomaticQuery = vi.fn(
+    //   async () => `Hello John`,
+    // );
     const mockIdiomaticQuery = vi.fn(
       async (args: { name: string }) => `Hello ${args.name}`,
     );
