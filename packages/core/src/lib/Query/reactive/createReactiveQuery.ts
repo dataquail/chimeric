@@ -1,34 +1,75 @@
-import { ReactiveQuery } from './types';
+import { ReactiveQuery, ReactiveQueryOptions } from './types';
 import { isReactiveQuery } from './isReactiveQuery';
 
 // Overloads
-export function createReactiveQuery<TResult = unknown>(
-  reactiveFn: () => ReturnType<ReactiveQuery<undefined, TResult>['useQuery']>,
-): ReactiveQuery<undefined, TResult>;
+export function createReactiveQuery<
+  TResult = unknown,
+  E extends Error = Error,
+  TNativeOptions = unknown,
+  TNativeReturnType = unknown,
+>(
+  reactiveFn: (params?: {
+    options?: ReactiveQueryOptions;
+    nativeOptions?: TNativeOptions;
+  }) => {
+    isIdle: boolean;
+    isPending: boolean;
+    isSuccess: boolean;
+    isError: boolean;
+    error: E | null;
+    data: TResult | undefined;
+    refetch: () => Promise<TResult>;
+    native: TNativeReturnType;
+  },
+): ReactiveQuery<undefined, TResult, E, TNativeOptions, TNativeReturnType>;
 export function createReactiveQuery<
   TParams extends object,
   TResult = unknown,
   E extends Error = Error,
+  TNativeOptions = unknown,
+  TNativeReturnType = unknown,
 >(
   reactiveFn: (
-    params: TParams,
-  ) => ReturnType<ReactiveQuery<TParams, TResult, E>['useQuery']>,
-): ReactiveQuery<TParams, TResult, E>;
+    params: TParams & {
+      options?: ReactiveQueryOptions;
+      nativeOptions?: TNativeOptions;
+    },
+  ) => {
+    isIdle: boolean;
+    isPending: boolean;
+    isSuccess: boolean;
+    isError: boolean;
+    error: E | null;
+    data: TResult | undefined;
+    refetch: () => Promise<TResult>;
+    native: TNativeReturnType;
+  },
+): ReactiveQuery<TParams, TResult, E, TNativeOptions, TNativeReturnType>;
 
 // Implementation
 export function createReactiveQuery<
   TParams extends undefined | object,
   TResult = unknown,
   E extends Error = Error,
+  TNativeOptions = unknown,
+  TNativeReturnType = unknown,
 >(
-  reactiveFn: (
-    params: TParams,
-  ) => ReturnType<ReactiveQuery<TParams, TResult, E>['useQuery']>,
-): ReactiveQuery<TParams, TResult, E> {
+  reactiveFn: ReactiveQuery<
+    TParams,
+    TResult,
+    E,
+    TNativeOptions,
+    TNativeReturnType
+  >['useQuery'],
+): ReactiveQuery<TParams, TResult, E, TNativeOptions, TNativeReturnType> {
   const reactiveQuery = {
     useQuery: reactiveFn,
   };
-  if (isReactiveQuery<TParams, TResult, E>(reactiveQuery)) {
+  if (
+    isReactiveQuery<TParams, TResult, E, TNativeOptions, TNativeReturnType>(
+      reactiveQuery,
+    )
+  ) {
     return reactiveQuery;
   } else {
     throw new Error('reactiveFn is not qualified to be reactive query');

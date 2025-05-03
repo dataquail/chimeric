@@ -166,15 +166,15 @@ The `TodoService` now colocates both paths to retrieve the data. Tight coupling 
 
 ## When should I use Chimeric?
 
-1. If you have a lot of complexity/orchestration that you want to model idiomatically, as top-down functions, without becoming coupled to a specific libraries orchestration framework (redux thunks, xstate state machines, mobX ).
-2. If you want to abstract implementation details behind interfaces for lower coupling, better modularity, and better maintainability.
-3. If you want a more layered architecture to scale with complexity, without a fully decoupled Observable model and view model (MVVM architecture).
+1. If you have a lot of complexity/orchestration that you want to model idiomatically, as top-down functions.
+2. If you want to abstract implementation details behind interfaces to hide complexity, improve modularity, isolate third party dependencies, and make things easier to test.
+3. If you want a more layered architecture to scale with complexity. Chimeric can be adapted to follow MVC or MVVM architecture, though it is not opinionated about which kind of architecture.
 
 The operative word is complexity. Chimeric interfaces have consequences to be aware of:
 
-1. More indirection.
-2. Double the testing footprint. There a two ways to do something, and two paths that must be tested.
-3. A greater need for full fledged dependency injection.
+1. More indirection. All interface abstractions have this consequence.
+2. Double the testing footprint. There a two ways to do something, and two paths that must be tested. Chimeric comes with a testing suite to address this.
+3. Chimeric becomes a middleman between the libraries you normally use directly (tanstack query and RTK-query). Chimeric allows for arguments to be passed through to these libraries to alleviate this.
 
 ## Kinds of Chimerics
 

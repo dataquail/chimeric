@@ -42,10 +42,10 @@ export const DeleteOneMethodImpl = (
       applicationEventEmitter.emit(new ActiveTodoDeletedEvent({ id: args.id }));
       appStore.dispatch(removeActiveTodo(args.id));
       await queryClient.invalidateQueries({
-        queryKey: getQueryOptionsGetAll().queryKey,
+        queryKey: getQueryOptionsGetAll(appStore)().queryKey,
       });
       await queryClient.invalidateQueries({
-        queryKey: getQueryOptionsGetOneById(args).queryKey,
+        queryKey: getQueryOptionsGetOneById(appStore)(args).queryKey,
       });
     },
   });

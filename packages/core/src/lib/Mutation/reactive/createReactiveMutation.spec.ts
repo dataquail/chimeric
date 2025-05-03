@@ -12,6 +12,7 @@ describe('createReactiveMutation', () => {
       error: null,
       data: undefined,
       reset: vi.fn(),
+      native: 'test',
     }));
 
     const reactiveMutation = createReactiveMutation(mockReactiveFn);
@@ -41,6 +42,7 @@ describe('createReactiveMutation', () => {
       error: null,
       data: undefined,
       reset: vi.fn(),
+      native: 'test',
     }));
 
     const reactiveMutation = createReactiveMutation(mockReactiveFn);
@@ -65,6 +67,7 @@ describe('createReactiveMutation', () => {
       error: null,
       data: undefined,
       reset: vi.fn(),
+      native: 'test',
     }));
 
     const reactiveMutation = createReactiveMutation(mockReactiveFn);

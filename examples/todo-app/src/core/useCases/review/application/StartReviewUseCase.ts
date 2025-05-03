@@ -1,7 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { createReview } from 'src/core/domain/review/entities/Review';
-import { DefineChimericAsync } from '@chimeric/core';
-import { ChimericAsyncFactory } from '@chimeric/utilities';
+import { DefineChimericAsync, ChimericAsyncFactory } from '@chimeric/react';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 
 @injectable()

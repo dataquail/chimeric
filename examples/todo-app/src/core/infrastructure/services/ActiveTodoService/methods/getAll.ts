@@ -18,9 +18,15 @@ export const getTodoList: IGetAllActiveTodos = async () => {
   return wrappedFetch<TodoListDto>(`${getConfig().API_URL}/active-todo`);
 };
 
-export const getQueryOptionsGetAll = () =>
+export const getQueryOptionsGetAll = (appStore: AppStore) => () =>
   queryOptions({
     queryKey: ['GET_TODO_LIST'],
+    queryFn: async () => {
+      const todoListDto = await getTodoList();
+      appStore.dispatch(
+        saveAllActiveTodos(todoListDto.list.map(mapTodoDtoToActiveTodo)),
+      );
+    },
   });
 
 export const GetAllMethodImpl = (
@@ -28,13 +34,7 @@ export const GetAllMethodImpl = (
   queryClient: QueryClient,
 ): IActiveTodoService['getAll'] => {
   return ChimericQueryWithManagedStoreFactory(queryClient, {
-    queryFn: async () => {
-      const todoListDto = await getTodoList();
-      appStore.dispatch(
-        saveAllActiveTodos(todoListDto.list.map(mapTodoDtoToActiveTodo)),
-      );
-    },
-    getQueryOptions: getQueryOptionsGetAll,
+    getQueryOptions: getQueryOptionsGetAll(appStore),
     getFromStore: () =>
       Object.values(appStore.getState().todo.activeTodos.dict).filter(
         Boolean,

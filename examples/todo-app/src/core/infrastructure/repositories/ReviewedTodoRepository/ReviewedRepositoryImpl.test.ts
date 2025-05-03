@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { ChimericSyncTestHarness, chimericMethods } from '@chimeric/testing';
+import {
+  ChimericSyncTestHarness,
+  chimericMethods,
+} from '@chimeric/testing-react';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 import { appContainer } from 'src/core/global/appContainer';
 import { getTestWrapper } from 'src/__test__/getTestWrapper';

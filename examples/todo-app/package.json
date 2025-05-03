@@ -13,9 +13,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@chimeric/core": "workspace:*",
     "@chimeric/react-query": "workspace:*",
-    "@chimeric/utilities": "workspace:*",
+    "@chimeric/react": "workspace:*",
     "@mantine/core": "^7.10.0",
     "@mantine/form": "^7.10.0",
     "@mantine/hooks": "^7.10.0",
@@ -36,7 +35,8 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@chimeric/testing": "workspace:*",
+    "@chimeric/testing-react": "workspace:*",
+    "@chimeric/testing-react-query": "workspace:*",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.4.5",
     "@testing-library/react": "^14.3.1",

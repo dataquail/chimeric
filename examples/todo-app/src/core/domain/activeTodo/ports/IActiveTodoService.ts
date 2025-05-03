@@ -1,4 +1,7 @@
-import { DefineChimericMutation, DefineChimericQuery } from '@chimeric/core';
+import {
+  DefineChimericMutation,
+  DefineChimericQuery,
+} from '@chimeric/react-query';
 import { CreateTodoBody } from '../dtos/in/CreateTodoBody';
 import { ActiveTodo } from '../entities/ActiveTodo';
 

@@ -7,13 +7,13 @@ describe('IdiomaticQueryWithManagedStoreFactory', () => {
     const mockQueryFn = vi.fn(() => Promise.resolve('test'));
     let storeValue: string | null = null;
     const idiomaticQuery = IdiomaticQueryWithManagedStoreFactory(queryClient, {
-      queryFn: async () => {
-        await mockQueryFn();
-        storeValue = 'test';
-      },
       getQueryOptions: () =>
         queryOptions({
           queryKey: ['test'],
+          queryFn: async () => {
+            await mockQueryFn();
+            storeValue = 'test';
+          },
         }),
       getFromStore: () => storeValue,
     });
@@ -30,12 +30,12 @@ describe('IdiomaticQueryWithManagedStoreFactory', () => {
     );
     let storeValue: string | null = null;
     const idiomaticQuery = IdiomaticQueryWithManagedStoreFactory(queryClient, {
-      queryFn: async (args: { name: string }) => {
-        storeValue = await mockQueryFn(args);
-      },
-      getQueryOptions: () =>
+      getQueryOptions: (args: { name: string }) =>
         queryOptions({
           queryKey: ['test'],
+          queryFn: async () => {
+            storeValue = await mockQueryFn(args);
+          },
         }),
       getFromStore: () => storeValue,
     });

@@ -40,14 +40,23 @@ export class ActiveTodoServiceImpl implements IActiveTodoService {
       queryClientProvider.get(),
     );
     this.clearAll = ClearAllMethodImpl(appStoreProvider.get());
-    this.createOne = CreateOneMethodImpl(queryClientProvider.get());
+    this.createOne = CreateOneMethodImpl(
+      appStoreProvider.get(),
+      queryClientProvider.get(),
+    );
     this.deleteOne = DeleteOneMethodImpl(
       queryClientProvider.get(),
       appStoreProvider.get(),
       applicationEventEmitter,
     );
-    this.completeOne = CompleteOneMethodImpl(queryClientProvider.get());
-    this.uncompleteOne = UncompleteOneMethodImpl(queryClientProvider.get());
+    this.completeOne = CompleteOneMethodImpl(
+      appStoreProvider.get(),
+      queryClientProvider.get(),
+    );
+    this.uncompleteOne = UncompleteOneMethodImpl(
+      appStoreProvider.get(),
+      queryClientProvider.get(),
+    );
     this.prioritize = PrioritizeMethodImpl(appStoreProvider.get());
     this.deprioritize = DeprioritizeMethodImpl(appStoreProvider.get());
   }

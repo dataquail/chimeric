@@ -8,7 +8,7 @@ import {
   chimericMethods,
   ChimericQueryTestHarness,
   ChimericMutationTestHarness,
-} from '@chimeric/testing';
+} from '@chimeric/testing-react-query';
 import { mockGetAllSavedForLaterTodos } from 'src/__test__/network/savedForLaterTodo/mockGetAllSavedForLaterTodos';
 import { mockGetOneSavedForLaterTodo } from 'src/__test__/network/savedForLaterTodo/mockGetOneSavedForLaterTodo';
 import { mockActivateSavedForLaterTodo } from 'src/__test__/network/savedForLaterTodo/mockActivateSavedForLaterTodo';

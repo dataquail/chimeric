@@ -8,7 +8,7 @@ import {
   createIdiomaticSync,
   createReactiveSync,
   fuseChimericSync,
-} from '@chimeric/core';
+} from '@chimeric/react';
 @injectable()
 export class ReviewRepositoryImpl implements IReviewRepository {
   public readonly save: IReviewRepository['save'];

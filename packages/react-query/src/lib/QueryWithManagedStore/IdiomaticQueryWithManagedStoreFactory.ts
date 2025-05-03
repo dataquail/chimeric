@@ -1,97 +1,92 @@
-import { QueryClient, UseQueryOptions, OmitKeyof } from '@tanstack/react-query';
 import {
-  IdiomaticQuery,
-  IdiomaticQueryOptions,
-  isIdiomaticQuery,
-} from '@chimeric/core';
+  type QueryClient,
+  type QueryKey,
+  queryOptions,
+} from '@tanstack/react-query';
+import { createIdiomaticQuery } from '../Query/idiomatic/createIdiomaticQuery';
+import { IdiomaticQuery } from '../Query/idiomatic/types';
 
 // Overloads
-export function IdiomaticQueryWithManagedStoreFactory<TResult = unknown>(
+export function IdiomaticQueryWithManagedStoreFactory<
+  TResult = unknown,
+  E extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
+>(
   queryClient: QueryClient,
-  {
-    queryFn,
-    getQueryOptions,
-    getFromStore,
-  }: {
-    queryFn: () => Promise<void>;
-    getQueryOptions: () => OmitKeyof<
-      UseQueryOptions<unknown, Error, unknown, string[]>,
-      'queryFn'
-    >;
+  initialOptions: {
     getFromStore: () => TResult;
+    getQueryOptions: () => ReturnType<
+      typeof queryOptions<void, E, void, TQueryKey>
+    >;
   },
-): IdiomaticQuery<undefined, TResult>;
+): IdiomaticQuery<undefined, TResult, E, TQueryKey>;
 export function IdiomaticQueryWithManagedStoreFactory<
   TParams extends object,
   TResult = unknown,
+  E extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
 >(
   queryClient: QueryClient,
-  {
-    queryFn,
-    getQueryOptions,
-    getFromStore,
-  }: {
-    queryFn: (args: TParams) => Promise<void>;
-    getQueryOptions: (
-      args: TParams,
-    ) => OmitKeyof<
-      UseQueryOptions<unknown, Error, unknown, string[]>,
-      'queryFn'
-    >;
+  initialOptions: {
     getFromStore: (args: TParams) => TResult;
+    getQueryOptions: (
+      params: TParams,
+    ) => ReturnType<typeof queryOptions<void, E, void, TQueryKey>>;
   },
-): IdiomaticQuery<TParams, TResult>;
+): IdiomaticQuery<TParams, TResult, E, TQueryKey>;
 
 // Implementation
 export function IdiomaticQueryWithManagedStoreFactory<
   TParams extends object | undefined,
   TResult = unknown,
+  E extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
 >(
   queryClient: QueryClient,
-  {
-    queryFn,
-    getQueryOptions,
-    getFromStore,
-  }: {
-    queryFn: (args: TParams) => Promise<void>;
-    getQueryOptions: (
-      args: TParams,
-    ) => OmitKeyof<
-      UseQueryOptions<unknown, Error, unknown, string[]>,
-      'queryFn'
-    >;
+  initialOptions: {
     getFromStore: (args: TParams) => TResult;
+    getQueryOptions: (
+      params: TParams,
+    ) => ReturnType<typeof queryOptions<void, E, void, TQueryKey>>;
   },
-): IdiomaticQuery<TParams, TResult> {
-  const idiomaticQuery = async (
-    paramsAndOptions?: TParams & { options?: IdiomaticQueryOptions },
-  ) => {
-    const { options, ...params } = paramsAndOptions ?? {};
-    const queryOptions = getQueryOptions(params as TParams);
+): IdiomaticQuery<TParams, TResult, E, TQueryKey> {
+  return createIdiomaticQuery(async (paramsAndOptions) => {
+    const { options, nativeOptions, ...params } = paramsAndOptions ?? {};
+    const { getQueryOptions, getFromStore, ...restQueryOptions } =
+      initialOptions;
+    const { queryFn, queryKey, ...restInitialQueryOptions } = getQueryOptions(
+      params as TParams,
+    );
+
     if (options?.forceRefetch) {
       await queryClient.invalidateQueries({
-        queryKey: queryOptions.queryKey,
+        queryKey,
       });
     }
 
-    if (!queryOptions.queryKey) {
-      throw new Error('queryKey is required');
-    }
-
     await queryClient.fetchQuery({
-      ...queryOptions,
-      queryKey: queryOptions.queryKey,
-      queryFn: async () => {
-        await queryFn(params as TParams);
-        return null;
+      queryKey,
+      ...(restInitialQueryOptions as Omit<
+        ReturnType<
+          (
+            params: TParams,
+          ) => ReturnType<typeof queryOptions<TResult, E, TResult, TQueryKey>>
+        >,
+        'queryFn' | 'queryKey'
+      >),
+      ...restQueryOptions,
+      // currently the only chimeric option is 'forceRefetch', which has no
+      // equivalent in the idiomatic query options
+      // ...options,
+      ...nativeOptions,
+      queryFn: async (context): Promise<TResult> => {
+        if (queryFn && typeof queryFn === 'function') {
+          await queryFn(context);
+        }
+        return null as unknown as TResult;
       },
     });
-    return getFromStore(params as TParams);
-  };
 
-  if (isIdiomaticQuery<TParams, TResult>(idiomaticQuery)) {
-    return idiomaticQuery;
-  } else {
-    throw new Error('idiomaticQuery is not qualified to be idiomatic query');
-  }
+    return getFromStore(params as TParams);
+  }) as IdiomaticQuery<TParams, TResult, E, TQueryKey>;
 }

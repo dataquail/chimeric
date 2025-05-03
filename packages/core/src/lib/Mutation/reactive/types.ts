@@ -2,13 +2,27 @@ export type ReactiveMutation<
   TParams extends undefined | object,
   TResult,
   E extends Error,
-> = TParams extends Record<'options', unknown>
+  TNativeReactiveOptions = unknown,
+  TNativeCallOptions = unknown,
+  TNativeReturnType = unknown,
+> = TParams extends Record<'options' | 'nativeOptions', unknown>
   ? never
   : {
-      useMutation: () => {
+      useMutation: (config?: {
+        options?: ReactiveMutationOptions;
+        nativeOptions?: TNativeReactiveOptions;
+      }) => {
         call: TParams extends undefined
-          ? () => Promise<TResult>
-          : (params: TParams) => Promise<TResult>;
+          ? (params?: {
+              options?: ReactiveMutationCallOptions;
+              nativeOptions?: TNativeCallOptions;
+            }) => Promise<TResult>
+          : (
+              params: TParams & {
+                options?: ReactiveMutationCallOptions;
+                nativeOptions?: TNativeCallOptions;
+              },
+            ) => Promise<TResult>;
         isIdle: boolean;
         isPending: boolean;
         isSuccess: boolean;
@@ -16,16 +30,35 @@ export type ReactiveMutation<
         error: E | null;
         data: TResult | undefined;
         reset: () => void;
+        native: TNativeReturnType;
       };
     };
+
+export type ReactiveMutationOptions = {
+  [key: string]: never;
+  [key: symbol]: never;
+  [key: number]: never;
+};
+
+export type ReactiveMutationCallOptions = {
+  [key: string]: never;
+  [key: symbol]: never;
+  [key: number]: never;
+};
 
 export type DefineReactiveMutation<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   E extends Error = Error,
+  TNativeOptions = unknown,
+  TNativeCallOptions = unknown,
+  TNativeReturnType = unknown,
 > = ReactiveMutation<
   Parameters<T>[0] extends undefined | object ? Parameters<T>[0] : never,
   Awaited<ReturnType<T>>,
-  E
+  E,
+  TNativeOptions,
+  TNativeCallOptions,
+  TNativeReturnType
 >;

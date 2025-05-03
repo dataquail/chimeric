@@ -11,6 +11,7 @@ describe('createReactiveQuery', () => {
       error: null,
       data: undefined,
       refetch: vi.fn(() => Promise.resolve('test')),
+      native: 'test',
     }));
 
     const reactiveQuery = createReactiveQuery(mockReactiveFn);
@@ -38,6 +39,7 @@ describe('createReactiveQuery', () => {
       error: null,
       data: undefined,
       refetch: vi.fn(() => Promise.resolve(`Hello ${params.name}`)),
+      native: null,
     }));
 
     const reactiveQuery = createReactiveQuery(mockReactiveFn);
@@ -62,6 +64,7 @@ describe('createReactiveQuery', () => {
       error: null,
       data: undefined,
       refetch: vi.fn(() => Promise.resolve('test')),
+      native: 'test',
     }));
 
     const reactiveQuery = createReactiveQuery(mockReactiveFn);
@@ -75,5 +78,6 @@ describe('createReactiveQuery', () => {
     expect(result.error).toBeNull();
     expect(result.data).toBeUndefined();
     expect(result.refetch).toBeDefined();
+    expect(result.native).toBe('test');
   });
 });

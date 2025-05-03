@@ -20,7 +20,7 @@ export const setupApi = (worker: SetupWorker) => {
 
   return worker.start({
     serviceWorker: {
-      url: './mockServiceWorker.js',
+      url: '../mockServiceWorker.js',
     },
   });
 };

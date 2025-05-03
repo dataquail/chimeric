@@ -49,16 +49,16 @@
   ],
   "references": [
     {
-      "path": "../../packages/utilities/tsconfig.lib.json"
-    },
-    {
-      "path": "../../packages/testing/tsconfig.lib.json"
+      "path": "../../packages/react/tsconfig.lib.json"
     },
     {
       "path": "../../packages/react-query/tsconfig.lib.json"
     },
     {
-      "path": "../../packages/core/tsconfig.lib.json"
+      "path": "../../packages/testing-react-query/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/testing-react/tsconfig.lib.json"
     }
   ]
 }

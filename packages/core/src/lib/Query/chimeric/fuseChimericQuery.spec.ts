@@ -17,6 +17,7 @@ describe('fuseChimericQuery', () => {
         isError: false,
         error: null,
         data: undefined,
+        native: undefined,
       })),
     };
     const testChimericQuery: TestChimericQuery = fuseChimericQuery({
@@ -30,6 +31,10 @@ describe('fuseChimericQuery', () => {
   });
 
   it('should invoke the idiomatic function with params', async () => {
+    // Should be ts error
+    // const mockIdiomaticQuery = vi.fn(
+    //   async () => `Hello John`,
+    // );
     const mockIdiomaticQuery = vi.fn(
       async (args: { name: string }) => `Hello ${args.name}`,
     );
@@ -42,6 +47,7 @@ describe('fuseChimericQuery', () => {
         isError: false,
         error: null,
         data: undefined,
+        native: undefined,
       })),
     };
     const testChimericQuery = fuseChimericQuery({
@@ -65,6 +71,7 @@ describe('fuseChimericQuery', () => {
         isError: false,
         error: null,
         data: 'test',
+        native: undefined,
       })),
     };
     const testChimericQuery = fuseChimericQuery({
@@ -90,6 +97,7 @@ describe('fuseChimericQuery', () => {
         isError: false,
         error: null,
         data: 'Hello John',
+        native: undefined,
       })),
     };
     const testChimericQuery = fuseChimericQuery({
@@ -117,6 +125,7 @@ describe('fuseChimericQuery', () => {
         error: null,
         data: 'Hello John',
         reset: vi.fn(),
+        native: undefined,
       })),
     };
     const testChimericQuery = fuseChimericQuery({
