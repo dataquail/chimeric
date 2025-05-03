@@ -42,7 +42,6 @@ export default defineConfig(() => ({
         '@chimeric/core',
         '@chimeric/react-query',
         '@chimeric/testing-core',
-        '@testing-library/react',
       ],
     },
   },

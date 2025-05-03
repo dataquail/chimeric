@@ -32,11 +32,11 @@ describe('ChimericQueryTestHarness', () => {
   });
 
   it('should handle params', () => {
-    const mockIdiomaticQuery = vi.fn((args: { id: string }) =>
+    const mockIdiomaticQuery = vi.fn((_args: { id: string }) =>
       Promise.resolve('test'),
     );
     const mockReactiveQuery = {
-      useQuery: vi.fn((args: { id: string }) => ({
+      useQuery: vi.fn((_args: { id: string }) => ({
         isIdle: true,
         isPending: false,
         isSuccess: false,

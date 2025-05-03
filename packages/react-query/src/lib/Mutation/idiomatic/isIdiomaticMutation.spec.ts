@@ -10,8 +10,8 @@ describe('isIdiomaticMutation', () => {
 
   it('should return true for a function that accepts options', () => {
     const mockMutationFn = vi.fn(
-      async (params: {
-        options?: {};
+      async (_params: {
+        options?: never;
         nativeOptions?: Omit<
           MutationOptions<string, Error, undefined>,
           'mutationFn'

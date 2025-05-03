@@ -14,9 +14,6 @@
   "references": [
     {
       "path": "../testing-core/tsconfig.lib.json"
-    },
-    {
-      "path": "../core/tsconfig.lib.json"
     }
   ],
   "exclude": [

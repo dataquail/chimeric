@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isChimericMutation } from './isChimericMutation';
 
 describe('isChimericMutation', () => {

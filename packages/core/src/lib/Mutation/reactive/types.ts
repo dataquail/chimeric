@@ -34,9 +34,17 @@ export type ReactiveMutation<
       };
     };
 
-export type ReactiveMutationOptions = {};
+export type ReactiveMutationOptions = {
+  [key: string]: never;
+  [key: symbol]: never;
+  [key: number]: never;
+};
 
-export type ReactiveMutationCallOptions = {};
+export type ReactiveMutationCallOptions = {
+  [key: string]: never;
+  [key: symbol]: never;
+  [key: number]: never;
+};
 
 export type DefineReactiveMutation<
   T extends (

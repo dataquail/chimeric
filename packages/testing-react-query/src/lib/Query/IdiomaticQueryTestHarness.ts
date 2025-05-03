@@ -1,4 +1,3 @@
-/* eslint-disable no-async-promise-executor */
 import { IdiomaticQuery, IdiomaticQueryOptions } from '@chimeric/core';
 import { TanstackQueryIdiomaticNativeOptions } from '@chimeric/react-query';
 import { IdiomaticQueryTestHarness as CoreIdiomaticQueryTestHarness } from '@chimeric/testing-core';

@@ -50,10 +50,10 @@ export function ReactiveMutationFactory<
     return {
       call: (paramsAndOptions) => {
         const { options, nativeOptions, ...params } = paramsAndOptions ?? {};
-        return mutation.mutateAsync(
-          params as TParams,
-          nativeOptions as MutateOptions<TResult, E, TParams>,
-        );
+        return mutation.mutateAsync(params as TParams, {
+          ...options,
+          ...(nativeOptions as MutateOptions<TResult, E, TParams>),
+        });
       },
       isIdle: mutation.isIdle,
       isPending: mutation.isPending,

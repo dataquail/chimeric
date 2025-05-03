@@ -24,7 +24,7 @@ describe('ReactiveQueryTestHarness', () => {
 
   it('should handle params', () => {
     const mockReactiveQuery = {
-      useQuery: vi.fn((args: { id: string }) => ({
+      useQuery: vi.fn((_args: { id: string }) => ({
         isIdle: true,
         isPending: false,
         isSuccess: false,

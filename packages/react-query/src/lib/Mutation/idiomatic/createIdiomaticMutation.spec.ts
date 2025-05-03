@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createIdiomaticMutation } from './createIdiomaticMutation';
 import { MutationOptions } from '@tanstack/react-query';
 

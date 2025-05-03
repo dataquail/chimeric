@@ -16,7 +16,11 @@ export type IdiomaticMutation<
       },
     ) => Promise<TResult>;
 
-export type IdiomaticMutationOptions = {};
+export type IdiomaticMutationOptions = {
+  [key: string]: never;
+  [key: symbol]: never;
+  [key: number]: never;
+};
 
 export type DefineIdiomaticMutation<
   T extends (
