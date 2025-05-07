@@ -66,11 +66,27 @@
   "targetDefaults": {
     "test": {
       "dependsOn": ["^build", "^build", "^build", "^build", "^build", "^build"]
+    },
+    "nx-release-publish": {
+      "dependsOn": ["build"],
+      "options": {
+        "packageRoot": "dist/libs/{projectName}"
+      }
     }
   },
   "release": {
+    "projects": ["packages/*"],
+    "git": {
+      "commitMessage": "chore: updated version [no ci]"
+    },
     "version": {
-      "preVersionCommand": "npx nx run-many -t build"
+      "conventionalCommits": true
+    },
+    "changelog": {
+      "projectChangelogs": {
+        "file": false,
+        "createRelease": "github"
+      }
     }
   },
   "generators": {
