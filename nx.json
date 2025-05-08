@@ -70,16 +70,21 @@
     "nx-release-publish": {
       "dependsOn": ["build"],
       "options": {
-        "packageRoot": "dist/libs/{projectName}"
+        "packageRoot": "dist/packages/{projectName}"
       }
     }
   },
   "release": {
+    "projectsRelationship": "fixed",
     "projects": ["packages/*"],
     "git": {
       "commitMessage": "chore: updated version [no ci]"
     },
     "version": {
+      "generatorOptions": {
+        "currentVersionResolver": "git-tag",
+        "fallbackCurrentVersionResolver": "disk"
+      },
       "conventionalCommits": true
     },
     "changelog": {
