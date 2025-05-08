@@ -1,3 +1,13 @@
+## 1.0.3 (2025-05-08)
+
+### 🩹 Fixes
+
+- update readmes and fix publish.yml ([84368a9](https://github.com/dataquail/chimeric/commit/84368a9))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 1.0.2 (2025-05-08)
 
 ### 🩹 Fixes
