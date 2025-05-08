@@ -285,7 +285,7 @@ importers:
   packages/react:
     dependencies:
       '@chimeric/core':
-        specifier: 1.0.1
+        specifier: 1.0.2
         version: link:../core
     devDependencies:
       '@testing-library/dom':
@@ -313,7 +313,7 @@ importers:
   packages/react-query:
     dependencies:
       '@chimeric/core':
-        specifier: 1.0.1
+        specifier: 1.0.2
         version: link:../core
     devDependencies:
       '@tanstack/react-query':
@@ -344,7 +344,7 @@ importers:
   packages/testing-core:
     dependencies:
       '@chimeric/core':
-        specifier: 1.0.1
+        specifier: 1.0.2
         version: link:../core
     devDependencies:
       '@testing-library/dom':
@@ -363,19 +363,19 @@ importers:
   packages/testing-react:
     dependencies:
       '@chimeric/testing-core':
-        specifier: 1.0.1
+        specifier: 1.0.2
         version: link:../testing-core
 
   packages/testing-react-query:
     dependencies:
       '@chimeric/core':
-        specifier: 1.0.1
+        specifier: 1.0.2
         version: link:../core
       '@chimeric/react-query':
-        specifier: 1.0.1
+        specifier: 1.0.2
         version: link:../react-query
       '@chimeric/testing-core':
-        specifier: 1.0.1
+        specifier: 1.0.2
         version: link:../testing-core
     devDependencies:
       '@tanstack/react-query':
