@@ -1,6 +1,6 @@
 {
   "name": "@chimeric/react-query",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Tanstack react-query utilities for chimeric interfaces",
   "author": "zacharyweidenbach",
   "license": "MIT",
