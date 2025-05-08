@@ -81,10 +81,6 @@
       "commitMessage": "chore: updated version [no ci]"
     },
     "version": {
-      "generatorOptions": {
-        "currentVersionResolver": "git-tag",
-        "fallbackCurrentVersionResolver": "disk"
-      },
       "conventionalCommits": true
     },
     "changelog": {
