@@ -80,7 +80,7 @@
       "commitMessage": "chore: updated version [no ci]"
     },
     "version": {
-      "conventionalCommits": true
+      "conventionalCommits": false
     },
     "changelog": {
       "projectChangelogs": {
