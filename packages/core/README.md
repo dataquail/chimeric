@@ -2,6 +2,8 @@
 
 The core types and utilities for the chimeric library.
 
+# Getting Started
+
 ## Installation
 
 You can install this package using any of the following package managers:
