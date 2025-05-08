@@ -1,6 +1,6 @@
 # react
 
-This library was generated with [Nx](https://nx.dev).
+The chimeric types and utilities for use with React.
 
 ## Installation
 

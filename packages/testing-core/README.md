@@ -1,6 +1,6 @@
 # testing-core
 
-This library was generated with [Nx](https://nx.dev).
+The core of the testing utilities for chimeric interfaces, using React Testing Library.
 
 ## Installation
 
