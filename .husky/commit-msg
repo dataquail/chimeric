@@ -1,0 +1,3 @@
+COMMIT_LOCATION="${PWD}/.git/COMMIT_EDITMSG"
+
+npx --no-install commitlint --edit "${COMMIT_LOCATION}"

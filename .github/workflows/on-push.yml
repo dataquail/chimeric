@@ -1,0 +1,52 @@
+name: NX release
+
+on:
+  push:
+    branches:
+      - main
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.VERSION_BUMPER_APPID }}
+          private-key: ${{ secrets.VERSION_BUMPER_SECRET }}
+
+      - name: Checkout the main branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Sets the base and head SHAs for the nx affected commands in CI
+        uses: nrwl/nx-set-shas@v4
+
+      # - name: Build affected libs
+      #   run: npx nx affected -t build
+      - name: Run tests
+        shell: bash
+        run: pnpm exec nx affected -t lint test build --base=origin/main --head=${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Run nx release
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          npx nx release --skip-publish
