@@ -1,6 +1,6 @@
 # core
 
-This library was generated with [Nx](https://nx.dev).
+The core types and utilities for the chimeric library.
 
 ## Installation
 

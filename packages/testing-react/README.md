@@ -1,6 +1,6 @@
 # testing-react
 
-This library was generated with [Nx](https://nx.dev).
+The testing utilities for the chimeric interfaces from `@chimeric/react`.
 
 ## Installation
 
