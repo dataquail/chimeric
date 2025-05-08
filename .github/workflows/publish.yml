@@ -32,6 +32,8 @@ jobs:
           echo "PACKAGE_NAME=$(echo $TAG_NAME | cut -d "@" -f 1)" >> $GITHUB_ENV
           echo "APP_VERSION=$(echo $TAG_NAME | cut -d "@" -f 2)" >> $GITHUB_ENV
 
+      - uses: pnpm/action-setup@v4
+
       - name: Install Node
         uses: actions/setup-node@v4
         with:
