@@ -27,7 +27,7 @@
     "!**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@chimeric/core": "1.0.0"
+    "@chimeric/core": "workspace:*"
   },
   "peerDependencies": {
     "@tanstack/react-query": "^5.0.0"

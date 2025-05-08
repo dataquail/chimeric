@@ -27,6 +27,6 @@
     "!**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@chimeric/testing-core": "1.0.0"
+    "@chimeric/testing-core": "workspace:*"
   }
 }
