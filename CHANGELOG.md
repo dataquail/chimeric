@@ -1,3 +1,15 @@
+## 1.0.4 (2025-05-08)
+
+### 🩹 Fixes
+
+- resolve tag during publish ([8c98b62](https://github.com/dataquail/chimeric/commit/8c98b62))
+- revert ci runner change ([8c1491d](https://github.com/dataquail/chimeric/commit/8c1491d))
+- change nx.json ([e5f6250](https://github.com/dataquail/chimeric/commit/e5f6250))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 1.0.3 (2025-05-08)
 
 ### 🩹 Fixes
