@@ -17,6 +17,8 @@ yarn add @chimeric/core
 pnpm add @chimeric/core
 ```
 
+# Development
+
 ## Building
 
 Run `nx build core` to build the library.
