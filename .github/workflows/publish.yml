@@ -1,6 +1,7 @@
 name: Publish
 
 on:
+  workflow_dispatch:
   release:
     types:
       - created
@@ -8,6 +9,7 @@ on:
 permissions:
   contents: write
   packages: write
+  id-token: write
 
 jobs:
   publish:
