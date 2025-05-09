@@ -1,6 +1,6 @@
 {
   "name": "@chimeric/react-query",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Tanstack react-query utilities for chimeric interfaces",
   "author": "zacharyweidenbach",
   "license": "MIT",
@@ -27,7 +27,7 @@
     "!**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@chimeric/core": "1.0.5"
+    "@chimeric/core": "1.0.6"
   },
   "peerDependencies": {
     "@tanstack/react-query": "^5.0.0"

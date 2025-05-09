@@ -1,3 +1,13 @@
+## 1.0.6 (2025-05-09)
+
+### 🩹 Fixes
+
+- public access in package.json ([30ae97b](https://github.com/dataquail/chimeric/commit/30ae97b))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 1.0.5 (2025-05-09)
 
 ### 🩹 Fixes
