@@ -1,3 +1,14 @@
+## 1.0.5 (2025-05-09)
+
+### 🩹 Fixes
+
+- publish workflow ([70f052f](https://github.com/dataquail/chimeric/commit/70f052f))
+- resolve new lint errors ([b5f96d0](https://github.com/dataquail/chimeric/commit/b5f96d0))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 1.0.4 (2025-05-08)
 
 ### 🩹 Fixes

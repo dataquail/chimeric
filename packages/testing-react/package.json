@@ -1,6 +1,6 @@
 {
   "name": "@chimeric/testing-react",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "React testing utilities for chimeric interfaces",
   "author": "zacharyweidenbach",
   "license": "MIT",
@@ -27,6 +27,6 @@
     "!**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@chimeric/testing-core": "1.0.4"
+    "@chimeric/testing-core": "1.0.5"
   }
 }
