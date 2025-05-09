@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createReactiveMutation } from './createReactiveMutation';
 import { UseMutationResult } from '@tanstack/react-query';
 
