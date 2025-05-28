@@ -23,6 +23,9 @@
     },
     {
       "path": "./examples/todo-app"
+    },
+    {
+      "path": "./examples/basic-todo-app"
     }
   ]
 }

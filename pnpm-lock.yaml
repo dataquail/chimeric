@@ -138,6 +138,142 @@ importers:
         specifier: ^3.0.9
         version: 3.0.9(@types/node@20.17.27)(@vitest/ui@3.0.9)(jiti@2.4.2)(jsdom@22.1.0)(msw@2.7.3(@types/node@20.17.27)(typescript@5.7.3))(sass@1.86.0)(sugarss@4.0.1(postcss@8.5.3))(terser@5.39.0)(yaml@2.7.0)
 
+  examples/basic-todo-app:
+    dependencies:
+      '@chimeric/react':
+        specifier: workspace:*
+        version: link:../../packages/react
+      '@chimeric/react-query':
+        specifier: workspace:*
+        version: link:../../packages/react-query
+      '@mantine/core':
+        specifier: ^7.10.0
+        version: 7.17.2(@mantine/hooks@7.17.2(react@19.0.0))(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@mantine/form':
+        specifier: ^7.10.0
+        version: 7.17.2(react@19.0.0)
+      '@mantine/hooks':
+        specifier: ^7.10.0
+        version: 7.17.2(react@19.0.0)
+      '@reduxjs/toolkit':
+        specifier: ^2.6.1
+        version: 2.6.1(react-redux@9.2.0(@types/react@19.0.12)(react@19.0.0)(redux@5.0.1))(react@19.0.0)
+      '@tabler/icons-react':
+        specifier: ^3.5.0
+        version: 3.31.0(react@19.0.0)
+      '@tanstack/react-query':
+        specifier: ^5.69.0
+        version: 5.69.0(react@19.0.0)
+      date-fns:
+        specifier: ^3.6.0
+        version: 3.6.0
+      msw:
+        specifier: ^2.3.1
+        version: 2.7.3(@types/node@20.17.27)(typescript@5.8.2)
+      react:
+        specifier: 19.0.0
+        version: 19.0.0
+      react-dom:
+        specifier: 19.0.0
+        version: 19.0.0(react@19.0.0)
+      react-redux:
+        specifier: ^9.2.0
+        version: 9.2.0(@types/react@19.0.12)(react@19.0.0)(redux@5.0.1)
+      react-router-dom:
+        specifier: 6.29.0
+        version: 6.29.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      redux:
+        specifier: ^5.0.1
+        version: 5.0.1
+      sass:
+        specifier: ^1.77.2
+        version: 1.86.0
+      sort-by:
+        specifier: ^1.2.0
+        version: 1.2.0
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
+    devDependencies:
+      '@chimeric/testing-react':
+        specifier: workspace:*
+        version: link:../../packages/testing-react
+      '@chimeric/testing-react-query':
+        specifier: workspace:*
+        version: link:../../packages/testing-react-query
+      '@testing-library/dom':
+        specifier: ^10.4.0
+        version: 10.4.0
+      '@testing-library/jest-dom':
+        specifier: ^6.4.5
+        version: 6.6.3
+      '@testing-library/react':
+        specifier: ^14.3.1
+        version: 14.3.1(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@types/jest':
+        specifier: ^29.5.12
+        version: 29.5.14
+      '@types/react':
+        specifier: ^19.0.12
+        version: 19.0.12
+      '@types/react-dom':
+        specifier: ^19.0.4
+        version: 19.0.4(@types/react@19.0.12)
+      '@types/uuid':
+        specifier: ^9.0.8
+        version: 9.0.8
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^7.11.0
+        version: 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.8.2))(eslint@8.57.1)(typescript@5.8.2)
+      '@typescript-eslint/parser':
+        specifier: ^7.2.0
+        version: 7.18.0(eslint@8.57.1)(typescript@5.8.2)
+      '@vitejs/plugin-react':
+        specifier: ^4.3.2
+        version: 4.3.4(vite@5.4.15(@types/node@20.17.27)(sass@1.86.0)(sugarss@4.0.1(postcss@8.5.3))(terser@5.39.0))
+      eslint:
+        specifier: ^8.57.0
+        version: 8.57.1
+      eslint-config-next:
+        specifier: ^14.2.3
+        version: 14.2.26(eslint@8.57.1)(typescript@5.8.2)
+      eslint-plugin-react-hooks:
+        specifier: ^4.6.0
+        version: 4.6.2(eslint@8.57.1)
+      eslint-plugin-react-refresh:
+        specifier: ^0.4.6
+        version: 0.4.19(eslint@8.57.1)
+      immer:
+        specifier: ^10.1.1
+        version: 10.1.1
+      jsdom:
+        specifier: ^24.1.0
+        version: 24.1.3
+      postcss:
+        specifier: ^8.4.38
+        version: 8.5.3
+      postcss-preset-mantine:
+        specifier: ^1.15.0
+        version: 1.17.0(postcss@8.5.3)
+      postcss-simple-vars:
+        specifier: ^7.0.1
+        version: 7.0.1(postcss@8.5.3)
+      prettier:
+        specifier: ^3.2.5
+        version: 3.5.3
+      typescript:
+        specifier: ^5.8.2
+        version: 5.8.2
+      typescript-eslint:
+        specifier: ^8.28.0
+        version: 8.28.0(eslint@8.57.1)(typescript@5.8.2)
+      vite:
+        specifier: ^5.4.9
+        version: 5.4.15(@types/node@20.17.27)(sass@1.86.0)(sugarss@4.0.1(postcss@8.5.3))(terser@5.39.0)
+      vitest:
+        specifier: ^3.0.9
+        version: 3.0.9(@types/node@20.17.27)(@vitest/ui@3.0.9)(jiti@2.4.2)(jsdom@24.1.3)(msw@2.7.3(@types/node@20.17.27)(typescript@5.8.2))(sass@1.86.0)(sugarss@4.0.1(postcss@8.5.3))(terser@5.39.0)(yaml@2.7.0)
+
   examples/todo-app:
     dependencies:
       '@chimeric/react':
