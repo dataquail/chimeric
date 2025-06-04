@@ -1,4 +1,4 @@
-# testing-react
+# Description
 
 The testing utilities for the chimeric interfaces from `@chimeric/react`.
 

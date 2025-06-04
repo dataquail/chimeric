@@ -1,4 +1,4 @@
-# core
+# Description
 
 The core types and utilities for the chimeric library.
 

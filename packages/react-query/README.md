@@ -1,4 +1,4 @@
-# react-query
+# Description
 
 The chimeric types and utilities for use with Tanstack Query.
 
