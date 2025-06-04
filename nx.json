@@ -81,7 +81,8 @@
       "commitMessage": "chore: updated version [no ci]"
     },
     "version": {
-      "conventionalCommits": true
+      "conventionalCommits": true,
+      "fallbackCurrentVersionResolver": "disk"
     },
     "changelog": {
       "projectChangelogs": {
