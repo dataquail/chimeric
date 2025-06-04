@@ -1,4 +1,4 @@
-# testing-react-query
+# Description
 
 The testing utilities for the chimeric interfaces from `@chimeric/react-query`.
 

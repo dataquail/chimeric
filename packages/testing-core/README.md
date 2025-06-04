@@ -1,4 +1,4 @@
-# testing-core
+# Description
 
 The core of the testing utilities for chimeric interfaces, using React Testing Library.
 
