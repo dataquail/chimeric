@@ -1,3 +1,14 @@
+## 0.1.1 (2025-06-04)
+
+### 🩹 Fixes
+
+- remove fallback resolver ([ef48372](https://github.com/dataquail/chimeric/commit/ef48372))
+- update readme for all packages ([90c50f4](https://github.com/dataquail/chimeric/commit/90c50f4))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 0.1.0 (2025-06-04)
 
 ### 🩹 Fixes
