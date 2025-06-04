@@ -1,6 +1,6 @@
 # Description
 
-The chimeric types and utilities for use with React
+The chimeric types and utilities for use with React.
 
 ## Installation
 

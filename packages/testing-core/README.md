@@ -1,6 +1,6 @@
 # Description
 
-The core of the testing utilities for chimeric interfaces, using React Testing Library
+The core of the testing utilities for chimeric interfaces, using React Testing Library.
 
 ## Installation
 
