@@ -1,6 +1,6 @@
 {
   "name": "@chimeric/testing-react-query",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Tanstack react-query testing utilities for chimeric interfaces",
   "author": "zacharyweidenbach",
   "license": "MIT",

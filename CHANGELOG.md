@@ -1,3 +1,13 @@
+## 0.2.0 (2025-06-04)
+
+### 🚀 Features
+
+- bump after publishing ([bcbf3af](https://github.com/dataquail/chimeric/commit/bcbf3af))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 0.1.2 (2025-06-04)
 
 ### 🩹 Fixes
