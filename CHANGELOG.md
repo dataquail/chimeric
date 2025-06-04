@@ -1,3 +1,13 @@
+## 0.1.2 (2025-06-04)
+
+### 🩹 Fixes
+
+- modify readmes to force bump ([9590a07](https://github.com/dataquail/chimeric/commit/9590a07))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 0.1.1 (2025-06-04)
 
 ### 🩹 Fixes
