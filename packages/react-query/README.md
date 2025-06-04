@@ -1,6 +1,6 @@
 # Description
 
-The chimeric types and utilities for use with Tanstack Query.
+The chimeric types and utilities for use with Tanstack Query
 
 ## Installation
 

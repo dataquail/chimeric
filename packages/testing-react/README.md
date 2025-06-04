@@ -1,6 +1,6 @@
 # Description
 
-The testing utilities for the chimeric interfaces from `@chimeric/react`.
+The testing utilities for the chimeric interfaces from `@chimeric/react`
 
 ## Installation
 

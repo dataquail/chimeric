@@ -1,6 +1,6 @@
 # Description
 
-The testing utilities for the chimeric interfaces from `@chimeric/react-query`.
+The testing utilities for the chimeric interfaces from `@chimeric/react-query`
 
 ## Installation
 
