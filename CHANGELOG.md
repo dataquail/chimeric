@@ -1,3 +1,13 @@
+## 0.2.3 (2025-06-05)
+
+### 🩹 Fixes
+
+- use devDependencies to resolve ERR_PNPM_CANNOT_RESOLVE_WORKSPACE_PROTOCOL ([5ea3e81](https://github.com/dataquail/chimeric/commit/5ea3e81))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 0.2.2 (2025-06-05)
 
 ### 🩹 Fixes
