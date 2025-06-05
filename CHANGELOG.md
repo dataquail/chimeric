@@ -1,3 +1,13 @@
+## 0.2.2 (2025-06-05)
+
+### 🩹 Fixes
+
+- add verbose logging to troubleshoot ([87f1d60](https://github.com/dataquail/chimeric/commit/87f1d60))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 0.2.1 (2025-06-05)
 
 ### 🩹 Fixes
