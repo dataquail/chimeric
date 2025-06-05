@@ -1,3 +1,14 @@
+## 0.2.1 (2025-06-05)
+
+### 🩹 Fixes
+
+- wait to publish until dependencies are published ([824852b](https://github.com/dataquail/chimeric/commit/824852b))
+- minor bump to standardize version number ([362e7a2](https://github.com/dataquail/chimeric/commit/362e7a2))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 0.2.0 (2025-06-04)
 
 ### 🚀 Features
