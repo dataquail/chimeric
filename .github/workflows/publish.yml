@@ -53,7 +53,7 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          npx nx release publish
+          npx nx release publish --verbose
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           # We need to set provenance to true in order to generate provenance statement
