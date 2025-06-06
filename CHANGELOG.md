@@ -1,3 +1,16 @@
+## 0.2.4 (2025-06-06)
+
+### 🩹 Fixes
+
+- builds wait for dependencies, remove devDependencies hack ([6bba670](https://github.com/dataquail/chimeric/commit/6bba670))
+- correct nx.json config for release ([2084d84](https://github.com/dataquail/chimeric/commit/2084d84))
+- broken git config in nx.json ([226b0c1](https://github.com/dataquail/chimeric/commit/226b0c1))
+- adjust on-push workflow to build after test ([8d3c73d](https://github.com/dataquail/chimeric/commit/8d3c73d))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 0.2.3 (2025-06-05)
 
 ### 🩹 Fixes
