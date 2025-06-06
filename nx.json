@@ -64,11 +64,14 @@
     }
   ],
   "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"]
+    },
     "test": {
-      "dependsOn": ["^build", "^build", "^build", "^build", "^build", "^build"]
+      "dependsOn": ["^build"]
     },
     "nx-release-publish": {
-      "dependsOn": ["build", "^nx-release-publish"],
+      "dependsOn": ["build"],
       "options": {
         "packageRoot": "{projectRoot}/dist"
       }

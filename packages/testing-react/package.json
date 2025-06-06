@@ -31,8 +31,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "devDependencies": {
-    "@chimeric/testing-core": "workspace:*"
   }
 }
