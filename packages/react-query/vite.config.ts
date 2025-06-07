@@ -6,6 +6,11 @@ import * as path from 'path';
 export default defineConfig(() => ({
   root: __dirname,
   cacheDir: '../../node_modules/.vite/packages/react-query',
+  resolve: {
+    alias: {
+      '@chimeric/core': path.resolve(__dirname, '../core/src'),
+    },
+  },
   plugins: [
     dts({
       entryRoot: 'src',
@@ -39,8 +44,8 @@ export default defineConfig(() => ({
       external: [
         'react',
         'react-dom',
-        '@tanstack/react-query',
         '@chimeric/core',
+        '@tanstack/react-query',
       ],
     },
   },
@@ -48,6 +53,7 @@ export default defineConfig(() => ({
     watch: false,
     globals: true,
     environment: 'jsdom',
+    setupFiles: './setupTests.ts',
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     reporters: ['default'],
     coverage: {

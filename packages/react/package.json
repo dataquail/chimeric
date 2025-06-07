@@ -11,23 +11,26 @@
   },
   "homepage": "https://dataquail.github.io/chimeric",
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./index.js",
+  "module": "./index.js",
+  "types": "./index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "default": "./index.js"
     }
   },
   "files": [
-    "dist",
+    "index.js",
+    "index.d.ts",
+    "index.d.ts.map",
+    "lib/**/*",
     "!**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@chimeric/core": "0.2.4"
+    "@chimeric/core": "workspace:*"
   },
   "peerDependencies": {
     "react": "^18 || ^19"
