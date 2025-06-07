@@ -1,6 +1,6 @@
 # Description
 
-The core types and utilities for the chimeric library
+The core types and utilities for the chimeric library.
 
 ## Installation
 

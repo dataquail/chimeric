@@ -87,12 +87,18 @@
       "conventionalCommits": true,
       "updateDependents": "auto",
       "preserveLocalDependencyProtocols": true,
-      "manifestRootsToUpdate": ["{projectRoot}", "{projectRoot}/dist"]
+      "manifestRootsToUpdate": ["{projectRoot}", "{projectRoot}/dist"],
+      "git": {
+        "commitMessage": "chore: updated version [no ci]"
+      }
     },
     "changelog": {
       "projectChangelogs": {
         "file": false,
         "createRelease": "github"
+      },
+      "git": {
+        "commitMessage": "chore: updated version [no ci]"
       }
     }
   },
