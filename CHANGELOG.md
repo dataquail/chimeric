@@ -1,3 +1,14 @@
+## 0.2.6 (2025-06-07)
+
+### 🩹 Fixes
+
+- include README.md in published artifacts ([7d9b64c](https://github.com/dataquail/chimeric/commit/7d9b64c))
+- prevent local deps override ([88d187c](https://github.com/dataquail/chimeric/commit/88d187c))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 0.2.5 (2025-06-07)
 
 ### 🩹 Fixes
