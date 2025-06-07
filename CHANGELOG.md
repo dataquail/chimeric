@@ -1,3 +1,15 @@
+## 0.2.5 (2025-06-07)
+
+### 🩹 Fixes
+
+- tests broken from missing pkg deps ([887ff6e](https://github.com/dataquail/chimeric/commit/887ff6e))
+- lint on unused deps ([2bf5129](https://github.com/dataquail/chimeric/commit/2bf5129))
+- missing react dep in react-query pkg ([9fe396c](https://github.com/dataquail/chimeric/commit/9fe396c))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 0.2.4 (2025-06-06)
 
 ### 🩹 Fixes
