@@ -23,6 +23,7 @@
     }
   },
   "files": [
+    "README.md",
     "index.js",
     "index.d.ts",
     "index.d.ts.map",

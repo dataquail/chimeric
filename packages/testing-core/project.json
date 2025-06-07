@@ -17,6 +17,11 @@
             "glob": "package.json",
             "input": "packages/testing-core",
             "output": "."
+          },
+          {
+            "glob": "README.md",
+            "input": "packages/testing-core",
+            "output": "."
           }
         ]
       },

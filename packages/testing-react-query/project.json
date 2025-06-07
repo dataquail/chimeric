@@ -17,6 +17,11 @@
             "glob": "package.json",
             "input": "packages/testing-react-query",
             "output": "."
+          },
+          {
+            "glob": "README.md",
+            "input": "packages/testing-react-query",
+            "output": "."
           }
         ]
       },
