@@ -32,10 +32,7 @@
   "dependencies": {
     "@chimeric/testing-core": "workspace:*"
   },
-  "peerDependencies": {
-    "@testing-library/react": "^14.0.0",
-    "react": "^18 || ^19"
-  },
+  "peerDependencies": {},
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.4.5",
