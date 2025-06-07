@@ -6,6 +6,13 @@ import * as path from 'path';
 export default defineConfig(() => ({
   root: __dirname,
   cacheDir: '../../node_modules/.vite/packages/testing',
+  resolve: {
+    alias: {
+      '@chimeric/core': path.resolve(__dirname, '../core/src'),
+      '@chimeric/react-query': path.resolve(__dirname, '../react-query/src'),
+      '@chimeric/testing-core': path.resolve(__dirname, '../testing-core/src'),
+    },
+  },
   plugins: [
     dts({
       entryRoot: 'src',

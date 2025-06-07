@@ -11,23 +11,39 @@
   },
   "homepage": "https://dataquail.github.io/chimeric",
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./index.js",
+  "module": "./index.js",
+  "types": "./index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "default": "./index.js"
     }
   },
   "files": [
-    "dist",
+    "index.js",
+    "index.d.ts",
+    "index.d.ts.map",
+    "lib/**/*",
     "!**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@chimeric/testing-core": "0.2.4"
+    "@chimeric/testing-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@testing-library/react": "^14.0.0",
+    "react": "^18 || ^19"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.4.5",
+    "@testing-library/react": "^14.3.1",
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
   },
   "publishConfig": {
     "access": "public"

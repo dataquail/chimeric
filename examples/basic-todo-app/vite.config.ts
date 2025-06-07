@@ -74,6 +74,24 @@ export default defineConfig(() => ({
   resolve: {
     alias: {
       src: resolve(__dirname, './src'),
+      '@chimeric/core': resolve(__dirname, '../../packages/core/src'),
+      '@chimeric/react': resolve(__dirname, '../../packages/react/src'),
+      '@chimeric/react-query': resolve(
+        __dirname,
+        '../../packages/react-query/src',
+      ),
+      '@chimeric/testing-core': resolve(
+        __dirname,
+        '../../packages/testing-core/src',
+      ),
+      '@chimeric/testing-react': resolve(
+        __dirname,
+        '../../packages/testing-react/src',
+      ),
+      '@chimeric/testing-react-query': resolve(
+        __dirname,
+        '../../packages/testing-react-query/src',
+      ),
       '@tanstack/react-query': resolve(
         __dirname,
         './node_modules/@tanstack/react-query',
