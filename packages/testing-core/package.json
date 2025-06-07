@@ -31,7 +31,7 @@
     "!**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@chimeric/core": "0.2.5"
+    "@chimeric/core": "workspace:*"
   },
   "peerDependencies": {
     "@testing-library/react": "^14.3.1",

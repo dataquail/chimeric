@@ -31,9 +31,9 @@
     "!**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@chimeric/core": "0.2.5",
-    "@chimeric/react-query": "0.2.5",
-    "@chimeric/testing-core": "0.2.5"
+    "@chimeric/core": "workspace:*",
+    "@chimeric/react-query": "workspace:*",
+    "@chimeric/testing-core": "workspace:*"
   },
   "peerDependencies": {
     "react": "^18 || ^19"

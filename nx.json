@@ -86,7 +86,7 @@
     "version": {
       "conventionalCommits": true,
       "updateDependents": "auto",
-      "preserveLocalDependencyProtocols": false,
+      "preserveLocalDependencyProtocols": true,
       "manifestRootsToUpdate": ["{projectRoot}", "{projectRoot}/dist"]
     },
     "changelog": {

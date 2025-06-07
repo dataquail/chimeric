@@ -31,7 +31,7 @@
     "!**/*.tsbuildinfo"
   ],
   "dependencies": {
-    "@chimeric/testing-core": "0.2.5"
+    "@chimeric/testing-core": "workspace:*"
   },
   "peerDependencies": {},
   "devDependencies": {
