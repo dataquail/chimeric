@@ -80,22 +80,19 @@
   "release": {
     "projectsRelationship": "fixed",
     "projects": ["packages/*"],
+    "git": {
+      "commitMessage": "chore: updated version [no ci]"
+    },
     "version": {
       "conventionalCommits": true,
       "updateDependents": "auto",
       "preserveLocalDependencyProtocols": true,
-      "manifestRootsToUpdate": ["{projectRoot}", "{projectRoot}/dist"],
-      "git": {
-        "commitMessage": "chore: updated version [no ci]"
-      }
+      "manifestRootsToUpdate": ["{projectRoot}", "{projectRoot}/dist"]
     },
     "changelog": {
       "projectChangelogs": {
         "file": false,
         "createRelease": "github"
-      },
-      "git": {
-        "commitMessage": "chore: updated version [no ci]"
       }
     }
   },
