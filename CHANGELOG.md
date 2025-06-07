@@ -1,3 +1,15 @@
+## 0.2.7 (2025-06-07)
+
+### 🩹 Fixes
+
+- broken publish ([06e9781](https://github.com/dataquail/chimeric/commit/06e9781))
+- git top level command ([59e3fc0](https://github.com/dataquail/chimeric/commit/59e3fc0))
+- change README.md to force bump ([6041b93](https://github.com/dataquail/chimeric/commit/6041b93))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 0.2.6 (2025-06-07)
 
 ### 🩹 Fixes

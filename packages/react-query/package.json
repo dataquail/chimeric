@@ -1,6 +1,6 @@
 {
   "name": "@chimeric/react-query",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "React Query utilities for chimeric interfaces",
   "author": "zacharyweidenbach",
   "license": "MIT",
