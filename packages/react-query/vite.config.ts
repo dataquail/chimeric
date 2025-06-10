@@ -7,11 +7,6 @@ import { copyFileSync, readFileSync, writeFileSync } from 'fs';
 export default defineConfig(() => ({
   root: __dirname,
   cacheDir: '../../node_modules/.vite/packages/react-query',
-  resolve: {
-    alias: {
-      '@chimeric/core': path.resolve(__dirname, '../core/src'),
-    },
-  },
   plugins: [
     dts({
       entryRoot: 'src',
