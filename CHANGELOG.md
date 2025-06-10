@@ -1,3 +1,13 @@
+## 0.2.10 (2025-06-10)
+
+### 🩹 Fixes
+
+- change paths in dist/package.json files ([4520cbd](https://github.com/dataquail/chimeric/commit/4520cbd))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 0.2.9 (2025-06-10)
 
 ### 🩹 Fixes
