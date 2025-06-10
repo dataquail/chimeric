@@ -50,12 +50,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Publish packages
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          npx nx release version --verbose
-          pnpm build:packages
-          npx nx release publish --verbose
+        run: ./scripts/publish.sh
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           # We need to set provenance to true in order to generate provenance statement
