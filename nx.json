@@ -71,7 +71,6 @@
       "dependsOn": ["^build"]
     },
     "nx-release-publish": {
-      "dependsOn": ["build"],
       "options": {
         "packageRoot": "{projectRoot}/dist"
       }
