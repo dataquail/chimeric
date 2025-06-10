@@ -9,21 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "packages/core/dist",
-        "main": "packages/core/src/index.ts",
-        "tsConfig": "packages/core/tsconfig.lib.json",
-        "assets": [
-          {
-            "glob": "package.json",
-            "input": "packages/core",
-            "output": "."
-          },
-          {
-            "glob": "README.md",
-            "input": "packages/core",
-            "output": "."
-          }
-        ]
+        "outputPath": "packages/core/dist"
       },
       "configurations": {
         "development": {

@@ -5,7 +5,8 @@
     "rootDir": "src",
     "outDir": "dist",
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
-    "emitDeclarationOnly": true,
+    "declaration": true,
+    "emitDeclarationOnly": false,
     "forceConsistentCasingInFileNames": true,
     "types": ["node", "vite/client"],
     "moduleResolution": "Bundler"

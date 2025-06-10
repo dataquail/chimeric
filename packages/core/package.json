@@ -10,28 +10,17 @@
     "directory": "packages/core"
   },
   "homepage": "https://dataquail.github.io/chimeric",
-  "type": "module",
-  "main": "./index.js",
-  "module": "./index.js",
-  "types": "./index.d.ts",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "typings": "dist/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./index.d.ts",
-      "import": "./index.js",
-      "default": "./index.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.js",
+      "default": "./dist/index.esm.js"
     }
   },
-  "files": [
-    "README.md",
-    "index.js",
-    "index.d.ts",
-    "index.d.ts.map",
-    "lib/**/*",
-    "!**/*.tsbuildinfo"
-  ],
-  "dependencies": {},
-  "publishConfig": {
-    "access": "public"
-  }
+  "dependencies": {}
 }

@@ -80,9 +80,6 @@
   "release": {
     "projectsRelationship": "fixed",
     "projects": ["packages/*"],
-    "git": {
-      "commitMessage": "chore: updated version [no ci]"
-    },
     "version": {
       "conventionalCommits": true,
       "updateDependents": "auto",

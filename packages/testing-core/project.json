@@ -9,21 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "packages/testing-core/dist",
-        "main": "packages/testing-core/src/index.ts",
-        "tsConfig": "packages/testing-core/tsconfig.lib.json",
-        "assets": [
-          {
-            "glob": "package.json",
-            "input": "packages/testing-core",
-            "output": "."
-          },
-          {
-            "glob": "README.md",
-            "input": "packages/testing-core",
-            "output": "."
-          }
-        ]
+        "outputPath": "packages/testing-core/dist"
       },
       "configurations": {
         "development": {

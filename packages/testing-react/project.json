@@ -9,21 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "packages/testing-react/dist",
-        "main": "packages/testing-react/src/index.ts",
-        "tsConfig": "packages/testing-react/tsconfig.lib.json",
-        "assets": [
-          {
-            "glob": "package.json",
-            "input": "packages/testing-react",
-            "output": "."
-          },
-          {
-            "glob": "README.md",
-            "input": "packages/testing-react",
-            "output": "."
-          }
-        ]
+        "outputPath": "packages/testing-react/dist"
       },
       "configurations": {
         "development": {

@@ -2,6 +2,7 @@
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import * as path from 'path';
+import { copyFileSync } from 'fs';
 
 export default defineConfig(() => ({
   root: __dirname,
@@ -11,6 +12,26 @@ export default defineConfig(() => ({
       entryRoot: 'src',
       tsconfigPath: path.join(__dirname, 'tsconfig.lib.json'),
     }),
+    {
+      name: 'copy-assets',
+      closeBundle() {
+        // Copy package.json
+        copyFileSync(
+          path.join(__dirname, 'package.json'),
+          path.join(__dirname, 'dist', 'package.json'),
+        );
+        // Copy README.md
+        copyFileSync(
+          path.join(__dirname, 'README.md'),
+          path.join(__dirname, 'dist', 'README.md'),
+        );
+        // Copy LICENSE from root
+        copyFileSync(
+          path.join(__dirname, '../../LICENSE'),
+          path.join(__dirname, 'dist', 'LICENSE'),
+        );
+      },
+    },
   ],
   // Uncomment this if you are using workers.
   // worker: {
@@ -29,10 +50,10 @@ export default defineConfig(() => ({
       // Could also be a dictionary or array of multiple entry points.
       entry: 'src/index.ts',
       name: '@chimeric/testing-react',
-      fileName: 'index',
+      fileName: (format) => `index.${format === 'es' ? 'esm' : 'cjs'}.js`,
       // Change this to the formats you want to support.
       // Don't forget to update your package.json as well.
-      formats: ['es' as const],
+      formats: ['es', 'cjs'],
     },
     rollupOptions: {
       // External packages that should not be bundled into your library.

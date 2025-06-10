@@ -9,21 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "packages/react-query/dist",
-        "main": "packages/react-query/src/index.ts",
-        "tsConfig": "packages/react-query/tsconfig.lib.json",
-        "assets": [
-          {
-            "glob": "package.json",
-            "input": "packages/react-query",
-            "output": "."
-          },
-          {
-            "glob": "README.md",
-            "input": "packages/react-query",
-            "output": "."
-          }
-        ]
+        "outputPath": "packages/react-query/dist"
       },
       "configurations": {
         "development": {
