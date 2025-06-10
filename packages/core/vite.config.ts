@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import * as path from 'path';
-import { copyFileSync } from 'fs';
+import { copyFileSync, readFileSync, writeFileSync } from 'fs';
 
 export default defineConfig(() => ({
   root: __dirname,
@@ -14,11 +14,59 @@ export default defineConfig(() => ({
     {
       name: 'copy-assets',
       closeBundle() {
-        // Copy package.json
-        copyFileSync(
-          path.join(__dirname, 'package.json'),
-          path.join(__dirname, 'dist', 'package.json'),
+        // Copy and transform package.json for publishing
+        const packageJsonPath = path.join(__dirname, 'package.json');
+        const distPackageJsonPath = path.join(
+          __dirname,
+          'dist',
+          'package.json',
         );
+
+        const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+
+        // Transform paths for publishing (remove dist/ prefix)
+        if (packageJson.main) {
+          packageJson.main = packageJson.main.replace(/^(\.\/)?dist\//, './');
+        }
+        if (packageJson.module) {
+          packageJson.module = packageJson.module.replace(
+            /^(\.\/)?dist\//,
+            './',
+          );
+        }
+        if (packageJson.typings) {
+          packageJson.typings = packageJson.typings.replace(
+            /^(\.\/)?dist\//,
+            './',
+          );
+        }
+        if (packageJson.exports) {
+          // Transform exports paths recursively
+          const transformExports = (obj: any): any => {
+            if (
+              typeof obj === 'string' &&
+              (obj.startsWith('dist/') || obj.startsWith('./dist/'))
+            ) {
+              return obj.replace(/^(\.\/)?dist\//, './');
+            }
+            if (typeof obj === 'object' && obj !== null) {
+              const result: any = {};
+              for (const [key, value] of Object.entries(obj)) {
+                result[key] = transformExports(value);
+              }
+              return result;
+            }
+            return obj;
+          };
+
+          packageJson.exports = transformExports(packageJson.exports);
+        }
+
+        writeFileSync(
+          distPackageJsonPath,
+          JSON.stringify(packageJson, null, 2),
+        );
+
         // Copy README.md
         copyFileSync(
           path.join(__dirname, 'README.md'),
