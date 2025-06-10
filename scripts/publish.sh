@@ -24,10 +24,6 @@ echo "Fixing workspace dependencies..."
 # Call the fix-workspace-deps.sh script
 ./scripts/fix-workspace-deps.sh
 
-# Run nx release version
-echo "Running nx release version..."
-npx nx release --skip-publish --verbose
-
 # Publish packages
 echo "Publishing packages..."
 npx nx release publish --verbose
