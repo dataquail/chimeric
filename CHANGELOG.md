@@ -1,3 +1,17 @@
+## 0.2.8 (2025-06-10)
+
+### 🩹 Fixes
+
+- fix git configuration ([22b5bab](https://github.com/dataquail/chimeric/commit/22b5bab))
+- ems and cjs builds ([ad34cab](https://github.com/dataquail/chimeric/commit/ad34cab))
+- rearrange publish ([5bbbe7d](https://github.com/dataquail/chimeric/commit/5bbbe7d))
+- publish shell script ([c8c1253](https://github.com/dataquail/chimeric/commit/c8c1253))
+- correct release config ([ad816dd](https://github.com/dataquail/chimeric/commit/ad816dd))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 0.2.7 (2025-06-07)
 
 ### 🩹 Fixes
