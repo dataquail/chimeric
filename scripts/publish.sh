@@ -39,7 +39,7 @@ echo "Backup saved as nx.json.backup"
 
 # Run nx release version
 echo "Running nx release version..."
-npx nx release version --verbose
+npx nx release --skip-publish --verbose
 
 # Build packages
 echo "Building packages..."
