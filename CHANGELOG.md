@@ -1,3 +1,13 @@
+## 0.2.11 (2025-06-10)
+
+### 🩹 Fixes
+
+- remove unnecessary resolve ([db008ed](https://github.com/dataquail/chimeric/commit/db008ed))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 0.2.10 (2025-06-10)
 
 ### 🩹 Fixes
