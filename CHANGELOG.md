@@ -1,3 +1,14 @@
+## 0.2.9 (2025-06-10)
+
+### 🩹 Fixes
+
+- manually remove workspace:* ([1df020f](https://github.com/dataquail/chimeric/commit/1df020f))
+- remove version step ([5faac63](https://github.com/dataquail/chimeric/commit/5faac63))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 0.2.8 (2025-06-10)
 
 ### 🩹 Fixes
