@@ -1,6 +1,6 @@
 {
   "name": "@chimeric/core",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "description": "Core types and utilities for chimeric interfaces",
   "author": "zacharyweidenbach",
   "license": "MIT",
