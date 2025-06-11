@@ -1,6 +1,6 @@
 {
   "name": "@chimeric/testing-core",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "description": "Core testing utilities for chimeric interfaces",
   "author": "zacharyweidenbach",
   "license": "MIT",
