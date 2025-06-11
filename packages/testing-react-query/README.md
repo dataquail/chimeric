@@ -54,134 +54,178 @@ import {
 
 ## Testing Query Operations
 
+### ChimericQueryTestHarness
+
+Test chimeric queries using parametrized testing with different methods (idiomatic, reactive, chimeric).
+
+```typescript
+import {
+  ChimericQueryTestHarness,
+  chimericMethods,
+  ChimericQueryFactory,
+} from '@chimeric/testing-react-query';
+import { setupServer } from 'msw/node';
+import { describe, it, expect, beforeAll, afterEach, afterAll } from 'vitest';
+import { QueryClient, queryOptions } from '@tanstack/react-query';
+
+describe('Todo Service', () => {
+  const server = setupServer();
+
+  beforeAll(() => server.listen());
+  afterEach(() => server.resetHandlers());
+  afterAll(() => server.close());
+
+  const getTodoService = () => {
+    const queryClient = new QueryClient();
+    // Get your service instance (e.g., from DI container)
+    return {
+      getAll: ChimericQueryFactory(queryClient, () =>
+        queryOptions({
+          queryKey: ['get-all-todos'],
+          queryFn: async () => fetch(`/api/todos`).then((r) => r.json()),
+        }),
+      ),
+      getOneById: ChimericQueryFactory(queryClient, (params: { id: number }) =>
+        queryOptions({
+          queryKey: ['get-todos'],
+          queryFn: async () =>
+            fetch(`/api/todos/${params.id}`).then((r) => r.json()),
+        }),
+      ),
+    };
+  };
+
+  const withMockTodos = () => {
+    // Setup MSW handlers for your API endpoints
+    server.use(
+      http.get('/api/todos', () => {
+        return HttpResponse.json({
+          total_count: 2,
+          list: [
+            { id: '1', title: 'Todo 1', completed: false },
+            { id: '2', title: 'Todo 2', completed: true },
+          ],
+        });
+      }),
+    );
+  };
+
+  it.each(chimericMethods)('getAll.%s', async (method) => {
+    withMockTodos();
+    const todoService = getTodoService();
+
+    const harness = ChimericQueryTestHarness({
+      chimericQuery: todoService.getAll,
+      method,
+      wrapper: getTestWrapper(), // Your test wrapper with providers
+    });
+
+    // Test initial pending state
+    expect(harness.result.current.isPending).toBe(true);
+    expect(harness.result.current.isSuccess).toBe(false);
+
+    // Wait for query to complete
+    await harness.waitFor(() =>
+      expect(harness.result.current.isPending).toBe(false),
+    );
+
+    // Verify successful data fetch
+    expect(harness.result.current.isSuccess).toBe(true);
+    expect(harness.result.current.data?.length).toBe(2);
+    expect(harness.result.current.data?.[0].id).toBe('1');
+    expect(harness.result.current.data?.[0].title).toBe('Todo 1');
+  });
+
+  it.each(chimericMethods)('getOneById.%s', async (method) => {
+    server.use(
+      http.get('/api/todos/1', () => {
+        return HttpResponse.json({
+          id: 1,
+          title: 'Todo 1',
+          completed: false,
+          created_at: '2024-01-01T00:00:00Z',
+        });
+      }),
+    );
+
+    const todoService = getTodoService();
+
+    const harness = ChimericQueryTestHarness({
+      chimericQuery: todoService.getOneById,
+      method,
+      params: { id: 1 }, // Query parameters
+      wrapper: getTestWrapper(),
+    });
+
+    expect(harness.result.current.isPending).toBe(true);
+
+    await harness.waitFor(() =>
+      expect(harness.result.current.isPending).toBe(false),
+    );
+
+    expect(harness.result.current.data?.id).toBe('1');
+    expect(harness.result.current.data?.title).toBe('Todo 1');
+  });
+});
+```
+
 ### ReactiveQueryTestHarness
 
-Test reactive queries with TanStack Query caching and state management.
+Test reactive queries that automatically execute when mounted.
 
 ```typescript
 import { ReactiveQueryTestHarness } from '@chimeric/testing-react-query';
 import { ReactiveQueryFactory } from '@chimeric/react-query';
-import {
-  QueryClient,
-  QueryClientProvider,
-  queryOptions,
-} from '@tanstack/react-query';
 
 describe('ReactiveQueryFactory Operations', () => {
-  let queryClient: QueryClient;
-
-  beforeEach(() => {
-    queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-        mutations: { retry: false },
-      },
-    });
-  });
-
-  it('should test user query with caching', async () => {
-    // Create a reactive query
+  it('should test reactive user query', async () => {
     const fetchUser = ReactiveQueryFactory((params: { id: string }) =>
       queryOptions({
         queryKey: ['user', params.id],
         queryFn: async () => {
+          // Your query function
           const response = await fetch(`/api/users/${params.id}`);
-          if (!response.ok) throw new Error('User not found');
           return response.json();
         },
-        staleTime: 5 * 60 * 1000, // 5 minutes
       }),
     );
 
-    // Create test wrapper with QueryClient
-    const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
-
-    // Create test harness
     const harness = ReactiveQueryTestHarness({
       reactiveQuery: fetchUser,
-      wrapper: TestWrapper,
+      wrapper: getTestWrapper(),
       params: { id: 'user-123' },
-      options: { enabled: true },
-      nativeOptions: { retry: 3 },
     });
 
     // Test initial state
-    expect(harness.result.current.isIdle).toBe(false);
     expect(harness.result.current.isPending).toBe(true);
 
-    // Wait for query to complete
+    // Wait for completion
     await harness.waitFor(() => {
       expect(harness.result.current.isSuccess).toBe(true);
-      expect(harness.result.current.data).toBeDefined();
     });
 
-    // Test refetch functionality
-    const refetchResult = await harness.result.current.refetch();
-    expect(refetchResult).toBeDefined();
-
-    // Test native TanStack Query features
-    expect(harness.result.current.native.dataUpdatedAt).toBeGreaterThan(0);
-    expect(harness.result.current.native.isFetched).toBe(true);
-  });
-
-  it('should test query with disabled state', async () => {
-    const disabledQuery = ReactiveQueryFactory(() =>
-      queryOptions({
-        queryKey: ['disabled-query'],
-        queryFn: async () => 'should not execute',
-      }),
-    );
-
-    const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
-
-    const harness = ReactiveQueryTestHarness({
-      reactiveQuery: disabledQuery,
-      wrapper: TestWrapper,
-      options: { enabled: false }, // Disabled query
-    });
-
-    // Should remain idle when disabled
-    expect(harness.result.current.isIdle).toBe(true);
-    expect(harness.result.current.isPending).toBe(false);
-    expect(harness.result.current.data).toBeUndefined();
+    expect(harness.result.current.data).toBeDefined();
   });
 });
 ```
 
 ### IdiomaticQueryTestHarness
 
-Test idiomatic queries that integrate with TanStack Query's cache.
+Test idiomatic queries that are called programmatically.
 
 ```typescript
 import { IdiomaticQueryTestHarness } from '@chimeric/testing-react-query';
 import { IdiomaticQueryFactory } from '@chimeric/react-query';
-import { QueryClient, queryOptions } from '@tanstack/react-query';
 
 describe('IdiomaticQueryFactory Operations', () => {
-  let queryClient: QueryClient;
-
-  beforeEach(() => {
-    queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-      },
-    });
-  });
-
-  it('should test idiomatic query with cache integration', async () => {
+  it('should test idiomatic query execution', async () => {
     const fetchPosts = IdiomaticQueryFactory(
       queryClient,
-      (params: { userId: string; limit?: number }) =>
+      (params: { userId: string }) =>
         queryOptions({
-          queryKey: ['posts', params.userId, params.limit],
+          queryKey: ['posts', params.userId],
           queryFn: async () => {
-            const response = await fetch(
-              `/api/users/${params.userId}/posts?limit=${params.limit || 10}`,
-            );
+            const response = await fetch(`/api/users/${params.userId}/posts`);
             return response.json();
           },
         }),
@@ -197,646 +241,231 @@ describe('IdiomaticQueryFactory Operations', () => {
     // Execute query
     const promise = harness.result.current.call({
       userId: 'user-123',
-      limit: 5,
-      options: { forceRefetch: false },
-      nativeOptions: { staleTime: 1000 },
     });
 
-    // Check pending state
-    await harness.waitFor(() => {
-      expect(harness.result.current.isPending).toBe(true);
-    });
-
-    // Wait for completion
+    // Wait for result
     const result = await promise;
     expect(result).toBeDefined();
     expect(Array.isArray(result)).toBe(true);
-
-    await harness.waitFor(() => {
-      expect(harness.result.current.isSuccess).toBe(true);
-      expect(harness.result.current.data).toEqual(result);
-    });
-
-    // Verify cache was populated
-    const cachedData = queryClient.getQueryData(['posts', 'user-123', 5]);
-    expect(cachedData).toEqual(result);
-  });
-
-  it('should test force refetch behavior', async () => {
-    const cachedQuery = IdiomaticQueryFactory(queryClient, () =>
-      queryOptions({
-        queryKey: ['cached-data'],
-        queryFn: async () => ({ timestamp: Date.now() }),
-      }),
-    );
-
-    const harness = IdiomaticQueryTestHarness({
-      idiomaticQuery: cachedQuery,
-    });
-
-    // First call
-    const firstResult = await harness.result.current.call({
-      options: { forceRefetch: false },
-    });
-
-    // Second call without force refetch (should use cache)
-    const secondResult = await harness.result.current.call({
-      options: { forceRefetch: false },
-    });
-
-    // Third call with force refetch (should fetch fresh data)
-    const thirdResult = await harness.result.current.call({
-      options: { forceRefetch: true },
-    });
-
-    expect(firstResult.timestamp).toBe(secondResult.timestamp); // Same from cache
-    expect(thirdResult.timestamp).toBeGreaterThan(firstResult.timestamp); // Fresh data
-  });
-});
-```
-
-### ChimericQueryTestHarness
-
-Test chimeric queries that work both idiomatically and reactively with shared cache.
-
-```typescript
-import { ChimericQueryTestHarness } from '@chimeric/testing-react-query';
-import {
-  ChimericQueryFactory,
-  DefineChimericQuery,
-} from '@chimeric/react-query';
-import {
-  QueryClient,
-  QueryClientProvider,
-  queryOptions,
-} from '@tanstack/react-query';
-
-describe('ChimericQueryFactory Operations', () => {
-  let queryClient: QueryClient;
-
-  beforeEach(() => {
-    queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-      },
-    });
-  });
-
-  it('should test shared cache between idiomatic and reactive usage', async () => {
-    type UserDataQuery = DefineChimericQuery<
-      (params: {
-        id: string;
-        includeProfile: boolean;
-      }) => Promise<UserWithProfile>
-    >;
-
-    const fetchUserData: UserDataQuery = ChimericQueryFactory(
-      queryClient,
-      (params: { id: string; includeProfile: boolean }) =>
-        queryOptions({
-          queryKey: ['user-data', params.id, params.includeProfile],
-          queryFn: async () => {
-            const [user, profile] = await Promise.all([
-              fetch(`/api/users/${params.id}`).then((r) => r.json()),
-              params.includeProfile
-                ? fetch(`/api/users/${params.id}/profile`).then((r) => r.json())
-                : Promise.resolve(null),
-            ]);
-
-            return { user, profile };
-          },
-        }),
-    );
-
-    const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
-
-    const harness = ChimericQueryTestHarness({
-      chimericQuery: fetchUserData,
-      wrapper: TestWrapper,
-    });
-
-    // Test idiomatic usage
-    const idiomaticResult = await harness.result.current.idiomatic({
-      id: 'user-123',
-      includeProfile: true,
-      nativeOptions: { retry: 2 },
-    });
-
-    expect(idiomaticResult.user).toBeDefined();
-    expect(idiomaticResult.profile).toBeDefined();
-
-    // Verify cache was populated
-    const cachedData = queryClient.getQueryData([
-      'user-data',
-      'user-123',
-      true,
-    ]);
-    expect(cachedData).toEqual(idiomaticResult);
-
-    // Test reactive usage (should use cached data)
-    const reactivePromise = harness.result.current.reactive.useQuery({
-      id: 'user-123',
-      includeProfile: true,
-      options: { enabled: true },
-    });
-
-    // Should immediately have cached data
-    expect(harness.result.current.reactive.data).toEqual(idiomaticResult);
-    expect(harness.result.current.reactive.isSuccess).toBe(true);
-
-    // Test cache status
-    expect(harness.result.current.reactive.native.isFetched).toBe(true);
-    expect(harness.result.current.reactive.native.isStale).toBe(false);
-  });
-
-  it('should test error handling in both patterns', async () => {
-    const failingQuery = ChimericQueryFactory(queryClient, () =>
-      queryOptions({
-        queryKey: ['failing-query'],
-        queryFn: async () => {
-          throw new Error('Query failed');
-        },
-      }),
-    );
-
-    const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
-
-    const harness = ChimericQueryTestHarness({
-      chimericQuery: failingQuery,
-      wrapper: TestWrapper,
-    });
-
-    // Test idiomatic error handling
-    await expect(harness.result.current.idiomatic()).rejects.toThrow(
-      'Query failed',
-    );
-
-    // Test reactive error handling
-    await harness.waitFor(() => {
-      expect(harness.result.current.reactive.isError).toBe(true);
-      expect(harness.result.current.reactive.error?.message).toBe(
-        'Query failed',
-      );
-    });
   });
 });
 ```
 
 ## Testing Mutation Operations
 
+### ChimericMutationTestHarness
+
+Test chimeric mutations with state updates and cache invalidation.
+
+```typescript
+import { ChimericMutationTestHarness } from '@chimeric/testing-react-query';
+import { act } from 'react';
+
+describe('Todo Mutations', () => {
+  it.each(chimericMethods)('deleteTodo.%s', async (method) => {
+    // Setup initial data
+    withMockTodos();
+
+    const todoService = getTodoService();
+    const testWrapper = getTestWrapper();
+
+    const deleteHarness = ChimericMutationTestHarness({
+      chimericMutation: todoService.deleteOne,
+      method,
+      wrapper: testWrapper,
+    });
+
+    const getAllHarness = ChimericQueryTestHarness({
+      chimericQuery: todoService.getAll,
+      method,
+      wrapper: testWrapper,
+    });
+
+    // Wait for initial data to load
+    await getAllHarness.waitFor(() =>
+      expect(getAllHarness.result.current.isPending).toBe(false),
+    );
+    expect(getAllHarness.result.current.data?.length).toBe(2);
+
+    // Setup mock for successful deletion and updated list
+    withSuccessfulDeletion();
+    withUpdatedTodoList(); // Returns list with one item removed
+
+    // Execute mutation
+    act(() => {
+      deleteHarness.result.current.call({ id: '1' });
+    });
+
+    // Wait for mutation to complete
+    await deleteHarness.waitFor(() =>
+      expect(deleteHarness.result.current.isPending).toBe(false),
+    );
+
+    // Wait for cache invalidation to trigger refetch
+    await getAllHarness.waitFor(
+      () => expect(getAllHarness.result.current.isPending).toBe(false),
+      { reinvokeIdiomaticFn: true }, // Forces idiomatic test to reinvoke the function to recalculate value
+    );
+
+    // Verify updated data
+    expect(getAllHarness.result.current.data?.length).toBe(1);
+  });
+});
+```
+
 ### ReactiveMutationTestHarness
 
-Test reactive mutations with TanStack Query's mutation capabilities.
+Test reactive mutations with state management.
 
 ```typescript
 import { ReactiveMutationTestHarness } from '@chimeric/testing-react-query';
-import { ReactiveMutationFactory } from '@chimeric/react-query';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 describe('ReactiveMutationFactory Operations', () => {
-  let queryClient: QueryClient;
-
-  beforeEach(() => {
-    queryClient = new QueryClient({
-      defaultOptions: {
-        mutations: { retry: false },
-      },
-    });
-  });
-
-  it('should test user update mutation', async () => {
+  it('should test reactive mutation', async () => {
     const updateUser = ReactiveMutationFactory({
-      mutationFn: async (params: {
-        id: string;
-        name: string;
-        email: string;
-      }) => {
+      mutationFn: async (params: { id: string; name: string }) => {
         const response = await fetch(`/api/users/${params.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: params.name, email: params.email }),
+          body: JSON.stringify({ name: params.name }),
         });
-
-        if (!response.ok) throw new Error('Failed to update user');
         return response.json();
       },
-      onSuccess: (data, variables) => {
-        // Invalidate related queries
-        queryClient.invalidateQueries({ queryKey: ['user', variables.id] });
-      },
-      onError: (error, variables) => {
-        console.error('Update failed:', error);
-      },
     });
-
-    const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
 
     const harness = ReactiveMutationTestHarness({
       reactiveMutation: updateUser,
-      wrapper: TestWrapper,
+      wrapper: getTestWrapper(),
     });
 
     // Test initial state
     expect(harness.result.current.isIdle).toBe(true);
     expect(harness.result.current.isPending).toBe(false);
-    expect(harness.result.current.data).toBeUndefined();
 
     // Execute mutation
     const promise = harness.result.current.call({
       id: 'user-123',
       name: 'Jane Doe',
-      email: 'jane@example.com',
-      nativeOptions: {
-        onSuccess: () => {
-          // Additional success handling
-        },
-      },
     });
 
     // Check pending state
     await harness.waitFor(() => {
       expect(harness.result.current.isPending).toBe(true);
-      expect(harness.result.current.isIdle).toBe(false);
     });
 
     // Wait for completion
     const result = await promise;
     expect(result.name).toBe('Jane Doe');
-    expect(result.email).toBe('jane@example.com');
 
     await harness.waitFor(() => {
       expect(harness.result.current.isSuccess).toBe(true);
       expect(harness.result.current.data).toEqual(result);
-      expect(harness.result.current.isPending).toBe(false);
     });
-
-    // Test reset functionality
-    harness.result.current.reset();
-
-    await harness.waitFor(() => {
-      expect(harness.result.current.isIdle).toBe(true);
-      expect(harness.result.current.data).toBeUndefined();
-    });
-
-    // Test native TanStack Query mutation features
-    expect(harness.result.current.native.submittedAt).toBeGreaterThan(0);
-  });
-});
-```
-
-### ChimericMutationTestHarness
-
-Test chimeric mutations that work both idiomatically and reactively.
-
-```typescript
-import { ChimericMutationTestHarness } from '@chimeric/testing-react-query';
-import { ChimericMutationFactory } from '@chimeric/react-query';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-describe('ChimericMutationFactory Operations', () => {
-  let queryClient: QueryClient;
-
-  beforeEach(() => {
-    queryClient = new QueryClient();
-  });
-
-  it('should test both idiomatic and reactive mutation patterns', async () => {
-    const deleteUser = ChimericMutationFactory({
-      mutationFn: async (params: { id: string }) => {
-        const response = await fetch(`/api/users/${params.id}`, {
-          method: 'DELETE',
-        });
-
-        if (!response.ok) throw new Error('Failed to delete user');
-        return { success: true, deletedId: params.id };
-      },
-      onSuccess: (data) => {
-        // Invalidate user queries
-        queryClient.invalidateQueries({ queryKey: ['user'] });
-      },
-    });
-
-    const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
-
-    const harness = ChimericMutationTestHarness({
-      chimericMutation: deleteUser,
-      wrapper: TestWrapper,
-    });
-
-    // Test idiomatic usage
-    const idiomaticResult = await harness.result.current.idiomatic({
-      id: 'user-123',
-      nativeOptions: {
-        onSuccess: () => {
-          // Additional success handling
-        },
-      },
-    });
-
-    expect(idiomaticResult.success).toBe(true);
-    expect(idiomaticResult.deletedId).toBe('user-123');
-
-    // Test reactive usage
-    const reactivePromise = harness.result.current.reactive.call({
-      id: 'user-456',
-    });
-
-    // Check reactive state changes
-    await harness.waitFor(() => {
-      expect(harness.result.current.reactive.isPending).toBe(true);
-    });
-
-    const reactiveResult = await reactivePromise;
-    expect(reactiveResult.deletedId).toBe('user-456');
-
-    await harness.waitFor(() => {
-      expect(harness.result.current.reactive.isSuccess).toBe(true);
-      expect(harness.result.current.reactive.data).toEqual(reactiveResult);
-    });
-  });
-});
-```
-
-## Testing Managed Store Queries
-
-### Testing ReactiveQueryWithManagedStoreFactory
-
-Test queries that sync TanStack Query with external state management.
-
-```typescript
-import { ReactiveQueryTestHarness } from '@chimeric/testing-react-query';
-import { ReactiveQueryWithManagedStoreFactory } from '@chimeric/react-query';
-import {
-  QueryClient,
-  QueryClientProvider,
-  queryOptions,
-} from '@tanstack/react-query';
-import { Provider, useSelector } from 'react-redux';
-
-describe('Managed Store Query Operations', () => {
-  let queryClient: QueryClient;
-  let mockStore: any;
-
-  beforeEach(() => {
-    queryClient = new QueryClient({
-      defaultOptions: { queries: { retry: false } },
-    });
-
-    mockStore = {
-      getState: () => ({ users: { list: [] } }),
-      dispatch: vi.fn(),
-      subscribe: vi.fn(),
-    };
-  });
-
-  it('should test query that syncs with Redux store', async () => {
-    const fetchAndStoreUsers = ReactiveQueryWithManagedStoreFactory({
-      getQueryOptions: () =>
-        queryOptions({
-          queryKey: ['users'],
-          queryFn: async () => {
-            const response = await fetch('/api/users');
-            const users = await response.json();
-
-            // Update Redux store
-            mockStore.dispatch({ type: 'SET_USERS', payload: users });
-
-            return null; // Data comes from store
-          },
-          staleTime: 5 * 60 * 1000,
-        }),
-
-      useFromStore: () => useSelector((state: any) => state.users.list),
-    });
-
-    const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-      <QueryClientProvider client={queryClient}>
-        <Provider store={mockStore}>{children}</Provider>
-      </QueryClientProvider>
-    );
-
-    const harness = ReactiveQueryTestHarness({
-      reactiveQuery: fetchAndStoreUsers,
-      wrapper: TestWrapper,
-    });
-
-    // Wait for query to complete
-    await harness.waitFor(() => {
-      expect(harness.result.current.isSuccess).toBe(true);
-    });
-
-    // Verify store was updated
-    expect(mockStore.dispatch).toHaveBeenCalledWith({
-      type: 'SET_USERS',
-      payload: expect.any(Array),
-    });
-
-    // Test refetch functionality
-    const refetchResult = await harness.result.current.refetch();
-    expect(refetchResult).toBeDefined();
-
-    // Verify TanStack Query cache status
-    expect(harness.result.current.native.isFetched).toBe(true);
   });
 });
 ```
 
 ## Advanced Testing Patterns
 
-### Testing Cache Invalidation
+### Coordinating Multiple Harnesses
+
+Test how mutations affect query state through cache invalidation.
 
 ```typescript
-describe('Cache Management', () => {
-  it('should test query invalidation', async () => {
-    const userQuery = ReactiveQueryFactory((params: { id: string }) =>
-      queryOptions({
-        queryKey: ['user', params.id],
-        queryFn: async () => ({ id: params.id, name: 'John Doe' }),
-      }),
-    );
+describe('Coordinated Operations', () => {
+  it.each(chimericMethods)(
+    'should coordinate mutation and query.%s',
+    async (method) => {
+      const todoService = getTodoService();
+      const testWrapper = getTestWrapper();
 
-    const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
+      // Create harnesses for both operations
+      const createHarness = ChimericMutationTestHarness({
+        chimericMutation: todoService.createOne,
+        method,
+        wrapper: testWrapper,
+      });
 
-    const harness = ReactiveQueryTestHarness({
-      reactiveQuery: userQuery,
-      wrapper: TestWrapper,
-      params: { id: 'user-123' },
-    });
+      const listHarness = ChimericQueryTestHarness({
+        chimericQuery: todoService.getAll,
+        method,
+        wrapper: testWrapper,
+      });
 
-    // Wait for initial load
-    await harness.waitFor(() => {
-      expect(harness.result.current.isSuccess).toBe(true);
-    });
+      // Wait for initial query to load
+      await listHarness.waitFor(() =>
+        expect(listHarness.result.current.isPending).toBe(false),
+      );
 
-    // Invalidate the query
-    queryClient.invalidateQueries({ queryKey: ['user', 'user-123'] });
+      const initialCount = listHarness.result.current.data?.length ?? 0;
 
-    // Should trigger refetch
-    await harness.waitFor(() => {
-      expect(harness.result.current.native.isFetching).toBe(true);
-    });
+      // Setup mocks for creation and updated list
+      withSuccessfulCreation();
+      withUpdatedListAfterCreation();
 
-    await harness.waitFor(() => {
-      expect(harness.result.current.native.isFetching).toBe(false);
-      expect(harness.result.current.isSuccess).toBe(true);
-    });
-  });
+      // Execute mutation
+      act(() => {
+        createHarness.result.current.call({
+          title: 'New Todo',
+          completed: false,
+        });
+      });
+
+      // Wait for mutation
+      await createHarness.waitFor(() =>
+        expect(createHarness.result.current.isPending).toBe(false),
+      );
+
+      // Wait for list to update via cache invalidation
+      await listHarness.waitFor(
+        () =>
+          expect(listHarness.result.current.data?.length).toBe(
+            initialCount + 1,
+          ),
+        { reinvokeIdiomaticFn: true },
+      );
+    },
+  );
 });
 ```
 
-### Testing Optimistic Updates
+### Using reinvokeIdiomaticFn
+
+When testing cache invalidation with idiomatic patterns, use the `reinvokeIdiomaticFn` option:
 
 ```typescript
-describe('Optimistic Updates', () => {
-  it('should test optimistic mutation with rollback', async () => {
-    const optimisticUpdate = ChimericMutationFactory({
-      mutationFn: async (params: { id: string; name: string }) => {
-        // Simulate failure
-        throw new Error('Update failed');
-      },
-
-      onMutate: async (variables) => {
-        // Cancel outgoing refetches
-        await queryClient.cancelQueries({ queryKey: ['user', variables.id] });
-
-        // Snapshot previous value
-        const previousUser = queryClient.getQueryData(['user', variables.id]);
-
-        // Optimistically update
-        queryClient.setQueryData(['user', variables.id], (old: any) => ({
-          ...old,
-          name: variables.name,
-        }));
-
-        return { previousUser };
-      },
-
-      onError: (err, variables, context) => {
-        // Rollback on error
-        if (context?.previousUser) {
-          queryClient.setQueryData(
-            ['user', variables.id],
-            context.previousUser,
-          );
-        }
-      },
-    });
-
-    const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
-
-    // Set initial data
-    queryClient.setQueryData(['user', 'user-123'], {
-      id: 'user-123',
-      name: 'John',
-    });
-
-    const harness = ChimericMutationTestHarness({
-      chimericMutation: optimisticUpdate,
-      wrapper: TestWrapper,
-    });
-
-    // Trigger optimistic update (will fail)
-    await expect(
-      harness.result.current.reactive.call({
-        id: 'user-123',
-        name: 'Jane',
-      }),
-    ).rejects.toThrow('Update failed');
-
-    // Verify rollback occurred
-    const finalData = queryClient.getQueryData(['user', 'user-123']);
-    expect(finalData).toEqual({ id: 'user-123', name: 'John' });
-  });
-});
+// Wait for cache invalidation to trigger idiomatic refetch
+await harness.waitFor(
+  () => expect(harness.result.current.data?.length).toBe(expectedLength),
+  { reinvokeIdiomaticFn: true },
+);
 ```
 
-### Parameterized Testing
+### Parameterized Testing with chimericMethods
+
+Use `chimericMethods` array to test all supported patterns (idiomatic, reactive) in a single test:
 
 ```typescript
 import { chimericMethods } from '@chimeric/testing-react-query';
 
-describe.each(chimericMethods)('Query Operations - %s method', (method) => {
-  it(`should work with ${method} pattern`, async () => {
-    const query = ChimericQueryFactory(queryClient, () =>
-      queryOptions({
-        queryKey: ['test'],
-        queryFn: async () => ({ data: 'test' }),
-      }),
-    );
+describe.each(chimericMethods)('Todo Operations - %s method', (method) => {
+  it(`should fetch todos using ${method} pattern`, async () => {
+    withMockTodos();
 
-    const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
-
+    const todoService = getTodoService();
     const harness = ChimericQueryTestHarness({
-      chimericQuery: query,
-      wrapper: TestWrapper,
+      chimericQuery: todoService.getAll,
+      method, // This determines which pattern to test
+      wrapper: getTestWrapper(),
     });
 
-    if (method === 'idiomatic') {
-      const result = await harness.result.current.idiomatic();
-      expect(result.data).toBe('test');
-    } else if (method === 'reactive') {
-      await harness.waitFor(() => {
-        expect(harness.result.current.reactive.isSuccess).toBe(true);
-        expect(harness.result.current.reactive.data?.data).toBe('test');
-      });
-    }
-  });
-});
-```
+    await harness.waitFor(() =>
+      expect(harness.result.current.isPending).toBe(false),
+    );
 
-## Configuration and Best Practices
-
-### Test Setup
-
-```typescript
-// Global test setup
-beforeEach(() => {
-  queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-        cacheTime: 0,
-        staleTime: 0,
-      },
-      mutations: {
-        retry: false,
-      },
-    },
-  });
-});
-
-afterEach(() => {
-  queryClient.clear();
-});
-```
-
-### Custom Wait Options
-
-```typescript
-// Test with custom timeout for slow operations
-await harness.waitFor(
-  () => {
     expect(harness.result.current.isSuccess).toBe(true);
-  },
-  {
-    timeout: 15000, // 15 seconds for slow queries
-    interval: 100, // Check every 100ms
-  },
-);
+    expect(harness.result.current.data?.length).toBeGreaterThan(0);
+  });
+});
 ```
 
 ## Development

@@ -148,7 +148,7 @@ import { IdiomaticAsyncTestHarness } from '@chimeric/testing-react';
 import { IdiomaticAsyncFactory } from '@chimeric/react';
 
 describe('IdiomaticAsyncFactory Operations', () => {
-  it('should test data processing with exponential backoff', async () => {
+  it('should test data processing', async () => {
     const processData = IdiomaticAsyncFactory(
       async (data: { items: string[]; delay?: number }) => {
         // Simulate processing time
@@ -159,7 +159,6 @@ describe('IdiomaticAsyncFactory Operations', () => {
         return data.items.map((item) => ({
           original: item,
           processed: item.toUpperCase(),
-          timestamp: Date.now(),
         }));
       },
     );
@@ -201,248 +200,6 @@ describe('IdiomaticAsyncFactory Operations', () => {
 });
 ```
 
-### Testing ChimericAsyncFactory
-
-Test chimeric operations that support both idiomatic and reactive patterns.
-
-```typescript
-import { ChimericAsyncTestHarness } from '@chimeric/testing-react';
-import { ChimericAsyncFactory, DefineChimericAsync } from '@chimeric/react';
-
-describe('ChimericAsyncFactory Operations', () => {
-  it('should test both idiomatic and reactive patterns', async () => {
-    type ApiCall = DefineChimericAsync<
-      (params: { endpoint: string; method: string }) => Promise<ApiResponse>
-    >;
-
-    const apiCall: ApiCall = ChimericAsyncFactory(async (params) => {
-      const response = await fetch(params.endpoint, {
-        method: params.method,
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      return response.json();
-    });
-
-    const harness = ChimericAsyncTestHarness({
-      chimericAsync: apiCall,
-    });
-
-    // Test idiomatic usage
-    const idiomaticResult = await harness.result.current.idiomatic({
-      endpoint: '/api/data',
-      method: 'GET',
-    });
-
-    expect(idiomaticResult).toBeDefined();
-
-    // Test reactive usage
-    const reactivePromise = harness.result.current.reactive.call({
-      endpoint: '/api/users',
-      method: 'POST',
-    });
-
-    // Verify reactive state changes
-    await harness.waitFor(() => {
-      expect(harness.result.current.reactive.isPending).toBe(true);
-    });
-
-    const reactiveResult = await reactivePromise;
-
-    await harness.waitFor(() => {
-      expect(harness.result.current.reactive.isSuccess).toBe(true);
-      expect(harness.result.current.reactive.data).toEqual(reactiveResult);
-    });
-  });
-
-  it('should test error handling in both patterns', async () => {
-    const failingOperation = ChimericAsyncFactory(async () => {
-      throw new Error('Operation failed');
-    });
-
-    const harness = ChimericAsyncTestHarness({
-      chimericAsync: failingOperation,
-    });
-
-    // Test idiomatic error handling
-    await expect(harness.result.current.idiomatic()).rejects.toThrow(
-      'Operation failed',
-    );
-
-    // Test reactive error handling
-    await expect(harness.result.current.reactive.call()).rejects.toThrow(
-      'Operation failed',
-    );
-
-    await harness.waitFor(() => {
-      expect(harness.result.current.reactive.isError).toBe(true);
-      expect(harness.result.current.reactive.error?.message).toBe(
-        'Operation failed',
-      );
-    });
-  });
-});
-```
-
-## Testing with React Context
-
-### Testing with Providers
-
-```typescript
-import { ReactiveAsyncTestHarness } from '@chimeric/testing-react';
-import { ReactiveAsyncFactory } from '@chimeric/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Provider } from 'react-redux';
-import { ThemeProvider } from 'styled-components';
-
-describe('Operations with React Context', () => {
-  it('should test with multiple providers', async () => {
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-        mutations: { retry: false },
-      },
-    });
-
-    const theme = {
-      colors: { primary: '#007bff' },
-      spacing: { unit: 8 },
-    };
-
-    // Custom wrapper with multiple providers
-    const TestWrapper = ({ children }: { children: React.ReactNode }) => (
-      <QueryClientProvider client={queryClient}>
-        <Provider store={mockStore}>
-          <ThemeProvider theme={theme}>{children}</ThemeProvider>
-        </Provider>
-      </QueryClientProvider>
-    );
-
-    const contextAwareOperation = ReactiveAsyncFactory(async () => {
-      // This operation might use context values
-      return { message: 'Success with context' };
-    });
-
-    const harness = ReactiveAsyncTestHarness({
-      reactiveAsync: contextAwareOperation,
-      wrapper: TestWrapper,
-    });
-
-    const result = await harness.result.current.call();
-    expect(result.message).toBe('Success with context');
-
-    await harness.waitFor(() => {
-      expect(harness.result.current.isSuccess).toBe(true);
-    });
-  });
-});
-```
-
-## Advanced Testing Patterns
-
-### Testing State Management Integration
-
-```typescript
-import { ReactiveAsyncTestHarness } from '@chimeric/testing-react';
-import { ReactiveAsyncFactory } from '@chimeric/react';
-
-describe('State Management Integration', () => {
-  it('should test operations that update external state', async () => {
-    const mockDispatch = vi.fn();
-    const mockStore = {
-      getState: () => ({ users: [] }),
-      dispatch: mockDispatch,
-    };
-
-    const fetchAndStoreUsers = ReactiveAsyncFactory(async () => {
-      const response = await fetch('/api/users');
-      const users = await response.json();
-
-      // Update external store
-      mockDispatch({ type: 'SET_USERS', payload: users });
-
-      return users;
-    });
-
-    const harness = ReactiveAsyncTestHarness({
-      reactiveAsync: fetchAndStoreUsers,
-    });
-
-    const result = await harness.result.current.call();
-
-    // Verify external state was updated
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'SET_USERS',
-      payload: result,
-    });
-
-    await harness.waitFor(() => {
-      expect(harness.result.current.isSuccess).toBe(true);
-      expect(harness.result.current.data).toEqual(result);
-    });
-  });
-});
-```
-
-### Testing MetaAggregatorFactory
-
-```typescript
-import { ReactiveAsyncTestHarness } from '@chimeric/testing-react';
-import { ReactiveAsyncFactory, MetaAggregatorFactory } from '@chimeric/react';
-
-describe('MetaAggregatorFactory', () => {
-  it('should test aggregated state from multiple operations', async () => {
-    const fetchUser = ReactiveAsyncFactory(async (params: { id: string }) => {
-      return { id: params.id, name: 'John Doe', email: 'john@example.com' };
-    });
-
-    const fetchPosts = ReactiveAsyncFactory(
-      async (params: { userId: string }) => {
-        return [
-          { id: 1, title: 'Post 1', userId: params.userId },
-          { id: 2, title: 'Post 2', userId: params.userId },
-        ];
-      },
-    );
-
-    // Create individual harnesses
-    const userHarness = ReactiveAsyncTestHarness({
-      reactiveAsync: fetchUser,
-    });
-
-    const postsHarness = ReactiveAsyncTestHarness({
-      reactiveAsync: fetchPosts,
-    });
-
-    // Start both operations
-    const userPromise = userHarness.result.current.call({ id: 'user-123' });
-    const postsPromise = postsHarness.result.current.call({
-      userId: 'user-123',
-    });
-
-    // Wait for both to complete
-    await Promise.all([userPromise, postsPromise]);
-
-    // Test aggregated state
-    const aggregatedState = MetaAggregatorFactory(
-      [userHarness.result.current, postsHarness.result.current],
-      ([userData, postsData]) => ({
-        user: userData,
-        posts: postsData,
-        totalPosts: postsData?.length || 0,
-      }),
-    );
-
-    expect(aggregatedState.isSuccess).toBe(true);
-    expect(aggregatedState.data?.user.name).toBe('John Doe');
-    expect(aggregatedState.data?.totalPosts).toBe(2);
-  });
-});
-```
-
 ### Parameterized Testing
 
 Use the exported method constants for comprehensive testing:
@@ -465,18 +222,18 @@ describe.each(chimericMethods)('Chimeric Operation - %s method', (method) => {
       chimericAsync: operation,
     });
 
-    if (method === 'idiomatic') {
-      const result = await harness.result.current.idiomatic({ value: 5 });
-      expect(result).toBe(10);
-    } else if (method === 'reactive') {
-      const result = await harness.result.current.reactive.call({ value: 5 });
-      expect(result).toBe(10);
+    act(() => {
+      harness.result.current.call({ value: 5 });
+    });
 
-      await harness.waitFor(() => {
-        expect(harness.result.current.reactive.isSuccess).toBe(true);
-        expect(harness.result.current.reactive.data).toBe(10);
-      });
-    }
+    await harness.waitFor(() =>
+      expect(harness.result.current.isPending).toBe(false),
+    );
+
+    await harness.waitFor(() => {
+      expect(harness.result.current.reactive.isSuccess).toBe(true);
+      expect(harness.result.current.reactive.data).toBe(10);
+    });
   });
 });
 
@@ -489,82 +246,6 @@ describe.each(idiomaticMethods)('Idiomatic Operations', (method) => {
 describe.each(reactiveMethods)('Reactive Operations', (method) => {
   it(`should test ${method} operations`, async () => {
     // Test reactive-specific functionality
-  });
-});
-```
-
-## Performance Testing
-
-### Testing Operation Timing
-
-```typescript
-describe('Performance Testing', () => {
-  it('should complete operations within expected timeframes', async () => {
-    const timedOperation = ReactiveAsyncFactory(async () => {
-      // Simulate work that should complete quickly
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      return 'completed';
-    });
-
-    const harness = ReactiveAsyncTestHarness({
-      reactiveAsync: timedOperation,
-    });
-
-    const startTime = Date.now();
-    await harness.result.current.call();
-    const endTime = Date.now();
-
-    const duration = endTime - startTime;
-    expect(duration).toBeLessThan(200); // Should complete within 200ms
-
-    await harness.waitFor(() => {
-      expect(harness.result.current.isSuccess).toBe(true);
-    });
-  });
-});
-```
-
-## Configuration and Utilities
-
-### Custom Wait Options
-
-```typescript
-// Test with custom timeout and interval
-await harness.waitFor(
-  () => {
-    expect(harness.result.current.isSuccess).toBe(true);
-  },
-  {
-    timeout: 10000, // 10 seconds
-    interval: 50, // Check every 50ms
-  },
-);
-```
-
-### Testing Cleanup
-
-```typescript
-describe('Cleanup Testing', () => {
-  afterEach(() => {
-    // Clean up any side effects
-    vi.clearAllMocks();
-    // Reset any global state
-  });
-
-  it('should clean up properly after operations', async () => {
-    const operation = ReactiveAsyncFactory(async () => {
-      // Operation that might have side effects
-      return 'result';
-    });
-
-    const harness = ReactiveAsyncTestHarness({
-      reactiveAsync: operation,
-    });
-
-    await harness.result.current.call();
-
-    // Verify cleanup
-    // ... cleanup assertions
   });
 });
 ```

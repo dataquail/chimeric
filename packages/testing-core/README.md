@@ -563,17 +563,18 @@ describe.each(chimericMethods)('Chimeric Operation - %s method', (method) => {
   it(`should work with ${method} pattern`, async () => {
     const harness = ChimericAsyncTestHarness({
       chimericAsync: myChimericOperation,
+      method,
     });
 
-    if (method === 'idiomatic') {
-      const result = await harness.result.current.idiomatic({ data: 'test' });
-      expect(result).toBeDefined();
-    } else if (method === 'reactive') {
-      await harness.result.current.reactive.call({ data: 'test' });
-      await harness.waitFor(() => {
-        expect(harness.result.current.reactive.isSuccess).toBe(true);
-      });
-    }
+    act(() => {
+      harness.result.current.call();
+    });
+
+    await harness.waitFor(() =>
+      expect(harness.result.current.isPending).toBe(false),
+    );
+
+    expect(harness.result.current.data).toBeDefined();
   });
 });
 ```
