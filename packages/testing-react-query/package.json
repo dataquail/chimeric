@@ -4,6 +4,17 @@
   "description": "React Query testing utilities for chimeric interfaces",
   "author": "zacharyweidenbach",
   "license": "MIT",
+  "keywords": [
+    "testing",
+    "react-query",
+    "tanstack-query",
+    "typescript",
+    "test-harness",
+    "interface",
+    "ioc",
+    "di",
+    "dependency injection"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/dataquail/chimeric.git",

@@ -4,6 +4,14 @@
   "description": "Core types and utilities for chimeric interfaces",
   "author": "zacharyweidenbach",
   "license": "MIT",
+  "keywords": [
+    "typescript",
+    "react",
+    "async",
+    "hooks",
+    "state-management",
+    "data-fetching"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/dataquail/chimeric.git",

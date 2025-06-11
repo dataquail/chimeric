@@ -4,6 +4,17 @@
   "description": "Core testing utilities for chimeric interfaces",
   "author": "zacharyweidenbach",
   "license": "MIT",
+  "keywords": [
+    "testing",
+    "react",
+    "typescript",
+    "test-harness",
+    "react-testing-library",
+    "interface",
+    "ioc",
+    "di",
+    "dependency injection"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/dataquail/chimeric.git",

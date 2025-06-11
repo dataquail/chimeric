@@ -4,6 +4,15 @@
   "description": "React utilities for chimeric interfaces",
   "author": "zacharyweidenbach",
   "license": "MIT",
+  "keywords": [
+    "react",
+    "typescript",
+    "hooks",
+    "interface",
+    "ioc",
+    "di",
+    "dependency injection"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/dataquail/chimeric.git",
