@@ -181,22 +181,20 @@ export const MetaAggregatorFactory = <
     isError: aggregatedMeta.isError,
     isSuccess: aggregatedMeta.isSuccess,
     error: aggregatedMeta.error,
-    data: aggregatedMeta.isSuccess
-      ? dataReducer(
-          [
-            metaList[0]?.data,
-            metaList[1]?.data,
-            metaList[2]?.data,
-            metaList[3]?.data,
-            metaList[4]?.data,
-            metaList[5]?.data,
-            metaList[6]?.data,
-            metaList[7]?.data,
-            metaList[8]?.data,
-            metaList[9]?.data,
-          ],
-          context,
-        )
-      : undefined,
+    data: dataReducer(
+      [
+        metaList[0]?.data,
+        metaList[1]?.data,
+        metaList[2]?.data,
+        metaList[3]?.data,
+        metaList[4]?.data,
+        metaList[5]?.data,
+        metaList[6]?.data,
+        metaList[7]?.data,
+        metaList[8]?.data,
+        metaList[9]?.data,
+      ],
+      context,
+    ),
   };
 };

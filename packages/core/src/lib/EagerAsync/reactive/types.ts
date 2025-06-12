@@ -12,7 +12,7 @@ export type ReactiveEagerAsync<
         isSuccess: boolean;
         isError: boolean;
         error: E | null;
-        data: TResult | undefined;
+        data: TResult;
       };
     }
   : {
@@ -22,7 +22,7 @@ export type ReactiveEagerAsync<
         isSuccess: boolean;
         isError: boolean;
         error: E | null;
-        data: TResult | undefined;
+        data: TResult;
       };
     };
 
