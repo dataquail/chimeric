@@ -1,3 +1,13 @@
+## 0.2.14 (2025-06-12)
+
+### 🩹 Fixes
+
+- no undefined return type on eagerAsync ([53ba7ec](https://github.com/dataquail/chimeric/commit/53ba7ec))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 0.2.13 (2025-06-11)
 
 ### 🩹 Fixes
