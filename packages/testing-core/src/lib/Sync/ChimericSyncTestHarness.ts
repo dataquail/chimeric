@@ -5,10 +5,7 @@ import { SyncTestHarnessReturnType } from './types.js';
 import { IdiomaticSyncTestHarness } from './IdiomaticSyncTestHarness.js';
 import { ReactiveSyncTestHarness } from './ReactiveSyncTestHarness.js';
 
-export const ChimericSyncTestHarness = <
-  TParams = undefined,
-  TResult = unknown,
->({
+export const ChimericSyncTestHarness = <TParams, TResult>({
   chimericSync,
   method,
   params,

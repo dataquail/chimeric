@@ -1,6 +1,6 @@
 import { ReactiveSync } from './types';
 
-export const isReactiveSync = <TParams = undefined, TResult = unknown>(
+export const isReactiveSync = <TParams, TResult>(
   maybeReactiveSync: unknown,
 ): maybeReactiveSync is ReactiveSync<TParams, TResult> => {
   return (

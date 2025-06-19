@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { IdiomaticSync } from '../idiomatic/types';
+import { createIdiomaticSync } from '../idiomatic/createIdiomaticSync';
+import { createReactiveSync } from '../reactive/createReactiveSync';
 import { fuseChimericSync } from './fuseChimericSync';
 
 describe('fuseChimericSync', () => {
   it('should invoke the idiomatic function', () => {
-    const mockIdiomaticSync = vi.fn(() => 'test');
-    const mockReactiveSync = {
-      useSync: vi.fn(() => 'test'),
-    };
+    const mockIdiomaticSync = createIdiomaticSync(vi.fn(() => 'test'));
+    const mockReactiveSync = createReactiveSync(vi.fn(() => 'test'));
     const testChimericSync = fuseChimericSync({
       idiomatic: mockIdiomaticSync,
       reactive: mockReactiveSync,
@@ -19,12 +18,12 @@ describe('fuseChimericSync', () => {
   });
 
   it('should invoke the idiomatic function with params', () => {
-    const mockIdiomaticSync = vi.fn(
-      (args: { name: string }) => `Hello ${args.name}`,
+    const mockIdiomaticSync = createIdiomaticSync(
+      vi.fn((args: { name: string }) => `Hello ${args.name}`),
     );
-    const mockReactiveSync = {
-      useSync: vi.fn((args: { name: string }) => `Hello ${args.name}`),
-    };
+    const mockReactiveSync = createReactiveSync(
+      vi.fn((args: { name: string }) => `Hello ${args.name}`),
+    );
     const testChimericSync = fuseChimericSync({
       idiomatic: mockIdiomaticSync,
       reactive: mockReactiveSync,
@@ -36,10 +35,8 @@ describe('fuseChimericSync', () => {
   });
 
   it('should invoke the reactive function', () => {
-    const mockIdiomaticSync = vi.fn(() => 'test');
-    const mockReactiveSync = {
-      useSync: vi.fn(() => 'test'),
-    };
+    const mockIdiomaticSync = createIdiomaticSync(vi.fn(() => 'test'));
+    const mockReactiveSync = createReactiveSync(vi.fn(() => 'test'));
     const testChimericSync = fuseChimericSync({
       idiomatic: mockIdiomaticSync,
       reactive: mockReactiveSync,
@@ -51,12 +48,12 @@ describe('fuseChimericSync', () => {
   });
 
   it('should invoke the reactive function with params', () => {
-    const mockIdiomaticSync = vi.fn(
-      (args: { name: string }) => `Hello ${args.name}`,
+    const mockIdiomaticSync = createIdiomaticSync(
+      vi.fn((args: { name: string }) => `Hello ${args.name}`),
     );
-    const mockReactiveSync = {
-      useSync: vi.fn((args: { name: string }) => `Hello ${args.name}`),
-    };
+    const mockReactiveSync = createReactiveSync(
+      vi.fn((args: { name: string }) => `Hello ${args.name}`),
+    );
     const testChimericSync = fuseChimericSync({
       idiomatic: mockIdiomaticSync,
       reactive: mockReactiveSync,
@@ -68,10 +65,7 @@ describe('fuseChimericSync', () => {
   });
 
   it('should throw an error for invalid inputs', () => {
-    const mockIdiomaticSync = vi.fn(() => 'test') as IdiomaticSync<
-      void,
-      string
-    >;
+    const mockIdiomaticSync = createIdiomaticSync(vi.fn(() => 'test'));
     const invalidReactive = {
       notUseSync: vi.fn(),
     };
