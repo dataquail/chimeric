@@ -4,10 +4,7 @@ import { checkOnInterval } from '../checkOnInterval.js';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
 import { SyncTestHarnessReturnType } from './types.js';
 
-export const IdiomaticSyncTestHarness = <
-  TParams = undefined,
-  TResult = unknown,
->({
+export const IdiomaticSyncTestHarness = <TParams, TResult>({
   idiomaticSync,
   params,
 }: {
