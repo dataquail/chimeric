@@ -111,5 +111,52 @@
         "linter": "eslint"
       }
     }
+  },
+  "typecheck": {
+    "executor": "nx:noop",
+    "dependsOn": [
+      "typecheck-core",
+      "typecheck-react",
+      "typecheck-react-query",
+      "typecheck-testing-core",
+      "typecheck-testing-react",
+      "typecheck-testing-react-query"
+    ]
+  },
+  "typecheck-core": {
+    "executor": "nx:run-commands",
+    "options": {
+      "command": "tsc --noEmit -p {projectRoot}/packages/core/tsconfig.spec.json"
+    }
+  },
+  "typecheck-react": {
+    "executor": "nx:run-commands",
+    "options": {
+      "command": "tsc --noEmit -p {projectRoot}/packages/react/tsconfig.spec.json"
+    }
+  },
+  "typecheck-react-query": {
+    "executor": "nx:run-commands",
+    "options": {
+      "command": "tsc --noEmit -p {projectRoot}/packages/react-query/tsconfig.spec.json"
+    }
+  },
+  "typecheck-testing-core": {
+    "executor": "nx:run-commands",
+    "options": {
+      "command": "tsc --noEmit -p {projectRoot}/packages/testing-core/tsconfig.spec.json"
+    }
+  },
+  "typecheck-testing-react": {
+    "executor": "nx:run-commands",
+    "options": {
+      "command": "tsc --noEmit -p {projectRoot}/packages/testing-react/tsconfig.spec.json"
+    }
+  },
+  "typecheck-testing-react-query": {
+    "executor": "nx:run-commands",
+    "options": {
+      "command": "tsc --noEmit -p {projectRoot}/packages/testing-react-query/tsconfig.spec.json"
+    }
   }
 }

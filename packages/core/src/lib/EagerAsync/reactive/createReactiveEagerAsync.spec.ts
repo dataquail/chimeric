@@ -37,7 +37,7 @@ describe('createReactiveEagerAsync', () => {
       isSuccess: false,
       isError: false,
       error: null,
-      data: undefined,
+      data: '',
     }));
 
     const reactiveEagerAsync: MockReactiveFn =

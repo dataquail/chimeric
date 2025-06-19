@@ -4,38 +4,15 @@ import { checkOnInterval } from '../checkOnInterval';
 import { BaseWaitForOptions } from 'src/types/WaitForOptions';
 import { AsyncTestHarnessReturnType } from './types';
 
-// Overload for void params
 export function IdiomaticAsyncTestHarness<
-  TResult = unknown,
-  E extends Error = Error,
->(args: {
-  idiomaticAsync: IdiomaticAsync<undefined, TResult>;
-  idiomaticOptions?: IdiomaticAsyncOptions;
-}): AsyncTestHarnessReturnType<undefined, TResult, E>;
-
-// Overload for object params
-export function IdiomaticAsyncTestHarness<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
->(args: {
-  idiomaticAsync: IdiomaticAsync<TParams, TResult>;
-  idiomaticOptions?: IdiomaticAsyncOptions;
-}): AsyncTestHarnessReturnType<TParams, TResult, E>;
-
-// Implementation
-export function IdiomaticAsyncTestHarness<
-  TParams extends undefined | object,
-  TResult = unknown,
+  TParams,
+  TResult,
   E extends Error = Error,
 >(args: {
   idiomaticAsync: IdiomaticAsync<TParams, TResult>;
   idiomaticOptions?: IdiomaticAsyncOptions;
 }): AsyncTestHarnessReturnType<TParams, TResult, E> {
-  type CallFn = TParams extends undefined
-    ? () => Promise<TResult>
-    : (params: TParams) => Promise<TResult>;
-
+  type CallFn = (params: TParams) => Promise<TResult>;
   const result: AsyncTestHarnessReturnType<TParams, TResult, E>['result'] = {
     current: {
       call: (async (params: TParams) => {
@@ -50,7 +27,11 @@ export function IdiomaticAsyncTestHarness<
             options: args.idiomaticOptions || {},
           } as {
             options: IdiomaticAsyncOptions;
-          } & object)
+          } & TParams & {
+              options?: IdiomaticAsyncOptions;
+            } & {
+              options: IdiomaticAsyncOptions;
+            })
           .then((data: TResult) => {
             result.current.data = data;
             result.current.isIdle = false;
@@ -91,5 +72,5 @@ export function IdiomaticAsyncTestHarness<
       });
     },
     result,
-  };
+  } as AsyncTestHarnessReturnType<TParams, TResult, E>;
 }

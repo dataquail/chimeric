@@ -1,14 +1,13 @@
 export type ReactiveAsync<
-  TParams extends undefined | object,
-  TResult = unknown,
+  TParams,
+  TResult,
   E extends Error = Error,
 > = TParams extends Record<'options', unknown>
   ? never
-  : {
-      useAsync: (options?: ReactiveAsyncOptions) => {
-        call: TParams extends undefined
-          ? () => Promise<TResult>
-          : (params: TParams) => Promise<TResult>;
+  : TParams extends undefined
+  ? {
+      useAsync: (config?: ReactiveAsyncOptions) => {
+        call: () => Promise<TResult>;
         isIdle: boolean;
         isPending: boolean;
         isSuccess: boolean;
@@ -16,7 +15,32 @@ export type ReactiveAsync<
         error: E | null;
         data: TResult | undefined;
       };
-    };
+    }
+  : TParams extends object
+  ? {
+      useAsync: (config?: ReactiveAsyncOptions) => {
+        call: (params: TParams) => Promise<TResult>;
+        isIdle: boolean;
+        isPending: boolean;
+        isSuccess: boolean;
+        isError: boolean;
+        error: E | null;
+        data: TResult | undefined;
+      };
+    }
+  : TParams extends unknown
+  ? {
+      useAsync: (config?: ReactiveAsyncOptions) => {
+        call: () => Promise<TResult>;
+        isIdle: boolean;
+        isPending: boolean;
+        isSuccess: boolean;
+        isError: boolean;
+        error: E | null;
+        data: TResult | undefined;
+      };
+    }
+  : never;
 
 export type ReactiveAsyncOptions = {
   retry?: number;

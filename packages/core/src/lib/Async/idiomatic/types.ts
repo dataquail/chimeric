@@ -1,12 +1,16 @@
-export type IdiomaticAsync<
-  TParams extends undefined | object,
-  TResult = unknown,
-> = TParams extends Record<'options', unknown>
+export type IdiomaticAsync<TParams, TResult> = TParams extends Record<
+  'options',
+  unknown
+>
   ? never
   : TParams extends undefined
-  ? (params?: { options: IdiomaticAsyncOptions }) => Promise<TResult>
+  ? (config?: { options: IdiomaticAsyncOptions }) => Promise<TResult>
   : TParams extends object
-  ? (params: TParams & { options?: IdiomaticAsyncOptions }) => Promise<TResult>
+  ? (
+      paramsAndConfig: TParams & { options?: IdiomaticAsyncOptions },
+    ) => Promise<TResult>
+  : TParams extends unknown
+  ? (config?: { options: IdiomaticAsyncOptions }) => Promise<TResult>
   : never;
 
 export type IdiomaticAsyncOptions = {
