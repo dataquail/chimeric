@@ -3,27 +3,9 @@ import { IdiomaticAsync } from '../idiomatic/types';
 import { ReactiveAsync } from '../reactive/types';
 import { ChimericAsync } from './types';
 
-// Define separate implementations for void and object parameters
 export function fuseChimericAsync<
-  TResult = unknown,
-  E extends Error = Error,
->(args: {
-  idiomatic: IdiomaticAsync<undefined, TResult>;
-  reactive: ReactiveAsync<undefined, TResult, E>;
-}): ChimericAsync<undefined, TResult, E>;
-export function fuseChimericAsync<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
->(args: {
-  idiomatic: IdiomaticAsync<TParams, TResult>;
-  reactive: ReactiveAsync<TParams, TResult, E>;
-}): ChimericAsync<TParams, TResult, E>;
-
-// Implementation
-export function fuseChimericAsync<
-  TParams extends undefined | object,
-  TResult = unknown,
+  TParams,
+  TResult,
   E extends Error = Error,
 >(args: {
   idiomatic: IdiomaticAsync<TParams, TResult>;

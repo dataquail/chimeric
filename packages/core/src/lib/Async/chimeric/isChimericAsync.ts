@@ -2,11 +2,7 @@ import { isIdiomaticAsync } from '../idiomatic/isIdiomaticAsync';
 import { isReactiveAsync } from '../reactive/isReactiveAsync';
 import { ChimericAsync } from './types';
 
-export const isChimericAsync = <
-  TParams extends undefined | object,
-  TResult = unknown,
-  E extends Error = Error,
->(
+export const isChimericAsync = <TParams, TResult, E extends Error = Error>(
   maybeChimericAsync: unknown,
 ): maybeChimericAsync is ChimericAsync<TParams, TResult, E> => {
   return (

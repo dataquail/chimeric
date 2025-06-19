@@ -1,19 +1,7 @@
 import { isIdiomaticAsync } from './isIdiomaticAsync';
 import { IdiomaticAsync } from './types';
 
-// Overloads
-export function createIdiomaticAsync<TResult = unknown>(
-  idiomaticFn: () => Promise<TResult>,
-): IdiomaticAsync<undefined, TResult>;
-export function createIdiomaticAsync<TParams extends object, TResult = unknown>(
-  idiomaticFn: (params: TParams) => Promise<TResult>,
-): IdiomaticAsync<TParams, TResult>;
-
-// Implementation
-export function createIdiomaticAsync<
-  TParams extends undefined | object,
-  TResult = unknown,
->(
+export function createIdiomaticAsync<TParams, TResult>(
   idiomaticFn: (params: TParams) => Promise<TResult>,
 ): IdiomaticAsync<TParams, TResult> {
   if (isIdiomaticAsync<TParams, TResult>(idiomaticFn)) {

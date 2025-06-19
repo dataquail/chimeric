@@ -109,7 +109,7 @@ describe('fuseChimericEagerAsync', () => {
         isSuccess: false,
         isError: false,
         error: null,
-        data: undefined,
+        data: '',
       })),
     };
     const testChimericEagerAsync: TestChimericEagerAsync =

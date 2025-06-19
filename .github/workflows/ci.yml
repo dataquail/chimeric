@@ -68,3 +68,7 @@ jobs:
       - name: Run tests
         shell: bash
         run: pnpm exec nx affected -t lint test build --base=origin/main --head=${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Run typecheck
+        shell: bash
+        run: pnpm run typecheck:all

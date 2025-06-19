@@ -1,4 +1,5 @@
 import { IdiomaticAsyncTestHarness } from '../IdiomaticAsyncTestHarness';
+import { createIdiomaticAsync } from '@chimeric/core';
 
 describe('IdiomaticAsyncTestHarness', () => {
   const wait = (ms: number) =>
@@ -10,7 +11,7 @@ describe('IdiomaticAsyncTestHarness', () => {
       return 'test';
     });
     const promise = IdiomaticAsyncTestHarness({
-      idiomaticAsync: mockPromise,
+      idiomaticAsync: createIdiomaticAsync(mockPromise),
     });
 
     expect(promise.result.current.isIdle).toBe(true);
@@ -47,7 +48,7 @@ describe('IdiomaticAsyncTestHarness', () => {
       return 'test';
     });
     const promise = IdiomaticAsyncTestHarness({
-      idiomaticAsync: mockPromise,
+      idiomaticAsync: createIdiomaticAsync(mockPromise),
       idiomaticOptions: { retry: 3 },
     });
 
@@ -78,5 +79,29 @@ describe('IdiomaticAsyncTestHarness', () => {
     expect(promise.result.current.data).toBe('test');
     expect(mockPromise).toHaveBeenCalledTimes(1);
     expect(mockPromise).toHaveBeenCalledWith({ options: { retry: 3 } });
+  });
+
+  it('should take options with params', async () => {
+    const mockPromise = vi.fn(async (params: { name: string }) => {
+      await wait(100);
+      return params.name;
+    });
+    const promise = IdiomaticAsyncTestHarness({
+      idiomaticAsync: createIdiomaticAsync(mockPromise),
+      idiomaticOptions: { retry: 3 },
+    });
+
+    promise.result.current.call({ name: 'John' });
+
+    expect(promise.result.current.isIdle).toBe(false);
+    expect(promise.result.current.isPending).toBe(true);
+    expect(promise.result.current.isSuccess).toBe(false);
+    expect(promise.result.current.error).toBe(null);
+    expect(promise.result.current.data).toBe(undefined);
+    expect(mockPromise).toHaveBeenCalledTimes(1);
+    expect(mockPromise).toHaveBeenCalledWith({
+      name: 'John',
+      options: { retry: 3 },
+    });
   });
 });

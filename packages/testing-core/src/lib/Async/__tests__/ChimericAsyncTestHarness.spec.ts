@@ -1,11 +1,16 @@
 import { ChimericAsyncTestHarness } from '../ChimericAsyncTestHarness';
-import { DefineChimericAsync, fuseChimericAsync } from '@chimeric/core';
+import {
+  createIdiomaticAsync,
+  DefineChimericAsync,
+  fuseChimericAsync,
+  createReactiveAsync,
+} from '@chimeric/core';
 
 describe('ChimericAsyncTestHarness', () => {
   it('should be a function', () => {
-    const mockIdiomaticAsync = vi.fn(async () => 'test');
-    const mockReactiveAsync = {
-      useAsync: vi.fn(() => ({
+    const mockIdiomaticAsync = createIdiomaticAsync(vi.fn(async () => 'test'));
+    const mockReactiveAsync = createReactiveAsync(
+      vi.fn(() => ({
         call: vi.fn(() => Promise.resolve('test')),
         isIdle: true,
         isPending: false,
@@ -14,7 +19,7 @@ describe('ChimericAsyncTestHarness', () => {
         error: null,
         data: undefined,
       })),
-    };
+    );
 
     const testChimericAsync = fuseChimericAsync({
       idiomatic: mockIdiomaticAsync,
