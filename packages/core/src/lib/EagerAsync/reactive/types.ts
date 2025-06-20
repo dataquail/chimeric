@@ -1,6 +1,6 @@
 export type ReactiveEagerAsync<
-  TParams extends undefined | object,
-  TResult = unknown,
+  TParams,
+  TResult,
   E extends Error = Error,
 > = TParams extends Record<'options', unknown>
   ? never
@@ -15,7 +15,8 @@ export type ReactiveEagerAsync<
         data: TResult;
       };
     }
-  : {
+  : TParams extends object
+  ? {
       useEagerAsync: (params: TParams) => {
         isIdle: boolean;
         isPending: boolean;
@@ -24,7 +25,19 @@ export type ReactiveEagerAsync<
         error: E | null;
         data: TResult;
       };
-    };
+    }
+  : TParams extends unknown
+  ? {
+      useEagerAsync: () => {
+        isIdle: boolean;
+        isPending: boolean;
+        isSuccess: boolean;
+        isError: boolean;
+        error: E | null;
+        data: TResult;
+      };
+    }
+  : never;
 
 export type DefineReactiveEagerAsync<
   T extends (

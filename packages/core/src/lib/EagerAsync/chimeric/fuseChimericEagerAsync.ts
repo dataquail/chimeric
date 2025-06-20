@@ -3,27 +3,9 @@ import { ReactiveEagerAsync } from '../reactive/types';
 import { isChimericEagerAsync } from './isChimericEagerAsync';
 import { ChimericEagerAsync } from './types';
 
-// Overloads
 export function fuseChimericEagerAsync<
-  TResult = unknown,
-  E extends Error = Error,
->(args: {
-  idiomatic: IdiomaticEagerAsync<undefined, TResult>;
-  reactive: ReactiveEagerAsync<undefined, TResult, E>;
-}): ChimericEagerAsync<undefined, TResult, E>;
-export function fuseChimericEagerAsync<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
->(args: {
-  idiomatic: IdiomaticEagerAsync<TParams, TResult>;
-  reactive: ReactiveEagerAsync<TParams, TResult, E>;
-}): ChimericEagerAsync<TParams, TResult, E>;
-
-// Implementation
-export function fuseChimericEagerAsync<
-  TParams extends undefined | object,
-  TResult = unknown,
+  TParams,
+  TResult,
   E extends Error = Error,
 >(args: {
   idiomatic: IdiomaticEagerAsync<TParams, TResult>;

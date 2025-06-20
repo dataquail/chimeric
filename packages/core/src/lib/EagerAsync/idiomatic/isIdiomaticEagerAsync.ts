@@ -1,9 +1,6 @@
 import { IdiomaticEagerAsync } from './types';
 
-export const isIdiomaticEagerAsync = <
-  TParams extends undefined | object,
-  TResult = unknown,
->(
+export const isIdiomaticEagerAsync = <TParams, TResult>(
   maybeIdiomaticEagerAsync: unknown,
 ): maybeIdiomaticEagerAsync is IdiomaticEagerAsync<TParams, TResult> => {
   return typeof maybeIdiomaticEagerAsync === 'function';
