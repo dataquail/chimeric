@@ -4,27 +4,9 @@ import { checkOnInterval } from '../checkOnInterval.js';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
 import { EagerAsyncTestHarnessReturnType } from './types.js';
 
-// Overloads
 export function IdiomaticEagerAsyncTestHarness<
-  TResult = unknown,
-  E extends Error = Error,
->(args: {
-  idiomaticEagerAsync: IdiomaticEagerAsync<undefined, TResult>;
-  params?: undefined;
-}): EagerAsyncTestHarnessReturnType<TResult, E>;
-export function IdiomaticEagerAsyncTestHarness<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
->(args: {
-  idiomaticEagerAsync: IdiomaticEagerAsync<TParams, TResult>;
-  params: TParams;
-}): EagerAsyncTestHarnessReturnType<TResult, E>;
-
-// Implementation
-export function IdiomaticEagerAsyncTestHarness<
-  TParams extends object | undefined,
-  TResult = unknown,
+  TParams,
+  TResult,
   E extends Error = Error,
 >({
   idiomaticEagerAsync,
@@ -50,7 +32,7 @@ export function IdiomaticEagerAsyncTestHarness<
     | 'rejected';
   result.current.isIdle = false;
   result.current.isPending = true;
-  let promise = idiomaticEagerAsync(params as object);
+  let promise = idiomaticEagerAsync(params as TParams);
   promiseStatus = 'pending';
   promise
     .then((data) => {
@@ -76,7 +58,7 @@ export function IdiomaticEagerAsyncTestHarness<
       return new Promise<void>(async (resolve, reject) => {
         try {
           if (options?.reinvokeIdiomaticFn && promiseStatus === 'resolved') {
-            promise = idiomaticEagerAsync(params as object);
+            promise = idiomaticEagerAsync(params as TParams);
             promiseStatus = 'pending';
             promise
               .then((data) => {

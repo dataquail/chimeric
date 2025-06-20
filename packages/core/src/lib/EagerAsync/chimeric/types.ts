@@ -2,8 +2,8 @@ import { IdiomaticEagerAsync } from 'src/lib/EagerAsync/idiomatic/types';
 import { ReactiveEagerAsync } from 'src/lib/EagerAsync/reactive/types';
 
 export type ChimericEagerAsync<
-  TParams extends undefined | object,
-  TResult = unknown,
+  TParams,
+  TResult,
   E extends Error = Error,
 > = IdiomaticEagerAsync<TParams, TResult> &
   ReactiveEagerAsync<TParams, TResult, E>;

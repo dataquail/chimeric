@@ -1,10 +1,6 @@
 import { ReactiveEagerAsync } from './types';
 
-export const isReactiveEagerAsync = <
-  TParams extends undefined | object,
-  TResult = unknown,
-  E extends Error = Error,
->(
+export const isReactiveEagerAsync = <TParams, TResult, E extends Error = Error>(
   maybeReactiveAsync: unknown,
 ): maybeReactiveAsync is ReactiveEagerAsync<TParams, TResult, E> => {
   return (

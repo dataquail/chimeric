@@ -1,12 +1,14 @@
-export type IdiomaticEagerAsync<
-  TParams extends undefined | object,
-  TResult = unknown,
-> = TParams extends Record<'options', unknown>
+export type IdiomaticEagerAsync<TParams, TResult> = TParams extends Record<
+  'options',
+  unknown
+>
   ? never
   : TParams extends undefined
   ? () => Promise<TResult>
   : TParams extends object
   ? (params: TParams) => Promise<TResult>
+  : TParams extends unknown
+  ? () => Promise<TResult>
   : never;
 
 export type DefineIdiomaticEagerAsync<

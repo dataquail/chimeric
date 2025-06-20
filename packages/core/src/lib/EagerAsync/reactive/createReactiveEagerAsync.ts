@@ -1,34 +1,12 @@
 import { isReactiveEagerAsync } from './isReactiveEagerAsync';
 import { ReactiveEagerAsync } from './types';
 
-// Overloads
 export function createReactiveEagerAsync<
-  TResult = unknown,
+  TParams,
+  TResult,
   E extends Error = Error,
 >(
-  reactiveFn: () => ReturnType<
-    ReactiveEagerAsync<undefined, TResult, E>['useEagerAsync']
-  >,
-): ReactiveEagerAsync<undefined, TResult, E>;
-export function createReactiveEagerAsync<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
->(
-  reactiveFn: (
-    params: TParams,
-  ) => ReturnType<ReactiveEagerAsync<TParams, TResult, E>['useEagerAsync']>,
-): ReactiveEagerAsync<TParams, TResult, E>;
-
-// Implementation
-export function createReactiveEagerAsync<
-  TParams extends undefined | object,
-  TResult = unknown,
-  E extends Error = Error,
->(
-  reactiveFn: (
-    params: TParams,
-  ) => ReturnType<ReactiveEagerAsync<TParams, TResult, E>['useEagerAsync']>,
+  reactiveFn: ReactiveEagerAsync<TParams, TResult, E>['useEagerAsync'],
 ): ReactiveEagerAsync<TParams, TResult, E> {
   const reactiveEagerAsync = {
     useEagerAsync: reactiveFn,
