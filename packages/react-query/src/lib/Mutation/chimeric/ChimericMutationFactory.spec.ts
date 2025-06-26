@@ -3,11 +3,19 @@ import { QueryClient } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
 import { getTestWrapper } from '../../__tests__/getTestWrapper';
 import { ChimericMutationFactory } from './ChimericMutationFactory';
+import {
+  makeAsyncFnWithoutParamsReturnsString,
+  makeAsyncFnWithParamsReturnsString,
+} from '../../__tests__/functionFixtures';
+import {
+  ChimericMutationWithoutParamsReturnsString,
+  ChimericMutationWithParamsReturnsString,
+} from '../__tests__/mutationFixtures';
 
 describe('ChimericMutationFactory', () => {
   it('should invoke the reactive hook', async () => {
     const queryClient = new QueryClient();
-    const mockMutationFn = vi.fn(() => Promise.resolve('test'));
+    const mockMutationFn = makeAsyncFnWithoutParamsReturnsString();
     const chimericMutation = ChimericMutationFactory(queryClient, {
       mutationFn: mockMutationFn,
     });
@@ -30,7 +38,7 @@ describe('ChimericMutationFactory', () => {
 
   it('should invoke the idiomatic fn', async () => {
     const queryClient = new QueryClient();
-    const mockMutationFn = vi.fn(() => Promise.resolve('test'));
+    const mockMutationFn = makeAsyncFnWithoutParamsReturnsString();
     const chimericMutation = ChimericMutationFactory(queryClient, {
       mutationFn: mockMutationFn,
     });
@@ -42,11 +50,9 @@ describe('ChimericMutationFactory', () => {
 
   it('should invoke the reactive hook with params', async () => {
     const queryClient = new QueryClient();
-    const mockMutationFn = vi.fn((args: { name: string }) =>
-      Promise.resolve(`Hello ${args.name}`),
-    );
+    const mockMutationFn = makeAsyncFnWithParamsReturnsString();
     const chimericMutation = ChimericMutationFactory(queryClient, {
-      mutationFn: async (args: { name: string }) => mockMutationFn(args),
+      mutationFn: mockMutationFn,
     });
     const { result } = renderHook(() => chimericMutation.useMutation(), {
       wrapper: getTestWrapper(queryClient),
@@ -67,14 +73,36 @@ describe('ChimericMutationFactory', () => {
 
   it('should invoke the idiomatic fn with params', async () => {
     const queryClient = new QueryClient();
-    const mockMutationFn = vi.fn((args: { name: string }) =>
-      Promise.resolve(`Hello ${args.name}`),
-    );
+    const mockMutationFn = makeAsyncFnWithParamsReturnsString();
     const chimericMutation = ChimericMutationFactory(queryClient, {
-      mutationFn: async (args: { name: string }) => mockMutationFn(args),
+      mutationFn: mockMutationFn,
     });
     const result = await chimericMutation({ name: 'John' });
 
+    expect(result).toBe('Hello John');
+    expect(mockMutationFn).toHaveBeenCalledWith({ name: 'John' });
+  });
+
+  it('should handle type annotations without params', async () => {
+    const queryClient = new QueryClient();
+    const mockMutationFn = makeAsyncFnWithoutParamsReturnsString();
+    const chimericMutation: ChimericMutationWithoutParamsReturnsString =
+      ChimericMutationFactory(queryClient, {
+        mutationFn: mockMutationFn,
+      });
+    const result = await chimericMutation();
+    expect(result).toBe('test');
+    expect(mockMutationFn).toHaveBeenCalled();
+  });
+
+  it('should handle type annotations with params', async () => {
+    const queryClient = new QueryClient();
+    const mockMutationFn = makeAsyncFnWithParamsReturnsString();
+    const chimericMutation: ChimericMutationWithParamsReturnsString =
+      ChimericMutationFactory(queryClient, {
+        mutationFn: mockMutationFn,
+      });
+    const result = await chimericMutation({ name: 'John' });
     expect(result).toBe('Hello John');
     expect(mockMutationFn).toHaveBeenCalledWith({ name: 'John' });
   });

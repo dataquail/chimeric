@@ -8,84 +8,8 @@ import {
   ReactiveMutationTestHarnessReturnType,
 } from './types.js';
 
-// Overloads
 export function ChimericMutationTestHarness<
-  TResult = unknown,
-  E extends Error = Error,
-  TMethod = (typeof chimericMethods)[number],
-  TIdiomaticNativeOptions = unknown,
-  TNativeReactiveOptions = unknown,
-  TNativeCallOptions = unknown,
-  TNativeReturnType = unknown,
->(args: {
-  chimericMutation: ChimericMutation<
-    undefined,
-    TResult,
-    E,
-    TIdiomaticNativeOptions,
-    TNativeReactiveOptions,
-    TNativeCallOptions,
-    TNativeReturnType
-  >;
-  method: TMethod;
-  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-  options?: TMethod extends 'idiomatic' ? never : ReactiveMutationOptions;
-  nativeOptions?: TMethod extends 'idiomatic' ? never : TNativeReactiveOptions;
-}): TMethod extends 'idiomatic'
-  ? IdiomaticMutationTestHarnessReturnType<
-      undefined,
-      TResult,
-      E,
-      TIdiomaticNativeOptions
-    >
-  : ReactiveMutationTestHarnessReturnType<
-      undefined,
-      TResult,
-      E,
-      TNativeCallOptions,
-      TNativeReturnType
-    >;
-export function ChimericMutationTestHarness<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
-  TMethod = (typeof chimericMethods)[number],
-  TIdiomaticNativeOptions = unknown,
-  TNativeReactiveOptions = unknown,
-  TNativeCallOptions = unknown,
-  TNativeReturnType = unknown,
->(args: {
-  chimericMutation: ChimericMutation<
-    TParams,
-    TResult,
-    E,
-    TIdiomaticNativeOptions,
-    TNativeReactiveOptions,
-    TNativeCallOptions,
-    TNativeReturnType
-  >;
-  method: TMethod;
-  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-  options?: TMethod extends 'idiomatic' ? never : ReactiveMutationOptions;
-  nativeOptions?: TMethod extends 'idiomatic' ? never : TNativeReactiveOptions;
-}): TMethod extends 'idiomatic'
-  ? IdiomaticMutationTestHarnessReturnType<
-      TParams,
-      TResult,
-      E,
-      TIdiomaticNativeOptions
-    >
-  : ReactiveMutationTestHarnessReturnType<
-      TParams,
-      TResult,
-      E,
-      TNativeCallOptions,
-      TNativeReturnType
-    >;
-
-// Implementation
-export function ChimericMutationTestHarness<
-  TParams extends object | undefined,
+  TParams = void,
   TResult = unknown,
   E extends Error = Error,
   TMethod = (typeof chimericMethods)[number],

@@ -1,9 +1,9 @@
 import { ReactiveMutation } from './types';
 
 export const isReactiveMutation = <
-  TParams extends undefined | object,
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeCallOptions = unknown,
   TNativeReturnType = unknown,
@@ -12,7 +12,7 @@ export const isReactiveMutation = <
 ): maybeReactiveMutation is ReactiveMutation<
   TParams,
   TResult,
-  E,
+  TError,
   TNativeOptions,
   TNativeCallOptions,
   TNativeReturnType
@@ -26,7 +26,7 @@ export const isReactiveMutation = <
       maybeReactiveMutation as ReactiveMutation<
         TParams,
         TResult,
-        E,
+        TError,
         TNativeOptions,
         TNativeCallOptions,
         TNativeReturnType

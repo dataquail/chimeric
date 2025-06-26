@@ -2,9 +2,9 @@ import { isIdiomaticMutation as coreIsIdiomaticMutation } from '@chimeric/core';
 import { IdiomaticMutation } from './types';
 
 export function isIdiomaticMutation<
-  TParams extends undefined | object,
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
->(mutation: unknown): mutation is IdiomaticMutation<TParams, TResult, E> {
+  TError extends Error = Error,
+>(mutation: unknown): mutation is IdiomaticMutation<TParams, TResult, TError> {
   return coreIsIdiomaticMutation(mutation);
 }

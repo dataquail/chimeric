@@ -2,11 +2,11 @@ import { isChimericMutation as coreIsChimericMutation } from '@chimeric/core';
 import { ChimericMutation } from './types';
 
 export const isChimericMutation = <
-  TParams extends object | undefined,
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
 >(
   maybeChimericMutation: unknown,
-): maybeChimericMutation is ChimericMutation<TParams, TResult, E> => {
+): maybeChimericMutation is ChimericMutation<TParams, TResult, TError> => {
   return coreIsChimericMutation(maybeChimericMutation);
 };

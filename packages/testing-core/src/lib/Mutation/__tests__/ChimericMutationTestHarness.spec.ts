@@ -1,22 +1,23 @@
-import { DefineChimericMutation, fuseChimericMutation } from '@chimeric/core';
+import {
+  DefineChimericMutation,
+  fuseChimericMutation,
+  DefineIdiomaticMutation,
+} from '@chimeric/core';
 import { ChimericMutationTestHarness } from '../ChimericMutationTestHarness';
+import {
+  makeAsyncFnWithoutParamsReturnsString,
+  makeAsyncFnWithParamsReturnsString,
+} from '../../__tests__/functionFixtures';
+import {
+  makeReactiveMutationWithoutParamsReturnsString,
+  makeReactiveMutationWithParamsReturnsString,
+} from '../../__tests__/mutationFixtures';
 
 describe('ChimericMutationTestHarness', () => {
   it('should be a function', () => {
-    const mockIdiomaticMutation = vi.fn(async () => 'test');
-    const mockReactiveMutation = {
-      useMutation: vi.fn(() => ({
-        call: vi.fn(() => Promise.resolve('test')),
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-        reset: vi.fn(),
-        native: {},
-      })),
-    };
+    const mockIdiomaticMutation = makeAsyncFnWithoutParamsReturnsString();
+    const mockReactiveMutation =
+      makeReactiveMutationWithoutParamsReturnsString();
 
     const testChimericMutation = fuseChimericMutation({
       idiomatic: mockIdiomaticMutation,
@@ -34,21 +35,11 @@ describe('ChimericMutationTestHarness', () => {
   });
 
   it('should handle type annotations without params', () => {
-    const mockIdiomaticMutation = vi.fn(async () => 'test');
-    const mockReactiveMutationCall = vi.fn(() => Promise.resolve('test'));
-    const mockReactiveMutation = {
-      useMutation: vi.fn(() => ({
-        call: mockReactiveMutationCall,
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-        reset: vi.fn(),
-        native: {},
-      })),
-    };
+    type TestIdiomaticMutation = DefineIdiomaticMutation<() => Promise<string>>;
+    const mockIdiomaticMutation: TestIdiomaticMutation =
+      makeAsyncFnWithoutParamsReturnsString();
+    const mockReactiveMutation =
+      makeReactiveMutationWithoutParamsReturnsString();
     type TestChimericMutation = DefineChimericMutation<() => Promise<string>>;
     const testChimericMutation: TestChimericMutation = fuseChimericMutation({
       idiomatic: mockIdiomaticMutation,
@@ -62,29 +53,17 @@ describe('ChimericMutationTestHarness', () => {
 
     harness.result.current.call();
     expect(mockReactiveMutation.useMutation).toHaveBeenCalled();
-    expect(mockReactiveMutationCall).toHaveBeenCalled();
+    expect(harness.result.current.call).toHaveBeenCalled();
   });
 
   it('should handle type annotations with params', () => {
-    const mockIdiomaticMutation = vi.fn(async (args: { name: string }) => {
-      return `Hello ${args.name}`;
-    });
-    const mockReactiveMutationCall = vi.fn((args: { name: string }) =>
-      Promise.resolve(`Hello ${args.name}`),
-    );
-    const mockReactiveMutation = {
-      useMutation: vi.fn(() => ({
-        call: mockReactiveMutationCall,
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-        reset: vi.fn(),
-        native: {},
-      })),
-    };
+    type TestIdiomaticMutation = DefineIdiomaticMutation<
+      (args: { name: string }) => Promise<string>
+    >;
+    const mockIdiomaticMutation: TestIdiomaticMutation =
+      makeAsyncFnWithParamsReturnsString();
+    const mockReactiveMutation = makeReactiveMutationWithParamsReturnsString();
+
     type TestChimericMutation = DefineChimericMutation<
       (args: { name: string }) => Promise<string>
     >;
@@ -100,6 +79,6 @@ describe('ChimericMutationTestHarness', () => {
 
     harness.result.current.call({ name: 'John' });
     expect(mockReactiveMutation.useMutation).toHaveBeenCalled();
-    expect(mockReactiveMutationCall).toHaveBeenCalled();
+    expect(harness.result.current.call).toHaveBeenCalled();
   });
 });

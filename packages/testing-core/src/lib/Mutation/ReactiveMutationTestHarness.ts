@@ -4,60 +4,8 @@ import { ReactiveMutation, ReactiveMutationOptions } from '@chimeric/core';
 import { BaseWaitForOptions } from 'src/types/WaitForOptions.js';
 import { ReactiveMutationTestHarnessReturnType } from './types.js';
 
-// Overloads
 export function ReactiveMutationTestHarness<
-  TResult = unknown,
-  E extends Error = Error,
-  TNativeReactiveOptions = unknown,
-  TNativeCallOptions = unknown,
-  TNativeReturnType = unknown,
->(args: {
-  reactiveMutation: ReactiveMutation<
-    undefined,
-    TResult,
-    E,
-    TNativeReactiveOptions,
-    TNativeCallOptions,
-    TNativeReturnType
-  >;
-  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-  options?: ReactiveMutationOptions;
-  nativeOptions?: TNativeReactiveOptions;
-}): ReactiveMutationTestHarnessReturnType<
-  undefined,
-  TResult,
-  E,
-  TNativeCallOptions,
-  TNativeReturnType
->;
-export function ReactiveMutationTestHarness<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
-  TNativeReactiveOptions = unknown,
-  TNativeCallOptions = unknown,
-  TNativeReturnType = unknown,
->(args: {
-  reactiveMutation: ReactiveMutation<
-    TParams,
-    TResult,
-    E,
-    TNativeReactiveOptions,
-    TNativeCallOptions,
-    TNativeReturnType
-  >;
-  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-  options?: ReactiveMutationOptions;
-  nativeOptions?: TNativeReactiveOptions;
-}): ReactiveMutationTestHarnessReturnType<
-  TParams,
-  TResult,
-  E,
-  TNativeCallOptions,
-  TNativeReturnType
->;
-export function ReactiveMutationTestHarness<
-  TParams extends object | undefined,
+  TParams = void,
   TResult = unknown,
   E extends Error = Error,
   TNativeReactiveOptions = unknown,
@@ -98,7 +46,7 @@ export function ReactiveMutationTestHarness<
       await waitFor(cb, options);
     },
     result: hook.result as ReactiveMutationTestHarnessReturnType<
-      undefined, // TParams is undefined for the first overload
+      void, // TParams is undefined for the first overload
       TResult,
       E,
       TNativeCallOptions,

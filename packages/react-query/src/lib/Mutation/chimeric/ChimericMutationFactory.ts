@@ -1,56 +1,26 @@
-import {
-  type MutationOptions,
-  type QueryClient,
-  type UseMutationOptions,
-} from '@tanstack/react-query';
+import { type QueryClient } from '@tanstack/react-query';
 import { IdiomaticMutationFactory } from '../idiomatic/IdiomaticMutationFactory';
 import { ReactiveMutationFactory } from '../reactive/ReactiveMutationFactory';
 import { ChimericMutation } from './types';
 import { fuseChimericMutation } from './fuseChimericMutation';
+import { TanstackIdiomaticNativeOptions } from '../idiomatic/types';
 
-// Overloads
 export function ChimericMutationFactory<
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
->(
-  queryClient: QueryClient,
-  mutationOptions: {
-    mutationFn: () => Promise<TResult>;
-  } & Omit<MutationOptions<TResult, E, undefined>, 'mutationFn'>,
-): ChimericMutation<undefined, TResult, E>;
-export function ChimericMutationFactory<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
 >(
   queryClient: QueryClient,
   mutationOptions: {
     mutationFn: (params: TParams) => Promise<TResult>;
-  } & Omit<MutationOptions<TResult, E, TParams>, 'mutationFn'>,
-): ChimericMutation<TParams, TResult, E>;
-
-// Implementation
-export function ChimericMutationFactory<
-  TParams extends object | undefined,
-  TResult = unknown,
-  E extends Error = Error,
->(
-  queryClient: QueryClient,
-  mutationOptions: {
-    mutationFn: (params: TParams) => Promise<TResult>;
-  } & Omit<MutationOptions<TResult, E, TParams>, 'mutationFn'>,
-): ChimericMutation<TParams, TResult, E> {
+  } & TanstackIdiomaticNativeOptions<TParams, TResult, TError>,
+): ChimericMutation<
+  TParams extends undefined ? void : TParams,
+  TResult,
+  TError
+> {
   return fuseChimericMutation({
-    idiomatic: IdiomaticMutationFactory(
-      queryClient,
-      mutationOptions as {
-        mutationFn: () => Promise<TResult>;
-      } & Omit<MutationOptions<TResult, E, undefined>, 'mutationFn'>,
-    ),
-    reactive: ReactiveMutationFactory(
-      mutationOptions as {
-        mutationFn: () => Promise<TResult>;
-      } & Omit<UseMutationOptions<TResult, E, undefined>, 'mutationFn'>,
-    ),
-  }) as ChimericMutation<TParams, TResult, E>;
+    idiomatic: IdiomaticMutationFactory(queryClient, mutationOptions),
+    reactive: ReactiveMutationFactory(mutationOptions),
+  });
 }

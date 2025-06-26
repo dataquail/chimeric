@@ -1,145 +1,89 @@
-import { UseMutationResult } from '@tanstack/react-query';
 import { fuseChimericMutation } from './fuseChimericMutation';
+import {
+  ChimericMutationWithoutParamsReturnsString,
+  ChimericMutationWithParamsReturnsString,
+  makeIdiomaticMutationWithoutParamsReturnsString,
+  makeIdiomaticMutationWithParamsReturnsString,
+  makeReactiveMutationWithoutParamsReturnsString,
+  makeReactiveMutationWithParamsReturnsString,
+} from '../__tests__/mutationFixtures';
 
 describe('fuseChimericMutation', () => {
   it('should invoke the idiomatic async function', async () => {
-    const mockIdiomaticMutation = vi.fn(async () => 'test');
-    const mockReactiveMutation = {
-      useMutation: vi.fn(() => ({
-        call: vi.fn(() => Promise.resolve('test')),
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-        reset: vi.fn(),
-        native: {} as UseMutationResult<string, Error, undefined>,
-      })),
-    };
     const testChimericMutation = fuseChimericMutation({
-      idiomatic: mockIdiomaticMutation,
-      reactive: mockReactiveMutation,
+      idiomatic: makeIdiomaticMutationWithoutParamsReturnsString(),
+      reactive: makeReactiveMutationWithoutParamsReturnsString(),
     });
     const result = await testChimericMutation();
     expect(result).toEqual('test');
-    expect(mockIdiomaticMutation).toHaveBeenCalled();
-    expect(mockReactiveMutation.useMutation).not.toHaveBeenCalled();
+    expect(testChimericMutation).toHaveBeenCalled();
+    expect(testChimericMutation.useMutation).not.toHaveBeenCalled();
   });
 
   it('should invoke the idiomatic function with params', async () => {
-    const mockIdiomaticMutation = vi.fn(
-      async (args: { name: string }) => `Hello ${args.name}`,
-    );
-    const mockReactiveMutation = {
-      useMutation: vi.fn(() => ({
-        call: vi.fn((args: { name: string }) =>
-          Promise.resolve(`Hello ${args.name}`),
-        ),
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-        reset: vi.fn(),
-        native: {} as UseMutationResult<string, Error, { name: string }>,
-      })),
-    };
     const testChimericMutation = fuseChimericMutation({
-      idiomatic: mockIdiomaticMutation,
-      reactive: mockReactiveMutation,
+      idiomatic: makeIdiomaticMutationWithParamsReturnsString(),
+      reactive: makeReactiveMutationWithParamsReturnsString(),
     });
     const result = await testChimericMutation({ name: 'John' });
     expect(result).toEqual('Hello John');
-    expect(mockIdiomaticMutation).toHaveBeenCalledWith({ name: 'John' });
-    expect(mockReactiveMutation.useMutation).not.toHaveBeenCalled();
+    expect(testChimericMutation).toHaveBeenCalledWith({ name: 'John' });
+    expect(testChimericMutation.useMutation).not.toHaveBeenCalled();
   });
 
   it('should invoke the reactive function', async () => {
-    const mockIdiomaticMutation = vi.fn(async () => 'test');
-    const mockReactiveMutation = {
-      useMutation: vi.fn(() => ({
-        call: vi.fn(() => Promise.resolve('test')),
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: 'test',
-        reset: vi.fn(),
-        native: {} as UseMutationResult<string, Error, undefined>,
-      })),
-    };
     const testChimericMutation = fuseChimericMutation({
-      idiomatic: mockIdiomaticMutation,
-      reactive: mockReactiveMutation,
+      idiomatic: makeIdiomaticMutationWithoutParamsReturnsString(),
+      reactive: makeReactiveMutationWithoutParamsReturnsString(),
     });
     const result = testChimericMutation.useMutation();
     expect(result.data).toEqual('test');
-    expect(mockIdiomaticMutation).not.toHaveBeenCalled();
-    expect(mockReactiveMutation.useMutation).toHaveBeenCalled();
+    expect(testChimericMutation).not.toHaveBeenCalled();
+    expect(testChimericMutation.useMutation).toHaveBeenCalled();
   });
 
   it('should invoke the reactive function with params', async () => {
-    const mockIdiomaticMutation = vi.fn(
-      async (args: { name: string }) => `Hello ${args.name}`,
-    );
-    const mockReactiveMutation = {
-      useMutation: vi.fn(() => ({
-        call: vi.fn((args: { name: string }) =>
-          Promise.resolve(`Hello ${args.name}`),
-        ),
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: 'Hello John',
-        reset: vi.fn(),
-        native: {} as UseMutationResult<string, Error, { name: string }>,
-      })),
-    };
     const testChimericMutation = fuseChimericMutation({
-      idiomatic: mockIdiomaticMutation,
-      reactive: mockReactiveMutation,
+      idiomatic: makeIdiomaticMutationWithParamsReturnsString(),
+      reactive: makeReactiveMutationWithParamsReturnsString(),
     });
     const result = testChimericMutation.useMutation();
     expect(result.data).toEqual('Hello John');
-    expect(mockIdiomaticMutation).not.toHaveBeenCalled();
-    expect(mockReactiveMutation.useMutation).toHaveBeenCalled();
+    expect(testChimericMutation).not.toHaveBeenCalled();
+    expect(testChimericMutation.useMutation).toHaveBeenCalled();
   });
 
   it('should invoke the reactive call function', async () => {
-    const mockIdiomaticMutation = vi.fn(
-      async (args: { name: string }) => `Hello ${args.name}`,
-    );
-    const mockCallFunction = vi.fn((args: { name: string }) =>
-      Promise.resolve(`Hello ${args.name}`),
-    );
-    const mockReactiveMutation = {
-      useMutation: vi.fn(() => ({
-        call: mockCallFunction,
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: 'Hello John',
-        reset: vi.fn(),
-        native: {} as UseMutationResult<string, Error, { name: string }>,
-      })),
-    };
     const testChimericMutation = fuseChimericMutation({
-      idiomatic: mockIdiomaticMutation,
-      reactive: mockReactiveMutation,
+      idiomatic: makeIdiomaticMutationWithParamsReturnsString(),
+      reactive: makeReactiveMutationWithParamsReturnsString(),
     });
     const result = testChimericMutation.useMutation();
     await result.call({ name: 'John' });
-    expect(mockIdiomaticMutation).not.toHaveBeenCalled();
-    expect(mockReactiveMutation.useMutation).toHaveBeenCalled();
-    expect(mockCallFunction).toHaveBeenCalledWith({
+    expect(testChimericMutation).not.toHaveBeenCalled();
+    expect(testChimericMutation.useMutation).toHaveBeenCalled();
+    expect(result.call).toHaveBeenCalledWith({
       name: 'John',
     });
+  });
+
+  it('should handle type annotations without params', async () => {
+    const testChimericMutation: ChimericMutationWithoutParamsReturnsString =
+      fuseChimericMutation({
+        idiomatic: makeIdiomaticMutationWithoutParamsReturnsString(),
+        reactive: makeReactiveMutationWithoutParamsReturnsString(),
+      });
+    const result = await testChimericMutation();
+    expect(result).toEqual('test');
+  });
+
+  it('should handle type annotations with params', async () => {
+    const testChimericMutation: ChimericMutationWithParamsReturnsString =
+      fuseChimericMutation({
+        idiomatic: makeIdiomaticMutationWithParamsReturnsString(),
+        reactive: makeReactiveMutationWithParamsReturnsString(),
+      });
+    const result = await testChimericMutation({ name: 'John' });
+    expect(result).toEqual('Hello John');
   });
 });

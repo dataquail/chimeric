@@ -2,38 +2,53 @@ import {
   type ChimericMutation as CoreChimericMutation,
   type DefineChimericMutation as CoreDefineChimericMutation,
 } from '@chimeric/core';
-
 import {
-  type UseMutationOptions,
-  type UseMutationResult,
-  type MutationOptions,
-} from '@tanstack/react-query';
+  TanstackMutationReactiveCallOptions,
+  TanstackMutationReactiveNativeOptions,
+  TanstackMutationReactiveReturnType,
+} from '../reactive/types';
+import { TanstackIdiomaticNativeOptions } from '../idiomatic/types';
 
 export type ChimericMutation<
-  TParams extends undefined | object,
-  TResult,
-  E extends Error,
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
 > = CoreChimericMutation<
   TParams,
   TResult,
-  E,
-  MutationOptions<TResult, E, TParams>,
-  Omit<UseMutationOptions<TResult, E, TParams>, 'mutationFn'>,
-  UseMutationResult<TResult, E>
+  TError,
+  TanstackIdiomaticNativeOptions<TParams, TResult, TError>,
+  TanstackMutationReactiveNativeOptions<TParams, TResult, TError>,
+  TanstackMutationReactiveCallOptions<TParams, TResult, TError>,
+  TanstackMutationReactiveReturnType<TParams, TResult, TError>
 >;
 
 export type DefineChimericMutation<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
-  E extends Error = Error,
+  TError extends Error = Error,
 > = CoreDefineChimericMutation<
   T,
-  E,
-  MutationOptions<Awaited<ReturnType<T>>, E, Parameters<T>[0]>,
-  Omit<
-    UseMutationOptions<Awaited<ReturnType<T>>, E, Parameters<T>[0]>,
-    'mutationFn'
+  TError,
+  TanstackIdiomaticNativeOptions<
+    Parameters<T>[0] extends undefined ? void : Parameters<T>[0],
+    Awaited<ReturnType<T>>,
+    TError
   >,
-  UseMutationResult<Awaited<ReturnType<T>>, E>
+  TanstackMutationReactiveNativeOptions<
+    Parameters<T>[0] extends undefined ? void : Parameters<T>[0],
+    Awaited<ReturnType<T>>,
+    TError
+  >,
+  TanstackMutationReactiveCallOptions<
+    Parameters<T>[0] extends undefined ? void : Parameters<T>[0],
+    Awaited<ReturnType<T>>,
+    TError
+  >,
+  TanstackMutationReactiveReturnType<
+    Parameters<T>[0] extends undefined ? void : Parameters<T>[0],
+    Awaited<ReturnType<T>>,
+    TError
+  >
 >;

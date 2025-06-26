@@ -36,6 +36,7 @@
     "src/**/*.spec.js",
     "src/**/*.test.jsx",
     "src/**/*.spec.jsx",
-    "src/lib/__tests__/*.tsx"
+    "src/**/__tests__/**/*.ts",
+    "src/**/__tests__/**/*.tsx"
   ]
 }

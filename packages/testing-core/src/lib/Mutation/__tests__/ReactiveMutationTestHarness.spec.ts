@@ -1,24 +1,13 @@
 import { ReactiveMutationTestHarness } from '../ReactiveMutationTestHarness';
+import {
+  makeReactiveMutationWithoutParamsReturnsString,
+  makeReactiveMutationWithParamsReturnsString,
+} from '../../__tests__/mutationFixtures';
 
 describe('ReactiveMutationTestHarness', () => {
-  const wait = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
-
   it('should be a function', () => {
-    const mockFn = vi.fn(() => Promise.resolve('test'));
-    const mockReactiveMutation = {
-      useMutation: vi.fn(() => ({
-        call: mockFn,
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-        reset: vi.fn(),
-        native: {},
-      })),
-    };
+    const mockReactiveMutation =
+      makeReactiveMutationWithoutParamsReturnsString();
 
     const harness = ReactiveMutationTestHarness({
       reactiveMutation: mockReactiveMutation,
@@ -27,36 +16,20 @@ describe('ReactiveMutationTestHarness', () => {
     harness.result.current.call();
 
     expect(mockReactiveMutation.useMutation).toHaveBeenCalled();
-    expect(mockFn).toHaveBeenCalled();
+    expect(harness.result.current.call).toHaveBeenCalled();
   });
 
   it('should handle params', async () => {
-    const mockFn = vi.fn(async (args: { id: string }) => {
-      await wait(100);
-      return 'test' + args.id;
-    });
-    const mockReactiveMutation = {
-      useMutation: vi.fn(() => ({
-        call: mockFn,
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-        reset: vi.fn(),
-        native: {},
-      })),
-    };
+    const mockReactiveMutation = makeReactiveMutationWithParamsReturnsString();
 
     const harness = ReactiveMutationTestHarness({
       reactiveMutation: mockReactiveMutation,
     });
 
-    const result = await harness.result.current.call({ id: '123' });
+    const result = await harness.result.current.call({ name: 'John' });
     expect(mockReactiveMutation.useMutation).toHaveBeenCalled();
-    expect(mockFn).toHaveBeenCalledTimes(1);
-    expect(mockFn).toHaveBeenCalledWith({ id: '123' });
-    expect(result).toBe('test123');
+    expect(harness.result.current.call).toHaveBeenCalledTimes(1);
+    expect(harness.result.current.call).toHaveBeenCalledWith({ name: 'John' });
+    expect(result).toBe('Hello John');
   });
 });

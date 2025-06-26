@@ -4,56 +4,8 @@ import { checkOnInterval } from '../checkOnInterval.js';
 import { BaseWaitForOptions } from 'src/types/WaitForOptions.js';
 import { IdiomaticMutationTestHarnessReturnType } from './types.js';
 
-// Overloads
 export function IdiomaticMutationTestHarness<
-  TResult = unknown,
-  E extends Error = Error,
-  TIdiomaticNativeOptions = unknown,
->(args: {
-  idiomaticMutation: IdiomaticMutation<
-    undefined,
-    TResult,
-    TIdiomaticNativeOptions
-  >;
-}): IdiomaticMutationTestHarnessReturnType<undefined, TResult, E>;
-export function IdiomaticMutationTestHarness<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
-  TIdiomaticNativeOptions = unknown,
->(args: {
-  idiomaticMutation: IdiomaticMutation<
-    TParams,
-    TResult,
-    TIdiomaticNativeOptions
-  >;
-}): IdiomaticMutationTestHarnessReturnType<
-  TParams,
-  TResult,
-  E,
-  TIdiomaticNativeOptions
->;
-
-// Implementation
-export function IdiomaticMutationTestHarness<
-  TParams extends object | undefined,
-  TResult = unknown,
-  E extends Error = Error,
-  TIdiomaticNativeOptions = unknown,
->(args: {
-  idiomaticMutation: IdiomaticMutation<
-    TParams,
-    TResult,
-    TIdiomaticNativeOptions
-  >;
-}): IdiomaticMutationTestHarnessReturnType<
-  TParams,
-  TResult,
-  E,
-  TIdiomaticNativeOptions
->;
-export function IdiomaticMutationTestHarness<
-  TParams extends object,
+  TParams = void,
   TResult = unknown,
   E extends Error = Error,
   TIdiomaticNativeOptions = unknown,

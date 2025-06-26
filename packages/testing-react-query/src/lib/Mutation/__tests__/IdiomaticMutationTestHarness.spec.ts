@@ -1,17 +1,15 @@
 import { IdiomaticMutationFactory } from '@chimeric/react-query';
 import { IdiomaticMutationTestHarness } from '../IdiomaticMutationTestHarness';
 import { QueryClient } from '@tanstack/react-query';
+import {
+  makeAsyncFnWithoutParamsReturnsString,
+  makeAsyncFnWithParamsReturnsString,
+} from '../../__tests__/functionFixtures';
 
 describe('IdiomaticMutationTestHarness', () => {
-  const wait = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
-
   it('should wait for success', async () => {
     const queryClient = new QueryClient();
-    const mockPromise = vi.fn(async () => {
-      await wait(100);
-      return 'test';
-    });
+    const mockPromise = makeAsyncFnWithoutParamsReturnsString();
     const idiomaticMutation = IdiomaticMutationFactory(queryClient, {
       mutationFn: mockPromise,
     });
@@ -49,10 +47,7 @@ describe('IdiomaticMutationTestHarness', () => {
 
   it('should handle params', async () => {
     const queryClient = new QueryClient();
-    const mockPromise = vi.fn(async (params: { id: string }) => {
-      await wait(100);
-      return 'test' + params.id;
-    });
+    const mockPromise = makeAsyncFnWithParamsReturnsString();
     const idiomaticMutation = IdiomaticMutationFactory(queryClient, {
       mutationFn: mockPromise,
     });
@@ -60,9 +55,9 @@ describe('IdiomaticMutationTestHarness', () => {
       idiomaticMutation,
     });
 
-    const result = await mutation.result.current.call({ id: '123' });
-    expect(result).toBe('test123');
+    const result = await mutation.result.current.call({ name: 'John' });
+    expect(result).toBe('Hello John');
     expect(mockPromise).toHaveBeenCalledTimes(1);
-    expect(mockPromise).toHaveBeenCalledWith({ id: '123' });
+    expect(mockPromise).toHaveBeenCalledWith({ name: 'John' });
   });
 });
