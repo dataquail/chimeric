@@ -9,48 +9,57 @@ import {
 } from '@tanstack/react-query';
 
 export type ReactiveMutation<
-  TParams extends undefined | object,
-  TResult,
-  E extends Error,
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
 > = CoreReactiveMutation<
   TParams,
   TResult,
-  E,
-  Omit<UseMutationOptions<TResult, E, TParams>, 'mutationFn'>,
-  MutationOptions<TResult, E, TParams>,
-  UseMutationResult<TResult, E, TParams>
+  TError,
+  TanstackMutationReactiveNativeOptions<TParams, TResult, TError>,
+  TanstackMutationReactiveCallOptions<TParams, TResult, TError>,
+  TanstackMutationReactiveReturnType<TParams, TResult, TError>
 >;
 
 export type DefineReactiveMutation<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
-  E extends Error = Error,
+  TError extends Error = Error,
 > = CoreDefineReactiveMutation<
   T,
-  E,
-  Omit<
-    UseMutationOptions<Awaited<ReturnType<T>>, E, Parameters<T>[0]>,
-    'mutationFn'
+  TError,
+  TanstackMutationReactiveNativeOptions<
+    Parameters<T>[0] extends undefined ? void : Parameters<T>[0],
+    Awaited<ReturnType<T>>,
+    TError
   >,
-  MutationOptions<Awaited<ReturnType<T>>, E, Parameters<T>[0]>,
-  UseMutationResult<Awaited<ReturnType<T>>, E, Parameters<T>[0]>
+  TanstackMutationReactiveCallOptions<
+    Parameters<T>[0] extends undefined ? void : Parameters<T>[0],
+    Awaited<ReturnType<T>>,
+    TError
+  >,
+  TanstackMutationReactiveReturnType<
+    Parameters<T>[0] extends undefined ? void : Parameters<T>[0],
+    Awaited<ReturnType<T>>,
+    TError
+  >
 >;
 
 export type TanstackMutationReactiveNativeOptions<
-  TParams extends object | undefined,
-  TResult,
-  E extends Error,
-> = Omit<UseMutationOptions<TResult, E, TParams>, 'mutationFn'>;
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+> = Omit<UseMutationOptions<TResult, TError, TParams>, 'mutationFn'>;
 
 export type TanstackMutationReactiveCallOptions<
-  TParams extends object | undefined,
-  TResult,
-  E extends Error,
-> = MutationOptions<TResult, E, TParams>;
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+> = MutationOptions<TResult, TError, TParams>;
 
 export type TanstackMutationReactiveReturnType<
-  TParams extends object | undefined,
-  TResult,
-  E extends Error,
-> = UseMutationResult<TResult, E, TParams>;
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+> = UseMutationResult<TResult, TError, TParams>;

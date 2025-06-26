@@ -1,10 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  IdiomaticMutationWithoutParamsReturnsString,
+  IdiomaticMutationWithParamsReturnsString,
+  makeIdiomaticMutationWithoutParamsReturnsString,
+  makeIdiomaticMutationWithParamsReturnsString,
+} from '../__tests__/mutationFixtures';
 import { createIdiomaticMutation } from './createIdiomaticMutation';
-import { MutationOptions } from '@tanstack/react-query';
 
 describe('createIdiomaticMutation', () => {
   it('should create an idiomatic mutation function', () => {
-    const mockMutationFn = vi.fn(async () => 'test');
+    const mockMutationFn = makeIdiomaticMutationWithoutParamsReturnsString();
     const idiomaticMutation = createIdiomaticMutation(mockMutationFn);
 
     expect(typeof idiomaticMutation).toBe('function');
@@ -20,7 +25,7 @@ describe('createIdiomaticMutation', () => {
   });
 
   it('should invoke the idiomatic mutation function without params', async () => {
-    const mockMutationFn = vi.fn(async () => 'test');
+    const mockMutationFn = makeIdiomaticMutationWithoutParamsReturnsString();
     const idiomaticMutation = createIdiomaticMutation(mockMutationFn);
 
     const result = await idiomaticMutation();
@@ -30,9 +35,7 @@ describe('createIdiomaticMutation', () => {
   });
 
   it('should invoke the idiomatic mutation function with params', async () => {
-    const mockMutationFn = vi.fn(
-      async (params: { name: string }) => `Hello ${params.name}`,
-    );
+    const mockMutationFn = makeIdiomaticMutationWithParamsReturnsString();
     const idiomaticMutation = createIdiomaticMutation(mockMutationFn);
 
     const result = await idiomaticMutation({ name: 'John' });
@@ -42,15 +45,7 @@ describe('createIdiomaticMutation', () => {
   });
 
   it('should pass nativeOptions to the mutation function', async () => {
-    const mockMutationFn = vi.fn(
-      async (params: {
-        name: string;
-        nativeOptions?: Omit<
-          MutationOptions<string, Error, { name: string }>,
-          'mutationFn'
-        >;
-      }) => `Hello ${params.name}`,
-    );
+    const mockMutationFn = makeIdiomaticMutationWithParamsReturnsString();
 
     const idiomaticMutation = createIdiomaticMutation(mockMutationFn);
 
@@ -65,5 +60,25 @@ describe('createIdiomaticMutation', () => {
       name: 'John',
       nativeOptions,
     });
+  });
+
+  it('should handle type annotations without params', async () => {
+    const mockMutationFn = makeIdiomaticMutationWithoutParamsReturnsString();
+    const idiomaticMutation: IdiomaticMutationWithoutParamsReturnsString =
+      createIdiomaticMutation(mockMutationFn);
+
+    const result = await idiomaticMutation();
+
+    expect(result).toBe('test');
+  });
+
+  it('should handle type annotations with params', async () => {
+    const mockMutationFn = makeIdiomaticMutationWithParamsReturnsString();
+    const idiomaticMutation: IdiomaticMutationWithParamsReturnsString =
+      createIdiomaticMutation(mockMutationFn);
+
+    const result = await idiomaticMutation({ name: 'John' });
+
+    expect(result).toBe('Hello John');
   });
 });

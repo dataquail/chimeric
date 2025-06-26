@@ -5,30 +5,31 @@ import {
 import { MutationOptions } from '@tanstack/react-query';
 
 export type IdiomaticMutation<
-  TParams extends undefined | object,
-  TResult,
-  E extends Error = Error,
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
 > = CoreIdiomaticMutation<
   TParams,
   TResult,
-  Omit<MutationOptions<TResult, E, TParams>, 'mutationFn'>
+  TanstackIdiomaticNativeOptions<TParams, TResult, TError>
 >;
 
 export type DefineIdiomaticMutation<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
-  E extends Error = Error,
+  TError extends Error = Error,
 > = CoreDefineIdiomaticMutation<
   T,
-  Omit<
-    MutationOptions<Awaited<ReturnType<T>>, E, Parameters<T>[0]>,
-    'mutationFn'
+  TanstackIdiomaticNativeOptions<
+    Parameters<T>[0] extends undefined ? void : Parameters<T>[0],
+    Awaited<ReturnType<T>>,
+    TError
   >
 >;
 
 export type TanstackIdiomaticNativeOptions<
-  TParams extends object | undefined,
-  TResult,
-  E extends Error,
-> = Omit<MutationOptions<TResult, E, TParams>, 'mutationFn'>;
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+> = Omit<MutationOptions<TResult, TError, TParams>, 'mutationFn'>;

@@ -1,36 +1,13 @@
 import { IdiomaticMutation } from '@chimeric/react-query';
-import { IdiomaticMutationTestHarnessReturnType } from './types.js';
+import { IdiomaticMutationTestHarnessReturnType } from './types';
 import { IdiomaticMutationTestHarness as CoreIdiomaticMutationTestHarness } from '@chimeric/testing-core';
 
-// Overloads
 export function IdiomaticMutationTestHarness<
+  TParams = void,
   TResult = unknown,
   E extends Error = Error,
 >(args: {
-  idiomaticMutation: IdiomaticMutation<undefined, TResult>;
-}): IdiomaticMutationTestHarnessReturnType<undefined, TResult, E>;
-export function IdiomaticMutationTestHarness<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
->(args: {
-  idiomaticMutation: IdiomaticMutation<TParams, TResult>;
-}): IdiomaticMutationTestHarnessReturnType<TParams, TResult, E>;
-
-// Implementation
-export function IdiomaticMutationTestHarness<
-  TParams extends object | undefined,
-  TResult = unknown,
-  E extends Error = Error,
->(args: {
-  idiomaticMutation: IdiomaticMutation<TParams, TResult>;
-}): IdiomaticMutationTestHarnessReturnType<TParams, TResult, E>;
-export function IdiomaticMutationTestHarness<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
->(args: {
-  idiomaticMutation: IdiomaticMutation<TParams, TResult>;
+  idiomaticMutation: IdiomaticMutation<TParams, TResult, E>;
 }): IdiomaticMutationTestHarnessReturnType<TParams, TResult, E> {
   return CoreIdiomaticMutationTestHarness(
     args,

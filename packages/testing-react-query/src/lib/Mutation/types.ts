@@ -11,7 +11,7 @@ import {
 } from '@chimeric/react-query';
 
 export type IdiomaticMutationTestHarnessReturnType<
-  TParams extends object | undefined,
+  TParams = void,
   TResult = unknown,
   E extends Error = Error,
 > = CoreIdiomaticMutationTestHarnessReturnType<
@@ -22,7 +22,7 @@ export type IdiomaticMutationTestHarnessReturnType<
 >;
 
 export type ReactiveMutationTestHarnessReturnType<
-  TParams extends object | undefined,
+  TParams = void,
   TResult = unknown,
   E extends Error = Error,
 > = CoreReactiveMutationTestHarnessReturnType<
@@ -34,7 +34,7 @@ export type ReactiveMutationTestHarnessReturnType<
 >;
 
 export type ChimericMutationTestHarnessReturnType<
-  TParams extends object | undefined,
+  TParams = void,
   TResult = unknown,
   E extends Error = Error,
   TMethod = (typeof chimericMethods)[number],

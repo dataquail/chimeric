@@ -2,11 +2,11 @@ import { isReactiveMutation as coreIsReactiveMutation } from '@chimeric/core';
 import { ReactiveMutation } from './types';
 
 export const isReactiveMutation = <
-  TParams extends undefined | object,
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
 >(
   maybeReactiveMutation: unknown,
-): maybeReactiveMutation is ReactiveMutation<TParams, TResult, E> => {
+): maybeReactiveMutation is ReactiveMutation<TParams, TResult, TError> => {
   return coreIsReactiveMutation(maybeReactiveMutation);
 };

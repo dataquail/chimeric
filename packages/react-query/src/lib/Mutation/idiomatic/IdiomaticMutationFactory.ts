@@ -1,53 +1,43 @@
-import { type QueryClient, type MutationOptions } from '@tanstack/react-query';
-import { IdiomaticMutation } from './types';
+import { type QueryClient } from '@tanstack/react-query';
+import { IdiomaticMutation, TanstackIdiomaticNativeOptions } from './types';
 import { createIdiomaticMutation } from './createIdiomaticMutation';
 
-// Overloads
 export function IdiomaticMutationFactory<
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
->(
-  queryClient: QueryClient,
-  mutationOptions: {
-    mutationFn: () => Promise<TResult>;
-  } & Omit<MutationOptions<TResult, E, undefined>, 'mutationFn'>,
-): IdiomaticMutation<undefined, TResult>;
-export function IdiomaticMutationFactory<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
 >(
   queryClient: QueryClient,
   mutationOptions: {
     mutationFn: (params: TParams) => Promise<TResult>;
-  } & Omit<MutationOptions<TResult, E, TParams>, 'mutationFn'>,
-): IdiomaticMutation<TParams, TResult>;
-
-// Implementation
-export function IdiomaticMutationFactory<
-  TParams extends object | undefined,
-  TResult = unknown,
-  E extends Error = Error,
->(
-  queryClient: QueryClient,
-  mutationOptions: {
-    mutationFn: (params: TParams) => Promise<TResult>;
-  } & Omit<MutationOptions<TResult, E, TParams>, 'mutationFn'>,
-): IdiomaticMutation<TParams, TResult> {
+  } & TanstackIdiomaticNativeOptions<TParams, TResult, TError>,
+): IdiomaticMutation<
+  TParams extends undefined ? void : TParams,
+  TResult,
+  TError
+> {
   const mutation = queryClient
     .getMutationCache()
     .build(queryClient, mutationOptions);
-  return createIdiomaticMutation(async (idiomaticAndNativeOptions) => {
-    const { options, nativeOptions, ...params } =
-      idiomaticAndNativeOptions ?? {};
+
+  const idiomaticMutation = (
+    paramsAndConfig: Parameters<IdiomaticMutation<TParams, TResult, TError>>[0],
+  ) => {
+    const { options, nativeOptions, ...params } = paramsAndConfig ?? {};
     mutation.setOptions({
       ...mutationOptions,
       ...(options ?? {}),
-      ...((nativeOptions ?? {}) as Omit<
-        MutationOptions<TResult, E, TParams>,
-        'mutationFn'
-      >),
+      ...(nativeOptions ?? {}),
     });
-    return mutation.execute(params as TParams);
-  }) as IdiomaticMutation<TParams, TResult>;
+    return mutation.execute(params as TParams) as ReturnType<
+      IdiomaticMutation<TParams, TResult, TError>
+    >;
+  };
+  return createIdiomaticMutation<TParams, TResult, TError>(
+    idiomaticMutation as unknown as IdiomaticMutation<TParams, TResult, TError>,
+  ) as IdiomaticMutation<
+    TParams extends undefined ? void : TParams,
+    TResult,
+    TError
+  >;
 }

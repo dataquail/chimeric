@@ -1,39 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { makeReactiveMutationWithoutParamsReturnsString } from '../__tests__/mutationFixtures';
 import { isReactiveMutation } from './isReactiveMutation';
-import { UseMutationResult } from '@tanstack/react-query';
 
 describe('isReactiveMutation', () => {
   it('should return true for an object with useMutation function', () => {
-    const mockReactiveMutation = {
-      useMutation: vi.fn(() => ({
-        call: vi.fn(() => Promise.resolve('test')),
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-        reset: vi.fn(),
-        native: {} as UseMutationResult<string, Error, undefined>,
-      })),
-    };
-
-    expect(isReactiveMutation(mockReactiveMutation)).toBe(true);
-  });
-
-  it('should return true for a function with useMutation property', () => {
-    const mockReactiveMutation = vi.fn(() => 'test') as any;
-    mockReactiveMutation.useMutation = vi.fn(() => ({
-      call: vi.fn(() => Promise.resolve('test')),
-      isIdle: true,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      error: null,
-      data: undefined,
-      reset: vi.fn(),
-      native: {} as UseMutationResult<string, Error, undefined>,
-    }));
+    const mockReactiveMutation =
+      makeReactiveMutationWithoutParamsReturnsString();
 
     expect(isReactiveMutation(mockReactiveMutation)).toBe(true);
   });

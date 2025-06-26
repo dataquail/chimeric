@@ -1,21 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  makeMutationHookWithoutParamsReturnsString,
+  makeMutationHookWithParamsReturnsString,
+  ReactiveMutationWithoutParamsReturnsString,
+  ReactiveMutationWithParamsReturnsString,
+} from '../__tests__/mutationFixtures';
 import { createReactiveMutation } from './createReactiveMutation';
-import { UseMutationResult } from '@tanstack/react-query';
 
 describe('createReactiveMutation', () => {
   it('should create a reactive mutation function', () => {
-    const mockReactiveFn = vi.fn(() => ({
-      call: vi.fn(() => Promise.resolve('test')),
-      isIdle: true,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      error: null,
-      data: undefined,
-      reset: vi.fn(),
-      native: {} as UseMutationResult<string, Error, undefined>,
-    }));
-
+    const mockReactiveFn = makeMutationHookWithoutParamsReturnsString();
     const reactiveMutation = createReactiveMutation(mockReactiveFn);
 
     expect(typeof reactiveMutation).toBe('object');
@@ -33,65 +27,31 @@ describe('createReactiveMutation', () => {
   });
 
   it('should invoke the reactive mutation function without params', async () => {
-    const mockCall = vi.fn(() => Promise.resolve('test'));
-    const mockReactiveFn = vi.fn(() => ({
-      call: mockCall,
-      isIdle: true,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      error: null,
-      data: undefined,
-      reset: vi.fn(),
-      native: {} as UseMutationResult<string, Error, undefined>,
-    }));
+    const mockReactiveFn = makeMutationHookWithoutParamsReturnsString();
 
     const reactiveMutation = createReactiveMutation(mockReactiveFn);
 
-    const result = await reactiveMutation.useMutation().call();
+    const hookResult = reactiveMutation.useMutation();
+    const result = await hookResult.call();
 
     expect(result).toBe('test');
-    expect(mockCall).toHaveBeenCalled();
+    expect(hookResult.call).toHaveBeenCalled();
     expect(mockReactiveFn).toHaveBeenCalled();
   });
 
   it('should invoke the reactive mutation function with params', async () => {
-    const mockCall = vi.fn((params: { name: string }) =>
-      Promise.resolve(`Hello ${params.name}`),
-    );
-    const mockReactiveFn = vi.fn(() => ({
-      call: mockCall,
-      isIdle: true,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      error: null,
-      data: undefined,
-      reset: vi.fn(),
-      native: {} as UseMutationResult<string, Error, { name: string }>,
-    }));
-
+    const mockReactiveFn = makeMutationHookWithParamsReturnsString();
     const reactiveMutation = createReactiveMutation(mockReactiveFn);
 
-    const result = await reactiveMutation.useMutation().call({ name: 'John' });
+    const hookResult = reactiveMutation.useMutation();
+    const result = await hookResult.call({ name: 'John' });
 
     expect(result).toBe('Hello John');
-    expect(mockCall).toHaveBeenCalledWith({ name: 'John' });
+    expect(hookResult.call).toHaveBeenCalledWith({ name: 'John' });
   });
 
   it('should pass options and nativeOptions to the useMutation function', () => {
-    const mockReactiveFn = vi.fn(() => ({
-      call: vi.fn(() => Promise.resolve('test')),
-      isIdle: true,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      error: null,
-      data: undefined,
-      reset: vi.fn(),
-      native: {} as UseMutationResult<string, Error, undefined>,
-    }));
-
+    const mockReactiveFn = makeMutationHookWithoutParamsReturnsString();
     const reactiveMutation = createReactiveMutation(mockReactiveFn);
 
     const options = {};
@@ -103,5 +63,25 @@ describe('createReactiveMutation', () => {
       options,
       nativeOptions,
     });
+  });
+
+  it('should handle type annotations without params', async () => {
+    const mockReactiveFn = makeMutationHookWithoutParamsReturnsString();
+    const reactiveMutation: ReactiveMutationWithoutParamsReturnsString =
+      createReactiveMutation(mockReactiveFn);
+
+    const result = await reactiveMutation.useMutation().call();
+
+    expect(result).toBe('test');
+  });
+
+  it('should handle type annotations with params', async () => {
+    const mockReactiveFn = makeMutationHookWithParamsReturnsString();
+    const reactiveMutation: ReactiveMutationWithParamsReturnsString =
+      createReactiveMutation(mockReactiveFn);
+
+    const result = await reactiveMutation.useMutation().call({ name: 'John' });
+
+    expect(result).toBe('Hello John');
   });
 });

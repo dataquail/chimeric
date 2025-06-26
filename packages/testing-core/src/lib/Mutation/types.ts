@@ -6,7 +6,7 @@ import { BaseWaitForOptions } from 'src/types/WaitForOptions';
 import { chimericMethods } from '../methods';
 
 export type IdiomaticMutationTestHarnessReturnType<
-  TParams extends object | undefined,
+  TParams = void,
   TResult = unknown,
   E extends Error = Error,
   TIdiomaticNativeOptions = unknown,
@@ -14,17 +14,33 @@ export type IdiomaticMutationTestHarnessReturnType<
   waitFor: (cb: () => void, options?: BaseWaitForOptions) => Promise<void>;
   result: {
     current: {
-      call: TParams extends undefined
-        ? (params?: {
-            options?: IdiomaticMutationOptions;
-            nativeOptions?: TIdiomaticNativeOptions;
-          }) => Promise<TResult>
-        : (
-            params: TParams & {
+      call: TParams extends object
+        ? Omit<TParams, 'options' | 'nativeOptions'> extends
+            | undefined
+            | {
+                options?: IdiomaticMutationOptions;
+                nativeOptions?: TIdiomaticNativeOptions;
+              }
+          ? (config?: {
               options?: IdiomaticMutationOptions;
               nativeOptions?: TIdiomaticNativeOptions;
-            },
-          ) => Promise<TResult>;
+            }) => Promise<TResult>
+          : (
+              paramsAndConfig: TParams & {
+                options?: IdiomaticMutationOptions;
+                nativeOptions?: TIdiomaticNativeOptions;
+              },
+            ) => Promise<TResult>
+        : TParams extends void
+        ? (
+            config?:
+              | {
+                  options?: IdiomaticMutationOptions;
+                  nativeOptions?: TIdiomaticNativeOptions;
+                }
+              | TParams,
+          ) => Promise<TResult>
+        : never;
       data: TResult | undefined;
       isIdle: boolean;
       isSuccess: boolean;
@@ -36,7 +52,7 @@ export type IdiomaticMutationTestHarnessReturnType<
 };
 
 export type ReactiveMutationTestHarnessReturnType<
-  TParams extends object | undefined,
+  TParams = void,
   TResult = unknown,
   E extends Error = Error,
   TNativeCallOptions = unknown,
@@ -45,17 +61,35 @@ export type ReactiveMutationTestHarnessReturnType<
   waitFor: (cb: () => void, options?: BaseWaitForOptions) => Promise<void>;
   result: {
     current: {
-      call: TParams extends undefined
-        ? (params?: {
-            options?: ReactiveMutationCallOptions;
-            nativeOptions?: TNativeCallOptions;
-          }) => Promise<TResult>
-        : (
-            params: TParams & {
-              options?: ReactiveMutationCallOptions;
-              nativeOptions?: TNativeCallOptions;
-            },
-          ) => Promise<TResult>;
+      call: TParams extends object
+        ? Omit<TParams, 'options' | 'nativeOptions'> extends
+            | undefined
+            | {
+                options?: ReactiveMutationCallOptions;
+                nativeOptions?: TNativeCallOptions;
+              }
+          ? (
+              config?: TParams & {
+                options?: ReactiveMutationCallOptions;
+                nativeOptions?: TNativeCallOptions;
+              },
+            ) => Promise<TResult>
+          : (
+              paramsAndConfig: TParams & {
+                options?: ReactiveMutationCallOptions;
+                nativeOptions?: TNativeCallOptions;
+              },
+            ) => Promise<TResult>
+        : TParams extends void
+        ? (
+            config?:
+              | {
+                  options?: ReactiveMutationCallOptions;
+                  nativeOptions?: TNativeCallOptions;
+                }
+              | TParams,
+          ) => Promise<TResult>
+        : never;
       data: TResult | undefined;
       isIdle: boolean;
       isSuccess: boolean;
@@ -68,7 +102,7 @@ export type ReactiveMutationTestHarnessReturnType<
 };
 
 export type ChimericMutationTestHarnessReturnType<
-  TParams extends object | undefined,
+  TParams = void,
   TResult = unknown,
   E extends Error = Error,
   TMethod = (typeof chimericMethods)[number],

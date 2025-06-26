@@ -1,21 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  makeIdiomaticMutationWithoutParamsReturnsString,
+  makeReactiveMutationWithoutParamsReturnsString,
+} from '../__tests__/mutationFixtures';
+import { fuseChimericMutation } from './fuseChimericMutation';
 import { isChimericMutation } from './isChimericMutation';
 
 describe('isChimericMutation', () => {
   it('should return true for a chimeric mutation function', () => {
-    const mockChimericMutation = vi.fn(async () => 'test') as any;
-    mockChimericMutation.useMutation = vi.fn(() => ({
-      call: vi.fn(() => Promise.resolve('test')),
-      isIdle: true,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      error: null,
-      data: undefined,
-      reset: vi.fn(),
-    }));
+    const testChimericMutation = fuseChimericMutation({
+      idiomatic: makeIdiomaticMutationWithoutParamsReturnsString(),
+      reactive: makeReactiveMutationWithoutParamsReturnsString(),
+    });
 
-    expect(isChimericMutation(mockChimericMutation)).toBe(true);
+    expect(isChimericMutation(testChimericMutation)).toBe(true);
   });
 
   it('should return false for non-chimeric inputs', () => {
@@ -23,22 +20,12 @@ describe('isChimericMutation', () => {
     expect(isChimericMutation('not a function')).toBe(false);
 
     // Function without useMutation
-    const mockMutationFn = vi.fn(async () => 'test');
+    const mockMutationFn = makeIdiomaticMutationWithoutParamsReturnsString();
     expect(isChimericMutation(mockMutationFn)).toBe(false);
 
     // Object with useMutation but not a function
-    const mockReactiveMutation = {
-      useMutation: vi.fn(() => ({
-        call: vi.fn(() => Promise.resolve('test')),
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-        reset: vi.fn(),
-      })),
-    };
+    const mockReactiveMutation =
+      makeReactiveMutationWithoutParamsReturnsString();
     expect(isChimericMutation(mockReactiveMutation)).toBe(false);
 
     // Other invalid inputs

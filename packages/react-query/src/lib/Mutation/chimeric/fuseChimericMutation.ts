@@ -3,35 +3,13 @@ import { IdiomaticMutation } from '../idiomatic/types';
 import { ReactiveMutation } from '../reactive/types';
 import { ChimericMutation } from './types';
 
-// Overloads
 export function fuseChimericMutation<
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
 >(args: {
-  idiomatic: IdiomaticMutation<undefined, TResult, E>;
-  reactive: ReactiveMutation<undefined, TResult, E>;
-}): ChimericMutation<undefined, TResult, E>;
-export function fuseChimericMutation<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
->(args: {
-  idiomatic: IdiomaticMutation<TParams, TResult, E>;
-  reactive: ReactiveMutation<TParams, TResult, E>;
-}): ChimericMutation<TParams, TResult, E>;
-
-// Implementation
-export function fuseChimericMutation<
-  TParams extends object | undefined,
-  TResult = unknown,
-  E extends Error = Error,
->(args: {
-  idiomatic: IdiomaticMutation<TParams, TResult, E>;
-  reactive: ReactiveMutation<TParams, TResult, E>;
-}): ChimericMutation<TParams, TResult, E> {
-  return coreFuseChimericMutation(args) as ChimericMutation<
-    TParams,
-    TResult,
-    E
-  >;
+  idiomatic: IdiomaticMutation<TParams, TResult, TError>;
+  reactive: ReactiveMutation<TParams, TResult, TError>;
+}): ChimericMutation<TParams, TResult, TError> {
+  return coreFuseChimericMutation(args);
 }

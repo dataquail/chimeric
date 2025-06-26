@@ -3,37 +3,10 @@ import { ReactiveMutation } from '../reactive/types';
 import { isChimericMutation } from './isChimericMutation';
 import { ChimericMutation } from './types';
 
-// Overloads
 export function fuseChimericMutation<
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
-  TNativeIdiomaticOptions = unknown,
-  TNativeReactiveOptions = unknown,
-  TNativeCallOptions = unknown,
-  TNativeReactiveReturnType = unknown,
->(args: {
-  idiomatic: IdiomaticMutation<undefined, TResult, TNativeIdiomaticOptions>;
-  reactive: ReactiveMutation<
-    undefined,
-    TResult,
-    E,
-    TNativeReactiveOptions,
-    TNativeCallOptions,
-    TNativeReactiveReturnType
-  >;
-}): ChimericMutation<
-  undefined,
-  TResult,
-  E,
-  TNativeIdiomaticOptions,
-  TNativeReactiveOptions,
-  TNativeCallOptions,
-  TNativeReactiveReturnType
->;
-export function fuseChimericMutation<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeCallOptions = unknown,
@@ -43,7 +16,7 @@ export function fuseChimericMutation<
   reactive: ReactiveMutation<
     TParams,
     TResult,
-    E,
+    TError,
     TNativeReactiveOptions,
     TNativeCallOptions,
     TNativeReactiveReturnType
@@ -51,36 +24,7 @@ export function fuseChimericMutation<
 }): ChimericMutation<
   TParams,
   TResult,
-  E,
-  TNativeIdiomaticOptions,
-  TNativeReactiveOptions,
-  TNativeCallOptions,
-  TNativeReactiveReturnType
->;
-
-// Implementation
-export function fuseChimericMutation<
-  TParams extends undefined | object,
-  TResult = unknown,
-  E extends Error = Error,
-  TNativeIdiomaticOptions = unknown,
-  TNativeReactiveOptions = unknown,
-  TNativeCallOptions = unknown,
-  TNativeReactiveReturnType = unknown,
->(args: {
-  idiomatic: IdiomaticMutation<TParams, TResult, TNativeIdiomaticOptions>;
-  reactive: ReactiveMutation<
-    TParams,
-    TResult,
-    E,
-    TNativeReactiveOptions,
-    TNativeCallOptions,
-    TNativeReactiveReturnType
-  >;
-}): ChimericMutation<
-  TParams,
-  TResult,
-  E,
+  TError,
   TNativeIdiomaticOptions,
   TNativeReactiveOptions,
   TNativeCallOptions,
@@ -89,7 +33,7 @@ export function fuseChimericMutation<
   const chimericFn = args.idiomatic as ChimericMutation<
     TParams,
     TResult,
-    E,
+    TError,
     TNativeIdiomaticOptions,
     TNativeReactiveOptions,
     TNativeCallOptions,
@@ -100,7 +44,7 @@ export function fuseChimericMutation<
     isChimericMutation<
       TParams,
       TResult,
-      E,
+      TError,
       TNativeIdiomaticOptions,
       TNativeReactiveOptions,
       TNativeCallOptions,

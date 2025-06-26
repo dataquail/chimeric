@@ -3,9 +3,9 @@ import { isReactiveMutation } from '../reactive/isReactiveMutation';
 import { ChimericMutation } from './types';
 
 export const isChimericMutation = <
-  TParams extends undefined | object,
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeCallOptions = unknown,
@@ -15,7 +15,7 @@ export const isChimericMutation = <
 ): maybeChimericMutation is ChimericMutation<
   TParams,
   TResult,
-  E,
+  TError,
   TNativeIdiomaticOptions,
   TNativeReactiveOptions,
   TNativeCallOptions,
