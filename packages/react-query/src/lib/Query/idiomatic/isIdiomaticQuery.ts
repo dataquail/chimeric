@@ -2,9 +2,9 @@ import { isIdiomaticQuery as coreIsIdiomaticQuery } from '@chimeric/core';
 import { IdiomaticQuery } from './types';
 
 export function isIdiomaticQuery<
-  TParams extends undefined | object,
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
->(query: unknown): query is IdiomaticQuery<TParams, TResult, E> {
+  TError extends Error = Error,
+>(query: unknown): query is IdiomaticQuery<TParams, TResult, TError> {
   return coreIsIdiomaticQuery(query);
 }

@@ -7,75 +7,45 @@ import { JSX, ReactNode } from 'react';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
 import { ReactiveQueryTestHarnessReturnType } from './types.js';
 
-// Overloads
 export function ReactiveQueryTestHarness<
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
->(args: {
-  reactiveQuery: ReactiveQuery<
-    undefined,
-    TResult,
-    E,
-    TNativeOptions,
-    TNativeReturnType
-  >;
-  params?: undefined;
-  options?: ReactiveQueryOptions;
-  nativeOptions?: TNativeOptions;
-  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): ReactiveQueryTestHarnessReturnType<TResult, E>;
-export function ReactiveQueryTestHarness<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
-  TNativeOptions = unknown,
-  TNativeReturnType = unknown,
->(args: {
-  reactiveQuery: ReactiveQuery<
-    TParams,
-    TResult,
-    E,
-    TNativeOptions,
-    TNativeReturnType
-  >;
-  params: TParams;
-  options?: ReactiveQueryOptions;
-  nativeOptions?: TNativeOptions;
-  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): ReactiveQueryTestHarnessReturnType<TResult, E>;
-
-// Implementation
-export function ReactiveQueryTestHarness<
-  TParams extends object | undefined,
-  TResult = unknown,
-  E extends Error = Error,
-  TNativeOptions = unknown,
-  TNativeReturnType = unknown,
->({
-  reactiveQuery,
-  params,
-  options,
-  nativeOptions,
-  wrapper,
-}: {
-  reactiveQuery: ReactiveQuery<
-    TParams,
-    TResult,
-    E,
-    TNativeOptions,
-    TNativeReturnType
-  >;
-  params?: TParams;
-  options?: ReactiveQueryOptions;
-  nativeOptions?: TNativeOptions;
-  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): ReactiveQueryTestHarnessReturnType<TResult, E> {
+>(
+  args: TParams extends void
+    ? {
+        reactiveQuery: ReactiveQuery<
+          TParams,
+          TResult,
+          TError,
+          TNativeOptions,
+          TNativeReturnType
+        >;
+        options?: ReactiveQueryOptions;
+        nativeOptions?: TNativeOptions;
+        wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+      }
+    : {
+        reactiveQuery: ReactiveQuery<
+          TParams,
+          TResult,
+          TError,
+          TNativeOptions,
+          TNativeReturnType
+        >;
+        params: TParams;
+        options?: ReactiveQueryOptions;
+        nativeOptions?: TNativeOptions;
+        wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+      },
+): ReactiveQueryTestHarnessReturnType<TResult, TError> {
+  const { reactiveQuery, options, nativeOptions, wrapper } = args;
   const hook = renderHook(
     () =>
       reactiveQuery.useQuery({
-        ...params,
+        ...(args as { params: TParams }).params,
         options,
         nativeOptions,
       } as {

@@ -3,9 +3,9 @@ import { isIdiomaticQuery } from '../idiomatic/isIdiomaticQuery';
 import { isReactiveQuery } from '../reactive/isReactiveQuery';
 
 export const isChimericQuery = <
-  TParams extends object | undefined,
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
@@ -14,7 +14,7 @@ export const isChimericQuery = <
 ): maybeChimericQuery is ChimericQuery<
   TParams,
   TResult,
-  E,
+  TError,
   TNativeIdiomaticOptions,
   TNativeReactiveOptions,
   TNativeReactiveResult

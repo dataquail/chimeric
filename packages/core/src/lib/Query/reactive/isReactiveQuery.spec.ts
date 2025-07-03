@@ -1,35 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { makeReactiveQueryWithoutParamsReturnsString } from '../__tests__/queryFixtures';
 import { isReactiveQuery } from './isReactiveQuery';
 
 describe('isReactiveQuery', () => {
   it('should return true for an object with useQuery function', () => {
-    const mockReactiveQuery = {
-      useQuery: vi.fn(() => ({
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-        refetch: vi.fn(() => Promise.resolve('test')),
-      })),
-    };
-
-    expect(isReactiveQuery(mockReactiveQuery)).toBe(true);
-  });
-
-  it('should return true for a function with useQuery property', () => {
-    const mockReactiveQuery = vi.fn(() => 'test') as any;
-    mockReactiveQuery.useQuery = vi.fn(() => ({
-      isIdle: true,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      error: null,
-      data: undefined,
-      refetch: vi.fn(() => Promise.resolve('test')),
-    }));
-
+    const mockReactiveQuery = makeReactiveQueryWithoutParamsReturnsString();
     expect(isReactiveQuery(mockReactiveQuery)).toBe(true);
   });
 

@@ -29,12 +29,11 @@ export function IdiomaticMutationFactory<
       ...(options ?? {}),
       ...(nativeOptions ?? {}),
     });
-    return mutation.execute(params as TParams) as ReturnType<
-      IdiomaticMutation<TParams, TResult, TError>
-    >;
+    return mutation.execute(params as TParams);
   };
+
   return createIdiomaticMutation<TParams, TResult, TError>(
-    idiomaticMutation as unknown as IdiomaticMutation<TParams, TResult, TError>,
+    idiomaticMutation as IdiomaticMutation<TParams, TResult, TError>,
   ) as IdiomaticMutation<
     TParams extends undefined ? void : TParams,
     TResult,

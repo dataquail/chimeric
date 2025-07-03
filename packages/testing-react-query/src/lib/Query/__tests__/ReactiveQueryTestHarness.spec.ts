@@ -2,14 +2,15 @@ import { ReactiveQueryFactory } from '@chimeric/react-query';
 import { ReactiveQueryTestHarness } from '../ReactiveQueryTestHarness';
 import { QueryClient, queryOptions } from '@tanstack/react-query';
 import { getTestWrapper } from '../../__tests__/getTestWrapper';
+import {
+  makeAsyncFnWithoutParamsReturnsString,
+  makeAsyncFnWithParamsReturnsString,
+} from '../../__tests__/functionFixtures';
 
 describe('ReactiveQueryTestHarness', () => {
-  const wait = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
-
   it('should be a function', async () => {
     const queryClient = new QueryClient();
-    const mockQueryFn = vi.fn(() => Promise.resolve('test'));
+    const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
     const reactiveQuery = ReactiveQueryFactory(() =>
       queryOptions({
         queryKey: ['test'],
@@ -43,13 +44,10 @@ describe('ReactiveQueryTestHarness', () => {
 
   it('should wait for success with params', async () => {
     const queryClient = new QueryClient();
-    const mockQueryFn = vi.fn(async (args: { id: string }) => {
-      await wait(100);
-      return args.id;
-    });
-    const reactiveQuery = ReactiveQueryFactory((args: { id: string }) =>
+    const mockQueryFn = makeAsyncFnWithParamsReturnsString();
+    const reactiveQuery = ReactiveQueryFactory((args: { name: string }) =>
       queryOptions({
-        queryKey: ['test', args.id],
+        queryKey: ['test', args.name],
         queryFn: () => mockQueryFn(args),
       }),
     );
@@ -57,7 +55,7 @@ describe('ReactiveQueryTestHarness', () => {
     const query = ReactiveQueryTestHarness({
       reactiveQuery,
       wrapper: getTestWrapper(queryClient),
-      params: { id: '1' },
+      params: { name: 'John' },
     });
 
     expect(query.result.current.isIdle).toBe(true);
@@ -75,7 +73,7 @@ describe('ReactiveQueryTestHarness', () => {
     expect(query.result.current.isPending).toBe(false);
     expect(query.result.current.isError).toBe(false);
     expect(query.result.current.error).toBe(null);
-    expect(query.result.current.data).toBe('1');
+    expect(query.result.current.data).toBe('Hello John');
     expect(mockQueryFn).toHaveBeenCalledTimes(1);
   });
 });

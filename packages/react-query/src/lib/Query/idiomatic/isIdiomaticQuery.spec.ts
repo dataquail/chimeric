@@ -1,8 +1,9 @@
+import { makeAsyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
 import { isIdiomaticQuery } from './isIdiomaticQuery';
 
 describe('isIdiomaticQuery', () => {
   it('should return true for a function', () => {
-    const mockQueryFn = vi.fn(async () => 'test');
+    const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
 
     expect(isIdiomaticQuery(mockQueryFn)).toBe(true);
   });

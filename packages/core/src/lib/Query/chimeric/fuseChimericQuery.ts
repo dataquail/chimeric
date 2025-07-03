@@ -3,34 +3,10 @@ import { isChimericQuery } from './isChimericQuery';
 import { IdiomaticQuery } from '../idiomatic/types';
 import { ReactiveQuery } from '../reactive/types';
 
-// Overloads
 export function fuseChimericQuery<
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
-  TNativeIdiomaticOptions = unknown,
-  TNativeReactiveOptions = unknown,
-  TNativeReactiveResult = unknown,
->(args: {
-  idiomatic: IdiomaticQuery<undefined, TResult, TNativeIdiomaticOptions>;
-  reactive: ReactiveQuery<
-    undefined,
-    TResult,
-    E,
-    TNativeReactiveOptions,
-    TNativeReactiveResult
-  >;
-}): ChimericQuery<
-  undefined,
-  TResult,
-  E,
-  TNativeIdiomaticOptions,
-  TNativeReactiveOptions,
-  TNativeReactiveResult
->;
-export function fuseChimericQuery<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
@@ -39,40 +15,14 @@ export function fuseChimericQuery<
   reactive: ReactiveQuery<
     TParams,
     TResult,
-    E,
+    TError,
     TNativeReactiveOptions,
     TNativeReactiveResult
   >;
 }): ChimericQuery<
   TParams,
   TResult,
-  E,
-  TNativeIdiomaticOptions,
-  TNativeReactiveOptions,
-  TNativeReactiveResult
->;
-
-// Implementation
-export function fuseChimericQuery<
-  TParams extends object | undefined,
-  TResult = unknown,
-  E extends Error = Error,
-  TNativeIdiomaticOptions = unknown,
-  TNativeReactiveOptions = unknown,
-  TNativeReactiveResult = unknown,
->(args: {
-  idiomatic: IdiomaticQuery<TParams, TResult, TNativeIdiomaticOptions>;
-  reactive: ReactiveQuery<
-    TParams,
-    TResult,
-    E,
-    TNativeReactiveOptions,
-    TNativeReactiveResult
-  >;
-}): ChimericQuery<
-  TParams,
-  TResult,
-  E,
+  TError,
   TNativeIdiomaticOptions,
   TNativeReactiveOptions,
   TNativeReactiveResult
@@ -80,7 +30,7 @@ export function fuseChimericQuery<
   const chimericFn = args.idiomatic as ChimericQuery<
     TParams,
     TResult,
-    E,
+    TError,
     TNativeIdiomaticOptions,
     TNativeReactiveOptions,
     TNativeReactiveResult
@@ -90,7 +40,7 @@ export function fuseChimericQuery<
     isChimericQuery<
       TParams,
       TResult,
-      E,
+      TError,
       TNativeIdiomaticOptions,
       TNativeReactiveOptions,
       TNativeReactiveResult

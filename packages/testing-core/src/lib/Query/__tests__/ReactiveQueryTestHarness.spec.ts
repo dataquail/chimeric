@@ -1,20 +1,12 @@
 import { ReactiveQueryTestHarness } from '../ReactiveQueryTestHarness';
+import {
+  makeReactiveQueryWithoutParamsReturnsString,
+  makeReactiveQueryWithParamsReturnsString,
+} from '../../__tests__/queryFixtures';
 
 describe('ReactiveQueryTestHarness', () => {
   it('should be a function', () => {
-    const mockReactiveQuery = {
-      useQuery: vi.fn(() => ({
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-        refetch: vi.fn(),
-        native: {},
-      })),
-    };
-
+    const mockReactiveQuery = makeReactiveQueryWithoutParamsReturnsString();
     ReactiveQueryTestHarness({
       reactiveQuery: mockReactiveQuery,
     });
@@ -23,25 +15,14 @@ describe('ReactiveQueryTestHarness', () => {
   });
 
   it('should handle params', () => {
-    const mockReactiveQuery = {
-      useQuery: vi.fn((_args: { id: string }) => ({
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-        refetch: vi.fn(),
-        native: {},
-      })),
-    };
+    const mockReactiveQuery = makeReactiveQueryWithParamsReturnsString();
 
     ReactiveQueryTestHarness({
       reactiveQuery: mockReactiveQuery,
-      params: { id: '123' },
+      params: { name: 'John' },
     });
 
-    expect(mockReactiveQuery.useQuery).toHaveBeenCalledWith({ id: '123' });
+    expect(mockReactiveQuery.useQuery).toHaveBeenCalledWith({ name: 'John' });
     expect(mockReactiveQuery.useQuery).toHaveBeenCalledTimes(1);
   });
 });

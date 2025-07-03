@@ -3,12 +3,12 @@ import { QueryKey } from '@tanstack/react-query';
 import { ChimericQuery } from './types';
 
 export const isChimericQuery = <
-  TParams extends object | undefined,
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(
   maybeChimericQuery: unknown,
-): maybeChimericQuery is ChimericQuery<TParams, TResult, E, TQueryKey> => {
+): maybeChimericQuery is ChimericQuery<TParams, TResult, TError, TQueryKey> => {
   return coreIsChimericQuery(maybeChimericQuery);
 };

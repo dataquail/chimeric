@@ -2,51 +2,41 @@ import {
   ChimericQuery as CoreChimericQuery,
   DefineChimericQuery as CoreDefineChimericQuery,
 } from '@chimeric/core';
+import { QueryKey } from '@tanstack/react-query';
+import { TanstackQueryIdiomaticNativeOptions } from '../idiomatic/types';
 import {
-  FetchQueryOptions,
-  QueryKey,
-  UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query';
+  TanstackQueryReactiveNativeOptions,
+  TanstackQueryReactiveReturnType,
+} from '../reactive/types';
 
 export type ChimericQuery<
-  TParams extends object | undefined,
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 > = CoreChimericQuery<
   TParams,
   TResult,
-  E,
-  FetchQueryOptions<TResult, E, TResult, TQueryKey>,
-  Omit<UseQueryOptions<TResult, E, TResult, TQueryKey>, 'queryKey' | 'queryFn'>,
-  UseQueryResult<TResult, E>
+  TError,
+  TanstackQueryIdiomaticNativeOptions<TResult, TError, TQueryKey>,
+  TanstackQueryReactiveNativeOptions<TResult, TError, TQueryKey>,
+  TanstackQueryReactiveReturnType<TResult, TError>
 >;
 
 export type DefineChimericQuery<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
-  E extends Error = Error,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  TQueryKey extends QueryKey = any[],
+  TError extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
 > = CoreDefineChimericQuery<
   T,
-  E,
-  FetchQueryOptions<
+  TError,
+  TanstackQueryIdiomaticNativeOptions<
     Awaited<ReturnType<T>>,
-    E,
-    Awaited<ReturnType<T>>,
+    TError,
     TQueryKey
   >,
-  Omit<
-    UseQueryOptions<
-      Awaited<ReturnType<T>>,
-      E,
-      Awaited<ReturnType<T>>,
-      TQueryKey
-    >,
-    'queryKey' | 'queryFn'
-  >,
-  UseQueryResult<Awaited<ReturnType<T>>, E>
+  TanstackQueryReactiveNativeOptions<Awaited<ReturnType<T>>, TError, TQueryKey>,
+  TanstackQueryReactiveReturnType<Awaited<ReturnType<T>>, TError>
 >;

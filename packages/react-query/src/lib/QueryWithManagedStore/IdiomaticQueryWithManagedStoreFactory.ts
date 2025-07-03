@@ -6,24 +6,10 @@ import {
 import { createIdiomaticQuery } from '../Query/idiomatic/createIdiomaticQuery';
 import { IdiomaticQuery } from '../Query/idiomatic/types';
 
-// Overloads
 export function IdiomaticQueryWithManagedStoreFactory<
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
-  TQueryKey extends QueryKey = QueryKey,
->(
-  queryClient: QueryClient,
-  initialOptions: {
-    getFromStore: () => TResult;
-    getQueryOptions: () => ReturnType<
-      typeof queryOptions<void, E, void, TQueryKey>
-    >;
-  },
-): IdiomaticQuery<undefined, TResult, E, TQueryKey>;
-export function IdiomaticQueryWithManagedStoreFactory<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(
   queryClient: QueryClient,
@@ -31,26 +17,19 @@ export function IdiomaticQueryWithManagedStoreFactory<
     getFromStore: (args: TParams) => TResult;
     getQueryOptions: (
       params: TParams,
-    ) => ReturnType<typeof queryOptions<void, E, void, TQueryKey>>;
+    ) => ReturnType<typeof queryOptions<void, TError, void, TQueryKey>>;
   },
-): IdiomaticQuery<TParams, TResult, E, TQueryKey>;
-
-// Implementation
-export function IdiomaticQueryWithManagedStoreFactory<
-  TParams extends object | undefined,
-  TResult = unknown,
-  E extends Error = Error,
-  TQueryKey extends QueryKey = QueryKey,
->(
-  queryClient: QueryClient,
-  initialOptions: {
-    getFromStore: (args: TParams) => TResult;
-    getQueryOptions: (
-      params: TParams,
-    ) => ReturnType<typeof queryOptions<void, E, void, TQueryKey>>;
-  },
-): IdiomaticQuery<TParams, TResult, E, TQueryKey> {
-  return createIdiomaticQuery(async (paramsAndOptions) => {
+): IdiomaticQuery<
+  TParams extends undefined ? void : TParams,
+  TResult,
+  TError,
+  TQueryKey
+> {
+  const idiomaticQuery = async (
+    paramsAndOptions: Parameters<
+      IdiomaticQuery<TParams, TResult, TError, TQueryKey>
+    >[0],
+  ) => {
     const { options, nativeOptions, ...params } = paramsAndOptions ?? {};
     const { getQueryOptions, getFromStore, ...restQueryOptions } =
       initialOptions;
@@ -70,7 +49,9 @@ export function IdiomaticQueryWithManagedStoreFactory<
         ReturnType<
           (
             params: TParams,
-          ) => ReturnType<typeof queryOptions<TResult, E, TResult, TQueryKey>>
+          ) => ReturnType<
+            typeof queryOptions<TResult, TError, TResult, TQueryKey>
+          >
         >,
         'queryFn' | 'queryKey'
       >),
@@ -88,5 +69,14 @@ export function IdiomaticQueryWithManagedStoreFactory<
     });
 
     return getFromStore(params as TParams);
-  }) as IdiomaticQuery<TParams, TResult, E, TQueryKey>;
+  };
+
+  return createIdiomaticQuery<TParams, TResult, TError, TQueryKey>(
+    idiomaticQuery as IdiomaticQuery<TParams, TResult, TError, TQueryKey>,
+  ) as IdiomaticQuery<
+    TParams extends undefined ? void : TParams,
+    TResult,
+    TError,
+    TQueryKey
+  >;
 }

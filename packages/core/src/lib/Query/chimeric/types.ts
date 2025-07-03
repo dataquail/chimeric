@@ -2,9 +2,9 @@ import { IdiomaticQuery } from '../idiomatic/types';
 import { ReactiveQuery } from '../reactive/types';
 
 export type ChimericQuery<
-  TParams extends object | undefined,
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
@@ -12,7 +12,7 @@ export type ChimericQuery<
   ReactiveQuery<
     TParams,
     TResult,
-    E,
+    TError,
     TNativeReactiveOptions,
     TNativeReactiveResult
   >;
@@ -26,7 +26,7 @@ export type DefineChimericQuery<
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
 > = ChimericQuery<
-  Parameters<T>[0] extends object | undefined ? Parameters<T>[0] : never,
+  Parameters<T>[0] extends void | object ? Parameters<T>[0] : never,
   Awaited<ReturnType<T>>,
   E,
   TNativeIdiomaticOptions,

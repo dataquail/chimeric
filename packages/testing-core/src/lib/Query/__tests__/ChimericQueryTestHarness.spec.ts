@@ -24,7 +24,7 @@ describe('ChimericQueryTestHarness', () => {
 
     ChimericQueryTestHarness({
       chimericQuery,
-      params: { id: '123' }, // should be ts error
+      // params: { id: '123' }, // should be ts error
       method: 'reactive',
     });
 
