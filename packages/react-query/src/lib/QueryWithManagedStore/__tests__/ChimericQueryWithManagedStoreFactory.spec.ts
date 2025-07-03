@@ -3,19 +3,22 @@ import { ChimericQueryWithManagedStoreFactory } from '../ChimericQueryWithManage
 import { renderHook, waitFor } from '@testing-library/react';
 import { getTestWrapper } from '../../__tests__/getTestWrapper';
 import { DefineChimericQuery } from '../../Query/chimeric/types';
+import {
+  makeAsyncFnWithoutParamsReturnsString,
+  makeAsyncFnWithParamsReturnsString,
+} from '../../__tests__/functionFixtures';
 
 describe('ChimericQueryWithManagedStoreFactory', () => {
   it('should invoke the reactive hook', async () => {
     const queryClient = new QueryClient();
-    const mockQueryFn = vi.fn(() => Promise.resolve('test'));
-    let storeValue: string | null = null;
+    const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
+    let storeValue = 'initial';
     const chimericQuery = ChimericQueryWithManagedStoreFactory(queryClient, {
       getQueryOptions: () =>
         queryOptions({
           queryKey: ['test'],
           queryFn: async () => {
-            await mockQueryFn();
-            storeValue = 'test';
+            storeValue = await mockQueryFn();
           },
         }),
       getFromStore: () => storeValue,
@@ -35,15 +38,14 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
 
   it('should invoke the idiomatic fn', async () => {
     const queryClient = new QueryClient();
-    const mockQueryFn = vi.fn(() => Promise.resolve('test'));
-    let storeValue: string | null = null;
+    const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
+    let storeValue = 'initial';
     const chimericQuery = ChimericQueryWithManagedStoreFactory(queryClient, {
       getQueryOptions: () =>
         queryOptions({
           queryKey: ['test'],
           queryFn: async () => {
-            await mockQueryFn();
-            storeValue = 'test';
+            storeValue = await mockQueryFn();
           },
         }),
       getFromStore: () => storeValue,
@@ -57,10 +59,8 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
 
   it('should invoke the reactive hook with params', async () => {
     const queryClient = new QueryClient();
-    const mockQueryFn = vi.fn((args: { name: string }) =>
-      Promise.resolve(`Hello ${args.name}`),
-    );
-    let storeValue: string | null = null;
+    const mockQueryFn = makeAsyncFnWithParamsReturnsString();
+    let storeValue = 'initial';
     const chimericQuery = ChimericQueryWithManagedStoreFactory(queryClient, {
       getQueryOptions: (args: { name: string }) =>
         queryOptions({
@@ -87,10 +87,8 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
 
   it('should invoke the idiomatic fn with params', async () => {
     const queryClient = new QueryClient();
-    const mockQueryFn = vi.fn((args: { name: string }) =>
-      Promise.resolve(`Hello ${args.name}`),
-    );
-    let storeValue: string | null = null;
+    const mockQueryFn = makeAsyncFnWithParamsReturnsString();
+    let storeValue = 'initial';
     const chimericQuery = ChimericQueryWithManagedStoreFactory(queryClient, {
       getQueryOptions: (args: { name: string }) =>
         queryOptions({
@@ -109,7 +107,11 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
   });
 
   it('should handle type annotations with no params', async () => {
-    type TestChimericQuery = DefineChimericQuery<() => Promise<string>>;
+    type TestChimericQuery = DefineChimericQuery<
+      () => Promise<string>,
+      Error,
+      string[]
+    >;
     const queryClient = new QueryClient();
     const chimericQuery: TestChimericQuery =
       ChimericQueryWithManagedStoreFactory(queryClient, {
@@ -131,7 +133,9 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
 
   it('should handle type annotations with params', async () => {
     type TestChimericQuery = DefineChimericQuery<
-      (args: { name: string }) => Promise<string>
+      (args: { name: string }) => Promise<string>,
+      Error,
+      string[]
     >;
     const queryClient = new QueryClient();
     const chimericQuery: TestChimericQuery =

@@ -2,11 +2,19 @@ import { QueryClient, queryOptions } from '@tanstack/react-query';
 import { ChimericQueryFactory } from '../chimeric/ChimericQueryFactory';
 import { renderHook, waitFor } from '@testing-library/react';
 import { getTestWrapper } from '../../__tests__/getTestWrapper';
+import {
+  makeAsyncFnWithoutParamsReturnsString,
+  makeAsyncFnWithParamsReturnsString,
+} from '../../__tests__/functionFixtures';
+import {
+  ChimericQueryWithoutParamsReturnsString,
+  ChimericQueryWithParamsReturnsString,
+} from '../__tests__/queryFixtures';
 
 describe('ChimericQueryFactory', () => {
   it('should invoke the reactive hook', async () => {
     const queryClient = new QueryClient();
-    const mockQueryFn = vi.fn(() => Promise.resolve('test'));
+    const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
     const chimericQuery = ChimericQueryFactory(queryClient, () =>
       queryOptions({
         queryKey: ['test'],
@@ -27,7 +35,7 @@ describe('ChimericQueryFactory', () => {
 
   it('should invoke the idiomatic fn', async () => {
     const queryClient = new QueryClient();
-    const mockQueryFn = vi.fn(() => Promise.resolve('test'));
+    const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
     const chimericQuery = ChimericQueryFactory(queryClient, () =>
       queryOptions({
         queryKey: ['test'],
@@ -42,9 +50,7 @@ describe('ChimericQueryFactory', () => {
 
   it('should invoke the reactive hook with params', async () => {
     const queryClient = new QueryClient();
-    const mockQueryFn = vi.fn((args: { name: string }) =>
-      Promise.resolve(`Hello ${args.name}`),
-    );
+    const mockQueryFn = makeAsyncFnWithParamsReturnsString();
     const chimericQuery = ChimericQueryFactory(
       queryClient,
       (args: { name: string }) =>
@@ -68,9 +74,7 @@ describe('ChimericQueryFactory', () => {
 
   it('should invoke the idiomatic fn with params', async () => {
     const queryClient = new QueryClient();
-    const mockQueryFn = vi.fn((args: { name: string }) =>
-      Promise.resolve(`Hello ${args.name}`),
-    );
+    const mockQueryFn = makeAsyncFnWithParamsReturnsString();
     const chimericQuery = ChimericQueryFactory(
       queryClient,
       (args: { name: string }) =>
@@ -79,6 +83,35 @@ describe('ChimericQueryFactory', () => {
           queryFn: async () => mockQueryFn(args),
         }),
     );
+    const result = await chimericQuery({ name: 'John' });
+
+    expect(result).toBe('Hello John');
+    expect(mockQueryFn).toHaveBeenCalledWith({ name: 'John' });
+  });
+
+  it('should handle type annotations without params', async () => {
+    const queryClient = new QueryClient();
+    const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
+    const chimericQuery: ChimericQueryWithoutParamsReturnsString =
+      ChimericQueryFactory(queryClient, () =>
+        queryOptions({ queryKey: ['test'], queryFn: mockQueryFn }),
+      );
+    const result = await chimericQuery();
+
+    expect(result).toBe('test');
+    expect(mockQueryFn).toHaveBeenCalled();
+  });
+
+  it('should handle type annotations with params', async () => {
+    const queryClient = new QueryClient();
+    const mockQueryFn = makeAsyncFnWithParamsReturnsString();
+    const chimericQuery: ChimericQueryWithParamsReturnsString =
+      ChimericQueryFactory(queryClient, (args: { name: string }) =>
+        queryOptions({
+          queryKey: ['test', args.name],
+          queryFn: async () => mockQueryFn(args),
+        }),
+      );
     const result = await chimericQuery({ name: 'John' });
 
     expect(result).toBe('Hello John');

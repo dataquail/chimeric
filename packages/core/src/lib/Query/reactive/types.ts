@@ -1,12 +1,49 @@
 export type ReactiveQuery<
-  TParams extends undefined | object,
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
-> = TParams extends Record<'options' | 'nativeOptions', unknown>
-  ? never
-  : TParams extends undefined
+> = TParams extends object
+  ? Omit<TParams, 'options' | 'nativeOptions'> extends
+      | undefined
+      | {
+          options?: ReactiveQueryOptions;
+          nativeOptions?: TNativeOptions;
+        }
+    ? {
+        useQuery: (params?: {
+          options?: ReactiveQueryOptions;
+          nativeOptions?: TNativeOptions;
+        }) => {
+          isIdle: boolean;
+          isPending: boolean;
+          isSuccess: boolean;
+          isError: boolean;
+          error: TError | null;
+          data: TResult | undefined;
+          refetch: () => Promise<TResult>;
+          native: TNativeReturnType;
+        };
+      }
+    : {
+        useQuery: (
+          paramsAndConfig: TParams & {
+            options?: ReactiveQueryOptions;
+            nativeOptions?: TNativeOptions;
+          },
+        ) => {
+          isIdle: boolean;
+          isPending: boolean;
+          isSuccess: boolean;
+          isError: boolean;
+          error: TError | null;
+          data: TResult | undefined;
+          refetch: () => Promise<TResult>;
+          native: TNativeReturnType;
+        };
+      }
+  : TParams extends void
   ? {
       useQuery: (params?: {
         options?: ReactiveQueryOptions;
@@ -16,25 +53,7 @@ export type ReactiveQuery<
         isPending: boolean;
         isSuccess: boolean;
         isError: boolean;
-        error: E | null;
-        data: TResult | undefined;
-        refetch: () => Promise<TResult>;
-        native: TNativeReturnType;
-      };
-    }
-  : TParams extends object
-  ? {
-      useQuery: (
-        params: TParams & {
-          options?: ReactiveQueryOptions;
-          nativeOptions?: TNativeOptions;
-        },
-      ) => {
-        isIdle: boolean;
-        isPending: boolean;
-        isSuccess: boolean;
-        isError: boolean;
-        error: E | null;
+        error: TError | null;
         data: TResult | undefined;
         refetch: () => Promise<TResult>;
         native: TNativeReturnType;
@@ -48,13 +67,13 @@ export type DefineReactiveQuery<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
-  E extends Error = Error,
+  TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
 > = ReactiveQuery<
-  Parameters<T>[0] extends undefined | object ? Parameters<T>[0] : never,
+  Parameters<T>[0] extends void | object ? Parameters<T>[0] : never,
   Awaited<ReturnType<T>>,
-  E,
+  TError,
   TNativeOptions,
   TNativeReturnType
 >;

@@ -4,46 +4,34 @@ import { checkOnInterval } from '../checkOnInterval.js';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
 import { IdiomaticQueryTestHarnessReturnType } from './types.js';
 
-// Overloads
 export function IdiomaticQueryTestHarness<
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
   TIdiomaticNativeOptions = unknown,
->(args: {
-  idiomaticQuery: IdiomaticQuery<undefined, TResult, TIdiomaticNativeOptions>;
-  params?: undefined;
-  options?: IdiomaticQueryOptions;
-  nativeOptions?: TIdiomaticNativeOptions;
-}): IdiomaticQueryTestHarnessReturnType<TResult, E>;
-export function IdiomaticQueryTestHarness<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
-  TIdiomaticNativeOptions = unknown,
->(args: {
-  idiomaticQuery: IdiomaticQuery<TParams, TResult, TIdiomaticNativeOptions>;
-  params: TParams;
-  options?: IdiomaticQueryOptions;
-  nativeOptions?: TIdiomaticNativeOptions;
-}): IdiomaticQueryTestHarnessReturnType<TResult, E>;
-
-// Implementation
-export function IdiomaticQueryTestHarness<
-  TParams extends object | undefined,
-  TResult = unknown,
-  E extends Error = Error,
-  TIdiomaticNativeOptions = unknown,
->({
-  idiomaticQuery,
-  params,
-  options,
-  nativeOptions,
-}: {
-  idiomaticQuery: IdiomaticQuery<TParams, TResult, TIdiomaticNativeOptions>;
-  params?: TParams;
-  options?: IdiomaticQueryOptions;
-  nativeOptions?: TIdiomaticNativeOptions;
-}): IdiomaticQueryTestHarnessReturnType<TResult, E> {
+>(
+  args: TParams extends void
+    ? {
+        idiomaticQuery: IdiomaticQuery<
+          TParams,
+          TResult,
+          TIdiomaticNativeOptions
+        >;
+        options?: IdiomaticQueryOptions;
+        nativeOptions?: TIdiomaticNativeOptions;
+      }
+    : {
+        idiomaticQuery: IdiomaticQuery<
+          TParams,
+          TResult,
+          TIdiomaticNativeOptions
+        >;
+        params: TParams;
+        options?: IdiomaticQueryOptions;
+        nativeOptions?: TIdiomaticNativeOptions;
+      },
+): IdiomaticQueryTestHarnessReturnType<TResult, TError> {
+  const { idiomaticQuery, options, nativeOptions } = args;
   const result = {
     current: {
       data: undefined as TResult | undefined,
@@ -51,7 +39,7 @@ export function IdiomaticQueryTestHarness<
       isSuccess: false,
       isPending: true,
       isError: false,
-      error: null as E | null,
+      error: null as TError | null,
     },
   };
   let promiseStatus = 'initial' as
@@ -62,7 +50,7 @@ export function IdiomaticQueryTestHarness<
   result.current.isIdle = false;
   result.current.isPending = true;
   let promise = idiomaticQuery({
-    ...params,
+    ...(args as { params: TParams }).params,
     options,
     nativeOptions,
   } as {
@@ -88,7 +76,7 @@ export function IdiomaticQueryTestHarness<
       result.current.isPending = false;
       result.current.isSuccess = false;
       result.current.isError = true;
-      result.current.error = error as E;
+      result.current.error = error as TError;
       promiseStatus = 'rejected';
     });
 
@@ -98,7 +86,7 @@ export function IdiomaticQueryTestHarness<
         try {
           if (options?.reinvokeIdiomaticFn && promiseStatus === 'resolved') {
             promise = idiomaticQuery({
-              ...params,
+              ...(args as { params: TParams }).params,
               options,
               nativeOptions,
             } as {
@@ -124,7 +112,7 @@ export function IdiomaticQueryTestHarness<
                 result.current.isPending = false;
                 result.current.isSuccess = false;
                 result.current.isError = true;
-                result.current.error = error as E;
+                result.current.error = error as TError;
                 promiseStatus = 'rejected';
               });
           }

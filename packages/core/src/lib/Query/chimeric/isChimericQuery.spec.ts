@@ -1,18 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { makeAsyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
+import {
+  makeIdiomaticQueryWithoutParamsReturnsString,
+  makeReactiveQueryWithoutParamsReturnsString,
+} from '../__tests__/queryFixtures';
 import { isChimericQuery } from './isChimericQuery';
 
 describe('isChimericQuery', () => {
   it('should return true for a chimeric query function', () => {
-    const mockChimericQuery = vi.fn(async () => 'test') as any;
-    mockChimericQuery.useQuery = vi.fn(() => ({
-      isIdle: true,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      error: null,
-      data: undefined,
-      refetch: vi.fn(() => Promise.resolve('test')),
-    }));
+    const mockChimericQuery =
+      makeIdiomaticQueryWithoutParamsReturnsString() as any;
+    mockChimericQuery.useQuery =
+      makeReactiveQueryWithoutParamsReturnsString().useQuery;
 
     expect(isChimericQuery(mockChimericQuery)).toBe(true);
   });
@@ -22,21 +21,11 @@ describe('isChimericQuery', () => {
     expect(isChimericQuery('not a function')).toBe(false);
 
     // Function without useQuery
-    const mockQueryFn = vi.fn(async () => 'test');
+    const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
     expect(isChimericQuery(mockQueryFn)).toBe(false);
 
     // Object with useQuery but not a function
-    const mockReactiveQuery = {
-      useQuery: vi.fn(() => ({
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-        refetch: vi.fn(() => Promise.resolve('test')),
-      })),
-    };
+    const mockReactiveQuery = makeReactiveQueryWithoutParamsReturnsString();
     expect(isChimericQuery(mockReactiveQuery)).toBe(false);
 
     // Other invalid inputs

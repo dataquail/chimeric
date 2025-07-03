@@ -1,26 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  ChimericQueryWithoutParamsReturnsString,
+  ChimericQueryWithParamsReturnsString,
+  makeIdiomaticQueryWithoutParamsReturnsString,
+  makeIdiomaticQueryWithParamsReturnsString,
+  makeReactiveQueryWithoutParamsReturnsString,
+  makeReactiveQueryWithParamsReturnsString,
+} from '../__tests__/queryFixtures';
 import { IdiomaticQuery } from '../idiomatic/types';
 import { fuseChimericQuery } from './fuseChimericQuery';
-import { DefineChimericQuery } from './types';
 
 describe('fuseChimericQuery', () => {
   it('should invoke the idiomatic async function', async () => {
-    type TestChimericQuery = DefineChimericQuery<() => Promise<string>>;
-
-    const mockIdiomaticQuery = vi.fn(async () => 'test');
-    const mockReactiveQuery = {
-      useQuery: vi.fn(() => ({
-        refetch: vi.fn(() => Promise.resolve('test')),
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-        native: undefined,
-      })),
-    };
-    const testChimericQuery: TestChimericQuery = fuseChimericQuery({
+    const mockIdiomaticQuery = makeIdiomaticQueryWithoutParamsReturnsString();
+    const mockReactiveQuery = makeReactiveQueryWithoutParamsReturnsString();
+    const testChimericQuery = fuseChimericQuery({
       idiomatic: mockIdiomaticQuery,
       reactive: mockReactiveQuery,
     });
@@ -31,25 +25,8 @@ describe('fuseChimericQuery', () => {
   });
 
   it('should invoke the idiomatic function with params', async () => {
-    // Should be ts error
-    // const mockIdiomaticQuery = vi.fn(
-    //   async () => `Hello John`,
-    // );
-    const mockIdiomaticQuery = vi.fn(
-      async (args: { name: string }) => `Hello ${args.name}`,
-    );
-    const mockReactiveQuery = {
-      useQuery: vi.fn((args: { name: string }) => ({
-        refetch: vi.fn(() => Promise.resolve(`Hello ${args.name}`)),
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-        native: undefined,
-      })),
-    };
+    const mockIdiomaticQuery = makeIdiomaticQueryWithParamsReturnsString();
+    const mockReactiveQuery = makeReactiveQueryWithParamsReturnsString();
     const testChimericQuery = fuseChimericQuery({
       idiomatic: mockIdiomaticQuery,
       reactive: mockReactiveQuery,
@@ -61,19 +38,8 @@ describe('fuseChimericQuery', () => {
   });
 
   it('should invoke the reactive function', async () => {
-    const mockIdiomaticQuery = vi.fn(async () => 'test');
-    const mockReactiveQuery = {
-      useQuery: vi.fn(() => ({
-        refetch: vi.fn(() => Promise.resolve('test')),
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: 'test',
-        native: undefined,
-      })),
-    };
+    const mockIdiomaticQuery = makeIdiomaticQueryWithoutParamsReturnsString();
+    const mockReactiveQuery = makeReactiveQueryWithoutParamsReturnsString();
     const testChimericQuery = fuseChimericQuery({
       idiomatic: mockIdiomaticQuery,
       reactive: mockReactiveQuery,
@@ -85,21 +51,8 @@ describe('fuseChimericQuery', () => {
   });
 
   it('should invoke the reactive function with params', async () => {
-    const mockIdiomaticQuery = vi.fn(
-      async (args: { name: string }) => `Hello ${args.name}`,
-    );
-    const mockReactiveQuery = {
-      useQuery: vi.fn((args: { name: string }) => ({
-        refetch: vi.fn(() => Promise.resolve(`Hello ${args.name}`)),
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: 'Hello John',
-        native: undefined,
-      })),
-    };
+    const mockIdiomaticQuery = makeIdiomaticQueryWithParamsReturnsString();
+    const mockReactiveQuery = makeReactiveQueryWithParamsReturnsString();
     const testChimericQuery = fuseChimericQuery({
       idiomatic: mockIdiomaticQuery,
       reactive: mockReactiveQuery,
@@ -111,23 +64,8 @@ describe('fuseChimericQuery', () => {
   });
 
   it('should invoke the reactive call function', async () => {
-    const mockIdiomaticQuery = vi.fn(
-      async (args: { name: string }) => `Hello ${args.name}`,
-    );
-    const mockRefetchFunction = vi.fn(() => Promise.resolve(`Hello John`));
-    const mockReactiveQuery = {
-      useQuery: vi.fn(() => ({
-        refetch: mockRefetchFunction,
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: 'Hello John',
-        reset: vi.fn(),
-        native: undefined,
-      })),
-    };
+    const mockIdiomaticQuery = makeIdiomaticQueryWithParamsReturnsString();
+    const mockReactiveQuery = makeReactiveQueryWithParamsReturnsString();
     const testChimericQuery = fuseChimericQuery({
       idiomatic: mockIdiomaticQuery,
       reactive: mockReactiveQuery,
@@ -136,7 +74,7 @@ describe('fuseChimericQuery', () => {
     await result.refetch();
     expect(mockIdiomaticQuery).not.toHaveBeenCalled();
     expect(mockReactiveQuery.useQuery).toHaveBeenCalled();
-    expect(mockRefetchFunction).toHaveBeenCalled();
+    expect(result.refetch).toHaveBeenCalled();
   });
 
   it('should throw an error for invalid inputs', () => {
@@ -156,23 +94,27 @@ describe('fuseChimericQuery', () => {
     });
   });
 
-  // it('should defineChimericQuery', () => {
-  //   // never
-  //   type TestChimericQueryWithOptions = DefineChimericQuery<
-  //     (args: { options: string }) => Promise<string>
-  //   >;
-  //   // never
-  //   type TestChimericQueryWithStringArgs = DefineChimericQuery<
-  //     (name: string) => Promise<string>
-  //   >;
-  //   // never
-  //   type TestChimericQueryWithCorrectArgsButIncorrectOptions =
-  //     DefineChimericQuery<
-  //       (args: { name: string; options: string }) => Promise<string>
-  //     >;
-  //   // ok
-  //   type TestChimericQueryWithCorrectArgs = DefineChimericQuery<
-  //     (args: { name: string }) => Promise<string>
-  //   >;
-  // });
+  it('should handle type annotations without params', async () => {
+    const mockIdiomaticQuery = makeIdiomaticQueryWithoutParamsReturnsString();
+    const mockReactiveQuery = makeReactiveQueryWithoutParamsReturnsString();
+    const testChimericQuery: ChimericQueryWithoutParamsReturnsString =
+      fuseChimericQuery({
+        idiomatic: mockIdiomaticQuery,
+        reactive: mockReactiveQuery,
+      });
+    const result = await testChimericQuery();
+    expect(result).toEqual('test');
+  });
+
+  it('should handle type annotations with params', async () => {
+    const mockIdiomaticQuery = makeIdiomaticQueryWithParamsReturnsString();
+    const mockReactiveQuery = makeReactiveQueryWithParamsReturnsString();
+    const testChimericQuery: ChimericQueryWithParamsReturnsString =
+      fuseChimericQuery({
+        idiomatic: mockIdiomaticQuery,
+        reactive: mockReactiveQuery,
+      });
+    const result = await testChimericQuery({ name: 'John' });
+    expect(result).toEqual('Hello John');
+  });
 });

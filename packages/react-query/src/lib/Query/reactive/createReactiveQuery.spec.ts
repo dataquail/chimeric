@@ -1,21 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createReactiveQuery } from './createReactiveQuery';
-import { UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
-import { ReactiveQueryOptions } from '@chimeric/core';
+import {
+  makeQueryHookWithoutParamsReturnsString,
+  makeQueryHookWithParamsReturnsString,
+  ReactiveQueryWithoutParamsReturnsString,
+  ReactiveQueryWithParamsReturnsString,
+} from '../__tests__/queryFixtures';
 
 describe('createReactiveQuery', () => {
   it('should create a reactive query function', () => {
-    const mockReactiveFn = vi.fn(() => ({
-      isIdle: true,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      error: null,
-      data: undefined,
-      refetch: vi.fn(() => Promise.resolve('test')),
-      native: {} as UseQueryResult<string, Error>,
-    }));
-
+    const mockReactiveFn = makeQueryHookWithoutParamsReturnsString();
     const reactiveQuery = createReactiveQuery(mockReactiveFn);
 
     expect(typeof reactiveQuery).toBe('object');
@@ -33,59 +27,56 @@ describe('createReactiveQuery', () => {
   });
 
   it('should invoke the reactive function with params', () => {
-    const mockReactiveFn = vi.fn(
-      (params: {
-        name: string;
-        options?: ReactiveQueryOptions;
-        nativeOptions?: UseQueryOptions<string, Error, string, any>;
-      }) => ({
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-        refetch: vi.fn(() => Promise.resolve(`Hello ${params.name}`)),
-        native: {} as UseQueryResult<string, Error>,
-      }),
-    );
-
+    const mockReactiveFn = makeQueryHookWithParamsReturnsString();
     const reactiveQuery = createReactiveQuery(mockReactiveFn);
-
     const result = reactiveQuery.useQuery({ name: 'John' });
 
     expect(result.isIdle).toBe(true);
     expect(result.isPending).toBe(false);
-    expect(result.isSuccess).toBe(false);
+    expect(result.isSuccess).toBe(true);
     expect(result.isError).toBe(false);
     expect(result.error).toBeNull();
-    expect(result.data).toBeUndefined();
+    expect(result.data).toBe('Hello John');
     expect(result.refetch).toBeDefined();
   });
 
   it('should invoke the reactive function without params', () => {
-    const mockReactiveFn = vi.fn(() => ({
-      isIdle: true,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      error: null,
-      data: undefined,
-      refetch: vi.fn(() => Promise.resolve('test')),
-      native: {} as UseQueryResult<string, Error>,
-    }));
-
+    const mockReactiveFn = makeQueryHookWithoutParamsReturnsString();
     const reactiveQuery = createReactiveQuery(mockReactiveFn);
-
     const result = reactiveQuery.useQuery();
 
     expect(result.isIdle).toBe(true);
     expect(result.isPending).toBe(false);
-    expect(result.isSuccess).toBe(false);
+    expect(result.isSuccess).toBe(true);
     expect(result.isError).toBe(false);
     expect(result.error).toBeNull();
-    expect(result.data).toBeUndefined();
+    expect(result.data).toBe('test');
     expect(result.refetch).toBeDefined();
     expect(result.native).toBeDefined();
+  });
+
+  it('should handle type annotations without params', () => {
+    const mockReactiveFn = makeQueryHookWithoutParamsReturnsString();
+    const reactiveQuery: ReactiveQueryWithoutParamsReturnsString =
+      createReactiveQuery(mockReactiveFn);
+    const result = reactiveQuery.useQuery();
+
+    expect(result.isIdle).toBe(true);
+    expect(result.isPending).toBe(false);
+  });
+
+  it('should handle type annotations with params', () => {
+    const mockReactiveFn = makeQueryHookWithParamsReturnsString();
+    const reactiveQuery: ReactiveQueryWithParamsReturnsString =
+      createReactiveQuery(mockReactiveFn);
+    const result = reactiveQuery.useQuery({ name: 'John' });
+
+    expect(result.isIdle).toBe(true);
+    expect(result.isPending).toBe(false);
+    expect(result.isSuccess).toBe(true);
+    expect(result.isError).toBe(false);
+    expect(result.error).toBeNull();
+    expect(result.data).toBe('Hello John');
+    expect(result.refetch).toBeDefined();
   });
 });

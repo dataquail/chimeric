@@ -6,12 +6,16 @@ import {
 import { QueryClient, queryOptions } from '@tanstack/react-query';
 import { getTestWrapper } from '../../__tests__/getTestWrapper';
 import { ChimericQueryTestHarness } from '@chimeric/testing-core';
+import {
+  makeAsyncFnWithoutParamsReturnsString,
+  makeAsyncFnWithParamsReturnsString,
+} from '../../__tests__/functionFixtures';
 
 describe('ChimericQueryTestHarness', () => {
   it('idiomatic no params', async () => {
     const queryClient = new QueryClient();
-    const mockIdiomaticQueryFn = vi.fn(() => Promise.resolve('test'));
-    const mockReactiveQueryFn = vi.fn(() => Promise.resolve('test'));
+    const mockIdiomaticQueryFn = makeAsyncFnWithoutParamsReturnsString();
+    const mockReactiveQueryFn = makeAsyncFnWithoutParamsReturnsString();
     const idiomaticQuery = IdiomaticQueryFactory(queryClient, () =>
       queryOptions({
         queryKey: ['test'],
@@ -56,23 +60,19 @@ describe('ChimericQueryTestHarness', () => {
 
   it('idiomatic with params', async () => {
     const queryClient = new QueryClient();
-    const mockIdiomaticQueryFn = vi.fn((args: { id: string }) =>
-      Promise.resolve(args.id),
-    );
-    const mockReactiveQueryFn = vi.fn((args: { id: string }) =>
-      Promise.resolve(args.id),
-    );
+    const mockIdiomaticQueryFn = makeAsyncFnWithParamsReturnsString();
+    const mockReactiveQueryFn = makeAsyncFnWithParamsReturnsString();
     const idiomaticQuery = IdiomaticQueryFactory(
       queryClient,
-      (args: { id: string }) =>
+      (args: { name: string }) =>
         queryOptions({
-          queryKey: ['test', args.id],
+          queryKey: ['test', args.name],
           queryFn: () => mockIdiomaticQueryFn(args),
         }),
     );
-    const reactiveQuery = ReactiveQueryFactory((args: { id: string }) =>
+    const reactiveQuery = ReactiveQueryFactory((args: { name: string }) =>
       queryOptions({
-        queryKey: ['test', args.id],
+        queryKey: ['test', args.name],
         queryFn: () => mockReactiveQueryFn(args),
       }),
     );
@@ -84,7 +84,7 @@ describe('ChimericQueryTestHarness', () => {
       }),
       method: 'idiomatic',
       wrapper: getTestWrapper(queryClient),
-      params: { id: '1' },
+      params: { name: 'John' },
     });
 
     expect(query.result.current.isIdle).toBe(false);
@@ -102,15 +102,15 @@ describe('ChimericQueryTestHarness', () => {
     expect(query.result.current.isPending).toBe(false);
     expect(query.result.current.isError).toBe(false);
     expect(query.result.current.error).toBe(null);
-    expect(query.result.current.data).toBe('1');
+    expect(query.result.current.data).toBe('Hello John');
     expect(mockIdiomaticQueryFn).toHaveBeenCalledTimes(1);
     expect(mockReactiveQueryFn).toHaveBeenCalledTimes(0);
   });
 
   it('reactive no params', async () => {
     const queryClient = new QueryClient();
-    const mockIdiomaticQueryFn = vi.fn(() => Promise.resolve('test'));
-    const mockReactiveQueryFn = vi.fn(() => Promise.resolve('test'));
+    const mockIdiomaticQueryFn = makeAsyncFnWithoutParamsReturnsString();
+    const mockReactiveQueryFn = makeAsyncFnWithoutParamsReturnsString();
     const idiomaticQuery = IdiomaticQueryFactory(queryClient, () =>
       queryOptions({
         queryKey: ['test'],
@@ -155,23 +155,19 @@ describe('ChimericQueryTestHarness', () => {
 
   it('reactive with params', async () => {
     const queryClient = new QueryClient();
-    const mockIdiomaticQueryFn = vi.fn((args: { id: string }) =>
-      Promise.resolve(args.id),
-    );
-    const mockReactiveQueryFn = vi.fn((args: { id: string }) =>
-      Promise.resolve(args.id),
-    );
+    const mockIdiomaticQueryFn = makeAsyncFnWithParamsReturnsString();
+    const mockReactiveQueryFn = makeAsyncFnWithParamsReturnsString();
     const idiomaticQuery = IdiomaticQueryFactory(
       queryClient,
-      (args: { id: string }) =>
+      (args: { name: string }) =>
         queryOptions({
-          queryKey: ['test', args.id],
+          queryKey: ['test', args.name],
           queryFn: () => mockIdiomaticQueryFn(args),
         }),
     );
-    const reactiveQuery = ReactiveQueryFactory((args: { id: string }) =>
+    const reactiveQuery = ReactiveQueryFactory((args: { name: string }) =>
       queryOptions({
-        queryKey: ['test', args.id],
+        queryKey: ['test', args.name],
         queryFn: () => mockReactiveQueryFn(args),
       }),
     );
@@ -183,7 +179,7 @@ describe('ChimericQueryTestHarness', () => {
       }),
       method: 'reactive',
       wrapper: getTestWrapper(queryClient),
-      params: { id: '1' },
+      params: { name: 'John' },
     });
 
     expect(query.result.current.isIdle).toBe(true);
@@ -201,7 +197,7 @@ describe('ChimericQueryTestHarness', () => {
     expect(query.result.current.isPending).toBe(false);
     expect(query.result.current.isError).toBe(false);
     expect(query.result.current.error).toBe(null);
-    expect(query.result.current.data).toBe('1');
+    expect(query.result.current.data).toBe('Hello John');
     expect(mockIdiomaticQueryFn).toHaveBeenCalledTimes(0);
     expect(mockReactiveQueryFn).toHaveBeenCalledTimes(1);
   });

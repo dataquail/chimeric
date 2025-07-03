@@ -11,106 +11,64 @@ import { ChimericQueryTestHarnessReturnType } from './types.js';
 import { IdiomaticQueryTestHarness } from './IdiomaticQueryTestHarness.js';
 import { ReactiveQueryTestHarness } from './ReactiveQueryTestHarness.js';
 
-// Overloads
 export function ChimericQueryTestHarness<
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
   TMethod = (typeof chimericMethods)[number],
   TIdiomaticNativeOptions = unknown,
   TReactiveNativeOptions = unknown,
   TReactiveNativeReturnType = unknown,
->(args: {
-  chimericQuery: ChimericQuery<
-    undefined,
-    TResult,
-    E,
-    TIdiomaticNativeOptions,
-    TReactiveNativeOptions,
-    TReactiveNativeReturnType
-  >;
-  method: TMethod;
-  reactiveOptions?: ReactiveQueryOptions;
-  reactiveNativeOptions?: TReactiveNativeOptions;
-  idiomaticOptions?: IdiomaticQueryOptions;
-  idiomaticNativeOptions?: TIdiomaticNativeOptions;
-  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): ChimericQueryTestHarnessReturnType<
+>(
+  args: TParams extends void
+    ? {
+        chimericQuery: ChimericQuery<
+          TParams,
+          TResult,
+          TError,
+          TIdiomaticNativeOptions,
+          TReactiveNativeOptions,
+          TReactiveNativeReturnType
+        >;
+        method: TMethod;
+        reactiveOptions?: ReactiveQueryOptions;
+        reactiveNativeOptions?: TReactiveNativeOptions;
+        idiomaticOptions?: IdiomaticQueryOptions;
+        idiomaticNativeOptions?: TIdiomaticNativeOptions;
+        wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+      }
+    : {
+        chimericQuery: ChimericQuery<
+          TParams,
+          TResult,
+          TError,
+          TIdiomaticNativeOptions,
+          TReactiveNativeOptions,
+          TReactiveNativeReturnType
+        >;
+        method: TMethod;
+        params: TParams;
+        reactiveOptions?: ReactiveQueryOptions;
+        reactiveNativeOptions?: TReactiveNativeOptions;
+        idiomaticOptions?: IdiomaticQueryOptions;
+        idiomaticNativeOptions?: TIdiomaticNativeOptions;
+        wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+      },
+): ChimericQueryTestHarnessReturnType<
   TResult,
-  E,
-  TMethod,
-  TReactiveNativeReturnType
->;
-export function ChimericQueryTestHarness<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
-  TMethod = (typeof chimericMethods)[number],
-  TIdiomaticNativeOptions = unknown,
-  TReactiveNativeOptions = unknown,
-  TReactiveNativeReturnType = unknown,
->(args: {
-  chimericQuery: ChimericQuery<
-    TParams,
-    TResult,
-    E,
-    TIdiomaticNativeOptions,
-    TReactiveNativeOptions,
-    TReactiveNativeReturnType
-  >;
-  method: TMethod;
-  params: TParams;
-  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-  reactiveOptions?: ReactiveQueryOptions;
-  reactiveNativeOptions?: TReactiveNativeOptions;
-  idiomaticOptions?: IdiomaticQueryOptions;
-  idiomaticNativeOptions?: TIdiomaticNativeOptions;
-}): ChimericQueryTestHarnessReturnType<
-  TResult,
-  E,
-  TMethod,
-  TReactiveNativeReturnType
->;
-
-// Implementation
-export function ChimericQueryTestHarness<
-  TParams extends object | undefined,
-  TResult = unknown,
-  E extends Error = Error,
-  TMethod = (typeof chimericMethods)[number],
-  TIdiomaticNativeOptions = unknown,
-  TReactiveNativeOptions = unknown,
-  TReactiveNativeReturnType = unknown,
->({
-  chimericQuery,
-  method,
-  params,
-  reactiveOptions,
-  reactiveNativeOptions,
-  idiomaticOptions,
-  idiomaticNativeOptions,
-  wrapper,
-}: {
-  chimericQuery: ChimericQuery<
-    TParams,
-    TResult,
-    E,
-    TIdiomaticNativeOptions,
-    TReactiveNativeOptions,
-    TReactiveNativeReturnType
-  >;
-  method: TMethod;
-  params?: TParams;
-  reactiveOptions?: ReactiveQueryOptions;
-  reactiveNativeOptions?: TReactiveNativeOptions;
-  idiomaticOptions?: IdiomaticQueryOptions;
-  idiomaticNativeOptions?: TIdiomaticNativeOptions;
-  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): ChimericQueryTestHarnessReturnType<
-  TResult,
-  E,
+  TError,
   TMethod,
   TReactiveNativeReturnType
 > {
+  const {
+    chimericQuery,
+    method,
+    reactiveOptions,
+    reactiveNativeOptions,
+    idiomaticOptions,
+    idiomaticNativeOptions,
+    wrapper,
+  } = args;
   if (method === 'idiomatic') {
     return IdiomaticQueryTestHarness({
       idiomaticQuery: chimericQuery as IdiomaticQuery<
@@ -118,12 +76,12 @@ export function ChimericQueryTestHarness<
         TResult,
         TIdiomaticNativeOptions
       >,
-      params: params as object,
+      params: (args as { params: object }).params,
       options: idiomaticOptions,
       nativeOptions: idiomaticNativeOptions,
     }) as ChimericQueryTestHarnessReturnType<
       TResult,
-      E,
+      TError,
       TMethod,
       TReactiveNativeReturnType
     >;
@@ -132,17 +90,17 @@ export function ChimericQueryTestHarness<
       reactiveQuery: chimericQuery as ReactiveQuery<
         object,
         TResult,
-        E,
+        TError,
         TReactiveNativeOptions,
         TReactiveNativeReturnType
       >,
-      params: params as object,
+      params: (args as { params: object }).params,
       options: reactiveOptions,
       nativeOptions: reactiveNativeOptions,
       wrapper,
     }) as ChimericQueryTestHarnessReturnType<
       TResult,
-      E,
+      TError,
       TMethod,
       TReactiveNativeReturnType
     >;

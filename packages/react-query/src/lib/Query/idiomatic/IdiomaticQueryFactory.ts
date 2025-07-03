@@ -6,42 +6,32 @@ import {
 import { createIdiomaticQuery } from './createIdiomaticQuery';
 import { IdiomaticQuery } from './types';
 
-// Overloads
 export function IdiomaticQueryFactory<
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
-  TQueryKey extends QueryKey = QueryKey,
->(
-  queryClient: QueryClient,
-  getQueryOptions: () => ReturnType<
-    typeof queryOptions<TResult, E, TResult, TQueryKey>
-  >,
-): IdiomaticQuery<undefined, TResult, E, TQueryKey>;
-export function IdiomaticQueryFactory<
-  TParams extends object,
-  TResult = unknown,
-  E extends Error = Error,
-  TQueryKey extends QueryKey = QueryKey,
->(
-  queryClient: QueryClient,
-  getQueryOptions: (
-    params: TParams,
-  ) => ReturnType<typeof queryOptions<TResult, E, TResult, TQueryKey>>,
-): IdiomaticQuery<TParams, TResult, E, TQueryKey>;
-
-// Implementation
-export function IdiomaticQueryFactory<
-  TParams extends object | undefined,
-  TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(
   queryClient: QueryClient,
   getQueryOptions: (
     args: TParams,
-  ) => ReturnType<typeof queryOptions<TResult, E, TResult, TQueryKey>>,
-): IdiomaticQuery<TParams, TResult, E, TQueryKey> {
-  return createIdiomaticQuery(async (paramsAndOptions) => {
+  ) => ReturnType<typeof queryOptions<TResult, TError, TResult, TQueryKey>>,
+): IdiomaticQuery<
+  TParams extends undefined ? void : TParams,
+  TResult,
+  TError,
+  TQueryKey
+> {
+  const idiomaticQuery = async (
+    paramsAndOptions: Parameters<
+      IdiomaticQuery<
+        TParams extends undefined ? void : TParams,
+        TResult,
+        TError,
+        TQueryKey
+      >
+    >[0],
+  ) => {
     const { options, nativeOptions, ...params } = paramsAndOptions ?? {};
     const queryOptions = getQueryOptions(params as TParams);
 
@@ -55,5 +45,19 @@ export function IdiomaticQueryFactory<
     }
 
     return queryClient.fetchQuery(fetchQueryOptions);
-  }) as IdiomaticQuery<TParams, TResult, E, TQueryKey>;
+  };
+
+  return createIdiomaticQuery(
+    idiomaticQuery as IdiomaticQuery<
+      TParams extends undefined ? void : TParams,
+      TResult,
+      TError,
+      TQueryKey
+    >,
+  ) as IdiomaticQuery<
+    TParams extends undefined ? void : TParams,
+    TResult,
+    TError,
+    TQueryKey
+  >;
 }

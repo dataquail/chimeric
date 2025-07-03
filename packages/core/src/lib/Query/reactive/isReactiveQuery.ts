@@ -1,9 +1,9 @@
 import { ReactiveQuery } from './types';
 
 export const isReactiveQuery = <
-  TParams extends undefined | object,
+  TParams = void,
   TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
 >(
@@ -11,7 +11,7 @@ export const isReactiveQuery = <
 ): maybeReactiveQuery is ReactiveQuery<
   TParams,
   TResult,
-  E,
+  TError,
   TNativeOptions,
   TNativeReturnType
 > => {
@@ -24,7 +24,7 @@ export const isReactiveQuery = <
       maybeReactiveQuery as ReactiveQuery<
         TParams,
         TResult,
-        E,
+        TError,
         TNativeOptions,
         TNativeReturnType
       >

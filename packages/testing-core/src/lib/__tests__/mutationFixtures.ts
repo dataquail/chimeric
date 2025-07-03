@@ -7,7 +7,7 @@ export const makeReactiveMutationWithoutParamsReturnsString = () => ({
     isError: false,
     error: null,
     data: undefined,
-    reset: vi.fn(),
+    reset: vi.fn(() => Promise.resolve()),
     native: {},
   })),
 });
@@ -23,7 +23,7 @@ export const makeReactiveMutationWithParamsReturnsString = () => ({
     isError: false,
     error: null,
     data: 'Hello John',
-    reset: vi.fn(),
+    reset: vi.fn(() => Promise.resolve()),
     native: {},
   })),
 });

@@ -8,25 +8,25 @@ import { TanstackQueryReactiveReturnType } from '@chimeric/react-query';
 
 export type IdiomaticQueryTestHarnessReturnType<
   TResult = unknown,
-  E extends Error = Error,
-> = CoreIdiomaticQueryTestHarnessReturnType<TResult, E>;
+  TError extends Error = Error,
+> = CoreIdiomaticQueryTestHarnessReturnType<TResult, TError>;
 
 export type ReactiveQueryTestHarnessReturnType<
   TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
 > = CoreReactiveQueryTestHarnessReturnType<
   TResult,
-  E,
-  TanstackQueryReactiveReturnType<TResult, E>
+  TError,
+  TanstackQueryReactiveReturnType<TResult, TError>
 >;
 
 export type ChimericQueryTestHarnessReturnType<
   TResult = unknown,
-  E extends Error = Error,
+  TError extends Error = Error,
   TMethod = (typeof chimericMethods)[number],
 > = CoreChimericQueryTestHarnessReturnType<
   TResult,
-  E,
+  TError,
   TMethod,
-  TanstackQueryReactiveReturnType<TResult, E>
+  TanstackQueryReactiveReturnType<TResult, TError>
 >;

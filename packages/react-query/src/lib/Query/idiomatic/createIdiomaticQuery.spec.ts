@@ -1,11 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createIdiomaticQuery } from './createIdiomaticQuery';
-import { FetchQueryOptions, QueryKey } from '@tanstack/react-query';
-import { IdiomaticQueryOptions } from '@chimeric/core';
+import {
+  makeAsyncFnWithoutParamsReturnsString,
+  makeAsyncFnWithParamsReturnsString,
+} from '../../__tests__/functionFixtures';
+import {
+  IdiomaticQueryWithoutParamsReturnsString,
+  IdiomaticQueryWithParamsReturnsString,
+} from '../__tests__/queryFixtures';
 
 describe('createIdiomaticQuery', () => {
   it('should create an idiomatic query function', () => {
-    const mockQueryFn = vi.fn(async () => 'test');
+    const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
     const idiomaticQuery = createIdiomaticQuery(mockQueryFn);
 
     expect(typeof idiomaticQuery).toBe('function');
@@ -21,7 +27,7 @@ describe('createIdiomaticQuery', () => {
   });
 
   it('should invoke the idiomatic function without params', async () => {
-    const mockQueryFn = vi.fn(async () => 'test');
+    const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
     const idiomaticQuery = createIdiomaticQuery(mockQueryFn);
 
     const result = await idiomaticQuery();
@@ -31,14 +37,30 @@ describe('createIdiomaticQuery', () => {
   });
 
   it('should invoke the idiomatic function with params', async () => {
-    const mockQueryFn = vi.fn(
-      async (params: {
-        name: string;
-        options?: IdiomaticQueryOptions;
-        nativeOptions?: FetchQueryOptions<string, Error, string, QueryKey>;
-      }) => `Hello ${params.name}`,
-    );
+    const mockQueryFn = makeAsyncFnWithParamsReturnsString();
     const idiomaticQuery = createIdiomaticQuery(mockQueryFn);
+
+    const result = await idiomaticQuery({ name: 'John' });
+
+    expect(result).toBe('Hello John');
+    expect(mockQueryFn).toHaveBeenCalledWith({ name: 'John' });
+  });
+
+  it('should handle type annotations without params', async () => {
+    const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
+    const idiomaticQuery: IdiomaticQueryWithoutParamsReturnsString =
+      createIdiomaticQuery(mockQueryFn);
+
+    const result = await idiomaticQuery();
+
+    expect(result).toBe('test');
+    expect(mockQueryFn).toHaveBeenCalled();
+  });
+
+  it('should handle type annotations with params', async () => {
+    const mockQueryFn = makeAsyncFnWithParamsReturnsString();
+    const idiomaticQuery: IdiomaticQueryWithParamsReturnsString =
+      createIdiomaticQuery(mockQueryFn);
 
     const result = await idiomaticQuery({ name: 'John' });
 
