@@ -1,10 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DefineIdiomaticAsync } from './types';
+import {
+  makeAsyncFnWithoutParamsReturnsString,
+  makeAsyncFnWithParamsReturnsString,
+} from '../../__tests__/functionFixtures';
 import { createIdiomaticAsync } from './createIdiomaticAsync';
+import {
+  IdiomaticAsyncWithoutParamsReturnsString,
+  IdiomaticAsyncWithParamsReturnsString,
+} from '../__tests__/asyncFixtures';
 
 describe('createIdiomaticAsync', () => {
   it('should create an idiomatic async function', () => {
-    const mockAsyncFn = vi.fn(async () => 'test');
+    const mockAsyncFn = makeAsyncFnWithoutParamsReturnsString();
     const idiomaticAsync = createIdiomaticAsync(mockAsyncFn);
     expect(typeof idiomaticAsync).toBe('function');
     expect(idiomaticAsync).toBe(mockAsyncFn);
@@ -19,22 +26,16 @@ describe('createIdiomaticAsync', () => {
   });
 
   it('should handle type annotations with no params', async () => {
-    type TestIdiomaticAsync = DefineIdiomaticAsync<() => Promise<string>>;
-    const mockIdiomaticAsync = vi.fn(async () => 'test');
-    const testIdiomaticAsync: TestIdiomaticAsync =
+    const mockIdiomaticAsync = makeAsyncFnWithoutParamsReturnsString();
+    const testIdiomaticAsync: IdiomaticAsyncWithoutParamsReturnsString =
       createIdiomaticAsync(mockIdiomaticAsync);
     const result = await testIdiomaticAsync();
     expect(result).toEqual('test');
   });
 
   it('should handle type annotations with params', async () => {
-    type TestIdiomaticAsync = DefineIdiomaticAsync<
-      (args: { name: string }) => Promise<string>
-    >;
-    const mockIdiomaticAsync = vi.fn(
-      async (args: { name: string }) => `Hello ${args.name}`,
-    );
-    const testIdiomaticAsync: TestIdiomaticAsync =
+    const mockIdiomaticAsync = makeAsyncFnWithParamsReturnsString();
+    const testIdiomaticAsync: IdiomaticAsyncWithParamsReturnsString =
       createIdiomaticAsync(mockIdiomaticAsync);
     const result = await testIdiomaticAsync({ name: 'John' });
     expect(result).toEqual('Hello John');

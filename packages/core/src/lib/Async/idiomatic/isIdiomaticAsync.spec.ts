@@ -1,8 +1,9 @@
+import { makeAsyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
 import { isIdiomaticAsync } from './isIdiomaticAsync';
 
 describe('isIdiomaticAsync', () => {
   it('should return true for a function', () => {
-    const mockAsyncFn = vi.fn(async () => 'test');
+    const mockAsyncFn = makeAsyncFnWithoutParamsReturnsString();
 
     expect(isIdiomaticAsync(mockAsyncFn)).toBe(true);
   });

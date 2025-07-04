@@ -1,8 +1,8 @@
 import { isIdiomaticAsync } from './isIdiomaticAsync';
 import { IdiomaticAsync } from './types';
 
-export function createIdiomaticAsync<TParams, TResult>(
-  idiomaticFn: (params: TParams) => Promise<TResult>,
+export function createIdiomaticAsync<TParams = void, TResult = unknown>(
+  idiomaticFn: IdiomaticAsync<TParams, TResult>,
 ): IdiomaticAsync<TParams, TResult> {
   if (isIdiomaticAsync<TParams, TResult>(idiomaticFn)) {
     return idiomaticFn as IdiomaticAsync<TParams, TResult>;

@@ -1,13 +1,19 @@
 import { act } from 'react';
 import { renderHook, waitFor } from '@testing-library/react';
 import { ChimericAsyncFactory } from '../ChimericAsyncFactory';
-import { DefineChimericAsync } from '@chimeric/core';
+import {
+  makeAsyncFnWithoutParamsReturnsString,
+  makeAsyncFnWithParamsReturnsString,
+} from '../../__tests__/functionFixtures';
+import {
+  ChimericAsyncWithoutParamsReturnsString,
+  ChimericAsyncWithParamsReturnsString,
+} from '../../__tests__/asyncFixtures';
 
 describe('ChimericAsyncFactory', () => {
   it('should invoke the reactive hook', async () => {
-    type TestChimericAsync = DefineChimericAsync<() => Promise<string>>;
-    const mockPromise = vi.fn(() => Promise.resolve('test'));
-    const chimericAsync: TestChimericAsync = ChimericAsyncFactory(mockPromise);
+    const mockPromise = makeAsyncFnWithoutParamsReturnsString();
+    const chimericAsync = ChimericAsyncFactory(mockPromise);
 
     const { result } = renderHook(chimericAsync.useAsync);
 
@@ -25,7 +31,7 @@ describe('ChimericAsyncFactory', () => {
   });
 
   it('should invoke the idiomatic fn', async () => {
-    const mockPromise = vi.fn(() => Promise.resolve('test'));
+    const mockPromise = makeAsyncFnWithoutParamsReturnsString();
     const chimericAsync = ChimericAsyncFactory(mockPromise);
     const result = await chimericAsync();
 
@@ -34,9 +40,7 @@ describe('ChimericAsyncFactory', () => {
   });
 
   it('should invoke the reactive hook with params', async () => {
-    const mockPromise = vi.fn((args: { name: string }) =>
-      Promise.resolve(`Hello ${args.name}`),
-    );
+    const mockPromise = makeAsyncFnWithParamsReturnsString();
     const chimericAsync = ChimericAsyncFactory(mockPromise);
     const { result } = renderHook(chimericAsync.useAsync);
 
@@ -54,13 +58,8 @@ describe('ChimericAsyncFactory', () => {
   });
 
   it('should invoke the idiomatic fn with params', async () => {
-    type TestChimericAsync = DefineChimericAsync<
-      (args: { name: string }) => Promise<string>
-    >;
-    const mockPromise = vi.fn((args: { name: string }) =>
-      Promise.resolve(`Hello ${args.name}`),
-    );
-    const chimericAsync: TestChimericAsync = ChimericAsyncFactory(mockPromise);
+    const mockPromise = makeAsyncFnWithParamsReturnsString();
+    const chimericAsync = ChimericAsyncFactory(mockPromise);
     const result = await chimericAsync({ name: 'John' });
 
     expect(result).toBe('Hello John');
@@ -77,5 +76,21 @@ describe('ChimericAsyncFactory', () => {
       expect((error as Error).message).toBe('test');
     }
     expect(mockPromise).toHaveBeenCalledTimes(3);
+  });
+
+  it('should handle type annotations with no params', async () => {
+    const chimericAsync: ChimericAsyncWithoutParamsReturnsString =
+      ChimericAsyncFactory(makeAsyncFnWithoutParamsReturnsString());
+    const result = await chimericAsync();
+
+    expect(result).toBe('test');
+  });
+
+  it('should handle type annotations with params', async () => {
+    const chimericAsync: ChimericAsyncWithParamsReturnsString =
+      ChimericAsyncFactory(makeAsyncFnWithParamsReturnsString());
+    const result = await chimericAsync({ name: 'John' });
+
+    expect(result).toBe('Hello John');
   });
 });

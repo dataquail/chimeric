@@ -8,21 +8,22 @@ import { BaseWaitForOptions } from 'src/types/WaitForOptions.js';
 import { AsyncTestHarnessReturnType } from './types';
 
 export function ReactiveAsyncTestHarness<
-  TParams,
-  TResult,
-  E extends Error = Error,
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
 >({
   reactiveAsync,
   reactiveOptions,
   wrapper,
 }: {
-  reactiveAsync: ReactiveAsync<TParams, TResult, E>;
+  reactiveAsync: ReactiveAsync<TParams, TResult, TError>;
   reactiveOptions?: ReactiveAsyncOptions;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): AsyncTestHarnessReturnType<TParams, TResult, E> {
+}): AsyncTestHarnessReturnType<TParams, TResult, TError> {
   const hook = renderHook(() => reactiveAsync.useAsync(reactiveOptions ?? {}), {
     wrapper,
   });
+
   return {
     waitFor: async (cb: () => void, options?: BaseWaitForOptions) => {
       await waitForReactTestingLibrary(cb, {
@@ -30,6 +31,10 @@ export function ReactiveAsyncTestHarness<
         interval: options?.interval,
       });
     },
-    result: hook.result,
-  } as AsyncTestHarnessReturnType<TParams, TResult, E>;
+    result: hook.result as AsyncTestHarnessReturnType<
+      TParams,
+      TResult,
+      TError
+    >['result'],
+  } as AsyncTestHarnessReturnType<TParams, TResult, TError>;
 }

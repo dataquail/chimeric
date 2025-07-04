@@ -1,21 +1,27 @@
 import { useState } from 'react';
+import { flushSync } from 'react-dom';
 import {
   createReactiveAsync,
   ReactiveAsync,
+  ReactiveAsyncCallOptions,
   ReactiveAsyncOptions,
 } from '@chimeric/core';
 import { executeWithRetry } from './utils';
 
-export function ReactiveAsyncFactory<TParams, TResult, E extends Error = Error>(
+export function ReactiveAsyncFactory<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+>(
   asyncFn: (params: TParams) => Promise<TResult>,
-): ReactiveAsync<TParams, TResult, E> {
-  return createReactiveAsync((options?: ReactiveAsyncOptions) => {
+): ReactiveAsync<TParams extends undefined ? void : TParams, TResult, TError> {
+  const reactiveAsync = (hookOptions?: ReactiveAsyncOptions) => {
     const [meta, setMeta] = useState<{
       isIdle: boolean;
       isPending: boolean;
       isSuccess: boolean;
       isError: boolean;
-      error: E | null;
+      error: TError | null;
       data: TResult | undefined;
     }>({
       isIdle: true,
@@ -27,7 +33,12 @@ export function ReactiveAsyncFactory<TParams, TResult, E extends Error = Error>(
     });
 
     return {
-      call: async (params: TParams) => {
+      call: async (
+        paramsAndConfig: TParams & {
+          options?: ReactiveAsyncCallOptions;
+        } = {} as TParams & { options?: ReactiveAsyncCallOptions },
+      ) => {
+        const { options: callOptions, ...params } = paramsAndConfig;
         setMeta({
           isIdle: false,
           isPending: true,
@@ -36,28 +47,34 @@ export function ReactiveAsyncFactory<TParams, TResult, E extends Error = Error>(
           error: null,
           data: undefined,
         });
+
         try {
           const result = await executeWithRetry<TResult>(
-            () => asyncFn(params),
-            options?.retry,
+            () => asyncFn(params as TParams),
+            callOptions?.retry || hookOptions?.retry || 0,
           );
-          setMeta({
-            isIdle: false,
-            isPending: false,
-            isSuccess: true,
-            isError: false,
-            error: null,
-            data: result,
+          flushSync(() => {
+            setMeta({
+              isIdle: false,
+              isPending: false,
+              isSuccess: true,
+              isError: false,
+              error: null,
+              data: result,
+            });
           });
           return result;
         } catch (error) {
-          setMeta({
-            isIdle: false,
-            isPending: false,
-            isSuccess: false,
-            isError: true,
-            error: error as E,
-            data: undefined,
+          // Set error state only when executeWithRetry throws (after all retries are exhausted)
+          flushSync(() => {
+            setMeta({
+              isIdle: false,
+              isPending: false,
+              isSuccess: false,
+              isError: true,
+              error: error as TError,
+              data: undefined,
+            });
           });
           throw error;
         }
@@ -69,5 +86,13 @@ export function ReactiveAsyncFactory<TParams, TResult, E extends Error = Error>(
       error: meta.error,
       data: meta.data,
     };
-  });
+  };
+
+  return createReactiveAsync(
+    reactiveAsync as ReactiveAsync<
+      TParams extends undefined ? void : TParams,
+      TResult,
+      TError
+    >['useAsync'],
+  );
 }
