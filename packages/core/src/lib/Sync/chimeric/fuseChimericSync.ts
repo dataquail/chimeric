@@ -3,7 +3,7 @@ import { ReactiveSync } from '../reactive/types';
 import { isChimericSync } from './isChimericSync';
 import { ChimericSync } from './types';
 
-export const fuseChimericSync = <TParams, TResult>(args: {
+export const fuseChimericSync = <TParams = void, TResult = unknown>(args: {
   idiomatic: IdiomaticSync<TParams, TResult>;
   reactive: ReactiveSync<TParams, TResult>;
 }): ChimericSync<TParams, TResult> => {

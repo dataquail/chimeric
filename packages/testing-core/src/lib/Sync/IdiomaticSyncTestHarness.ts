@@ -4,13 +4,18 @@ import { checkOnInterval } from '../checkOnInterval.js';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
 import { SyncTestHarnessReturnType } from './types.js';
 
-export const IdiomaticSyncTestHarness = <TParams, TResult>({
-  idiomaticSync,
-  params,
-}: {
-  idiomaticSync: IdiomaticSync<TParams, TResult>;
-  params?: TParams;
-}): SyncTestHarnessReturnType<TResult> => {
+export const IdiomaticSyncTestHarness = <TParams = void, TResult = unknown>(
+  args: TParams extends void | undefined
+    ? {
+        idiomaticSync: IdiomaticSync<TParams, TResult>;
+      }
+    : {
+        idiomaticSync: IdiomaticSync<TParams, TResult>;
+        params: TParams;
+      },
+): SyncTestHarnessReturnType<TResult> => {
+  const { idiomaticSync } = args;
+  const params = (args as { params?: TParams })?.params as TParams;
   const result = {
     current: undefined as TResult | undefined,
   };

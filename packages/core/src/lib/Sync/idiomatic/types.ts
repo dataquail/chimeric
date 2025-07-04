@@ -1,10 +1,8 @@
-export type IdiomaticSync<TParams, TResult> = TParams extends undefined
+export type IdiomaticSync<TParams = void, TResult = unknown> = TParams extends
+  | void
+  | undefined
   ? () => TResult
-  : TParams extends object
-  ? (params: TParams) => TResult
-  : TParams extends unknown
-  ? () => TResult
-  : never;
+  : (params: TParams) => TResult;
 
 export type DefineIdiomaticSync<
   T extends (args: Parameters<T>[0]) => ReturnType<T>,

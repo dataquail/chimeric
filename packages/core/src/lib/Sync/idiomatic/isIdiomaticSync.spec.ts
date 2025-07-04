@@ -1,8 +1,9 @@
+import { makeSyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
 import { isIdiomaticSync } from './isIdiomaticSync';
 
 describe('isIdiomaticSync', () => {
   it('should return true for a function', () => {
-    const mockSyncFn = vi.fn(() => 'test');
+    const mockSyncFn = makeSyncFnWithoutParamsReturnsString();
 
     expect(isIdiomaticSync(mockSyncFn)).toBe(true);
   });

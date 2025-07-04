@@ -1,3 +1,4 @@
+import { makeSyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
 import { IdiomaticSyncTestHarness } from '../IdiomaticSyncTestHarness';
 
 describe('IdiomaticReadTestHarness', () => {
@@ -5,7 +6,7 @@ describe('IdiomaticReadTestHarness', () => {
     new Promise((resolve) => setTimeout(resolve, ms));
 
   it('should wait for success', async () => {
-    const mockFn = vi.fn(() => 'test');
+    const mockFn = makeSyncFnWithoutParamsReturnsString();
     const read = IdiomaticSyncTestHarness({
       idiomaticSync: mockFn,
     });

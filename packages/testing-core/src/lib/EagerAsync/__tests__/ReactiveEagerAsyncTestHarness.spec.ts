@@ -5,7 +5,7 @@ import {
 } from '../../__tests__/eagerAsyncFixtures';
 
 describe('ReactiveEagerAsyncTestHarness', () => {
-  it('should wait for success', async () => {
+  it('should handle no params', async () => {
     const mockReactiveEagerAsync =
       makeReactiveEagerAsyncWithoutParamsReturnsString();
     ReactiveEagerAsyncTestHarness({

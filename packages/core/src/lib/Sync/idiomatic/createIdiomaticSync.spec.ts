@@ -1,9 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  makeSyncFnWithoutParamsReturnsString,
+  makeSyncFnWithParamsReturnsString,
+} from '../../__tests__/functionFixtures';
 import { createIdiomaticSync } from './createIdiomaticSync';
 
 describe('createIdiomaticSync', () => {
   it('should create an idiomatic sync function', () => {
-    const mockSyncFn = vi.fn(() => 'test');
+    const mockSyncFn = makeSyncFnWithoutParamsReturnsString();
     const idiomaticSync = createIdiomaticSync(mockSyncFn);
 
     expect(typeof idiomaticSync).toBe('function');
@@ -19,7 +23,7 @@ describe('createIdiomaticSync', () => {
   });
 
   it('should invoke the idiomatic function without params', () => {
-    const mockSyncFn = vi.fn(() => 'test');
+    const mockSyncFn = makeSyncFnWithoutParamsReturnsString();
     const idiomaticSync = createIdiomaticSync(mockSyncFn);
 
     expect(idiomaticSync()).toBe('test');
@@ -27,9 +31,7 @@ describe('createIdiomaticSync', () => {
   });
 
   it('should invoke the idiomatic function with params', () => {
-    const mockSyncFn = vi.fn(
-      (params: { name: string }) => `Hello ${params.name}`,
-    );
+    const mockSyncFn = makeSyncFnWithParamsReturnsString();
     const idiomaticSync = createIdiomaticSync(mockSyncFn);
 
     expect(idiomaticSync({ name: 'John' })).toBe('Hello John');
