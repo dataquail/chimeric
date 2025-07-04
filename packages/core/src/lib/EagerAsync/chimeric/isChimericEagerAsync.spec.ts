@@ -1,17 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { makeEagerAsyncHookWithoutParamsReturnsString } from '../../__tests__/eagerAsyncFixtures';
+import { makeAsyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
 import { isChimericEagerAsync } from './isChimericEagerAsync';
 
 describe('isChimericEagerAsync', () => {
   it('should return true for a chimeric eager async function', () => {
-    const mockChimericEagerAsync = vi.fn(async () => 'test') as any;
-    mockChimericEagerAsync.useEagerAsync = vi.fn(() => ({
-      isIdle: true,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      error: null,
-      data: undefined,
-    }));
+    const mockChimericEagerAsync =
+      makeAsyncFnWithoutParamsReturnsString() as any;
+    mockChimericEagerAsync.useEagerAsync =
+      makeEagerAsyncHookWithoutParamsReturnsString();
 
     expect(isChimericEagerAsync(mockChimericEagerAsync)).toBe(true);
   });
@@ -21,19 +18,12 @@ describe('isChimericEagerAsync', () => {
     expect(isChimericEagerAsync('not a function')).toBe(false);
 
     // Function without useEagerAsync
-    const mockAsyncFn = vi.fn(async () => 'test');
+    const mockAsyncFn = makeAsyncFnWithoutParamsReturnsString();
     expect(isChimericEagerAsync(mockAsyncFn)).toBe(false);
 
     // Object with useEagerAsync but not a function
     const mockReactiveEagerAsync = {
-      useEagerAsync: vi.fn(() => ({
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-      })),
+      useEagerAsync: makeEagerAsyncHookWithoutParamsReturnsString(),
     };
     expect(isChimericEagerAsync(mockReactiveEagerAsync)).toBe(false);
 

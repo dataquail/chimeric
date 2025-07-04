@@ -1,10 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DefineIdiomaticEagerAsync } from './types';
 import { createIdiomaticEagerAsync } from './createIdiomaticEagerAsync';
+import {
+  makeAsyncFnWithoutParamsReturnsString,
+  makeAsyncFnWithParamsReturnsString,
+} from '../../__tests__/functionFixtures';
+import {
+  IdiomaticEagerAsyncWithoutParamsReturnsString,
+  IdiomaticEagerAsyncWithParamsReturnsString,
+} from '../../__tests__/eagerAsyncFixtures';
 
 describe('createIdiomaticEagerAsync', () => {
   it('should create an idiomatic eager async function', () => {
-    const mockAsyncFn = vi.fn(async () => 'test');
+    const mockAsyncFn = makeAsyncFnWithoutParamsReturnsString();
     const idiomaticAsync = createIdiomaticEagerAsync(mockAsyncFn);
     expect(typeof idiomaticAsync).toBe('function');
     expect(idiomaticAsync).toBe(mockAsyncFn);
@@ -19,24 +26,16 @@ describe('createIdiomaticEagerAsync', () => {
   });
 
   it('should handle type annotations with no params', async () => {
-    type TestIdiomaticEagerAsync = DefineIdiomaticEagerAsync<
-      () => Promise<string>
-    >;
-    const mockIdiomaticEagerAsync = vi.fn(async () => 'test');
-    const testIdiomaticEagerAsync: TestIdiomaticEagerAsync =
+    const mockIdiomaticEagerAsync = makeAsyncFnWithoutParamsReturnsString();
+    const testIdiomaticEagerAsync: IdiomaticEagerAsyncWithoutParamsReturnsString =
       createIdiomaticEagerAsync(mockIdiomaticEagerAsync);
     const result = await testIdiomaticEagerAsync();
     expect(result).toEqual('test');
   });
 
   it('should handle type annotations with params', async () => {
-    type TestIdiomaticEagerAsync = DefineIdiomaticEagerAsync<
-      (args: { name: string }) => Promise<string>
-    >;
-    const mockIdiomaticEagerAsync = vi.fn(
-      async (args: { name: string }) => `Hello ${args.name}`,
-    );
-    const testIdiomaticEagerAsync: TestIdiomaticEagerAsync =
+    const mockIdiomaticEagerAsync = makeAsyncFnWithParamsReturnsString();
+    const testIdiomaticEagerAsync: IdiomaticEagerAsyncWithParamsReturnsString =
       createIdiomaticEagerAsync(mockIdiomaticEagerAsync);
     const result = await testIdiomaticEagerAsync({ name: 'John' });
     expect(result).toEqual('Hello John');

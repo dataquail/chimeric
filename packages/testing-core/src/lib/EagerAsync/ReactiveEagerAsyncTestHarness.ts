@@ -5,20 +5,27 @@ import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
 import { EagerAsyncTestHarnessReturnType } from './types.js';
 
 export function ReactiveEagerAsyncTestHarness<
-  TParams,
-  TResult,
-  E extends Error = Error,
->({
-  reactiveEagerAsync,
-  params,
-  wrapper,
-}: {
-  reactiveEagerAsync: ReactiveEagerAsync<TParams, TResult, E>;
-  params?: TParams;
-  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): EagerAsyncTestHarnessReturnType<TResult, E> {
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+>(
+  args: TParams extends void
+    ? {
+        reactiveEagerAsync: ReactiveEagerAsync<void, TResult, TError>;
+        wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+      }
+    : {
+        reactiveEagerAsync: ReactiveEagerAsync<TParams, TResult, TError>;
+        params: TParams;
+        wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+      },
+): EagerAsyncTestHarnessReturnType<TResult, TError> {
+  const { reactiveEagerAsync, wrapper } = args;
   const hook = renderHook(
-    () => reactiveEagerAsync.useEagerAsync(params as TParams),
+    () =>
+      reactiveEagerAsync.useEagerAsync(
+        (args as { params?: TParams })?.params as TParams,
+      ),
     {
       wrapper,
     },

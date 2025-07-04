@@ -1,18 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  makeEagerAsyncHookWithoutParamsReturnsString,
+  makeEagerAsyncHookWithParamsReturnsString,
+  ReactiveEagerAsyncWithoutParamsReturnsString,
+  ReactiveEagerAsyncWithParamsReturnsString,
+} from '../../__tests__/eagerAsyncFixtures';
 import { createReactiveEagerAsync } from './createReactiveEagerAsync';
-import { DefineReactiveEagerAsync } from './types';
 
 describe('createReactiveEagerAsync', () => {
   it('should create a reactive eager async function', () => {
-    const mockReactiveFn = vi.fn(() => ({
-      isIdle: true,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      error: null,
-      data: undefined,
-    }));
-
+    const mockReactiveFn = makeEagerAsyncHookWithoutParamsReturnsString();
     const reactiveEagerAsync = createReactiveEagerAsync(mockReactiveFn);
 
     expect(typeof reactiveEagerAsync).toBe('object');
@@ -30,17 +27,8 @@ describe('createReactiveEagerAsync', () => {
   });
 
   it('should handle type annotations with no params', () => {
-    type MockReactiveFn = DefineReactiveEagerAsync<() => Promise<string>>;
-    const mockReactiveFn = vi.fn(() => ({
-      isIdle: true,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      error: null,
-      data: '',
-    }));
-
-    const reactiveEagerAsync: MockReactiveFn =
+    const mockReactiveFn = makeEagerAsyncHookWithoutParamsReturnsString();
+    const reactiveEagerAsync: ReactiveEagerAsyncWithoutParamsReturnsString =
       createReactiveEagerAsync(mockReactiveFn);
     expect(typeof reactiveEagerAsync).toBe('object');
     expect(reactiveEagerAsync).toHaveProperty('useEagerAsync');
@@ -49,19 +37,8 @@ describe('createReactiveEagerAsync', () => {
   });
 
   it('should handle type annotations with params', () => {
-    type MockReactiveFn = DefineReactiveEagerAsync<
-      (args: { name: string }) => Promise<string>
-    >;
-    const mockReactiveFn = vi.fn(({ name }: { name: string }) => ({
-      isIdle: true,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      error: null,
-      data: `Hello ${name}`,
-    }));
-
-    const reactiveEagerAsync: MockReactiveFn =
+    const mockReactiveFn = makeEagerAsyncHookWithParamsReturnsString();
+    const reactiveEagerAsync: ReactiveEagerAsyncWithParamsReturnsString =
       createReactiveEagerAsync(mockReactiveFn);
     expect(typeof reactiveEagerAsync).toBe('object');
     expect(reactiveEagerAsync).toHaveProperty('useEagerAsync');
@@ -70,17 +47,8 @@ describe('createReactiveEagerAsync', () => {
   });
 
   it('should invoke the reactive eager async function without params', async () => {
-    const mockReactiveFn = vi.fn(() => ({
-      isIdle: true,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      error: null,
-      data: 'test',
-    }));
-
+    const mockReactiveFn = makeEagerAsyncHookWithoutParamsReturnsString();
     const reactiveEagerAsync = createReactiveEagerAsync(mockReactiveFn);
-
     const result = reactiveEagerAsync.useEagerAsync();
 
     expect(result.data).toBe('test');
@@ -88,17 +56,8 @@ describe('createReactiveEagerAsync', () => {
   });
 
   it('should invoke the reactive eager async function with params', async () => {
-    const mockReactiveFn = vi.fn(({ name }: { name: string }) => ({
-      isIdle: true,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      error: null,
-      data: `Hello ${name}`,
-    }));
-
+    const mockReactiveFn = makeEagerAsyncHookWithParamsReturnsString();
     const reactiveEagerAsync = createReactiveEagerAsync(mockReactiveFn);
-
     const result = reactiveEagerAsync.useEagerAsync({ name: 'John' });
 
     expect(result.data).toBe('Hello John');

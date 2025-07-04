@@ -1,6 +1,9 @@
 import { WaitForReadOptions } from 'src/types/WaitForOptions';
 
-export type EagerAsyncTestHarnessReturnType<TResult, E extends Error> = {
+export type EagerAsyncTestHarnessReturnType<
+  TResult = unknown,
+  TError extends Error = Error,
+> = {
   waitFor: (cb: () => void, options?: WaitForReadOptions) => Promise<void>;
   result: {
     current: {
@@ -9,7 +12,7 @@ export type EagerAsyncTestHarnessReturnType<TResult, E extends Error> = {
       isSuccess: boolean;
       isPending: boolean;
       isError: boolean;
-      error: E | null;
+      error: TError | null;
     };
   };
 };

@@ -1,17 +1,15 @@
 export type ReactiveEagerAsync<
-  TParams,
-  TResult,
-  E extends Error = Error,
-> = TParams extends Record<'options', unknown>
-  ? never
-  : TParams extends undefined
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+> = TParams extends void
   ? {
       useEagerAsync: () => {
         isIdle: boolean;
         isPending: boolean;
         isSuccess: boolean;
         isError: boolean;
-        error: E | null;
+        error: TError | null;
         data: TResult;
       };
     }
@@ -22,18 +20,7 @@ export type ReactiveEagerAsync<
         isPending: boolean;
         isSuccess: boolean;
         isError: boolean;
-        error: E | null;
-        data: TResult;
-      };
-    }
-  : TParams extends unknown
-  ? {
-      useEagerAsync: () => {
-        isIdle: boolean;
-        isPending: boolean;
-        isSuccess: boolean;
-        isError: boolean;
-        error: E | null;
+        error: TError | null;
         data: TResult;
       };
     }
@@ -43,9 +30,9 @@ export type DefineReactiveEagerAsync<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
-  E extends Error = Error,
+  TError extends Error = Error,
 > = ReactiveEagerAsync<
-  Parameters<T>[0] extends undefined | object ? Parameters<T>[0] : never,
+  Parameters<T>[0] extends void | object ? Parameters<T>[0] : never,
   Awaited<ReturnType<T>>,
-  E
+  TError
 >;

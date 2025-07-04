@@ -1,14 +1,12 @@
 import { IdiomaticMutationTestHarness } from '../IdiomaticMutationTestHarness';
+import {
+  makeAsyncFnWithoutParamsReturnsString,
+  makeAsyncFnWithParamsReturnsString,
+} from '../../__tests__/functionFixtures';
 
 describe('IdiomaticMutationTestHarness', () => {
-  const wait = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
-
   it('should wait for success', async () => {
-    const mockPromise = vi.fn(async () => {
-      await wait(100);
-      return 'test';
-    });
+    const mockPromise = makeAsyncFnWithoutParamsReturnsString();
     const mutation = IdiomaticMutationTestHarness({
       idiomaticMutation: mockPromise,
     });
@@ -42,10 +40,7 @@ describe('IdiomaticMutationTestHarness', () => {
   });
 
   it('should properly handle params', async () => {
-    const mockPromise = vi.fn(async (params: { id: string }) => {
-      await wait(100);
-      return 'test' + params.id;
-    });
+    const mockPromise = makeAsyncFnWithParamsReturnsString();
     const mutation = IdiomaticMutationTestHarness({
       idiomaticMutation: mockPromise,
     });
@@ -57,7 +52,7 @@ describe('IdiomaticMutationTestHarness', () => {
     expect(mutation.result.current.error).toBe(null);
     expect(mutation.result.current.data).toBe(undefined);
 
-    mutation.result.current.call({ id: '123' });
+    mutation.result.current.call({ name: 'John' });
 
     expect(mutation.result.current.isIdle).toBe(false);
     expect(mutation.result.current.isPending).toBe(true);
@@ -74,7 +69,7 @@ describe('IdiomaticMutationTestHarness', () => {
     expect(mutation.result.current.isPending).toBe(false);
     expect(mutation.result.current.isError).toBe(false);
     expect(mutation.result.current.error).toBe(null);
-    expect(mutation.result.current.data).toBe('test123');
+    expect(mutation.result.current.data).toBe('Hello John');
     expect(mockPromise).toHaveBeenCalledTimes(1);
   });
 });
