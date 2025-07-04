@@ -35,7 +35,8 @@
     "@chimeric/core": "workspace:*"
   },
   "peerDependencies": {
-    "react": "^18 || ^19"
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",

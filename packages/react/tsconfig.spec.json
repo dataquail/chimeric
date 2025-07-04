@@ -25,7 +25,9 @@
     "src/**/*.spec.js",
     "src/**/*.test.jsx",
     "src/**/*.spec.jsx",
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "src/**/__tests__/**/*.tsx",
+    "src/**/__tests__/**/*.ts"
   ],
   "references": [
     {

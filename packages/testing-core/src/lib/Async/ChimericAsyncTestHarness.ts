@@ -2,8 +2,6 @@ import {
   ChimericAsync,
   ReactiveAsyncOptions,
   IdiomaticAsyncOptions,
-  ReactiveAsync,
-  IdiomaticAsync,
 } from '@chimeric/core';
 import { JSX, ReactNode } from 'react';
 import { AsyncTestHarnessReturnType } from './types';
@@ -11,8 +9,8 @@ import { IdiomaticAsyncTestHarness } from './IdiomaticAsyncTestHarness';
 import { ReactiveAsyncTestHarness } from './ReactiveAsyncTestHarness';
 
 export function ChimericAsyncTestHarness<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   E extends Error = Error,
 >({
   chimericAsync,
@@ -29,13 +27,13 @@ export function ChimericAsyncTestHarness<
 }): AsyncTestHarnessReturnType<TParams, TResult, E> {
   if (method === 'idiomatic') {
     return IdiomaticAsyncTestHarness({
-      idiomaticAsync: chimericAsync as IdiomaticAsync<TParams, TResult>,
+      idiomaticAsync: chimericAsync,
       idiomaticOptions,
     });
   }
   if (method === 'reactive') {
     return ReactiveAsyncTestHarness({
-      reactiveAsync: chimericAsync as ReactiveAsync<TParams, TResult, E>,
+      reactiveAsync: chimericAsync,
       reactiveOptions,
       wrapper,
     });

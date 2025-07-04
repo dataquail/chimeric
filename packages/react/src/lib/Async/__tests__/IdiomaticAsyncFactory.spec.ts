@@ -1,8 +1,16 @@
+import {
+  IdiomaticAsyncWithoutParamsReturnsString,
+  IdiomaticAsyncWithParamsReturnsString,
+} from '../../__tests__/asyncFixtures';
+import {
+  makeAsyncFnWithoutParamsReturnsString,
+  makeAsyncFnWithParamsReturnsString,
+} from '../../__tests__/functionFixtures';
 import { IdiomaticAsyncFactory } from '../IdiomaticAsyncFactory';
 
 describe('IdiomaticAsyncFactory', () => {
   it('should invoke the idiomatic fn', async () => {
-    const mockPromise = vi.fn(() => Promise.resolve('test'));
+    const mockPromise = makeAsyncFnWithoutParamsReturnsString();
     const idiomaticPromise = IdiomaticAsyncFactory(mockPromise);
     const result = await idiomaticPromise();
 
@@ -11,9 +19,7 @@ describe('IdiomaticAsyncFactory', () => {
   });
 
   it('should invoke the idiomatic fn with params', async () => {
-    const mockPromise = vi.fn((args: { name: string }) =>
-      Promise.resolve(`Hello ${args.name}`),
-    );
+    const mockPromise = makeAsyncFnWithParamsReturnsString();
     const idiomaticPromise = IdiomaticAsyncFactory(mockPromise);
     const result = await idiomaticPromise({ name: 'John' });
 
@@ -31,5 +37,21 @@ describe('IdiomaticAsyncFactory', () => {
       expect((error as Error).message).toBe('test');
     }
     expect(mockPromise).toHaveBeenCalledTimes(3);
+  });
+
+  it('should handle type annotations with no params', async () => {
+    const idiomaticPromise: IdiomaticAsyncWithoutParamsReturnsString =
+      IdiomaticAsyncFactory(makeAsyncFnWithoutParamsReturnsString());
+    const result = await idiomaticPromise();
+
+    expect(result).toBe('test');
+  });
+
+  it('should handle type annotations with params', async () => {
+    const idiomaticPromise: IdiomaticAsyncWithParamsReturnsString =
+      IdiomaticAsyncFactory(makeAsyncFnWithParamsReturnsString());
+    const result = await idiomaticPromise({ name: 'John' });
+
+    expect(result).toBe('Hello John');
   });
 });

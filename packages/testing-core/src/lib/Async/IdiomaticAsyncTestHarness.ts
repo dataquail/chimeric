@@ -5,8 +5,8 @@ import { BaseWaitForOptions } from 'src/types/WaitForOptions';
 import { AsyncTestHarnessReturnType } from './types';
 
 export function IdiomaticAsyncTestHarness<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   E extends Error = Error,
 >(args: {
   idiomaticAsync: IdiomaticAsync<TParams, TResult>;

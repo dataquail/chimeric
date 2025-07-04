@@ -1,24 +1,23 @@
 import { ChimericAsyncTestHarness } from '../ChimericAsyncTestHarness';
 import {
   createIdiomaticAsync,
-  DefineChimericAsync,
   fuseChimericAsync,
   createReactiveAsync,
 } from '@chimeric/core';
+import {
+  makeReactiveAsyncWithoutParamsReturnsString,
+  makeReactiveAsyncWithParamsReturnsString,
+} from '../../__tests__/asyncFixtures';
+import {
+  makeAsyncFnWithoutParamsReturnsString,
+  makeAsyncFnWithParamsReturnsString,
+} from '../../__tests__/functionFixtures';
 
 describe('ChimericAsyncTestHarness', () => {
   it('should be a function', () => {
     const mockIdiomaticAsync = createIdiomaticAsync(vi.fn(async () => 'test'));
     const mockReactiveAsync = createReactiveAsync(
-      vi.fn(() => ({
-        call: vi.fn(() => Promise.resolve('test')),
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-      })),
+      makeReactiveAsyncWithoutParamsReturnsString(),
     );
 
     const testChimericAsync = fuseChimericAsync({
@@ -37,23 +36,11 @@ describe('ChimericAsyncTestHarness', () => {
   });
 
   it('should handle type annotations without params', () => {
-    const mockIdiomaticAsync = vi.fn(async () => 'test');
-    const mockReactiveAsyncCall = vi.fn(() => Promise.resolve('test'));
-    const mockReactiveAsync = {
-      useAsync: vi.fn(() => ({
-        call: mockReactiveAsyncCall,
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-      })),
-    };
-    type TestChimericAsync = DefineChimericAsync<() => Promise<string>>;
-    const testChimericAsync: TestChimericAsync = fuseChimericAsync({
+    const mockIdiomaticAsync = makeAsyncFnWithoutParamsReturnsString();
+    const mockReactiveAsync = makeReactiveAsyncWithoutParamsReturnsString();
+    const testChimericAsync = fuseChimericAsync({
       idiomatic: mockIdiomaticAsync,
-      reactive: mockReactiveAsync,
+      reactive: createReactiveAsync(mockReactiveAsync),
     });
 
     const harness = ChimericAsyncTestHarness({
@@ -62,34 +49,16 @@ describe('ChimericAsyncTestHarness', () => {
     });
 
     harness.result.current.call();
-    expect(mockReactiveAsync.useAsync).toHaveBeenCalled();
-    expect(mockReactiveAsyncCall).toHaveBeenCalled();
+    expect(mockReactiveAsync).toHaveBeenCalled();
+    expect(mockReactiveAsync).toHaveBeenCalledWith({});
   });
 
   it('should handle type annotations with params', () => {
-    const mockIdiomaticAsync = vi.fn(async (args: { name: string }) => {
-      return `Hello ${args.name}`;
-    });
-    const mockReactiveAsyncCall = vi.fn((args: { name: string }) =>
-      Promise.resolve(`Hello ${args.name}`),
-    );
-    const mockReactiveAsync = {
-      useAsync: vi.fn(() => ({
-        call: mockReactiveAsyncCall,
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-      })),
-    };
-    type TestChimericAsync = DefineChimericAsync<
-      (args: { name: string }) => Promise<string>
-    >;
-    const testChimericAsync: TestChimericAsync = fuseChimericAsync({
+    const mockIdiomaticAsync = makeAsyncFnWithParamsReturnsString();
+    const mockReactiveAsync = makeReactiveAsyncWithParamsReturnsString();
+    const testChimericAsync = fuseChimericAsync({
       idiomatic: mockIdiomaticAsync,
-      reactive: mockReactiveAsync,
+      reactive: createReactiveAsync(mockReactiveAsync),
     });
 
     const harness = ChimericAsyncTestHarness({
@@ -98,7 +67,6 @@ describe('ChimericAsyncTestHarness', () => {
     });
 
     harness.result.current.call({ name: 'John' });
-    expect(mockReactiveAsync.useAsync).toHaveBeenCalled();
-    expect(mockReactiveAsyncCall).toHaveBeenCalled();
+    expect(harness.result.current.call).toHaveBeenCalledWith({ name: 'John' });
   });
 });

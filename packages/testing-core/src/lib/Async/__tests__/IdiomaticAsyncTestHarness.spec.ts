@@ -1,15 +1,13 @@
 import { IdiomaticAsyncTestHarness } from '../IdiomaticAsyncTestHarness';
 import { createIdiomaticAsync } from '@chimeric/core';
+import {
+  makeAsyncFnWithoutParamsReturnsString,
+  makeAsyncFnWithParamsReturnsString,
+} from '../../__tests__/functionFixtures';
 
 describe('IdiomaticAsyncTestHarness', () => {
-  const wait = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
-
   it('should wait for success', async () => {
-    const mockPromise = vi.fn(async () => {
-      await wait(100);
-      return 'test';
-    });
+    const mockPromise = makeAsyncFnWithoutParamsReturnsString();
     const promise = IdiomaticAsyncTestHarness({
       idiomaticAsync: createIdiomaticAsync(mockPromise),
     });
@@ -43,10 +41,7 @@ describe('IdiomaticAsyncTestHarness', () => {
   });
 
   it('should take options', async () => {
-    const mockPromise = vi.fn(async () => {
-      await wait(100);
-      return 'test';
-    });
+    const mockPromise = makeAsyncFnWithoutParamsReturnsString();
     const promise = IdiomaticAsyncTestHarness({
       idiomaticAsync: createIdiomaticAsync(mockPromise),
       idiomaticOptions: { retry: 3 },
@@ -82,10 +77,7 @@ describe('IdiomaticAsyncTestHarness', () => {
   });
 
   it('should take options with params', async () => {
-    const mockPromise = vi.fn(async (params: { name: string }) => {
-      await wait(100);
-      return params.name;
-    });
+    const mockPromise = makeAsyncFnWithParamsReturnsString();
     const promise = IdiomaticAsyncTestHarness({
       idiomaticAsync: createIdiomaticAsync(mockPromise),
       idiomaticOptions: { retry: 3 },

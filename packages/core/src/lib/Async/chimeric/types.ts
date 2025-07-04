@@ -2,18 +2,18 @@ import { IdiomaticAsync } from '../idiomatic/types';
 import { ReactiveAsync } from '../reactive/types';
 
 export type ChimericAsync<
-  TParams,
-  TResult,
-  E extends Error = Error,
-> = IdiomaticAsync<TParams, TResult> & ReactiveAsync<TParams, TResult, E>;
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+> = IdiomaticAsync<TParams, TResult> & ReactiveAsync<TParams, TResult, TError>;
 
 export type DefineChimericAsync<
   T extends (
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
-  E extends Error = Error,
+  TError extends Error = Error,
 > = ChimericAsync<
-  Parameters<T>[0] extends undefined | object ? Parameters<T>[0] : never,
+  Parameters<T>[0] extends void | object ? Parameters<T>[0] : never,
   Awaited<ReturnType<T>>,
-  E
+  TError
 >;
