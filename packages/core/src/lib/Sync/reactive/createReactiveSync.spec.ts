@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createReactiveSync } from './createReactiveSync';
 import { DefineReactiveSync } from './types';
+import { makeSyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
 
 describe('createReactiveSync', () => {
   it('should create a reactive sync function', () => {
-    const mockReactiveFn = vi.fn(() => 'test');
-
+    const mockReactiveFn = makeSyncFnWithoutParamsReturnsString();
     const reactiveSync = createReactiveSync(mockReactiveFn);
 
     expect(typeof reactiveSync).toBe('object');

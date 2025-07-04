@@ -1,8 +1,8 @@
 import { isIdiomaticSync } from './isIdiomaticSync';
 import { IdiomaticSync } from './types';
 
-export const createIdiomaticSync = <TParams, TResult>(
-  idiomaticFn: (params: TParams) => TResult,
+export const createIdiomaticSync = <TParams = void, TResult = unknown>(
+  idiomaticFn: IdiomaticSync<TParams, TResult>,
 ): IdiomaticSync<TParams, TResult> => {
   if (isIdiomaticSync<TParams, TResult>(idiomaticFn)) {
     return idiomaticFn as IdiomaticSync<TParams, TResult>;

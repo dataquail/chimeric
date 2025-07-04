@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { makeSyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
 import { isChimericSync } from './isChimericSync';
 
 describe('isChimericSync', () => {
   it('should return true for a chimeric sync function', () => {
-    const mockChimericSync = vi.fn(() => 'test') as any;
-    mockChimericSync.useSync = vi.fn(() => 'test');
+    const mockChimericSync = makeSyncFnWithoutParamsReturnsString() as any;
+    mockChimericSync.useSync = makeSyncFnWithoutParamsReturnsString();
 
     expect(isChimericSync(mockChimericSync)).toBe(true);
   });
@@ -14,12 +15,12 @@ describe('isChimericSync', () => {
     expect(isChimericSync('not a function')).toBe(false);
 
     // Function without useSync
-    const mockSyncFn = vi.fn(() => 'test');
+    const mockSyncFn = makeSyncFnWithoutParamsReturnsString();
     expect(isChimericSync(mockSyncFn)).toBe(false);
 
     // Object with useSync but not a function
     const mockReactiveSync = {
-      useSync: vi.fn(() => 'test'),
+      useSync: makeSyncFnWithoutParamsReturnsString(),
     };
     expect(isChimericSync(mockReactiveSync)).toBe(false);
 

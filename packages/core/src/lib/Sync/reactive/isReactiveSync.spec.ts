@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { makeSyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
 import { isReactiveSync } from './isReactiveSync';
 
 describe('isReactiveSync', () => {
   it('should return true for an object with useSync function', () => {
     const mockReactiveSync = {
-      useSync: vi.fn(() => 'test'),
+      useSync: makeSyncFnWithoutParamsReturnsString(),
     };
 
     expect(isReactiveSync(mockReactiveSync)).toBe(true);
   });
 
   it('should return true for a function with useSync property', () => {
-    const mockReactiveSync = vi.fn(() => 'test') as any;
-    mockReactiveSync.useSync = vi.fn(() => 'test');
+    const mockReactiveSync = makeSyncFnWithoutParamsReturnsString() as any;
+    mockReactiveSync.useSync = makeSyncFnWithoutParamsReturnsString();
 
     expect(isReactiveSync(mockReactiveSync)).toBe(true);
   });
