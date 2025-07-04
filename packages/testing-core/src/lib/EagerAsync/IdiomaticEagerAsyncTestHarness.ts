@@ -5,16 +5,20 @@ import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
 import { EagerAsyncTestHarnessReturnType } from './types.js';
 
 export function IdiomaticEagerAsyncTestHarness<
-  TParams,
-  TResult,
-  E extends Error = Error,
->({
-  idiomaticEagerAsync,
-  params,
-}: {
-  idiomaticEagerAsync: IdiomaticEagerAsync<TParams, TResult>;
-  params?: TParams;
-}): EagerAsyncTestHarnessReturnType<TResult, E> {
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+>(
+  args: TParams extends void
+    ? {
+        idiomaticEagerAsync: IdiomaticEagerAsync<TParams, TResult>;
+      }
+    : {
+        idiomaticEagerAsync: IdiomaticEagerAsync<TParams, TResult>;
+        params: TParams;
+      },
+): EagerAsyncTestHarnessReturnType<TResult, TError> {
+  const { idiomaticEagerAsync } = args;
   const result = {
     current: {
       data: undefined as TResult | undefined,
@@ -22,7 +26,7 @@ export function IdiomaticEagerAsyncTestHarness<
       isSuccess: false,
       isPending: true,
       isError: false,
-      error: null as E | null,
+      error: null as TError | null,
     },
   };
   let promiseStatus = 'initial' as
@@ -32,7 +36,9 @@ export function IdiomaticEagerAsyncTestHarness<
     | 'rejected';
   result.current.isIdle = false;
   result.current.isPending = true;
-  let promise = idiomaticEagerAsync(params as TParams);
+  let promise = idiomaticEagerAsync(
+    (args as { params?: TParams })?.params as TParams,
+  );
   promiseStatus = 'pending';
   promise
     .then((data) => {
@@ -49,7 +55,7 @@ export function IdiomaticEagerAsyncTestHarness<
       result.current.isPending = false;
       result.current.isSuccess = false;
       result.current.isError = true;
-      result.current.error = error as E;
+      result.current.error = error as TError;
       promiseStatus = 'rejected';
     });
 
@@ -58,7 +64,9 @@ export function IdiomaticEagerAsyncTestHarness<
       return new Promise<void>(async (resolve, reject) => {
         try {
           if (options?.reinvokeIdiomaticFn && promiseStatus === 'resolved') {
-            promise = idiomaticEagerAsync(params as TParams);
+            promise = idiomaticEagerAsync(
+              (args as { params?: TParams })?.params as TParams,
+            );
             promiseStatus = 'pending';
             promise
               .then((data) => {
@@ -75,7 +83,7 @@ export function IdiomaticEagerAsyncTestHarness<
                 result.current.isPending = false;
                 result.current.isSuccess = false;
                 result.current.isError = true;
-                result.current.error = error as E;
+                result.current.error = error as TError;
                 promiseStatus = 'rejected';
               });
           }

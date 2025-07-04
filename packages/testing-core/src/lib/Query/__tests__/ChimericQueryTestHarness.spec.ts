@@ -1,21 +1,18 @@
 import { fuseChimericQuery } from '@chimeric/core';
 import { ChimericQueryTestHarness } from '../ChimericQueryTestHarness';
+import {
+  makeAsyncFnWithoutParamsReturnsString,
+  makeAsyncFnWithParamsReturnsString,
+} from '../../__tests__/functionFixtures';
+import {
+  makeReactiveQueryWithoutParamsReturnsString,
+  makeReactiveQueryWithParamsReturnsString,
+} from '../../__tests__/queryFixtures';
 
 describe('ChimericQueryTestHarness', () => {
   it('should be a function', () => {
-    const mockIdiomaticQuery = vi.fn(() => Promise.resolve('test'));
-    const mockReactiveQuery = {
-      useQuery: vi.fn(() => ({
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-        refetch: vi.fn(),
-        native: {},
-      })),
-    };
+    const mockIdiomaticQuery = makeAsyncFnWithoutParamsReturnsString();
+    const mockReactiveQuery = makeReactiveQueryWithoutParamsReturnsString();
 
     const chimericQuery = fuseChimericQuery({
       idiomatic: mockIdiomaticQuery,
@@ -32,21 +29,8 @@ describe('ChimericQueryTestHarness', () => {
   });
 
   it('should handle params', () => {
-    const mockIdiomaticQuery = vi.fn((_args: { id: string }) =>
-      Promise.resolve('test'),
-    );
-    const mockReactiveQuery = {
-      useQuery: vi.fn((_args: { id: string }) => ({
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-        refetch: vi.fn(),
-        native: {},
-      })),
-    };
+    const mockIdiomaticQuery = makeAsyncFnWithParamsReturnsString();
+    const mockReactiveQuery = makeReactiveQueryWithParamsReturnsString();
 
     ChimericQueryTestHarness({
       chimericQuery: fuseChimericQuery({
@@ -54,10 +38,10 @@ describe('ChimericQueryTestHarness', () => {
         reactive: mockReactiveQuery,
       }),
       method: 'reactive',
-      params: { id: '123' },
+      params: { name: 'John' },
     });
 
-    expect(mockReactiveQuery.useQuery).toHaveBeenCalledWith({ id: '123' });
+    expect(mockReactiveQuery.useQuery).toHaveBeenCalledWith({ name: 'John' });
     expect(mockReactiveQuery.useQuery).toHaveBeenCalledTimes(1);
   });
 });

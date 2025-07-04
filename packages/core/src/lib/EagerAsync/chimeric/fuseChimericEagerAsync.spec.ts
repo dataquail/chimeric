@@ -1,18 +1,20 @@
+import {
+  ChimericEagerAsyncWithoutParamsReturnsString,
+  ChimericEagerAsyncWithParamsReturnsString,
+  makeEagerAsyncHookWithoutParamsReturnsString,
+  makeEagerAsyncHookWithParamsReturnsString,
+} from '../../__tests__/eagerAsyncFixtures';
+import {
+  makeAsyncFnWithoutParamsReturnsString,
+  makeAsyncFnWithParamsReturnsString,
+} from '../../__tests__/functionFixtures';
 import { fuseChimericEagerAsync } from './fuseChimericEagerAsync';
-import { DefineChimericEagerAsync } from './types';
 
 describe('fuseChimericEagerAsync', () => {
   it('should invoke the idiomatic async function', async () => {
-    const mockIdiomaticEagerAsync = vi.fn(async () => 'test');
+    const mockIdiomaticEagerAsync = makeAsyncFnWithoutParamsReturnsString();
     const mockReactiveEagerAsync = {
-      useEagerAsync: vi.fn(() => ({
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: undefined,
-      })),
+      useEagerAsync: makeEagerAsyncHookWithoutParamsReturnsString(),
     };
     const testChimericEagerAsync = fuseChimericEagerAsync({
       idiomatic: mockIdiomaticEagerAsync,
@@ -25,18 +27,9 @@ describe('fuseChimericEagerAsync', () => {
   });
 
   it('should invoke the idiomatic function with params', async () => {
-    const mockIdiomaticEagerAsync = vi.fn(
-      async (args: { name: string }) => `Hello ${args.name}`,
-    );
+    const mockIdiomaticEagerAsync = makeAsyncFnWithParamsReturnsString();
     const mockReactiveEagerAsync = {
-      useEagerAsync: vi.fn((args: { name: string }) => ({
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: `Hello ${args.name}`,
-      })),
+      useEagerAsync: makeEagerAsyncHookWithParamsReturnsString(),
     };
     const testChimericEagerAsync = fuseChimericEagerAsync({
       idiomatic: mockIdiomaticEagerAsync,
@@ -49,16 +42,9 @@ describe('fuseChimericEagerAsync', () => {
   });
 
   it('should invoke the reactive function', async () => {
-    const mockIdiomaticEagerAsync = vi.fn(async () => 'test');
+    const mockIdiomaticEagerAsync = makeAsyncFnWithoutParamsReturnsString();
     const mockReactiveEagerAsync = {
-      useEagerAsync: vi.fn(() => ({
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: 'test',
-      })),
+      useEagerAsync: makeEagerAsyncHookWithoutParamsReturnsString(),
     };
     const testChimericEagerAsync = fuseChimericEagerAsync({
       idiomatic: mockIdiomaticEagerAsync,
@@ -71,18 +57,9 @@ describe('fuseChimericEagerAsync', () => {
   });
 
   it('should invoke the reactive function with params', async () => {
-    const mockIdiomaticEagerAsync = vi.fn(
-      async (args: { name: string }) => `Hello ${args.name}`,
-    );
+    const mockIdiomaticEagerAsync = makeAsyncFnWithParamsReturnsString();
     const mockReactiveEagerAsync = {
-      useEagerAsync: vi.fn((args: { name: string }) => ({
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: `Hello ${args.name}`,
-      })),
+      useEagerAsync: makeEagerAsyncHookWithParamsReturnsString(),
     };
     const testChimericEagerAsync = fuseChimericEagerAsync({
       idiomatic: mockIdiomaticEagerAsync,
@@ -97,22 +74,11 @@ describe('fuseChimericEagerAsync', () => {
   });
 
   it('should handle type annotations with no params', async () => {
-    type TestChimericEagerAsync = DefineChimericEagerAsync<
-      () => Promise<string>,
-      Error
-    >;
-    const mockIdiomaticEagerAsync = vi.fn(async () => 'test');
+    const mockIdiomaticEagerAsync = makeAsyncFnWithoutParamsReturnsString();
     const mockReactiveEagerAsync = {
-      useEagerAsync: vi.fn(() => ({
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: '',
-      })),
+      useEagerAsync: makeEagerAsyncHookWithoutParamsReturnsString(),
     };
-    const testChimericEagerAsync: TestChimericEagerAsync =
+    const testChimericEagerAsync: ChimericEagerAsyncWithoutParamsReturnsString =
       fuseChimericEagerAsync({
         idiomatic: mockIdiomaticEagerAsync,
         reactive: mockReactiveEagerAsync,
@@ -122,24 +88,11 @@ describe('fuseChimericEagerAsync', () => {
   });
 
   it('should handle type annotations with params', async () => {
-    type TestChimericEagerAsync = DefineChimericEagerAsync<
-      (args: { name: string }) => Promise<string>,
-      Error
-    >;
-    const mockIdiomaticEagerAsync = vi.fn(
-      async (args: { name: string }) => `Hello ${args.name}`,
-    );
+    const mockIdiomaticEagerAsync = makeAsyncFnWithParamsReturnsString();
     const mockReactiveEagerAsync = {
-      useEagerAsync: vi.fn((args: { name: string }) => ({
-        isIdle: true,
-        isPending: false,
-        isSuccess: false,
-        isError: false,
-        error: null,
-        data: `Hello ${args.name}`,
-      })),
+      useEagerAsync: makeEagerAsyncHookWithParamsReturnsString(),
     };
-    const testChimericEagerAsync: TestChimericEagerAsync =
+    const testChimericEagerAsync: ChimericEagerAsyncWithParamsReturnsString =
       fuseChimericEagerAsync({
         idiomatic: mockIdiomaticEagerAsync,
         reactive: mockReactiveEagerAsync,

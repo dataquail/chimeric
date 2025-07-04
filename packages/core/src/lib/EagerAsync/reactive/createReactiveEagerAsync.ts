@@ -2,8 +2,8 @@ import { isReactiveEagerAsync } from './isReactiveEagerAsync';
 import { ReactiveEagerAsync } from './types';
 
 export function createReactiveEagerAsync<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   E extends Error = Error,
 >(
   reactiveFn: ReactiveEagerAsync<TParams, TResult, E>['useEagerAsync'],

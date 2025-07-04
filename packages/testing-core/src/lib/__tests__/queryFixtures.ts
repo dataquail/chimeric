@@ -7,7 +7,7 @@ export const makeReactiveQueryWithoutParamsReturnsString = () => ({
     error: null,
     data: undefined,
     refetch: vi.fn(),
-    native: {},
+    native: null,
   })),
 });
 
@@ -20,6 +20,6 @@ export const makeReactiveQueryWithParamsReturnsString = () => ({
     error: null,
     data: `Hello ${args.name}`,
     refetch: vi.fn(),
-    native: {},
+    native: null,
   })),
 });
