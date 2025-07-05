@@ -1,6 +1,6 @@
 {
   "name": "@chimeric/react",
-  "version": "0.2.15",
+  "version": "0.3.0",
   "description": "React utilities for chimeric interfaces",
   "author": "zacharyweidenbach",
   "license": "MIT",

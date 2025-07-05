@@ -1,3 +1,13 @@
+## 0.3.0 (2025-07-05)
+
+### 🚀 Features
+
+- change 'call' to 'invoke' ([51e08fe](https://github.com/dataquail/chimeric/commit/51e08fe))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 0.2.15 (2025-07-04)
 
 ### 🩹 Fixes
