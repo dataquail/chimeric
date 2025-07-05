@@ -30,7 +30,7 @@ describe('ChimericAsyncTestHarness', () => {
       method: 'idiomatic',
     });
 
-    harness.result.current.call();
+    harness.result.current.invoke();
 
     expect(mockIdiomaticAsync).toHaveBeenCalled();
   });
@@ -48,7 +48,7 @@ describe('ChimericAsyncTestHarness', () => {
       method: 'reactive',
     });
 
-    harness.result.current.call();
+    harness.result.current.invoke();
     expect(mockReactiveAsync).toHaveBeenCalled();
     expect(mockReactiveAsync).toHaveBeenCalledWith({});
   });
@@ -66,7 +66,9 @@ describe('ChimericAsyncTestHarness', () => {
       method: 'reactive',
     });
 
-    harness.result.current.call({ name: 'John' });
-    expect(harness.result.current.call).toHaveBeenCalledWith({ name: 'John' });
+    harness.result.current.invoke({ name: 'John' });
+    expect(harness.result.current.invoke).toHaveBeenCalledWith({
+      name: 'John',
+    });
   });
 });

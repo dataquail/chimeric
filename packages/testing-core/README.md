@@ -111,7 +111,7 @@ describe('User API', () => {
     expect(harness.result.current.data).toBeUndefined();
 
     // Trigger the async operation
-    const promise = harness.result.current.call({ id: 'user-123' });
+    const promise = harness.result.current.invoke({ id: 'user-123' });
 
     // Wait for pending state
     await harness.waitFor(() => {
@@ -139,7 +139,7 @@ describe('User API', () => {
     });
 
     // Trigger operation and expect it to throw
-    await expect(harness.result.current.call()).rejects.toThrow(
+    await expect(harness.result.current.invoke()).rejects.toThrow(
       'Network error',
     );
 
@@ -180,7 +180,7 @@ describe('Data Service', () => {
     expect(harness.result.current.isIdle).toBe(true);
 
     // Start operation
-    const promise = harness.result.current.call({
+    const promise = harness.result.current.invoke({
       items: ['hello', 'world'],
     });
 
@@ -232,7 +232,9 @@ describe('Chimeric Operations', () => {
     expect(idiomaticResult).toBe(10);
 
     // Test reactive method
-    const reactivePromise = harness.result.current.reactive.call({ value: 7 });
+    const reactivePromise = harness.result.current.reactive.invoke({
+      value: 7,
+    });
 
     await harness.waitFor(() => {
       expect(harness.result.current.reactive.isPending).toBe(true);
@@ -406,7 +408,7 @@ describe('Mutation Operations', () => {
     });
 
     // Test mutation call
-    const result = await harness.result.current.call({
+    const result = await harness.result.current.invoke({
       id: 'user-123',
       name: 'Jane Doe',
     });
@@ -451,7 +453,7 @@ describe('Operations with Context', () => {
     });
 
     // Test with full context
-    await harness.result.current.call();
+    await harness.result.current.invoke();
     // ... assertions
   });
 });
@@ -470,7 +472,7 @@ describe('Error Handling', () => {
       reactiveAsync: failingOperation,
     });
 
-    await expect(harness.result.current.call()).rejects.toThrow(
+    await expect(harness.result.current.invoke()).rejects.toThrow(
       'Network timeout',
     );
 
@@ -495,7 +497,7 @@ describe('Error Handling', () => {
       reactiveOptions: { retry: 3 },
     });
 
-    const result = await harness.result.current.call();
+    const result = await harness.result.current.invoke();
     expect(result).toBe('Success after retries');
     expect(attemptCount).toBe(3);
   });
@@ -523,7 +525,7 @@ describe('State Transitions', () => {
     expect(harness.result.current.isError).toBe(false);
 
     // Start operation
-    const promise = harness.result.current.call();
+    const promise = harness.result.current.invoke();
 
     // Pending state
     await harness.waitFor(() => {
@@ -567,7 +569,7 @@ describe.each(chimericMethods)('Chimeric Operation - %s method', (method) => {
     });
 
     act(() => {
-      harness.result.current.call();
+      harness.result.current.invoke();
     });
 
     await harness.waitFor(() =>

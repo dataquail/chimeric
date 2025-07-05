@@ -50,7 +50,7 @@ export const SavedForLaterTodoCard = ({ savedForLaterTodo }: OwnProps) => {
               leftSection={
                 <IconTrash style={{ width: rem(14), height: rem(14) }} />
               }
-              onClick={() => deleteOne.call({ id: savedForLaterTodo.id })}
+              onClick={() => deleteOne.invoke({ id: savedForLaterTodo.id })}
             >
               Delete
             </Menu.Item>
@@ -59,7 +59,7 @@ export const SavedForLaterTodoCard = ({ savedForLaterTodo }: OwnProps) => {
                 <IconPlus style={{ width: rem(14), height: rem(14) }} />
               }
               onClick={() =>
-                activateOne.call({
+                activateOne.invoke({
                   savedForLaterTodoId: savedForLaterTodo.id,
                 })
               }

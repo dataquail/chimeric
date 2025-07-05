@@ -239,7 +239,7 @@ describe('IdiomaticQueryFactory Operations', () => {
     expect(harness.result.current.isIdle).toBe(true);
 
     // Execute query
-    const promise = harness.result.current.call({
+    const promise = harness.result.current.invoke({
       userId: 'user-123',
     });
 
@@ -293,7 +293,7 @@ describe('Todo Mutations', () => {
 
     // Execute mutation
     act(() => {
-      deleteHarness.result.current.call({ id: '1' });
+      deleteHarness.result.current.invoke({ id: '1' });
     });
 
     // Wait for mutation to complete
@@ -342,7 +342,7 @@ describe('ReactiveMutationFactory Operations', () => {
     expect(harness.result.current.isPending).toBe(false);
 
     // Execute mutation
-    const promise = harness.result.current.call({
+    const promise = harness.result.current.invoke({
       id: 'user-123',
       name: 'Jane Doe',
     });
@@ -404,7 +404,7 @@ describe('Coordinated Operations', () => {
 
       // Execute mutation
       act(() => {
-        createHarness.result.current.call({
+        createHarness.result.current.invoke({
           title: 'New Todo',
           completed: false,
         });

@@ -3,7 +3,7 @@ import { flushSync } from 'react-dom';
 import {
   createReactiveAsync,
   ReactiveAsync,
-  ReactiveAsyncCallOptions,
+  ReactiveAsyncInvokeOptions,
   ReactiveAsyncOptions,
 } from '@chimeric/core';
 import { executeWithRetry } from './utils';
@@ -33,12 +33,12 @@ export function ReactiveAsyncFactory<
     });
 
     return {
-      call: async (
+      invoke: async (
         paramsAndConfig: TParams & {
-          options?: ReactiveAsyncCallOptions;
-        } = {} as TParams & { options?: ReactiveAsyncCallOptions },
+          options?: ReactiveAsyncInvokeOptions;
+        } = {} as TParams & { options?: ReactiveAsyncInvokeOptions },
       ) => {
-        const { options: callOptions, ...params } = paramsAndConfig;
+        const { options: invokeOptions, ...params } = paramsAndConfig;
         setMeta({
           isIdle: false,
           isPending: true,
@@ -51,7 +51,7 @@ export function ReactiveAsyncFactory<
         try {
           const result = await executeWithRetry<TResult>(
             () => asyncFn(params as TParams),
-            callOptions?.retry || hookOptions?.retry || 0,
+            invokeOptions?.retry || hookOptions?.retry || 0,
           );
           flushSync(() => {
             setMeta({

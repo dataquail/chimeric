@@ -6,7 +6,7 @@ export function createReactiveMutation<
   TResult = unknown,
   TError extends Error = Error,
   TNativeOptions = unknown,
-  TNativeCallOptions = unknown,
+  TNativeInvokeOptions = unknown,
   TNativeReturnType = unknown,
 >(
   reactiveFn: ReactiveMutation<
@@ -14,7 +14,7 @@ export function createReactiveMutation<
     TResult,
     TError,
     TNativeOptions,
-    TNativeCallOptions,
+    TNativeInvokeOptions,
     TNativeReturnType
   >['useMutation'],
 ): ReactiveMutation<
@@ -22,7 +22,7 @@ export function createReactiveMutation<
   TResult,
   TError,
   TNativeOptions,
-  TNativeCallOptions,
+  TNativeInvokeOptions,
   TNativeReturnType
 > {
   const reactiveMutation = {
@@ -34,7 +34,7 @@ export function createReactiveMutation<
       TResult,
       TError,
       TNativeOptions,
-      TNativeCallOptions,
+      TNativeInvokeOptions,
       TNativeReturnType
     >(reactiveMutation)
   ) {

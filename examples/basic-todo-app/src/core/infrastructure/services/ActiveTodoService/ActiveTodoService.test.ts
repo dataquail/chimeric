@@ -236,7 +236,7 @@ describe('ActiveTodoService', () => {
       withOneUncompletedActiveTodoInList();
 
       act(() => {
-        useMutation.result.current.call({ title: 'Active Todo 1' });
+        useMutation.result.current.invoke({ title: 'Active Todo 1' });
       });
 
       expect(useMutation.result.current.isSuccess).toBe(false);
@@ -269,7 +269,7 @@ describe('ActiveTodoService', () => {
       withNoActiveTodosInList();
 
       act(() => {
-        useMutation.result.current.call({ id: '1' });
+        useMutation.result.current.invoke({ id: '1' });
       });
 
       expect(useMutation.result.current.isSuccess).toBe(false);
@@ -305,7 +305,7 @@ describe('ActiveTodoService', () => {
       withOneCompletedActiveTodoInList();
 
       act(() => {
-        useMutation.result.current.call({ id: '1' });
+        useMutation.result.current.invoke({ id: '1' });
       });
 
       expect(useMutation.result.current.isSuccess).toBe(false);
@@ -343,7 +343,7 @@ describe('ActiveTodoService', () => {
       withOneUncompletedActiveTodoInList();
 
       act(() => {
-        useMutation.result.current.call({ id: '1' });
+        useMutation.result.current.invoke({ id: '1' });
       });
 
       expect(useMutation.result.current.isSuccess).toBe(false);
@@ -414,7 +414,7 @@ describe('ActiveTodoService', () => {
       expect(getAllHarness.result.current.data?.length).toBe(0);
       withOneUncompletedActiveTodoInList();
       act(() => {
-        createOneHarness.result.current.call({ title: 'Active Todo 1' });
+        createOneHarness.result.current.invoke({ title: 'Active Todo 1' });
       });
       await createOneHarness.waitFor(() =>
         expect(createOneHarness.result.current.isPending).toBe(false),
@@ -453,7 +453,7 @@ describe('ActiveTodoService', () => {
       withSuccessfullyDeletedActiveTodo();
       withNoActiveTodosInList();
       act(() => {
-        deleteOneHarness.result.current.call({ id: '1' });
+        deleteOneHarness.result.current.invoke({ id: '1' });
       });
       await deleteOneHarness.waitFor(() =>
         expect(deleteOneHarness.result.current.isPending).toBe(false),
@@ -485,7 +485,7 @@ describe('ActiveTodoService', () => {
       withSuccessfullyCompletedActiveTodo();
       withOneCompletedActiveTodoInList();
       act(() => {
-        completeOneHarness.result.current.call({ id: '1' });
+        completeOneHarness.result.current.invoke({ id: '1' });
       });
       await completeOneHarness.waitFor(() =>
         expect(completeOneHarness.result.current.isPending).toBe(false),
@@ -519,7 +519,7 @@ describe('ActiveTodoService', () => {
       withSuccessfullyUncompletedActiveTodo();
       withOneUncompletedActiveTodoInList();
       act(() => {
-        uncompleteOneHarness.result.current.call({ id: '1' });
+        uncompleteOneHarness.result.current.invoke({ id: '1' });
       });
       await uncompleteOneHarness.waitFor(() =>
         expect(uncompleteOneHarness.result.current.isPending).toBe(false),

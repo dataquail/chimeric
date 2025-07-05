@@ -1,6 +1,6 @@
 import {
   IdiomaticMutationOptions,
-  ReactiveMutationCallOptions,
+  ReactiveMutationInvokeOptions,
 } from '@chimeric/core';
 import { BaseWaitForOptions } from 'src/types/WaitForOptions';
 import { chimericMethods } from '../methods';
@@ -14,7 +14,7 @@ export type IdiomaticMutationTestHarnessReturnType<
   waitFor: (cb: () => void, options?: BaseWaitForOptions) => Promise<void>;
   result: {
     current: {
-      call: TParams extends object
+      invoke: TParams extends object
         ? Omit<TParams, 'options' | 'nativeOptions'> extends
             | undefined
             | {
@@ -55,37 +55,37 @@ export type ReactiveMutationTestHarnessReturnType<
   TParams = void,
   TResult = unknown,
   E extends Error = Error,
-  TNativeCallOptions = unknown,
+  TNativeInvokeOptions = unknown,
   TNativeReturnType = unknown,
 > = {
   waitFor: (cb: () => void, options?: BaseWaitForOptions) => Promise<void>;
   result: {
     current: {
-      call: TParams extends object
+      invoke: TParams extends object
         ? Omit<TParams, 'options' | 'nativeOptions'> extends
             | undefined
             | {
-                options?: ReactiveMutationCallOptions;
-                nativeOptions?: TNativeCallOptions;
+                options?: ReactiveMutationInvokeOptions;
+                nativeOptions?: TNativeInvokeOptions;
               }
           ? (
               config?: TParams & {
-                options?: ReactiveMutationCallOptions;
-                nativeOptions?: TNativeCallOptions;
+                options?: ReactiveMutationInvokeOptions;
+                nativeOptions?: TNativeInvokeOptions;
               },
             ) => Promise<TResult>
           : (
               paramsAndConfig: TParams & {
-                options?: ReactiveMutationCallOptions;
-                nativeOptions?: TNativeCallOptions;
+                options?: ReactiveMutationInvokeOptions;
+                nativeOptions?: TNativeInvokeOptions;
               },
             ) => Promise<TResult>
         : TParams extends void
         ? (
             config?:
               | {
-                  options?: ReactiveMutationCallOptions;
-                  nativeOptions?: TNativeCallOptions;
+                  options?: ReactiveMutationInvokeOptions;
+                  nativeOptions?: TNativeInvokeOptions;
                 }
               | TParams,
           ) => Promise<TResult>
@@ -107,7 +107,7 @@ export type ChimericMutationTestHarnessReturnType<
   E extends Error = Error,
   TMethod = (typeof chimericMethods)[number],
   TIdiomaticNativeOptions = unknown,
-  TNativeCallOptions = unknown,
+  TNativeInvokeOptions = unknown,
   TNativeReturnType = unknown,
 > = TMethod extends 'idiomatic'
   ? IdiomaticMutationTestHarnessReturnType<
@@ -120,6 +120,6 @@ export type ChimericMutationTestHarnessReturnType<
       TParams,
       TResult,
       E,
-      TNativeCallOptions,
+      TNativeInvokeOptions,
       TNativeReturnType
     >;

@@ -5,7 +5,7 @@ export const isReactiveMutation = <
   TResult = unknown,
   TError extends Error = Error,
   TNativeOptions = unknown,
-  TNativeCallOptions = unknown,
+  TNativeInvokeOptions = unknown,
   TNativeReturnType = unknown,
 >(
   maybeReactiveMutation: unknown,
@@ -14,7 +14,7 @@ export const isReactiveMutation = <
   TResult,
   TError,
   TNativeOptions,
-  TNativeCallOptions,
+  TNativeInvokeOptions,
   TNativeReturnType
 > => {
   return (
@@ -28,7 +28,7 @@ export const isReactiveMutation = <
         TResult,
         TError,
         TNativeOptions,
-        TNativeCallOptions,
+        TNativeInvokeOptions,
         TNativeReturnType
       >
     ).useMutation === 'function'

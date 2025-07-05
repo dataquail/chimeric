@@ -18,7 +18,7 @@ describe('IdiomaticMutationTestHarness', () => {
     expect(mutation.result.current.error).toBe(null);
     expect(mutation.result.current.data).toBe(undefined);
 
-    mutation.result.current.call();
+    mutation.result.current.invoke();
 
     expect(mutation.result.current.isIdle).toBe(false);
     expect(mutation.result.current.isPending).toBe(true);
@@ -52,7 +52,7 @@ describe('IdiomaticMutationTestHarness', () => {
     expect(mutation.result.current.error).toBe(null);
     expect(mutation.result.current.data).toBe(undefined);
 
-    mutation.result.current.call({ name: 'John' });
+    mutation.result.current.invoke({ name: 'John' });
 
     expect(mutation.result.current.isIdle).toBe(false);
     expect(mutation.result.current.isPending).toBe(true);

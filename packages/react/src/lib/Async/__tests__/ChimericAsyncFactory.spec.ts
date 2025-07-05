@@ -20,7 +20,7 @@ describe('ChimericAsyncFactory', () => {
     expect(result.current.isIdle).toBe(true);
     expect(result.current.isSuccess).toBe(false);
 
-    await act(async () => result.current.call());
+    await act(async () => result.current.invoke());
 
     await waitFor(() => {
       expect(result.current.isSuccess).toBe(true);
@@ -47,7 +47,7 @@ describe('ChimericAsyncFactory', () => {
     expect(result.current.isIdle).toBe(true);
     expect(result.current.isSuccess).toBe(false);
 
-    await act(async () => result.current.call({ name: 'John' }));
+    await act(async () => result.current.invoke({ name: 'John' }));
 
     await waitFor(() => {
       expect(result.current.isSuccess).toBe(true);

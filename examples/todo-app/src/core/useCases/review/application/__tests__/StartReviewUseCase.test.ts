@@ -85,7 +85,7 @@ describe('StartReviewUseCase', () => {
     expect(startReviewHarness.result?.current.isSuccess).toBe(false);
 
     act(() => {
-      startReviewHarness.result.current.call();
+      startReviewHarness.result.current.invoke();
     });
 
     await startReviewHarness.waitFor(() =>

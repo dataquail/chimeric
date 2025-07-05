@@ -91,7 +91,7 @@ describe('ReactiveAsyncFactory Operations', () => {
     expect(harness.result.current.error).toBeNull();
 
     // Trigger operation
-    const promise = harness.result.current.call({ id: 'user-123' });
+    const promise = harness.result.current.invoke({ id: 'user-123' });
 
     // Test pending state
     await harness.waitFor(() => {
@@ -127,7 +127,7 @@ describe('ReactiveAsyncFactory Operations', () => {
     });
 
     // Should succeed after retries
-    const result = await harness.result.current.call();
+    const result = await harness.result.current.invoke();
     expect(result).toBe('Success after retries');
     expect(attemptCount).toBe(3);
 
@@ -172,7 +172,7 @@ describe('IdiomaticAsyncFactory Operations', () => {
     expect(harness.result.current.isIdle).toBe(true);
 
     // Start operation
-    const promise = harness.result.current.call({
+    const promise = harness.result.current.invoke({
       items: ['hello', 'world'],
       delay: 50,
     });
@@ -223,7 +223,7 @@ describe.each(chimericMethods)('Chimeric Operation - %s method', (method) => {
     });
 
     act(() => {
-      harness.result.current.call({ value: 5 });
+      harness.result.current.invoke({ value: 5 });
     });
 
     await harness.waitFor(() =>

@@ -137,7 +137,7 @@ describe('SavedForLaterTodoServiceImpl', () => {
     expect(getAllHarness.result.current.data?.length).toBe(1);
     withNoSavedForLaterTodosInList();
     act(() => {
-      activateOneHarness.result.current.call({ savedForLaterTodoId: '1' });
+      activateOneHarness.result.current.invoke({ savedForLaterTodoId: '1' });
     });
     await activateOneHarness.waitFor(() =>
       expect(activateOneHarness.result.current.isPending).toBe(false),
@@ -166,7 +166,7 @@ describe('SavedForLaterTodoServiceImpl', () => {
     withSuccessfullyDeletedSavedForLaterTodo();
     withNoSavedForLaterTodosInList();
     act(() => {
-      deleteOneHarness.result.current.call({ id: '1' });
+      deleteOneHarness.result.current.invoke({ id: '1' });
     });
     await deleteOneHarness.waitFor(() =>
       expect(deleteOneHarness.result.current.isPending).toBe(false),
@@ -200,7 +200,7 @@ describe('SavedForLaterTodoServiceImpl', () => {
     withSuccessfullySavedForLaterTodo();
     withOneSavedForLaterTodoInList();
     act(() => {
-      saveForLaterHarness.result.current.call({ activeTodoId: '1' });
+      saveForLaterHarness.result.current.invoke({ activeTodoId: '1' });
     });
     await saveForLaterHarness.waitFor(() =>
       expect(saveForLaterHarness.result.current.isPending).toBe(false),

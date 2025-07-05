@@ -21,7 +21,7 @@ describe('ChimericMutationTestHarness', () => {
       wrapper: getTestWrapper(queryClient),
     });
 
-    await harness.result.current.call();
+    await harness.result.current.invoke();
     expect(mockMutationFn).toHaveBeenCalled();
   });
 
@@ -37,7 +37,7 @@ describe('ChimericMutationTestHarness', () => {
       wrapper: getTestWrapper(queryClient),
     });
 
-    const result = await harness.result.current.call({ name: 'John' });
+    const result = await harness.result.current.invoke({ name: 'John' });
     expect(mockFn).toHaveBeenCalledTimes(1);
     expect(mockFn).toHaveBeenCalledWith({ name: 'John' });
     expect(result).toBe('Hello John');
@@ -55,7 +55,7 @@ describe('ChimericMutationTestHarness', () => {
       wrapper: getTestWrapper(queryClient),
     });
 
-    const result = await harness.result.current.call();
+    const result = await harness.result.current.invoke();
     expect(mockMutationFn).toHaveBeenCalled();
     expect(result).toBe('test');
   });
@@ -73,7 +73,7 @@ describe('ChimericMutationTestHarness', () => {
       wrapper: getTestWrapper(queryClient),
     });
 
-    const result = await harness.result.current.call({ name: 'John' });
+    const result = await harness.result.current.invoke({ name: 'John' });
     expect(mockFn).toHaveBeenCalled();
     expect(result).toBe('Hello John');
   });

@@ -13,10 +13,10 @@ describe('ReactiveMutationTestHarness', () => {
       reactiveMutation: mockReactiveMutation,
     });
 
-    harness.result.current.call();
+    harness.result.current.invoke();
 
     expect(mockReactiveMutation.useMutation).toHaveBeenCalled();
-    expect(harness.result.current.call).toHaveBeenCalled();
+    expect(harness.result.current.invoke).toHaveBeenCalled();
   });
 
   it('should handle params', async () => {
@@ -26,10 +26,12 @@ describe('ReactiveMutationTestHarness', () => {
       reactiveMutation: mockReactiveMutation,
     });
 
-    const result = await harness.result.current.call({ name: 'John' });
+    const result = await harness.result.current.invoke({ name: 'John' });
     expect(mockReactiveMutation.useMutation).toHaveBeenCalled();
-    expect(harness.result.current.call).toHaveBeenCalledTimes(1);
-    expect(harness.result.current.call).toHaveBeenCalledWith({ name: 'John' });
+    expect(harness.result.current.invoke).toHaveBeenCalledTimes(1);
+    expect(harness.result.current.invoke).toHaveBeenCalledWith({
+      name: 'John',
+    });
     expect(result).toBe('Hello John');
   });
 });

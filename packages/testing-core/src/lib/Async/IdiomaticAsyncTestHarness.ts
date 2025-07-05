@@ -15,7 +15,7 @@ export function IdiomaticAsyncTestHarness<
   type CallFn = (params: TParams) => Promise<TResult>;
   const result: AsyncTestHarnessReturnType<TParams, TResult, E>['result'] = {
     current: {
-      call: (async (params: TParams) => {
+      invoke: (async (params: TParams) => {
         result.current.isIdle = false;
         result.current.isPending = true;
         result.current.isSuccess = false;

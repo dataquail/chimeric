@@ -24,7 +24,7 @@ describe('IdiomaticMutationTestHarness', () => {
     expect(mutation.result.current.error).toBe(null);
     expect(mutation.result.current.data).toBe(undefined);
 
-    mutation.result.current.call();
+    mutation.result.current.invoke();
 
     expect(mutation.result.current.isIdle).toBe(false);
     expect(mutation.result.current.isPending).toBe(true);
@@ -55,7 +55,7 @@ describe('IdiomaticMutationTestHarness', () => {
       idiomaticMutation,
     });
 
-    const result = await mutation.result.current.call({ name: 'John' });
+    const result = await mutation.result.current.invoke({ name: 'John' });
     expect(result).toBe('Hello John');
     expect(mockPromise).toHaveBeenCalledTimes(1);
     expect(mockPromise).toHaveBeenCalledWith({ name: 'John' });

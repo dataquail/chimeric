@@ -9,7 +9,7 @@ export function ReactiveMutationTestHarness<
   TResult = unknown,
   E extends Error = Error,
   TNativeReactiveOptions = unknown,
-  TNativeCallOptions = unknown,
+  TNativeInvokeOptions = unknown,
   TNativeReturnType = unknown,
 >({
   reactiveMutation,
@@ -22,7 +22,7 @@ export function ReactiveMutationTestHarness<
     TResult,
     E,
     TNativeReactiveOptions,
-    TNativeCallOptions,
+    TNativeInvokeOptions,
     TNativeReturnType
   >;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
@@ -32,7 +32,7 @@ export function ReactiveMutationTestHarness<
   TParams,
   TResult,
   E,
-  TNativeCallOptions,
+  TNativeInvokeOptions,
   TNativeReturnType
 > {
   const hook = renderHook(
@@ -49,14 +49,14 @@ export function ReactiveMutationTestHarness<
       void, // TParams is undefined for the first overload
       TResult,
       E,
-      TNativeCallOptions,
+      TNativeInvokeOptions,
       TNativeReturnType
     >['result'],
   } as ReactiveMutationTestHarnessReturnType<
     TParams,
     TResult,
     E,
-    TNativeCallOptions,
+    TNativeInvokeOptions,
     TNativeReturnType
   >;
 }

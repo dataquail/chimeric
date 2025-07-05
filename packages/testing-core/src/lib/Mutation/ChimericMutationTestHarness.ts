@@ -15,7 +15,7 @@ export function ChimericMutationTestHarness<
   TMethod = (typeof chimericMethods)[number],
   TIdiomaticNativeOptions = unknown,
   TNativeReactiveOptions = unknown,
-  TNativeCallOptions = unknown,
+  TNativeInvokeOptions = unknown,
   TNativeReturnType = unknown,
 >({
   chimericMutation,
@@ -30,7 +30,7 @@ export function ChimericMutationTestHarness<
     E,
     TIdiomaticNativeOptions,
     TNativeReactiveOptions,
-    TNativeCallOptions,
+    TNativeInvokeOptions,
     TNativeReturnType
   >;
   method: TMethod;
@@ -48,7 +48,7 @@ export function ChimericMutationTestHarness<
       TParams,
       TResult,
       E,
-      TNativeCallOptions,
+      TNativeInvokeOptions,
       TNativeReturnType
     > {
   if (method === 'idiomatic') {
@@ -65,7 +65,7 @@ export function ChimericMutationTestHarness<
           TParams,
           TResult,
           E,
-          TNativeCallOptions,
+          TNativeInvokeOptions,
           TNativeReturnType
         >;
   } else {
@@ -85,7 +85,7 @@ export function ChimericMutationTestHarness<
           TParams,
           TResult,
           E,
-          TNativeCallOptions,
+          TNativeInvokeOptions,
           TNativeReturnType
         >;
   }

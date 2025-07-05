@@ -48,7 +48,7 @@ export const ReviewContent = injectComponent<InjectedProps>(
               Finish Review
             </Button>
           ) : (
-            <Button onClick={() => startReview.call()}>Start Review</Button>
+            <Button onClick={() => startReview.invoke()}>Start Review</Button>
           )}
         </Group>
         <Space h="lg" />

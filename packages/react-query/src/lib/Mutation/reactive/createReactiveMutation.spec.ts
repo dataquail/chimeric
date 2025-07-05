@@ -32,10 +32,10 @@ describe('createReactiveMutation', () => {
     const reactiveMutation = createReactiveMutation(mockReactiveFn);
 
     const hookResult = reactiveMutation.useMutation();
-    const result = await hookResult.call();
+    const result = await hookResult.invoke();
 
     expect(result).toBe('test');
-    expect(hookResult.call).toHaveBeenCalled();
+    expect(hookResult.invoke).toHaveBeenCalled();
     expect(mockReactiveFn).toHaveBeenCalled();
   });
 
@@ -44,10 +44,10 @@ describe('createReactiveMutation', () => {
     const reactiveMutation = createReactiveMutation(mockReactiveFn);
 
     const hookResult = reactiveMutation.useMutation();
-    const result = await hookResult.call({ name: 'John' });
+    const result = await hookResult.invoke({ name: 'John' });
 
     expect(result).toBe('Hello John');
-    expect(hookResult.call).toHaveBeenCalledWith({ name: 'John' });
+    expect(hookResult.invoke).toHaveBeenCalledWith({ name: 'John' });
   });
 
   it('should pass options and nativeOptions to the useMutation function', () => {
@@ -70,7 +70,7 @@ describe('createReactiveMutation', () => {
     const reactiveMutation: ReactiveMutationWithoutParamsReturnsString =
       createReactiveMutation(mockReactiveFn);
 
-    const result = await reactiveMutation.useMutation().call();
+    const result = await reactiveMutation.useMutation().invoke();
 
     expect(result).toBe('test');
   });
@@ -80,7 +80,9 @@ describe('createReactiveMutation', () => {
     const reactiveMutation: ReactiveMutationWithParamsReturnsString =
       createReactiveMutation(mockReactiveFn);
 
-    const result = await reactiveMutation.useMutation().call({ name: 'John' });
+    const result = await reactiveMutation
+      .useMutation()
+      .invoke({ name: 'John' });
 
     expect(result).toBe('Hello John');
   });
