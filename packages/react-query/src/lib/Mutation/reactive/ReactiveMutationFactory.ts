@@ -30,11 +30,11 @@ export function ReactiveMutationFactory<
       });
 
       return {
-        call: (
+        invoke: (
           paramsAndOptions: Parameters<
             ReturnType<
               ReactiveMutation<TResult, TParams, TError>['useMutation']
-            >['call']
+            >['invoke']
           >[0],
         ) => {
           const { options, nativeOptions, ...params } = paramsAndOptions ?? {};

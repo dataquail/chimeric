@@ -17,7 +17,7 @@ export const makeIdiomaticAsyncWithoutParamsReturnsString = () =>
 
 export const makeAsyncHookWithoutParamsReturnsString = () =>
   vi.fn(() => ({
-    call: makeAsyncFnWithoutParamsReturnsString(),
+    invoke: makeAsyncFnWithoutParamsReturnsString(),
     isIdle: true,
     isPending: false,
     isSuccess: false,
@@ -35,7 +35,7 @@ export const makeIdiomaticAsyncWithParamsReturnsString = () =>
 
 export const makeAsyncHookWithParamsReturnsString = () =>
   vi.fn(() => ({
-    call: makeAsyncFnWithParamsReturnsString(),
+    invoke: makeAsyncFnWithParamsReturnsString(),
     isIdle: true,
     isPending: false,
     isSuccess: false,
@@ -53,7 +53,7 @@ export const makeIdiomaticAsyncWithParamsReturnsObj = () =>
 
 export const makeAsyncHookWithParamsReturnsObj = () =>
   vi.fn(() => ({
-    call: makeAsyncFnWithParamsReturnsObj(),
+    invoke: makeAsyncFnWithParamsReturnsObj(),
     isIdle: true,
     isPending: false,
     isSuccess: false,

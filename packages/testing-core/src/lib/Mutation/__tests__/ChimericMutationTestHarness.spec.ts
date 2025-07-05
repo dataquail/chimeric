@@ -29,7 +29,7 @@ describe('ChimericMutationTestHarness', () => {
       method: 'idiomatic',
     });
 
-    harness.result.current.call();
+    harness.result.current.invoke();
 
     expect(mockIdiomaticMutation).toHaveBeenCalled();
   });
@@ -51,9 +51,9 @@ describe('ChimericMutationTestHarness', () => {
       method: 'reactive',
     });
 
-    harness.result.current.call();
+    harness.result.current.invoke();
     expect(mockReactiveMutation.useMutation).toHaveBeenCalled();
-    expect(harness.result.current.call).toHaveBeenCalled();
+    expect(harness.result.current.invoke).toHaveBeenCalled();
   });
 
   it('should handle type annotations with params', () => {
@@ -77,8 +77,8 @@ describe('ChimericMutationTestHarness', () => {
       method: 'reactive',
     });
 
-    harness.result.current.call({ name: 'John' });
+    harness.result.current.invoke({ name: 'John' });
     expect(mockReactiveMutation.useMutation).toHaveBeenCalled();
-    expect(harness.result.current.call).toHaveBeenCalled();
+    expect(harness.result.current.invoke).toHaveBeenCalled();
   });
 });

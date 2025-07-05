@@ -3,7 +3,7 @@ import {
   type DefineChimericMutation as CoreDefineChimericMutation,
 } from '@chimeric/core';
 import {
-  TanstackMutationReactiveCallOptions,
+  TanstackMutationReactiveInvokeOptions,
   TanstackMutationReactiveNativeOptions,
   TanstackMutationReactiveReturnType,
 } from '../reactive/types';
@@ -19,7 +19,7 @@ export type ChimericMutation<
   TError,
   TanstackIdiomaticNativeOptions<TParams, TResult, TError>,
   TanstackMutationReactiveNativeOptions<TParams, TResult, TError>,
-  TanstackMutationReactiveCallOptions<TParams, TResult, TError>,
+  TanstackMutationReactiveInvokeOptions<TParams, TResult, TError>,
   TanstackMutationReactiveReturnType<TParams, TResult, TError>
 >;
 
@@ -41,7 +41,7 @@ export type DefineChimericMutation<
     Awaited<ReturnType<T>>,
     TError
   >,
-  TanstackMutationReactiveCallOptions<
+  TanstackMutationReactiveInvokeOptions<
     Parameters<T>[0] extends undefined ? void : Parameters<T>[0],
     Awaited<ReturnType<T>>,
     TError

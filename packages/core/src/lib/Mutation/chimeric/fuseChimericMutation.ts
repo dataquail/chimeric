@@ -9,7 +9,7 @@ export function fuseChimericMutation<
   TError extends Error = Error,
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
-  TNativeCallOptions = unknown,
+  TNativeInvokeOptions = unknown,
   TNativeReactiveReturnType = unknown,
 >(args: {
   idiomatic: IdiomaticMutation<TParams, TResult, TNativeIdiomaticOptions>;
@@ -18,7 +18,7 @@ export function fuseChimericMutation<
     TResult,
     TError,
     TNativeReactiveOptions,
-    TNativeCallOptions,
+    TNativeInvokeOptions,
     TNativeReactiveReturnType
   >;
 }): ChimericMutation<
@@ -27,7 +27,7 @@ export function fuseChimericMutation<
   TError,
   TNativeIdiomaticOptions,
   TNativeReactiveOptions,
-  TNativeCallOptions,
+  TNativeInvokeOptions,
   TNativeReactiveReturnType
 > {
   const chimericFn = args.idiomatic as ChimericMutation<
@@ -36,7 +36,7 @@ export function fuseChimericMutation<
     TError,
     TNativeIdiomaticOptions,
     TNativeReactiveOptions,
-    TNativeCallOptions,
+    TNativeInvokeOptions,
     TNativeReactiveReturnType
   >;
   chimericFn.useMutation = args.reactive.useMutation;
@@ -47,7 +47,7 @@ export function fuseChimericMutation<
       TError,
       TNativeIdiomaticOptions,
       TNativeReactiveOptions,
-      TNativeCallOptions,
+      TNativeInvokeOptions,
       TNativeReactiveReturnType
     >(chimericFn)
   ) {

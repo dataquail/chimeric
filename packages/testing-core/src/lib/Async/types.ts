@@ -1,4 +1,4 @@
-import { ReactiveAsyncCallOptions } from '@chimeric/core';
+import { ReactiveAsyncInvokeOptions } from '@chimeric/core';
 import { BaseWaitForOptions } from 'src/types/WaitForOptions';
 
 export type AsyncTestHarnessReturnType<
@@ -8,7 +8,7 @@ export type AsyncTestHarnessReturnType<
 > = TParams extends object
   ? Omit<TParams, 'options'> extends
       | undefined
-      | { options: ReactiveAsyncCallOptions }
+      | { options?: ReactiveAsyncInvokeOptions }
     ? {
         waitFor: (
           cb: () => void,
@@ -16,8 +16,8 @@ export type AsyncTestHarnessReturnType<
         ) => Promise<void>;
         result: {
           current: {
-            call: (config?: {
-              options?: ReactiveAsyncCallOptions;
+            invoke: (config?: {
+              options?: ReactiveAsyncInvokeOptions;
             }) => Promise<TResult>;
             isIdle: boolean;
             isPending: boolean;
@@ -35,9 +35,9 @@ export type AsyncTestHarnessReturnType<
         ) => Promise<void>;
         result: {
           current: {
-            call: (
+            invoke: (
               paramsAndConfig: TParams & {
-                options?: ReactiveAsyncCallOptions;
+                options?: ReactiveAsyncInvokeOptions;
               },
             ) => Promise<TResult>;
             isIdle: boolean;
@@ -54,8 +54,8 @@ export type AsyncTestHarnessReturnType<
       waitFor: (cb: () => void, options?: BaseWaitForOptions) => Promise<void>;
       result: {
         current: {
-          call: (config?: {
-            options?: ReactiveAsyncCallOptions;
+          invoke: (config?: {
+            options?: ReactiveAsyncInvokeOptions;
           }) => Promise<TResult>;
           isIdle: boolean;
           isPending: boolean;

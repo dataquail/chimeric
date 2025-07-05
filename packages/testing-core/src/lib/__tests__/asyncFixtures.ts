@@ -1,6 +1,6 @@
 export const makeReactiveAsyncWithoutParamsReturnsString = () =>
   vi.fn(() => ({
-    call: vi.fn(() => Promise.resolve('test')),
+    invoke: vi.fn(() => Promise.resolve('test')),
     isIdle: false,
     isPending: false,
     isSuccess: true,
@@ -11,7 +11,7 @@ export const makeReactiveAsyncWithoutParamsReturnsString = () =>
 
 export const makeReactiveAsyncWithParamsReturnsString = () =>
   vi.fn(() => ({
-    call: vi.fn((args: { name: string }) =>
+    invoke: vi.fn((args: { name: string }) =>
       Promise.resolve(`Hello ${args.name}`),
     ),
     isIdle: false,

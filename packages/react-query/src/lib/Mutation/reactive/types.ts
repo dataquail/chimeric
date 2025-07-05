@@ -17,7 +17,7 @@ export type ReactiveMutation<
   TResult,
   TError,
   TanstackMutationReactiveNativeOptions<TParams, TResult, TError>,
-  TanstackMutationReactiveCallOptions<TParams, TResult, TError>,
+  TanstackMutationReactiveInvokeOptions<TParams, TResult, TError>,
   TanstackMutationReactiveReturnType<TParams, TResult, TError>
 >;
 
@@ -34,7 +34,7 @@ export type DefineReactiveMutation<
     Awaited<ReturnType<T>>,
     TError
   >,
-  TanstackMutationReactiveCallOptions<
+  TanstackMutationReactiveInvokeOptions<
     Parameters<T>[0] extends undefined ? void : Parameters<T>[0],
     Awaited<ReturnType<T>>,
     TError
@@ -52,7 +52,7 @@ export type TanstackMutationReactiveNativeOptions<
   TError extends Error = Error,
 > = Omit<UseMutationOptions<TResult, TError, TParams>, 'mutationFn'>;
 
-export type TanstackMutationReactiveCallOptions<
+export type TanstackMutationReactiveInvokeOptions<
   TParams = void,
   TResult = unknown,
   TError extends Error = Error,

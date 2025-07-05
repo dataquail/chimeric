@@ -25,7 +25,7 @@ export function IdiomaticMutationTestHarness<
 > {
   const result = {
     current: {
-      call: (
+      invoke: (
         params: TParams & {
           options?: IdiomaticMutationOptions;
           nativeOptions?: TIdiomaticNativeOptions;

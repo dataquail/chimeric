@@ -28,10 +28,10 @@ describe('createReactiveMutation', () => {
       makeMutationHookWithoutParamsReturnsString(),
     );
     const hookResult = reactiveMutation.useMutation();
-    const result = await hookResult.call();
+    const result = await hookResult.invoke();
     expect(result).toBe('test');
     expect(reactiveMutation.useMutation).toHaveBeenCalled();
-    expect(hookResult.call).toHaveBeenCalled();
+    expect(hookResult.invoke).toHaveBeenCalled();
   });
 
   it('should invoke the reactive mutation function with params', async () => {
@@ -39,9 +39,9 @@ describe('createReactiveMutation', () => {
       makeMutationHookWithParamsReturnsString(),
     );
     const hookResult = reactiveMutation.useMutation();
-    const result = await hookResult.call({ name: 'John' });
+    const result = await hookResult.invoke({ name: 'John' });
     expect(result).toBe('Hello John');
     expect(reactiveMutation.useMutation).toHaveBeenCalled();
-    expect(hookResult.call).toHaveBeenCalledWith({ name: 'John' });
+    expect(hookResult.invoke).toHaveBeenCalledWith({ name: 'John' });
   });
 });

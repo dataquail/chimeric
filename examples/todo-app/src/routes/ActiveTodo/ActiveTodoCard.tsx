@@ -53,9 +53,9 @@ export const ActiveTodoCard = injectComponent<InjectedProps, OwnProps>(
             onClick={() => {
               const isCompleted = Boolean(todo.completedAt);
               if (isCompleted) {
-                uncompleteOne.call({ id: todo.id });
+                uncompleteOne.invoke({ id: todo.id });
               } else {
-                completeOne.call({ id: todo.id });
+                completeOne.invoke({ id: todo.id });
               }
             }}
           >
@@ -98,7 +98,7 @@ export const ActiveTodoCard = injectComponent<InjectedProps, OwnProps>(
                 leftSection={
                   <IconTrash style={{ width: rem(14), height: rem(14) }} />
                 }
-                onClick={() => deleteOne.call({ id: todo.id })}
+                onClick={() => deleteOne.invoke({ id: todo.id })}
               >
                 Delete
               </Menu.Item>
@@ -128,7 +128,7 @@ export const ActiveTodoCard = injectComponent<InjectedProps, OwnProps>(
                   <IconPlus style={{ width: rem(14), height: rem(14) }} />
                 }
                 onClick={() =>
-                  saveForLater.call({
+                  saveForLater.invoke({
                     activeTodoId: todo.id,
                   })
                 }

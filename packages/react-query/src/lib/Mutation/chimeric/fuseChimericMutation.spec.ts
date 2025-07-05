@@ -59,10 +59,10 @@ describe('fuseChimericMutation', () => {
       reactive: makeReactiveMutationWithParamsReturnsString(),
     });
     const result = testChimericMutation.useMutation();
-    await result.call({ name: 'John' });
+    await result.invoke({ name: 'John' });
     expect(testChimericMutation).not.toHaveBeenCalled();
     expect(testChimericMutation.useMutation).toHaveBeenCalled();
-    expect(result.call).toHaveBeenCalledWith({
+    expect(result.invoke).toHaveBeenCalledWith({
       name: 'John',
     });
   });

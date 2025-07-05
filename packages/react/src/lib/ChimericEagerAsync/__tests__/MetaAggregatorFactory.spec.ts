@@ -131,13 +131,13 @@ describe('MetaAggregatorFactory', () => {
         }),
         reactive: createReactiveEagerAsync((args: { number: number }) => {
           const chimericAsyncResult = chimericAsync.useAsync();
-          const { isSuccess, isPending, call } = chimericAsyncResult;
+          const { isSuccess, isPending, invoke } = chimericAsyncResult;
 
           useEffect(() => {
             if (!isSuccess && !isPending) {
-              call(args);
+              invoke(args);
             }
-          }, [isSuccess, isPending, call, args]);
+          }, [isSuccess, isPending, invoke, args]);
 
           return MetaAggregatorFactory([chimericAsyncResult], ([greeting]) => {
             if (!greeting) {

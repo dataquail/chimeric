@@ -36,7 +36,7 @@ describe('createReactiveAsync', () => {
     expect(reactiveAsync).toHaveProperty('useAsync');
     expect(typeof reactiveAsync.useAsync).toBe('function');
     expect(reactiveAsync.useAsync).toBe(mockReactiveFn);
-    const result = await reactiveAsync.useAsync().call();
+    const result = await reactiveAsync.useAsync().invoke();
     expect(result).toBe('test');
   });
 
@@ -49,7 +49,7 @@ describe('createReactiveAsync', () => {
     expect(reactiveAsync).toHaveProperty('useAsync');
     expect(typeof reactiveAsync.useAsync).toBe('function');
     expect(reactiveAsync.useAsync).toBe(mockReactiveFn);
-    const result = await reactiveAsync.useAsync().call({ name: 'John' });
+    const result = await reactiveAsync.useAsync().invoke({ name: 'John' });
     expect(result).toBe('Hello John');
   });
 
@@ -58,10 +58,10 @@ describe('createReactiveAsync', () => {
     const reactiveAsync = createReactiveAsync(mockReactiveFn);
 
     const result = reactiveAsync.useAsync();
-    const callResult = await result.call();
+    const callResult = await result.invoke();
 
     expect(callResult).toBe('test');
-    expect(result.call).toHaveBeenCalled();
+    expect(result.invoke).toHaveBeenCalled();
   });
 
   it('should invoke the reactive async function with params', async () => {
@@ -69,9 +69,9 @@ describe('createReactiveAsync', () => {
     const reactiveAsync = createReactiveAsync(mockReactiveFn);
 
     const result = reactiveAsync.useAsync();
-    const callResult = await result.call({ name: 'John' });
+    const callResult = await result.invoke({ name: 'John' });
 
     expect(callResult).toBe('Hello John');
-    expect(result.call).toHaveBeenCalledWith({ name: 'John' });
+    expect(result.invoke).toHaveBeenCalledWith({ name: 'John' });
   });
 });

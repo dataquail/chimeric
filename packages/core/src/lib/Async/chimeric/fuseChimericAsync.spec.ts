@@ -63,7 +63,7 @@ describe('fuseChimericAsync', () => {
       idiomatic: mockIdiomaticAsync,
       reactive: mockReactiveAsync,
     });
-    const result = await testChimericAsync.useAsync().call({ name: 'John' });
+    const result = await testChimericAsync.useAsync().invoke({ name: 'John' });
     expect(result).toEqual('Hello John');
     expect(mockIdiomaticAsync).not.toHaveBeenCalled();
     expect(mockReactiveAsync.useAsync).toHaveBeenCalled();
@@ -79,11 +79,11 @@ describe('fuseChimericAsync', () => {
       reactive: mockReactiveAsync,
     });
     const result = testChimericAsync.useAsync();
-    const callResult = await result.call({ name: 'John' });
+    const callResult = await result.invoke({ name: 'John' });
     expect(callResult).toEqual('Hello John');
     expect(mockIdiomaticAsync).not.toHaveBeenCalled();
     expect(mockReactiveAsync.useAsync).toHaveBeenCalled();
-    expect(result.call).toHaveBeenCalledWith({ name: 'John' });
+    expect(result.invoke).toHaveBeenCalledWith({ name: 'John' });
   });
 
   it('should invoke reactive with params and options', async () => {
@@ -95,7 +95,7 @@ describe('fuseChimericAsync', () => {
       idiomatic: mockIdiomaticAsync,
       reactive: mockReactiveAsync,
     });
-    const result = await testChimericAsync.useAsync({ retry: 0 }).call({
+    const result = await testChimericAsync.useAsync({ retry: 0 }).invoke({
       name: 'John',
     });
     expect(result).toEqual('Hello John');
@@ -112,7 +112,7 @@ describe('fuseChimericAsync', () => {
       idiomatic: mockIdiomaticAsync,
       reactive: mockReactiveAsync,
     });
-    const result = await testChimericAsync.useAsync({ retry: 0 }).call();
+    const result = await testChimericAsync.useAsync({ retry: 0 }).invoke();
     expect(result).toEqual('test');
     expect(mockIdiomaticAsync).not.toHaveBeenCalled();
     expect(mockReactiveAsync.useAsync).toHaveBeenCalledWith({ retry: 0 });

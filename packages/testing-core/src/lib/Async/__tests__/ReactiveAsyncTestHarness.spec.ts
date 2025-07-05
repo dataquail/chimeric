@@ -1,4 +1,4 @@
-import { createReactiveAsync } from '@chimeric/core';
+import { createReactiveAsync, DefineReactiveAsync } from '@chimeric/core';
 import { ReactiveAsyncTestHarness } from '../ReactiveAsyncTestHarness';
 import {
   makeReactiveAsyncWithoutParamsReturnsString,
@@ -15,10 +15,10 @@ describe('ReactiveAsyncTestHarness', () => {
       reactiveAsync: mockReactiveAsync,
     });
 
-    harness.result.current.call();
+    harness.result.current.invoke();
 
     expect(mockReactiveAsync.useAsync).toHaveBeenCalled();
-    expect(harness.result.current.call).toHaveBeenCalled();
+    expect(harness.result.current.invoke).toHaveBeenCalled();
   });
 
   it('should accept options', async () => {
@@ -31,8 +31,8 @@ describe('ReactiveAsyncTestHarness', () => {
       reactiveOptions: { retry: 3 },
     });
 
-    await harness.result.current.call();
-    expect(harness.result.current.call).toHaveBeenCalledTimes(1);
+    await harness.result.current.invoke();
+    expect(harness.result.current.invoke).toHaveBeenCalledTimes(1);
     expect(mockReactiveAsync.useAsync).toHaveBeenCalledWith({ retry: 3 });
   });
 
@@ -46,15 +46,51 @@ describe('ReactiveAsyncTestHarness', () => {
       reactiveOptions: { retry: 3 },
     });
 
-    harness.result.current.call({ name: 'John' });
+    harness.result.current.invoke({ name: 'John' });
 
     expect(harness.result.current.isIdle).toBe(false);
     expect(harness.result.current.isPending).toBe(false);
     expect(harness.result.current.isSuccess).toBe(true);
     expect(harness.result.current.error).toBe(null);
     expect(harness.result.current.data).toBe('Hello John');
-    expect(harness.result.current.call).toHaveBeenCalledTimes(1);
-    expect(harness.result.current.call).toHaveBeenCalledWith({ name: 'John' });
+    expect(harness.result.current.invoke).toHaveBeenCalledTimes(1);
+    expect(harness.result.current.invoke).toHaveBeenCalledWith({
+      name: 'John',
+    });
     expect(mockReactiveAsync.useAsync).toHaveBeenCalledWith({ retry: 3 });
+  });
+
+  it('should handle type annotations without params', () => {
+    type TestReactiveAsync = DefineReactiveAsync<() => Promise<string>>;
+    const mockReactiveAsync: TestReactiveAsync = createReactiveAsync(
+      makeReactiveAsyncWithoutParamsReturnsString(),
+    );
+
+    const harness = ReactiveAsyncTestHarness({
+      reactiveAsync: mockReactiveAsync,
+    });
+
+    harness.result.current.invoke();
+
+    expect(mockReactiveAsync.useAsync).toHaveBeenCalled();
+    expect(harness.result.current.invoke).toHaveBeenCalled();
+  });
+
+  it('should handle type annotations with params', () => {
+    type TestReactiveAsync = DefineReactiveAsync<
+      (params: { name: string }) => Promise<string>
+    >;
+    const mockReactiveAsync: TestReactiveAsync = createReactiveAsync(
+      makeReactiveAsyncWithParamsReturnsString(),
+    );
+
+    const harness = ReactiveAsyncTestHarness({
+      reactiveAsync: mockReactiveAsync,
+    });
+
+    harness.result.current.invoke({ name: 'John' });
+
+    expect(mockReactiveAsync.useAsync).toHaveBeenCalled();
+    expect(harness.result.current.invoke).toHaveBeenCalled();
   });
 });

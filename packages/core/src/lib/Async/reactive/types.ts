@@ -4,16 +4,18 @@ export type ReactiveAsync<
   TError extends Error = Error,
 > = {
   useAsync: (config?: ReactiveAsyncOptions) => {
-    call: TParams extends object
+    invoke: TParams extends object
       ? Omit<TParams, 'options'> extends
           | undefined
-          | { options?: ReactiveAsyncCallOptions }
-        ? (config?: { options?: ReactiveAsyncCallOptions }) => Promise<TResult>
+          | { options?: ReactiveAsyncInvokeOptions }
+        ? (config?: {
+            options?: ReactiveAsyncInvokeOptions;
+          }) => Promise<TResult>
         : (
-            paramsAndConfig: TParams & { options?: ReactiveAsyncCallOptions },
+            paramsAndConfig: TParams & { options?: ReactiveAsyncInvokeOptions },
           ) => Promise<TResult>
       : TParams extends void
-      ? (config?: { options?: ReactiveAsyncCallOptions }) => Promise<TResult>
+      ? (config?: { options?: ReactiveAsyncInvokeOptions }) => Promise<TResult>
       : never;
     isIdle: boolean;
     isPending: boolean;
@@ -24,7 +26,7 @@ export type ReactiveAsync<
   };
 };
 
-export type ReactiveAsyncCallOptions = {
+export type ReactiveAsyncInvokeOptions = {
   retry?: number;
 };
 

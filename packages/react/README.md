@@ -228,9 +228,9 @@ const UserDashboard = ({ userId }: { userId: string }) => {
   );
 
   React.useEffect(() => {
-    userQuery.call({ id: userId });
-    postsQuery.call({ userId });
-    settingsQuery.call({ userId });
+    userQuery.invoke({ id: userId });
+    postsQuery.invoke({ userId });
+    settingsQuery.invoke({ userId });
   }, [userId]);
 
   if (aggregatedState.isPending) {

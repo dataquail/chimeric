@@ -3,34 +3,34 @@ export type ReactiveMutation<
   TResult = unknown,
   TError extends Error = Error,
   TNativeReactiveOptions = unknown,
-  TNativeCallOptions = unknown,
+  TNativeInvokeOptions = unknown,
   TNativeReturnType = unknown,
 > = {
   useMutation: (config?: {
     options?: ReactiveMutationOptions;
     nativeOptions?: TNativeReactiveOptions;
   }) => {
-    call: TParams extends object
+    invoke: TParams extends object
       ? Omit<TParams, 'options' | 'nativeOptions'> extends
           | undefined
           | {
-              options?: ReactiveMutationCallOptions;
-              nativeOptions?: TNativeCallOptions;
+              options?: ReactiveMutationInvokeOptions;
+              nativeOptions?: TNativeInvokeOptions;
             }
         ? (config?: {
-            options?: ReactiveMutationCallOptions;
-            nativeOptions?: TNativeCallOptions;
+            options?: ReactiveMutationInvokeOptions;
+            nativeOptions?: TNativeInvokeOptions;
           }) => Promise<TResult>
         : (
             paramsAndConfig: TParams & {
-              options?: ReactiveMutationCallOptions;
-              nativeOptions?: TNativeCallOptions;
+              options?: ReactiveMutationInvokeOptions;
+              nativeOptions?: TNativeInvokeOptions;
             },
           ) => Promise<TResult>
       : TParams extends void
       ? (config?: {
-          options?: ReactiveMutationCallOptions;
-          nativeOptions?: TNativeCallOptions;
+          options?: ReactiveMutationInvokeOptions;
+          nativeOptions?: TNativeInvokeOptions;
         }) => Promise<TResult>
       : never;
     isIdle: boolean;
@@ -50,7 +50,7 @@ export type ReactiveMutationOptions = {
   [key: number]: never;
 };
 
-export type ReactiveMutationCallOptions = {
+export type ReactiveMutationInvokeOptions = {
   [key: string]: never;
   [key: symbol]: never;
   [key: number]: never;
@@ -62,13 +62,13 @@ export type DefineReactiveMutation<
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   TError extends Error = Error,
   TNativeOptions = unknown,
-  TNativeCallOptions = unknown,
+  TNativeInvokeOptions = unknown,
   TNativeReturnType = unknown,
 > = ReactiveMutation<
   Parameters<T>[0] extends void | object ? Parameters<T>[0] : never,
   Awaited<ReturnType<T>>,
   TError,
   TNativeOptions,
-  TNativeCallOptions,
+  TNativeInvokeOptions,
   TNativeReturnType
 >;

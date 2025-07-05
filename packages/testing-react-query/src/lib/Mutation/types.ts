@@ -5,7 +5,7 @@ import {
   chimericMethods,
 } from '@chimeric/testing-core';
 import {
-  TanstackMutationReactiveCallOptions,
+  TanstackMutationReactiveInvokeOptions,
   TanstackMutationReactiveReturnType,
   TanstackIdiomaticNativeOptions,
 } from '@chimeric/react-query';
@@ -29,7 +29,7 @@ export type ReactiveMutationTestHarnessReturnType<
   TParams,
   TResult,
   E,
-  TanstackMutationReactiveCallOptions<TParams, TResult, E>,
+  TanstackMutationReactiveInvokeOptions<TParams, TResult, E>,
   TanstackMutationReactiveReturnType<TParams, TResult, E>
 >;
 
@@ -44,6 +44,6 @@ export type ChimericMutationTestHarnessReturnType<
   E,
   TMethod,
   TanstackIdiomaticNativeOptions<TParams, TResult, E>,
-  TanstackMutationReactiveCallOptions<TParams, TResult, E>,
+  TanstackMutationReactiveInvokeOptions<TParams, TResult, E>,
   TanstackMutationReactiveReturnType<TParams, TResult, E>
 >;

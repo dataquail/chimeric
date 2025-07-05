@@ -19,7 +19,7 @@ describe('IdiomaticAsyncTestHarness', () => {
     expect(promise.result.current.error).toBe(null);
     expect(promise.result.current.data).toBe(undefined);
 
-    promise.result.current.call();
+    promise.result.current.invoke();
 
     expect(promise.result.current.isIdle).toBe(false);
     expect(promise.result.current.isPending).toBe(true);
@@ -54,7 +54,7 @@ describe('IdiomaticAsyncTestHarness', () => {
     expect(promise.result.current.error).toBe(null);
     expect(promise.result.current.data).toBe(undefined);
 
-    promise.result.current.call();
+    promise.result.current.invoke();
 
     expect(promise.result.current.isIdle).toBe(false);
     expect(promise.result.current.isPending).toBe(true);
@@ -83,7 +83,7 @@ describe('IdiomaticAsyncTestHarness', () => {
       idiomaticOptions: { retry: 3 },
     });
 
-    promise.result.current.call({ name: 'John' });
+    promise.result.current.invoke({ name: 'John' });
 
     expect(promise.result.current.isIdle).toBe(false);
     expect(promise.result.current.isPending).toBe(true);

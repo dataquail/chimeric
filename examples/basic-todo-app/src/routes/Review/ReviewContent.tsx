@@ -29,7 +29,7 @@ export const ReviewContent = () => {
         {hasStartedReview ? (
           <Button onClick={() => finishReviewUseCase()}>Finish Review</Button>
         ) : (
-          <Button onClick={() => startReview.call()}>Start Review</Button>
+          <Button onClick={() => startReview.invoke()}>Start Review</Button>
         )}
       </Group>
       <Space h="lg" />
