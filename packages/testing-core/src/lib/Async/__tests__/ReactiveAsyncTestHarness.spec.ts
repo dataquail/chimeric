@@ -17,7 +17,7 @@ describe('ReactiveAsyncTestHarness', () => {
 
     harness.result.current.invoke();
 
-    expect(mockReactiveAsync.useAsync).toHaveBeenCalled();
+    expect(mockReactiveAsync.use).toHaveBeenCalled();
     expect(harness.result.current.invoke).toHaveBeenCalled();
   });
 
@@ -33,7 +33,7 @@ describe('ReactiveAsyncTestHarness', () => {
 
     await harness.result.current.invoke();
     expect(harness.result.current.invoke).toHaveBeenCalledTimes(1);
-    expect(mockReactiveAsync.useAsync).toHaveBeenCalledWith({ retry: 3 });
+    expect(mockReactiveAsync.use).toHaveBeenCalledWith({ retry: 3 });
   });
 
   it('should take options with params', async () => {
@@ -57,7 +57,7 @@ describe('ReactiveAsyncTestHarness', () => {
     expect(harness.result.current.invoke).toHaveBeenCalledWith({
       name: 'John',
     });
-    expect(mockReactiveAsync.useAsync).toHaveBeenCalledWith({ retry: 3 });
+    expect(mockReactiveAsync.use).toHaveBeenCalledWith({ retry: 3 });
   });
 
   it('should handle type annotations without params', () => {
@@ -72,7 +72,7 @@ describe('ReactiveAsyncTestHarness', () => {
 
     harness.result.current.invoke();
 
-    expect(mockReactiveAsync.useAsync).toHaveBeenCalled();
+    expect(mockReactiveAsync.use).toHaveBeenCalled();
     expect(harness.result.current.invoke).toHaveBeenCalled();
   });
 
@@ -90,7 +90,7 @@ describe('ReactiveAsyncTestHarness', () => {
 
     harness.result.current.invoke({ name: 'John' });
 
-    expect(mockReactiveAsync.useAsync).toHaveBeenCalled();
+    expect(mockReactiveAsync.use).toHaveBeenCalled();
     expect(harness.result.current.invoke).toHaveBeenCalled();
   });
 });

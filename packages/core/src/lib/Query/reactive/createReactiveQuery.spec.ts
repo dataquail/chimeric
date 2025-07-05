@@ -13,9 +13,9 @@ describe('createReactiveQuery', () => {
     const reactiveQuery = createReactiveQuery(mockReactiveFn);
 
     expect(typeof reactiveQuery).toBe('object');
-    expect(reactiveQuery).toHaveProperty('useQuery');
-    expect(typeof reactiveQuery.useQuery).toBe('function');
-    expect(reactiveQuery.useQuery).toBe(mockReactiveFn);
+    expect(reactiveQuery).toHaveProperty('use');
+    expect(typeof reactiveQuery.use).toBe('function');
+    expect(reactiveQuery.use).toBe(mockReactiveFn);
   });
 
   it('should throw an error for invalid input', () => {
@@ -29,7 +29,7 @@ describe('createReactiveQuery', () => {
   it('should invoke the reactive function with params', () => {
     const mockReactiveFn = makeQueryHookWithParamsReturnsString();
     const reactiveQuery = createReactiveQuery(mockReactiveFn);
-    const result = reactiveQuery.useQuery({ name: 'John' });
+    const result = reactiveQuery.use({ name: 'John' });
 
     expect(result.isIdle).toBe(true);
     expect(result.isPending).toBe(false);
@@ -43,7 +43,7 @@ describe('createReactiveQuery', () => {
   it('should invoke the reactive function without params', () => {
     const mockReactiveFn = makeQueryHookWithoutParamsReturnsString();
     const reactiveQuery = createReactiveQuery(mockReactiveFn);
-    const result = reactiveQuery.useQuery();
+    const result = reactiveQuery.use();
 
     expect(result.isIdle).toBe(true);
     expect(result.isPending).toBe(false);
@@ -59,7 +59,7 @@ describe('createReactiveQuery', () => {
     const mockReactiveFn = makeQueryHookWithoutParamsReturnsString();
     const reactiveQuery: ReactiveQueryWithoutParamsReturnsString =
       createReactiveQuery(mockReactiveFn);
-    const result = reactiveQuery.useQuery();
+    const result = reactiveQuery.use();
 
     expect(result.isIdle).toBe(true);
   });
@@ -68,7 +68,7 @@ describe('createReactiveQuery', () => {
     const mockReactiveFn = makeQueryHookWithParamsReturnsString();
     const reactiveQuery: ReactiveQueryWithParamsReturnsString =
       createReactiveQuery(mockReactiveFn);
-    const result = reactiveQuery.useQuery({ name: 'John' });
+    const result = reactiveQuery.use({ name: 'John' });
 
     expect(result.isIdle).toBe(true);
     expect(result.isPending).toBe(false);

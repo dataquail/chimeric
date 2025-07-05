@@ -2,7 +2,7 @@ import { makeReactiveQueryWithoutParamsReturnsString } from '../__tests__/queryF
 import { isReactiveQuery } from './isReactiveQuery';
 
 describe('isReactiveQuery', () => {
-  it('should return true for an object with useQuery function', () => {
+  it('should return true for an object with use function', () => {
     const mockReactiveQuery = makeReactiveQueryWithoutParamsReturnsString();
     expect(isReactiveQuery(mockReactiveQuery)).toBe(true);
   });
@@ -13,7 +13,7 @@ describe('isReactiveQuery', () => {
     expect(isReactiveQuery(null)).toBe(false);
     expect(isReactiveQuery(undefined)).toBe(false);
     expect(isReactiveQuery({})).toBe(false);
-    expect(isReactiveQuery({ notUseQuery: 'something' })).toBe(false);
-    expect(isReactiveQuery({ useQuery: 'not a function' })).toBe(false);
+    expect(isReactiveQuery({ notUse: 'something' })).toBe(false);
+    expect(isReactiveQuery({ use: 'not a function' })).toBe(false);
   });
 });

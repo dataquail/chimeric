@@ -39,7 +39,7 @@ export function fuseChimericMutation<
     TNativeInvokeOptions,
     TNativeReactiveReturnType
   >;
-  chimericFn.useMutation = args.reactive.useMutation;
+  chimericFn.use = args.reactive.use;
   if (
     isChimericMutation<
       TParams,

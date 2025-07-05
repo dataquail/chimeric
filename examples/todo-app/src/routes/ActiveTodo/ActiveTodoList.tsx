@@ -11,7 +11,7 @@ type InjectedProps = {
 export const ActiveTodoList = injectComponent<InjectedProps>(
   { activeTodoService: InjectionSymbol('IActiveTodoService') },
   ({ activeTodoService }) => {
-    const { data, isPending } = activeTodoService.getAll.useQuery();
+    const { data, isPending } = activeTodoService.getAll.use();
     const { height } = useViewportSize();
 
     if (isPending || !data) {

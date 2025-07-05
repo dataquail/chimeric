@@ -52,7 +52,7 @@ describe('ChimericMutationTestHarness', () => {
     });
 
     harness.result.current.invoke();
-    expect(mockReactiveMutation.useMutation).toHaveBeenCalled();
+    expect(mockReactiveMutation.use).toHaveBeenCalled();
     expect(harness.result.current.invoke).toHaveBeenCalled();
   });
 
@@ -78,7 +78,7 @@ describe('ChimericMutationTestHarness', () => {
     });
 
     harness.result.current.invoke({ name: 'John' });
-    expect(mockReactiveMutation.useMutation).toHaveBeenCalled();
+    expect(mockReactiveMutation.use).toHaveBeenCalled();
     expect(harness.result.current.invoke).toHaveBeenCalled();
   });
 });

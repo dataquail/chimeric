@@ -14,7 +14,7 @@ describe('ReactiveAsyncFactory', () => {
   it('should invoke the reactive hook', async () => {
     const mockPromise = makeAsyncFnWithoutParamsReturnsString();
     const reactiveAsync = ReactiveAsyncFactory(mockPromise);
-    const { result } = renderHook(reactiveAsync.useAsync);
+    const { result } = renderHook(reactiveAsync.use);
 
     expect(result.current.isIdle).toBe(true);
     expect(result.current.isSuccess).toBe(false);
@@ -32,7 +32,7 @@ describe('ReactiveAsyncFactory', () => {
   it('should invoke the reactive hook with object params', async () => {
     const mockPromise = makeAsyncFnWithParamsReturnsString();
     const reactiveAsync = ReactiveAsyncFactory(mockPromise);
-    const { result } = renderHook(reactiveAsync.useAsync);
+    const { result } = renderHook(reactiveAsync.use);
 
     expect(result.current.isIdle).toBe(true);
     expect(result.current.isSuccess).toBe(false);
@@ -50,7 +50,7 @@ describe('ReactiveAsyncFactory', () => {
   it('should handle type annotations with no params', async () => {
     const reactiveAsync: ReactiveAsyncWithoutParamsReturnsString =
       ReactiveAsyncFactory(makeAsyncFnWithoutParamsReturnsString());
-    const { result } = renderHook(reactiveAsync.useAsync);
+    const { result } = renderHook(reactiveAsync.use);
 
     expect(result.current.isIdle).toBe(true);
     expect(result.current.isSuccess).toBe(false);
@@ -67,7 +67,7 @@ describe('ReactiveAsyncFactory', () => {
   it('should handle type annotations with params', async () => {
     const reactiveAsync: ReactiveAsyncWithParamsReturnsString =
       ReactiveAsyncFactory(makeAsyncFnWithParamsReturnsString());
-    const { result } = renderHook(reactiveAsync.useAsync);
+    const { result } = renderHook(reactiveAsync.use);
 
     expect(result.current.isIdle).toBe(true);
     expect(result.current.isSuccess).toBe(false);
@@ -85,7 +85,7 @@ describe('ReactiveAsyncFactory', () => {
     const mockPromise = vi.fn(() => Promise.reject(new Error('test')));
     const reactiveAsync = ReactiveAsyncFactory(mockPromise);
 
-    const { result } = renderHook(() => reactiveAsync.useAsync({ retry: 3 }));
+    const { result } = renderHook(() => reactiveAsync.use({ retry: 3 }));
 
     expect(result.current.isIdle).toBe(true);
 

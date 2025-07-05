@@ -33,7 +33,7 @@ export function ReactiveMutationFactory<
         invoke: (
           paramsAndOptions: Parameters<
             ReturnType<
-              ReactiveMutation<TResult, TParams, TError>['useMutation']
+              ReactiveMutation<TResult, TParams, TError>['use']
             >['invoke']
           >[0],
         ) => {
@@ -55,9 +55,7 @@ export function ReactiveMutationFactory<
           TError,
           TParams
         >,
-      } as ReturnType<
-        ReactiveMutation<TParams, TResult, TError>['useMutation']
-      >;
+      } as ReturnType<ReactiveMutation<TParams, TResult, TError>['use']>;
     },
   ) as ReactiveMutation<
     TParams extends undefined ? void : TParams,

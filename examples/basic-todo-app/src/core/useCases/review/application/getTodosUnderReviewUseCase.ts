@@ -12,9 +12,9 @@ import { savedForLaterTodoService } from 'src/core/infrastructure/services/Saved
 import { reviewedTodoRepository } from 'src/core/infrastructure/repositories/ReviewedTodoRepository';
 
 const _reactiveImpl = () => {
-  const activeTodoListMeta = activeTodoService.getAll.useQuery();
-  const savedForLaterTodoListMeta = savedForLaterTodoService.getAll.useQuery();
-  const review = reviewRepository.get.useSync();
+  const activeTodoListMeta = activeTodoService.getAll.use();
+  const savedForLaterTodoListMeta = savedForLaterTodoService.getAll.use();
+  const review = reviewRepository.get.use();
 
   return MetaAggregatorFactory(
     [activeTodoListMeta, savedForLaterTodoListMeta],

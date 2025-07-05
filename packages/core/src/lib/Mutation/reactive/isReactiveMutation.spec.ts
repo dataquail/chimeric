@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { makeReactiveMutationWithoutParamsReturnsString } from '../__tests__/mutationFixtures';
 import { isReactiveMutation } from './isReactiveMutation';
 
 describe('isReactiveMutation', () => {
-  it('should return true for an object with useMutation function', () => {
+  it('should return true for an object with use function', () => {
     const mockReactiveMutation =
       makeReactiveMutationWithoutParamsReturnsString();
     expect(isReactiveMutation(mockReactiveMutation)).toBe(true);
@@ -15,7 +14,7 @@ describe('isReactiveMutation', () => {
     expect(isReactiveMutation(null)).toBe(false);
     expect(isReactiveMutation(undefined)).toBe(false);
     expect(isReactiveMutation({})).toBe(false);
-    expect(isReactiveMutation({ notUseMutation: 'something' })).toBe(false);
-    expect(isReactiveMutation({ useMutation: 'not a function' })).toBe(false);
+    expect(isReactiveMutation({ notUse: 'something' })).toBe(false);
+    expect(isReactiveMutation({ use: 'not a function' })).toBe(false);
   });
 });

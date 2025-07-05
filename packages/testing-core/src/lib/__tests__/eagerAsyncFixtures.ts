@@ -1,5 +1,5 @@
 export const makeReactiveEagerAsyncWithoutParamsReturnsString = () => ({
-  useEagerAsync: vi.fn(() => ({
+  use: vi.fn(() => ({
     isIdle: false,
     isPending: false,
     isSuccess: true,
@@ -10,7 +10,7 @@ export const makeReactiveEagerAsyncWithoutParamsReturnsString = () => ({
 });
 
 export const makeReactiveEagerAsyncWithParamsReturnsString = () => ({
-  useEagerAsync: vi.fn((args: { name: string }) => ({
+  use: vi.fn((args: { name: string }) => ({
     isIdle: false,
     isPending: false,
     isSuccess: true,

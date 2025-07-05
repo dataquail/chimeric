@@ -7,13 +7,13 @@ import { isReactiveEagerAsync } from './isReactiveEagerAsync';
 describe('isReactiveEagerAsync', () => {
   it('should return true for an object with useEagerAsync function', () => {
     const mockReactiveEagerAsync = {
-      useEagerAsync: makeEagerAsyncHookWithoutParamsReturnsString(),
+      use: makeEagerAsyncHookWithoutParamsReturnsString(),
     };
 
     expect(isReactiveEagerAsync(mockReactiveEagerAsync)).toBe(true);
   });
 
-  it('should return true for a function with useEagerAsync property', () => {
+  it('should return true for a function with use property', () => {
     const mockReactiveEagerAsync =
       makeReactiveEagerAsyncWithoutParamsReturnsString();
 
@@ -26,9 +26,7 @@ describe('isReactiveEagerAsync', () => {
     expect(isReactiveEagerAsync(null)).toBe(false);
     expect(isReactiveEagerAsync(undefined)).toBe(false);
     expect(isReactiveEagerAsync({})).toBe(false);
-    expect(isReactiveEagerAsync({ notUseEagerAsync: 'something' })).toBe(false);
-    expect(isReactiveEagerAsync({ useEagerAsync: 'not a function' })).toBe(
-      false,
-    );
+    expect(isReactiveEagerAsync({ notUse: 'something' })).toBe(false);
+    expect(isReactiveEagerAsync({ use: 'not a function' })).toBe(false);
   });
 });

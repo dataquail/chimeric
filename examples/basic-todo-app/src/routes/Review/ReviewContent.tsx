@@ -16,10 +16,10 @@ import { getTodosUnderReviewUseCase } from 'src/core/useCases/review/application
 import { finishReviewUseCase } from 'src/core/useCases/review/application/finishReviewUseCase';
 
 export const ReviewContent = () => {
-  const review = reviewRepository.get.useSync();
+  const review = reviewRepository.get.use();
   const hasStartedReview = Boolean(review);
-  const startReview = startReviewUseCase.useAsync();
-  const todosUnderReview = getTodosUnderReviewUseCase.useEagerAsync();
+  const startReview = startReviewUseCase.use();
+  const todosUnderReview = getTodosUnderReviewUseCase.use();
   const { height } = useViewportSize();
 
   return (

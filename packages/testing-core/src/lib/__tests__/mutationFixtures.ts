@@ -1,5 +1,5 @@
 export const makeReactiveMutationWithoutParamsReturnsString = () => ({
-  useMutation: vi.fn(() => ({
+  use: vi.fn(() => ({
     invoke: vi.fn(() => Promise.resolve('test')),
     isIdle: true,
     isPending: false,
@@ -13,7 +13,7 @@ export const makeReactiveMutationWithoutParamsReturnsString = () => ({
 });
 
 export const makeReactiveMutationWithParamsReturnsString = () => ({
-  useMutation: vi.fn(() => ({
+  use: vi.fn(() => ({
     invoke: vi.fn((args: { name: string }) =>
       Promise.resolve(`Hello ${args.name}`),
     ),

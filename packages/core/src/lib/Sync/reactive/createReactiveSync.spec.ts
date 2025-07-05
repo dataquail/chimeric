@@ -9,9 +9,9 @@ describe('createReactiveSync', () => {
     const reactiveSync = createReactiveSync(mockReactiveFn);
 
     expect(typeof reactiveSync).toBe('object');
-    expect(reactiveSync).toHaveProperty('useSync');
-    expect(typeof reactiveSync.useSync).toBe('function');
-    expect(reactiveSync.useSync).toBe(mockReactiveFn);
+    expect(reactiveSync).toHaveProperty('use');
+    expect(typeof reactiveSync.use).toBe('function');
+    expect(reactiveSync.use).toBe(mockReactiveFn);
   });
 
   it('should throw an error for invalid input', () => {
@@ -26,13 +26,13 @@ describe('createReactiveSync', () => {
     type TestReactiveSync = DefineReactiveSync<() => string>;
     const reactiveSync: TestReactiveSync = createReactiveSync(() => 'test');
 
-    expect(reactiveSync.useSync()).toBe('test');
+    expect(reactiveSync.use()).toBe('test');
   });
 
   it('should allow type annotations with params', () => {
     type TestReactiveSync = DefineReactiveSync<(args: { a: string }) => string>;
     const reactiveSync: TestReactiveSync = createReactiveSync(({ a }) => a);
 
-    expect(reactiveSync.useSync({ a: 'test' })).toBe('test');
+    expect(reactiveSync.use({ a: 'test' })).toBe('test');
   });
 });

@@ -1,5 +1,5 @@
 export const makeReactiveQueryWithoutParamsReturnsString = () => ({
-  useQuery: vi.fn(() => ({
+  use: vi.fn(() => ({
     isIdle: true,
     isPending: false,
     isSuccess: false,
@@ -12,7 +12,7 @@ export const makeReactiveQueryWithoutParamsReturnsString = () => ({
 });
 
 export const makeReactiveQueryWithParamsReturnsString = () => ({
-  useQuery: vi.fn((args: { name: string }) => ({
+  use: vi.fn((args: { name: string }) => ({
     isIdle: true,
     isPending: false,
     isSuccess: false,

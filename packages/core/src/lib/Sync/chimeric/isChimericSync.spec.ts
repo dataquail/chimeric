@@ -5,7 +5,7 @@ import { isChimericSync } from './isChimericSync';
 describe('isChimericSync', () => {
   it('should return true for a chimeric sync function', () => {
     const mockChimericSync = makeSyncFnWithoutParamsReturnsString() as any;
-    mockChimericSync.useSync = makeSyncFnWithoutParamsReturnsString();
+    mockChimericSync.use = makeSyncFnWithoutParamsReturnsString();
 
     expect(isChimericSync(mockChimericSync)).toBe(true);
   });
@@ -14,13 +14,13 @@ describe('isChimericSync', () => {
     // Not a function
     expect(isChimericSync('not a function')).toBe(false);
 
-    // Function without useSync
+    // Function without use
     const mockSyncFn = makeSyncFnWithoutParamsReturnsString();
     expect(isChimericSync(mockSyncFn)).toBe(false);
 
-    // Object with useSync but not a function
+    // Object with use but not a function
     const mockReactiveSync = {
-      useSync: makeSyncFnWithoutParamsReturnsString(),
+      use: makeSyncFnWithoutParamsReturnsString(),
     };
     expect(isChimericSync(mockReactiveSync)).toBe(false);
 

@@ -12,8 +12,8 @@ describe('createReactiveMutation', () => {
     );
 
     expect(typeof reactiveMutation).toBe('object');
-    expect(reactiveMutation).toHaveProperty('useMutation');
-    expect(typeof reactiveMutation.useMutation).toBe('function');
+    expect(reactiveMutation).toHaveProperty('use');
+    expect(typeof reactiveMutation.use).toBe('function');
   });
 
   it('should throw an error for invalid input', () => {
@@ -27,10 +27,10 @@ describe('createReactiveMutation', () => {
     const reactiveMutation = createReactiveMutation(
       makeMutationHookWithoutParamsReturnsString(),
     );
-    const hookResult = reactiveMutation.useMutation();
+    const hookResult = reactiveMutation.use();
     const result = await hookResult.invoke();
     expect(result).toBe('test');
-    expect(reactiveMutation.useMutation).toHaveBeenCalled();
+    expect(reactiveMutation.use).toHaveBeenCalled();
     expect(hookResult.invoke).toHaveBeenCalled();
   });
 
@@ -38,10 +38,10 @@ describe('createReactiveMutation', () => {
     const reactiveMutation = createReactiveMutation(
       makeMutationHookWithParamsReturnsString(),
     );
-    const hookResult = reactiveMutation.useMutation();
+    const hookResult = reactiveMutation.use();
     const result = await hookResult.invoke({ name: 'John' });
     expect(result).toBe('Hello John');
-    expect(reactiveMutation.useMutation).toHaveBeenCalled();
+    expect(reactiveMutation.use).toHaveBeenCalled();
     expect(hookResult.invoke).toHaveBeenCalledWith({ name: 'John' });
   });
 });

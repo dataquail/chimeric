@@ -7,8 +7,7 @@ describe('isChimericEagerAsync', () => {
   it('should return true for a chimeric eager async function', () => {
     const mockChimericEagerAsync =
       makeAsyncFnWithoutParamsReturnsString() as any;
-    mockChimericEagerAsync.useEagerAsync =
-      makeEagerAsyncHookWithoutParamsReturnsString();
+    mockChimericEagerAsync.use = makeEagerAsyncHookWithoutParamsReturnsString();
 
     expect(isChimericEagerAsync(mockChimericEagerAsync)).toBe(true);
   });
@@ -17,13 +16,13 @@ describe('isChimericEagerAsync', () => {
     // Not a function
     expect(isChimericEagerAsync('not a function')).toBe(false);
 
-    // Function without useEagerAsync
+    // Function without use
     const mockAsyncFn = makeAsyncFnWithoutParamsReturnsString();
     expect(isChimericEagerAsync(mockAsyncFn)).toBe(false);
 
-    // Object with useEagerAsync but not a function
+    // Object with use but not a function
     const mockReactiveEagerAsync = {
-      useEagerAsync: makeEagerAsyncHookWithoutParamsReturnsString(),
+      use: makeEagerAsyncHookWithoutParamsReturnsString(),
     };
     expect(isChimericEagerAsync(mockReactiveEagerAsync)).toBe(false);
 

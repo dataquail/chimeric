@@ -30,10 +30,10 @@ export class GetTodosUnderReviewUseCase {
     this.execute = createReactiveEagerAsync(this.reactiveImpl.bind(this));
   }
   private reactiveImpl() {
-    const activeTodoListMeta = this.activeTodoService.getAll.useQuery();
+    const activeTodoListMeta = this.activeTodoService.getAll.use();
     const savedForLaterTodoListMeta =
-      this.savedForLaterTodoService.getAll.useQuery();
-    const review = this.reviewRepository.get.useSync();
+      this.savedForLaterTodoService.getAll.use();
+    const review = this.reviewRepository.get.use();
 
     return MetaAggregatorFactory(
       [activeTodoListMeta, savedForLaterTodoListMeta],

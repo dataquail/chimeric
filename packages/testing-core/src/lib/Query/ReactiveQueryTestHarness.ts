@@ -44,7 +44,7 @@ export function ReactiveQueryTestHarness<
   const { reactiveQuery, options, nativeOptions, wrapper } = args;
   const hook = renderHook(
     () =>
-      reactiveQuery.useQuery({
+      reactiveQuery.use({
         ...(args as { params: TParams }).params,
         options,
         nativeOptions,

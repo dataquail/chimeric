@@ -4,7 +4,7 @@ export type ReactiveEagerAsync<
   TError extends Error = Error,
 > = TParams extends void
   ? {
-      useEagerAsync: () => {
+      use: () => {
         isIdle: boolean;
         isPending: boolean;
         isSuccess: boolean;
@@ -15,7 +15,7 @@ export type ReactiveEagerAsync<
     }
   : TParams extends object
   ? {
-      useEagerAsync: (params: TParams) => {
+      use: (params: TParams) => {
         isIdle: boolean;
         isPending: boolean;
         isSuccess: boolean;

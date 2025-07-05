@@ -19,7 +19,7 @@ describe('fuseChimericQuery', () => {
     const result = await testChimericQuery();
     expect(result).toEqual('test');
     expect(mockIdiomaticQuery).toHaveBeenCalled();
-    expect(mockReactiveQuery.useQuery).not.toHaveBeenCalled();
+    expect(mockReactiveQuery.use).not.toHaveBeenCalled();
   });
 
   it('should invoke the idiomatic function with params', async () => {
@@ -32,7 +32,7 @@ describe('fuseChimericQuery', () => {
     const result = await testChimericQuery({ name: 'John' });
     expect(result).toEqual('Hello John');
     expect(mockIdiomaticQuery).toHaveBeenCalledWith({ name: 'John' });
-    expect(mockReactiveQuery.useQuery).not.toHaveBeenCalled();
+    expect(mockReactiveQuery.use).not.toHaveBeenCalled();
   });
 
   it('should invoke the reactive function', async () => {
@@ -42,10 +42,10 @@ describe('fuseChimericQuery', () => {
       idiomatic: mockIdiomaticQuery,
       reactive: mockReactiveQuery,
     });
-    const result = testChimericQuery.useQuery();
+    const result = testChimericQuery.use();
     expect(result.data).toEqual('test');
     expect(mockIdiomaticQuery).not.toHaveBeenCalled();
-    expect(mockReactiveQuery.useQuery).toHaveBeenCalled();
+    expect(mockReactiveQuery.use).toHaveBeenCalled();
   });
 
   it('should invoke the reactive function with params', async () => {
@@ -55,10 +55,10 @@ describe('fuseChimericQuery', () => {
       idiomatic: mockIdiomaticQuery,
       reactive: mockReactiveQuery,
     });
-    const result = testChimericQuery.useQuery({ name: 'John' });
+    const result = testChimericQuery.use({ name: 'John' });
     expect(result.data).toEqual('Hello John');
     expect(mockIdiomaticQuery).not.toHaveBeenCalled();
-    expect(mockReactiveQuery.useQuery).toHaveBeenCalled();
+    expect(mockReactiveQuery.use).toHaveBeenCalled();
   });
 
   it('should invoke the reactive call function', async () => {
@@ -68,17 +68,17 @@ describe('fuseChimericQuery', () => {
       idiomatic: mockIdiomaticQuery,
       reactive: mockReactiveQuery,
     });
-    const result = testChimericQuery.useQuery({ name: 'John' });
+    const result = testChimericQuery.use({ name: 'John' });
     await result.refetch();
     expect(mockIdiomaticQuery).not.toHaveBeenCalled();
-    expect(mockReactiveQuery.useQuery).toHaveBeenCalled();
+    expect(mockReactiveQuery.use).toHaveBeenCalled();
     expect(result.refetch).toHaveBeenCalled();
   });
 
   it('should throw an error for invalid inputs', () => {
     const mockIdiomaticQuery = makeIdiomaticQueryWithoutParamsReturnsString();
     const invalidReactive = {
-      notUseQuery: vi.fn(),
+      notuse: vi.fn(),
     };
 
     expect(() => {
@@ -99,7 +99,7 @@ describe('fuseChimericQuery', () => {
     const result = await testChimericQuery();
     expect(result).toBe('test');
     expect(testChimericQuery).toHaveBeenCalled();
-    expect(testChimericQuery.useQuery).not.toHaveBeenCalled();
+    expect(testChimericQuery.use).not.toHaveBeenCalled();
   });
 
   it('should handle type annotations with params', async () => {
@@ -114,6 +114,6 @@ describe('fuseChimericQuery', () => {
     const result = await testChimericQuery({ name: 'John' });
     expect(result).toBe('Hello John');
     expect(testChimericQuery).toHaveBeenCalled();
-    expect(testChimericQuery.useQuery).not.toHaveBeenCalled();
+    expect(testChimericQuery.use).not.toHaveBeenCalled();
   });
 });

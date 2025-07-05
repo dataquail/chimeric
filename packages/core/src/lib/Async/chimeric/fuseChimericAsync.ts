@@ -12,7 +12,7 @@ export function fuseChimericAsync<
   reactive: ReactiveAsync<TParams, TResult, TError>;
 }): ChimericAsync<TParams, TResult, TError> {
   const chimericFn = args.idiomatic as ChimericAsync<TParams, TResult, TError>;
-  chimericFn.useAsync = args.reactive.useAsync;
+  chimericFn.use = args.reactive.use;
   if (isChimericAsync<TParams, TResult, TError>(chimericFn)) {
     return chimericFn;
   } else {

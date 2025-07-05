@@ -21,7 +21,7 @@ export const isReactiveMutation = <
     (typeof maybeReactiveMutation === 'function' ||
       typeof maybeReactiveMutation === 'object') &&
     maybeReactiveMutation !== null &&
-    'useMutation' in maybeReactiveMutation &&
+    'use' in maybeReactiveMutation &&
     typeof (
       maybeReactiveMutation as ReactiveMutation<
         TParams,
@@ -31,6 +31,6 @@ export const isReactiveMutation = <
         TNativeInvokeOptions,
         TNativeReturnType
       >
-    ).useMutation === 'function'
+    ).use === 'function'
   );
 };

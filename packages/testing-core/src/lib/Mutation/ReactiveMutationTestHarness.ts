@@ -36,7 +36,7 @@ export function ReactiveMutationTestHarness<
   TNativeReturnType
 > {
   const hook = renderHook(
-    () => reactiveMutation.useMutation({ options, nativeOptions }),
+    () => reactiveMutation.use({ options, nativeOptions }),
     {
       wrapper,
     },

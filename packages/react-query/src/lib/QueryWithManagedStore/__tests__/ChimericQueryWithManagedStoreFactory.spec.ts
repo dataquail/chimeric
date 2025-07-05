@@ -24,7 +24,7 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
       getFromStore: () => storeValue,
       useFromStore: () => storeValue,
     });
-    const { result } = renderHook(chimericQuery.useQuery, {
+    const { result } = renderHook(chimericQuery.use, {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -72,10 +72,9 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
       getFromStore: () => storeValue,
       useFromStore: () => storeValue,
     });
-    const { result } = renderHook(
-      () => chimericQuery.useQuery({ name: 'John' }),
-      { wrapper: getTestWrapper(queryClient) },
-    );
+    const { result } = renderHook(() => chimericQuery.use({ name: 'John' }), {
+      wrapper: getTestWrapper(queryClient),
+    });
 
     await waitFor(() => {
       expect(result.current.isSuccess).toBe(true);

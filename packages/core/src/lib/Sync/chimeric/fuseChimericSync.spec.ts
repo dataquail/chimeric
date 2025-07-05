@@ -26,7 +26,7 @@ describe('fuseChimericSync', () => {
     const result = testChimericSync();
     expect(result).toEqual('test');
     expect(mockIdiomaticSync).toHaveBeenCalled();
-    expect(mockReactiveSync.useSync).not.toHaveBeenCalled();
+    expect(mockReactiveSync.use).not.toHaveBeenCalled();
   });
 
   it('should invoke the idiomatic function with params', () => {
@@ -43,7 +43,7 @@ describe('fuseChimericSync', () => {
     const result = testChimericSync({ name: 'John' });
     expect(result).toEqual('Hello John');
     expect(mockIdiomaticSync).toHaveBeenCalledWith({ name: 'John' });
-    expect(mockReactiveSync.useSync).not.toHaveBeenCalled();
+    expect(mockReactiveSync.use).not.toHaveBeenCalled();
   });
 
   it('should invoke the reactive function', () => {
@@ -57,10 +57,10 @@ describe('fuseChimericSync', () => {
       idiomatic: mockIdiomaticSync,
       reactive: mockReactiveSync,
     });
-    const result = testChimericSync.useSync();
+    const result = testChimericSync.use();
     expect(result).toEqual('test');
     expect(mockIdiomaticSync).not.toHaveBeenCalled();
-    expect(mockReactiveSync.useSync).toHaveBeenCalled();
+    expect(mockReactiveSync.use).toHaveBeenCalled();
   });
 
   it('should invoke the reactive function with params', () => {
@@ -74,10 +74,10 @@ describe('fuseChimericSync', () => {
       idiomatic: mockIdiomaticSync,
       reactive: mockReactiveSync,
     });
-    const result = testChimericSync.useSync({ name: 'John' });
+    const result = testChimericSync.use({ name: 'John' });
     expect(result).toEqual('Hello John');
     expect(mockIdiomaticSync).not.toHaveBeenCalled();
-    expect(mockReactiveSync.useSync).toHaveBeenCalledWith({ name: 'John' });
+    expect(mockReactiveSync.use).toHaveBeenCalledWith({ name: 'John' });
   });
 
   it('should throw an error for invalid inputs', () => {
@@ -85,7 +85,7 @@ describe('fuseChimericSync', () => {
       makeSyncFnWithoutParamsReturnsString(),
     );
     const invalidReactive = {
-      notUseSync: makeSyncFnWithoutParamsReturnsString(),
+      notUse: makeSyncFnWithoutParamsReturnsString(),
     };
 
     expect(() => {

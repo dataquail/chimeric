@@ -1,5 +1,5 @@
 export type ReactiveSync<TParams = void, TResult = unknown> = {
-  useSync: TParams extends void | undefined
+  use: TParams extends void | undefined
     ? () => TResult
     : (params: TParams) => TResult;
 };

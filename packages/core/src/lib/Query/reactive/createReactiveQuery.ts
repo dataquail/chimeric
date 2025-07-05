@@ -14,10 +14,10 @@ export function createReactiveQuery<
     TError,
     TNativeOptions,
     TNativeReturnType
-  >['useQuery'],
+  >['use'],
 ): ReactiveQuery<TParams, TResult, TError, TNativeOptions, TNativeReturnType> {
   const reactiveQuery = {
-    useQuery: reactiveFn,
+    use: reactiveFn,
   };
   if (
     isReactiveQuery<

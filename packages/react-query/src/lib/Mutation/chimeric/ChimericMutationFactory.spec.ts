@@ -19,7 +19,7 @@ describe('ChimericMutationFactory', () => {
     const chimericMutation = ChimericMutationFactory(queryClient, {
       mutationFn: mockMutationFn,
     });
-    const { result } = renderHook(chimericMutation.useMutation, {
+    const { result } = renderHook(chimericMutation.use, {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -54,7 +54,7 @@ describe('ChimericMutationFactory', () => {
     const chimericMutation = ChimericMutationFactory(queryClient, {
       mutationFn: mockMutationFn,
     });
-    const { result } = renderHook(() => chimericMutation.useMutation(), {
+    const { result } = renderHook(() => chimericMutation.use(), {
       wrapper: getTestWrapper(queryClient),
     });
 

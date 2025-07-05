@@ -26,10 +26,10 @@ type OwnProps = {
 };
 
 export const ActiveTodoCard = ({ todo }: OwnProps) => {
-  const saveForLater = savedForLaterTodoService.saveForLater.useMutation();
-  const completeOne = activeTodoService.completeOne.useMutation();
-  const uncompleteOne = activeTodoService.uncompleteOne.useMutation();
-  const deleteOne = activeTodoService.deleteOne.useMutation();
+  const saveForLater = savedForLaterTodoService.saveForLater.use();
+  const completeOne = activeTodoService.completeOne.use();
+  const uncompleteOne = activeTodoService.uncompleteOne.use();
+  const deleteOne = activeTodoService.deleteOne.use();
   const prioritize = activeTodoService.prioritize;
   const deprioritize = activeTodoService.deprioritize;
 

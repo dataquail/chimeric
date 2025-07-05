@@ -12,7 +12,7 @@ describe('ReactiveEagerAsyncTestHarness', () => {
       reactiveEagerAsync: mockReactiveEagerAsync,
     });
 
-    expect(mockReactiveEagerAsync.useEagerAsync).toHaveBeenCalledTimes(1);
+    expect(mockReactiveEagerAsync.use).toHaveBeenCalledTimes(1);
   });
 
   it('should handle params', async () => {
@@ -23,8 +23,8 @@ describe('ReactiveEagerAsyncTestHarness', () => {
       params: { name: 'John' },
     });
 
-    expect(mockReactiveEagerAsync.useEagerAsync).toHaveBeenCalledTimes(1);
-    expect(mockReactiveEagerAsync.useEagerAsync).toHaveBeenCalledWith({
+    expect(mockReactiveEagerAsync.use).toHaveBeenCalledTimes(1);
+    expect(mockReactiveEagerAsync.use).toHaveBeenCalledWith({
       name: 'John',
     });
   });

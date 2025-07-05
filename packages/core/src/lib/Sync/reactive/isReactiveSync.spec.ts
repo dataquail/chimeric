@@ -3,17 +3,17 @@ import { makeSyncFnWithoutParamsReturnsString } from '../../__tests__/functionFi
 import { isReactiveSync } from './isReactiveSync';
 
 describe('isReactiveSync', () => {
-  it('should return true for an object with useSync function', () => {
+  it('should return true for an object with use function', () => {
     const mockReactiveSync = {
-      useSync: makeSyncFnWithoutParamsReturnsString(),
+      use: makeSyncFnWithoutParamsReturnsString(),
     };
 
     expect(isReactiveSync(mockReactiveSync)).toBe(true);
   });
 
-  it('should return true for a function with useSync property', () => {
+  it('should return true for a function with use property', () => {
     const mockReactiveSync = makeSyncFnWithoutParamsReturnsString() as any;
-    mockReactiveSync.useSync = makeSyncFnWithoutParamsReturnsString();
+    mockReactiveSync.use = makeSyncFnWithoutParamsReturnsString();
 
     expect(isReactiveSync(mockReactiveSync)).toBe(true);
   });
@@ -24,7 +24,7 @@ describe('isReactiveSync', () => {
     expect(isReactiveSync(null)).toBe(false);
     expect(isReactiveSync(undefined)).toBe(false);
     expect(isReactiveSync({})).toBe(false);
-    expect(isReactiveSync({ notUseSync: 'something' })).toBe(false);
-    expect(isReactiveSync({ useSync: 'not a function' })).toBe(false);
+    expect(isReactiveSync({ notUse: 'something' })).toBe(false);
+    expect(isReactiveSync({ use: 'not a function' })).toBe(false);
   });
 });

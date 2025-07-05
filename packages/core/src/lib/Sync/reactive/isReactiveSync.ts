@@ -7,8 +7,8 @@ export const isReactiveSync = <TParams = void, TResult = unknown>(
     (typeof maybeReactiveSync === 'function' ||
       typeof maybeReactiveSync === 'object') &&
     maybeReactiveSync !== null &&
-    'useSync' in maybeReactiveSync &&
-    typeof (maybeReactiveSync as ReactiveSync<TParams, TResult>).useSync ===
+    'use' in maybeReactiveSync &&
+    typeof (maybeReactiveSync as ReactiveSync<TParams, TResult>).use ===
       'function'
   );
 };

@@ -25,7 +25,7 @@ describe('ChimericEagerAsyncTestHarness', () => {
       method: 'reactive',
     });
 
-    expect(mockReactiveQuery.useEagerAsync).toHaveBeenCalledTimes(1);
+    expect(mockReactiveQuery.use).toHaveBeenCalledTimes(1);
   });
 
   it('should handle params', () => {
@@ -41,9 +41,9 @@ describe('ChimericEagerAsyncTestHarness', () => {
       params: { name: 'John' },
     });
 
-    expect(mockReactiveQuery.useEagerAsync).toHaveBeenCalledWith({
+    expect(mockReactiveQuery.use).toHaveBeenCalledWith({
       name: 'John',
     });
-    expect(mockReactiveQuery.useEagerAsync).toHaveBeenCalledTimes(1);
+    expect(mockReactiveQuery.use).toHaveBeenCalledTimes(1);
   });
 });

@@ -33,10 +33,10 @@ export const ReviewContent = injectComponent<InjectedProps>(
     finishReviewUseCase,
     getTodosUnderReviewUseCase,
   }) => {
-    const review = reviewRepository.get.useSync();
+    const review = reviewRepository.get.use();
     const hasStartedReview = Boolean(review);
-    const startReview = startReviewUseCase.execute.useAsync();
-    const todosUnderReview = getTodosUnderReviewUseCase.execute.useEagerAsync();
+    const startReview = startReviewUseCase.execute.use();
+    const todosUnderReview = getTodosUnderReviewUseCase.execute.use();
     const { height } = useViewportSize();
 
     return (

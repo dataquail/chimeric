@@ -3,7 +3,7 @@ import { hasLength, useForm } from '@mantine/form';
 import { activeTodoService } from 'src/core/infrastructure/services/ActiveTodoService';
 
 export const AddNewActiveTodoForm = () => {
-  const { call, isPending } = activeTodoService.createOne.useMutation();
+  const { invoke, isPending } = activeTodoService.createOne.use();
   const form = useForm({
     mode: 'uncontrolled',
     initialValues: {
@@ -17,7 +17,7 @@ export const AddNewActiveTodoForm = () => {
   return (
     <form
       onSubmit={form.onSubmit(async (values) => {
-        await call({ title: values.title });
+        await invoke({ title: values.title });
         form.setFieldValue('title', '');
       })}
     >

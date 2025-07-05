@@ -28,7 +28,7 @@ describe('ChimericSyncTestHarness', () => {
       method: 'reactive',
     });
 
-    expect(mockReactiveQuery.useSync).toHaveBeenCalledTimes(1);
+    expect(mockReactiveQuery.use).toHaveBeenCalledTimes(1);
   });
 
   it('should handle params', () => {
@@ -46,9 +46,9 @@ describe('ChimericSyncTestHarness', () => {
       params: { name: 'John' },
     });
 
-    expect(mockReactiveQuery.useSync).toHaveBeenCalledWith({
+    expect(mockReactiveQuery.use).toHaveBeenCalledWith({
       name: 'John',
     });
-    expect(mockReactiveQuery.useSync).toHaveBeenCalledTimes(1);
+    expect(mockReactiveQuery.use).toHaveBeenCalledTimes(1);
   });
 });
