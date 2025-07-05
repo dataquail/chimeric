@@ -8,7 +8,7 @@ export const fuseChimericSync = <TParams = void, TResult = unknown>(args: {
   reactive: ReactiveSync<TParams, TResult>;
 }): ChimericSync<TParams, TResult> => {
   const chimericFn = args.idiomatic as ChimericSync<TParams, TResult>;
-  chimericFn.useSync = args.reactive.useSync;
+  chimericFn.use = args.reactive.use;
   if (isChimericSync<TParams, TResult>(chimericFn)) {
     return chimericFn;
   } else {

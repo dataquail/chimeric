@@ -17,7 +17,7 @@ describe('fuseChimericMutation', () => {
     const result = await testChimericMutation();
     expect(result).toEqual('test');
     expect(testChimericMutation).toHaveBeenCalled();
-    expect(testChimericMutation.useMutation).not.toHaveBeenCalled();
+    expect(testChimericMutation.use).not.toHaveBeenCalled();
   });
 
   it('should invoke the idiomatic function with params', async () => {
@@ -28,7 +28,7 @@ describe('fuseChimericMutation', () => {
     const result = await testChimericMutation({ name: 'John' });
     expect(result).toEqual('Hello John');
     expect(testChimericMutation).toHaveBeenCalledWith({ name: 'John' });
-    expect(testChimericMutation.useMutation).not.toHaveBeenCalled();
+    expect(testChimericMutation.use).not.toHaveBeenCalled();
   });
 
   it('should invoke the reactive function', async () => {
@@ -36,10 +36,10 @@ describe('fuseChimericMutation', () => {
       idiomatic: makeIdiomaticMutationWithoutParamsReturnsString(),
       reactive: makeReactiveMutationWithoutParamsReturnsString(),
     });
-    const result = testChimericMutation.useMutation();
+    const result = testChimericMutation.use();
     expect(result.data).toEqual('test');
     expect(testChimericMutation).not.toHaveBeenCalled();
-    expect(testChimericMutation.useMutation).toHaveBeenCalled();
+    expect(testChimericMutation.use).toHaveBeenCalled();
   });
 
   it('should invoke the reactive function with params', async () => {
@@ -47,10 +47,10 @@ describe('fuseChimericMutation', () => {
       idiomatic: makeIdiomaticMutationWithParamsReturnsString(),
       reactive: makeReactiveMutationWithParamsReturnsString(),
     });
-    const result = testChimericMutation.useMutation();
+    const result = testChimericMutation.use();
     expect(result.data).toEqual('Hello John');
     expect(testChimericMutation).not.toHaveBeenCalled();
-    expect(testChimericMutation.useMutation).toHaveBeenCalled();
+    expect(testChimericMutation.use).toHaveBeenCalled();
   });
 
   it('should invoke the reactive call function', async () => {
@@ -58,10 +58,10 @@ describe('fuseChimericMutation', () => {
       idiomatic: makeIdiomaticMutationWithParamsReturnsString(),
       reactive: makeReactiveMutationWithParamsReturnsString(),
     });
-    const result = testChimericMutation.useMutation();
+    const result = testChimericMutation.use();
     await result.invoke({ name: 'John' });
     expect(testChimericMutation).not.toHaveBeenCalled();
-    expect(testChimericMutation.useMutation).toHaveBeenCalled();
+    expect(testChimericMutation.use).toHaveBeenCalled();
     expect(result.invoke).toHaveBeenCalledWith({
       name: 'John',
     });

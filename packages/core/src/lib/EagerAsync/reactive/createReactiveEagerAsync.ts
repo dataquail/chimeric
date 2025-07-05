@@ -6,10 +6,10 @@ export function createReactiveEagerAsync<
   TResult = unknown,
   E extends Error = Error,
 >(
-  reactiveFn: ReactiveEagerAsync<TParams, TResult, E>['useEagerAsync'],
+  reactiveFn: ReactiveEagerAsync<TParams, TResult, E>['use'],
 ): ReactiveEagerAsync<TParams, TResult, E> {
   const reactiveEagerAsync = {
-    useEagerAsync: reactiveFn,
+    use: reactiveFn,
   };
   if (isReactiveEagerAsync<TParams, TResult, E>(reactiveEagerAsync)) {
     return reactiveEagerAsync;

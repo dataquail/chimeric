@@ -26,8 +26,8 @@ type OwnProps = {
 export const SavedForLaterTodoCard = injectComponent<InjectedProps, OwnProps>(
   { savedForLaterTodoService: InjectionSymbol('ISavedForLaterTodoService') },
   ({ savedForLaterTodoService, savedForLaterTodo }) => {
-    const activateOne = savedForLaterTodoService.activate.useMutation();
-    const deleteOne = savedForLaterTodoService.deleteOne.useMutation();
+    const activateOne = savedForLaterTodoService.activate.use();
+    const deleteOne = savedForLaterTodoService.deleteOne.use();
 
     return (
       <Box key={savedForLaterTodo.id} p="xs" pr="lg">

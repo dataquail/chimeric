@@ -19,7 +19,7 @@ export const isReactiveQuery = <
     (typeof maybeReactiveQuery === 'function' ||
       typeof maybeReactiveQuery === 'object') &&
     maybeReactiveQuery !== null &&
-    'useQuery' in maybeReactiveQuery &&
+    'use' in maybeReactiveQuery &&
     typeof (
       maybeReactiveQuery as ReactiveQuery<
         TParams,
@@ -28,6 +28,6 @@ export const isReactiveQuery = <
         TNativeOptions,
         TNativeReturnType
       >
-    ).useQuery === 'function'
+    ).use === 'function'
   );
 };

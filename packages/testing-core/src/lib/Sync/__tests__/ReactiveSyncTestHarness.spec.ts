@@ -14,7 +14,7 @@ describe('ReactiveSyncTestHarness', () => {
       reactiveSync: mockReactiveSync,
     });
 
-    expect(mockReactiveSync.useSync).toHaveBeenCalledTimes(1);
+    expect(mockReactiveSync.use).toHaveBeenCalledTimes(1);
   });
 
   it('should handle params', async () => {
@@ -27,8 +27,8 @@ describe('ReactiveSyncTestHarness', () => {
     });
 
     expect(testHarness.result.current).toBe('Hello John');
-    expect(mockReactiveSync.useSync).toHaveBeenCalledTimes(1);
-    expect(mockReactiveSync.useSync).toHaveBeenCalledWith({
+    expect(mockReactiveSync.use).toHaveBeenCalledTimes(1);
+    expect(mockReactiveSync.use).toHaveBeenCalledWith({
       name: 'John',
     });
   });

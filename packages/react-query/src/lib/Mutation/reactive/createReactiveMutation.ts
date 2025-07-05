@@ -6,7 +6,7 @@ export function createReactiveMutation<
   TResult = unknown,
   TError extends Error = Error,
 >(
-  reactiveFn: ReactiveMutation<TParams, TResult, TError>['useMutation'],
+  reactiveFn: ReactiveMutation<TParams, TResult, TError>['use'],
 ): ReactiveMutation<TParams, TResult, TError> {
   return coreCreateReactiveMutation(reactiveFn);
 }

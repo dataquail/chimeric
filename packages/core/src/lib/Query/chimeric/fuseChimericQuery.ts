@@ -35,7 +35,7 @@ export function fuseChimericQuery<
     TNativeReactiveOptions,
     TNativeReactiveResult
   >;
-  chimericFn.useQuery = args.reactive.useQuery;
+  chimericFn.use = args.reactive.use;
   if (
     isChimericQuery<
       TParams,

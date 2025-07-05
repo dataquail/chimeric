@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   makeIdiomaticMutationWithoutParamsReturnsString,
   makeReactiveMutationWithoutParamsReturnsString,
@@ -20,11 +19,11 @@ describe('isChimericMutation', () => {
     // Not a function
     expect(isChimericMutation('not a function')).toBe(false);
 
-    // Function without useMutation
+    // Function without use
     const mockMutationFn = makeIdiomaticMutationWithoutParamsReturnsString();
     expect(isChimericMutation(mockMutationFn)).toBe(false);
 
-    // Object with useMutation but not a function
+    // Object with use but not a function
     const mockReactiveMutation =
       makeReactiveMutationWithoutParamsReturnsString();
     expect(isChimericMutation(mockReactiveMutation)).toBe(false);

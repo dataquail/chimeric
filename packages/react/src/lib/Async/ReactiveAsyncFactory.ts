@@ -93,6 +93,6 @@ export function ReactiveAsyncFactory<
       TParams extends undefined ? void : TParams,
       TResult,
       TError
-    >['useAsync'],
+    >['use'],
   );
 }

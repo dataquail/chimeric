@@ -11,8 +11,8 @@ export const isReactiveAsync = <
     (typeof maybeReactiveAsync === 'function' ||
       typeof maybeReactiveAsync === 'object') &&
     maybeReactiveAsync !== null &&
-    'useAsync' in maybeReactiveAsync &&
+    'use' in maybeReactiveAsync &&
     typeof (maybeReactiveAsync as ReactiveAsync<TParams, TResult, TError>)
-      .useAsync === 'function'
+      .use === 'function'
   );
 };

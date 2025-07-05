@@ -21,7 +21,7 @@ describe('ChimericQueryFactory', () => {
         queryFn: mockQueryFn,
       }),
     );
-    const { result } = renderHook(chimericQuery.useQuery, {
+    const { result } = renderHook(chimericQuery.use, {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -59,10 +59,9 @@ describe('ChimericQueryFactory', () => {
           queryFn: async () => mockQueryFn(args),
         }),
     );
-    const { result } = renderHook(
-      () => chimericQuery.useQuery({ name: 'John' }),
-      { wrapper: getTestWrapper(queryClient) },
-    );
+    const { result } = renderHook(() => chimericQuery.use({ name: 'John' }), {
+      wrapper: getTestWrapper(queryClient),
+    });
 
     await waitFor(() => {
       expect(result.current.isPending).toBe(false);

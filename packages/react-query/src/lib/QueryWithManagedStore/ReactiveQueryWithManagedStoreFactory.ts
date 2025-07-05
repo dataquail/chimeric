@@ -27,7 +27,7 @@ export function ReactiveQueryWithManagedStoreFactory<
   return createReactiveQuery(
     (
       paramsAndOptions: Parameters<
-        ReactiveQuery<TParams, TResult, TError>['useQuery']
+        ReactiveQuery<TParams, TResult, TError>['use']
       >[0],
     ) => {
       const { options, nativeOptions, ...params } = paramsAndOptions ?? {};

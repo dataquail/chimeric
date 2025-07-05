@@ -10,8 +10,7 @@ describe('isChimericQuery', () => {
   it('should return true for a chimeric query function', () => {
     const mockChimericQuery =
       makeIdiomaticQueryWithoutParamsReturnsString() as any;
-    mockChimericQuery.useQuery =
-      makeReactiveQueryWithoutParamsReturnsString().useQuery;
+    mockChimericQuery.use = makeReactiveQueryWithoutParamsReturnsString().use;
 
     expect(isChimericQuery(mockChimericQuery)).toBe(true);
   });
@@ -20,11 +19,11 @@ describe('isChimericQuery', () => {
     // Not a function
     expect(isChimericQuery('not a function')).toBe(false);
 
-    // Function without useQuery
+    // Function without use
     const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
     expect(isChimericQuery(mockQueryFn)).toBe(false);
 
-    // Object with useQuery but not a function
+    // Object with use but not a function
     const mockReactiveQuery = makeReactiveQueryWithoutParamsReturnsString();
     expect(isChimericQuery(mockReactiveQuery)).toBe(false);
 

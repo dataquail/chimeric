@@ -19,7 +19,7 @@ describe('ReactiveMutationFactory', () => {
     const reactiveMutation = ReactiveMutationFactory({
       mutationFn: mockMutationFn,
     });
-    const { result } = renderHook(reactiveMutation.useMutation, {
+    const { result } = renderHook(reactiveMutation.use, {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -44,7 +44,7 @@ describe('ReactiveMutationFactory', () => {
     const reactiveMutation = ReactiveMutationFactory({
       mutationFn: async (args: { name: string }) => mockMutationFn(args),
     });
-    const { result } = renderHook(() => reactiveMutation.useMutation(), {
+    const { result } = renderHook(() => reactiveMutation.use(), {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -68,7 +68,7 @@ describe('ReactiveMutationFactory', () => {
       ReactiveMutationFactory({
         mutationFn: mockMutationFn,
       });
-    const { result } = renderHook(() => reactiveMutation.useMutation(), {
+    const { result } = renderHook(() => reactiveMutation.use(), {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -83,7 +83,7 @@ describe('ReactiveMutationFactory', () => {
       ReactiveMutationFactory({
         mutationFn: mockMutationFn,
       });
-    const { result } = renderHook(() => reactiveMutation.useMutation(), {
+    const { result } = renderHook(() => reactiveMutation.use(), {
       wrapper: getTestWrapper(queryClient),
     });
 

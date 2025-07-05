@@ -4,17 +4,17 @@ import { makeAsyncHookWithoutParamsReturnsString } from '../__tests__/asyncFixtu
 import { isReactiveAsync } from './isReactiveAsync';
 
 describe('isReactiveAsync', () => {
-  it('should return true for an object with useAsync function', () => {
+  it('should return true for an object with use function', () => {
     const mockReactiveAsync = {
-      useAsync: makeAsyncHookWithoutParamsReturnsString(),
+      use: makeAsyncHookWithoutParamsReturnsString(),
     };
 
     expect(isReactiveAsync(mockReactiveAsync)).toBe(true);
   });
 
-  it('should return true for a function with useAsync property', () => {
+  it('should return true for a function with use property', () => {
     const mockReactiveAsync = makeAsyncFnWithoutParamsReturnsString() as any;
-    mockReactiveAsync.useAsync = makeAsyncHookWithoutParamsReturnsString();
+    mockReactiveAsync.use = makeAsyncHookWithoutParamsReturnsString();
 
     expect(isReactiveAsync(mockReactiveAsync)).toBe(true);
   });
@@ -25,7 +25,7 @@ describe('isReactiveAsync', () => {
     expect(isReactiveAsync(null)).toBe(false);
     expect(isReactiveAsync(undefined)).toBe(false);
     expect(isReactiveAsync({})).toBe(false);
-    expect(isReactiveAsync({ notUseAsync: 'something' })).toBe(false);
-    expect(isReactiveAsync({ useAsync: 'not a function' })).toBe(false);
+    expect(isReactiveAsync({ notUse: 'something' })).toBe(false);
+    expect(isReactiveAsync({ use: 'not a function' })).toBe(false);
   });
 });

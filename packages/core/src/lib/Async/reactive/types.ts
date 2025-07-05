@@ -3,7 +3,7 @@ export type ReactiveAsync<
   TResult = unknown,
   TError extends Error = Error,
 > = {
-  useAsync: (config?: ReactiveAsyncOptions) => {
+  use: (config?: ReactiveAsyncOptions) => {
     invoke: TParams extends object
       ? Omit<TParams, 'options'> extends
           | undefined

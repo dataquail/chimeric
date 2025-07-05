@@ -6,7 +6,7 @@ export type ReactiveMutation<
   TNativeInvokeOptions = unknown,
   TNativeReturnType = unknown,
 > = {
-  useMutation: (config?: {
+  use: (config?: {
     options?: ReactiveMutationOptions;
     nativeOptions?: TNativeReactiveOptions;
   }) => {

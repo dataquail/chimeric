@@ -27,7 +27,7 @@ describe('ReactiveQueryWithManagedStoreFactory', () => {
         }),
       useFromStore: () => storeValue,
     });
-    const { result } = renderHook(reactiveQuery.useQuery, {
+    const { result } = renderHook(reactiveQuery.use, {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -53,10 +53,9 @@ describe('ReactiveQueryWithManagedStoreFactory', () => {
         }),
       useFromStore: () => storeValue,
     });
-    const { result } = renderHook(
-      () => reactiveQuery.useQuery({ name: 'John' }),
-      { wrapper: getTestWrapper(queryClient) },
-    );
+    const { result } = renderHook(() => reactiveQuery.use({ name: 'John' }), {
+      wrapper: getTestWrapper(queryClient),
+    });
 
     await waitFor(() => {
       expect(result.current.isSuccess).toBe(true);
@@ -82,7 +81,7 @@ describe('ReactiveQueryWithManagedStoreFactory', () => {
           }),
         useFromStore: () => storeValue,
       });
-    const { result } = renderHook(reactiveQuery.useQuery, {
+    const { result } = renderHook(reactiveQuery.use, {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -110,10 +109,9 @@ describe('ReactiveQueryWithManagedStoreFactory', () => {
           }),
         useFromStore: () => storeValue,
       });
-    const { result } = renderHook(
-      () => reactiveQuery.useQuery({ name: 'John' }),
-      { wrapper: getTestWrapper(queryClient) },
-    );
+    const { result } = renderHook(() => reactiveQuery.use({ name: 'John' }), {
+      wrapper: getTestWrapper(queryClient),
+    });
 
     expect(result.current.data).toBe('initial');
 

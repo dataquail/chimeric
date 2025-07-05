@@ -4,7 +4,7 @@ import { ActiveTodoCard } from './ActiveTodoCard';
 import { activeTodoService } from 'src/core/infrastructure/services/ActiveTodoService';
 
 export const ActiveTodoList = () => {
-  const { data, isPending } = activeTodoService.getAll.useQuery();
+  const { data, isPending } = activeTodoService.getAll.use();
   const { height } = useViewportSize();
 
   if (isPending || !data) {

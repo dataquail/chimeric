@@ -16,7 +16,7 @@ export function fuseChimericEagerAsync<
     TResult,
     TError
   >;
-  chimericFn.useEagerAsync = args.reactive.useEagerAsync;
+  chimericFn.use = args.reactive.use;
   if (isChimericEagerAsync<TParams, TResult, TError>(chimericFn)) {
     return chimericFn;
   } else {

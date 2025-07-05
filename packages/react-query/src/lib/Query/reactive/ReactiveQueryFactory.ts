@@ -19,7 +19,7 @@ export function ReactiveQueryFactory<
 > {
   const query = (
     paramsAndOptions: Parameters<
-      ReactiveQuery<TParams, TResult, TError, TQueryKey>['useQuery']
+      ReactiveQuery<TParams, TResult, TError, TQueryKey>['use']
     >[0],
   ) => {
     const { options, nativeOptions, ...params } = paramsAndOptions ?? {};
@@ -38,9 +38,7 @@ export function ReactiveQueryFactory<
       data: query.data,
       refetch: async () => (await query.refetch()).data as TResult,
       native: query,
-    } as ReturnType<
-      ReactiveQuery<TParams, TResult, TError, TQueryKey>['useQuery']
-    >;
+    } as ReturnType<ReactiveQuery<TParams, TResult, TError, TQueryKey>['use']>;
   };
 
   return createReactiveQuery(query) as ReactiveQuery<

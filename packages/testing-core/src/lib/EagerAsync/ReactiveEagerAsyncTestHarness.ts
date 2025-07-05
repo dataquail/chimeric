@@ -23,9 +23,7 @@ export function ReactiveEagerAsyncTestHarness<
   const { reactiveEagerAsync, wrapper } = args;
   const hook = renderHook(
     () =>
-      reactiveEagerAsync.useEagerAsync(
-        (args as { params?: TParams })?.params as TParams,
-      ),
+      reactiveEagerAsync.use((args as { params?: TParams })?.params as TParams),
     {
       wrapper,
     },

@@ -16,7 +16,7 @@ export function createReactiveMutation<
     TNativeOptions,
     TNativeInvokeOptions,
     TNativeReturnType
-  >['useMutation'],
+  >['use'],
 ): ReactiveMutation<
   TParams,
   TResult,
@@ -26,7 +26,7 @@ export function createReactiveMutation<
   TNativeReturnType
 > {
   const reactiveMutation = {
-    useMutation: reactiveFn,
+    use: reactiveFn,
   };
   if (
     isReactiveMutation<

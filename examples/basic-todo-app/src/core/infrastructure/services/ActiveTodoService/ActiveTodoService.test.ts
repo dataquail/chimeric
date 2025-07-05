@@ -187,7 +187,7 @@ describe('ActiveTodoService', () => {
   describe('reactive hooks', () => {
     it('getAll.useQuery', async () => {
       withOneUncompletedActiveTodoInList();
-      const useQuery = renderHook(activeTodoService.getAll.useQuery, {
+      const useQuery = renderHook(activeTodoService.getAll.use, {
         wrapper: getTestWrapper(),
       });
       expect(useQuery.result.current.isPending).toBe(true);
@@ -202,7 +202,7 @@ describe('ActiveTodoService', () => {
     it('getOneById.useQuery', async () => {
       withOneUncompletedActiveTodo();
       const useQuery = renderHook(
-        () => activeTodoService.getOneById.useQuery({ id: '1' }),
+        () => activeTodoService.getOneById.use({ id: '1' }),
         {
           wrapper: getTestWrapper(),
         },
@@ -219,10 +219,10 @@ describe('ActiveTodoService', () => {
     it('createOne.useMutation', async () => {
       withNoActiveTodosInList();
       withSuccessfullyCreatedActiveTodo();
-      const useMutation = renderHook(activeTodoService.createOne.useMutation, {
+      const useMutation = renderHook(activeTodoService.createOne.use, {
         wrapper: getTestWrapper(),
       });
-      const useQuery = renderHook(activeTodoService.getAll.useQuery, {
+      const useQuery = renderHook(activeTodoService.getAll.use, {
         wrapper: getTestWrapper(),
       });
       expect(useQuery.result.current.isPending).toBe(true);
@@ -251,10 +251,10 @@ describe('ActiveTodoService', () => {
 
     it('deleteOne.useMutation', async () => {
       withOneUncompletedActiveTodoInList();
-      const useMutation = renderHook(activeTodoService.deleteOne.useMutation, {
+      const useMutation = renderHook(activeTodoService.deleteOne.use, {
         wrapper: getTestWrapper(),
       });
-      const useQuery = renderHook(activeTodoService.getAll.useQuery, {
+      const useQuery = renderHook(activeTodoService.getAll.use, {
         wrapper: getTestWrapper(),
       });
       expect(useQuery.result.current.isPending).toBe(true);
@@ -283,13 +283,10 @@ describe('ActiveTodoService', () => {
 
     it('completeOne.useMutation', async () => {
       withOneUncompletedActiveTodoInList();
-      const useMutation = renderHook(
-        activeTodoService.completeOne.useMutation,
-        {
-          wrapper: getTestWrapper(),
-        },
-      );
-      const useQuery = renderHook(activeTodoService.getAll.useQuery, {
+      const useMutation = renderHook(activeTodoService.completeOne.use, {
+        wrapper: getTestWrapper(),
+      });
+      const useQuery = renderHook(activeTodoService.getAll.use, {
         wrapper: getTestWrapper(),
       });
       expect(useQuery.result.current.isPending).toBe(true);
@@ -321,13 +318,10 @@ describe('ActiveTodoService', () => {
 
     it('uncompleteOne.useMutation', async () => {
       withOneCompletedActiveTodoInList();
-      const useMutation = renderHook(
-        activeTodoService.uncompleteOne.useMutation,
-        {
-          wrapper: getTestWrapper(),
-        },
-      );
-      const useQuery = renderHook(activeTodoService.getAll.useQuery, {
+      const useMutation = renderHook(activeTodoService.uncompleteOne.use, {
+        wrapper: getTestWrapper(),
+      });
+      const useQuery = renderHook(activeTodoService.getAll.use, {
         wrapper: getTestWrapper(),
       });
       expect(useQuery.result.current.isPending).toBe(true);

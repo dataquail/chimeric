@@ -22,7 +22,7 @@ describe('ReactiveQueryFactory', () => {
       }),
     );
 
-    const { result } = renderHook(reactiveQuery.useQuery, {
+    const { result } = renderHook(reactiveQuery.use, {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -43,10 +43,9 @@ describe('ReactiveQueryFactory', () => {
         queryFn: async () => mockQueryFn(args),
       }),
     );
-    const { result } = renderHook(
-      () => chimericQuery.useQuery({ name: 'John' }),
-      { wrapper: getTestWrapper(queryClient) },
-    );
+    const { result } = renderHook(() => chimericQuery.use({ name: 'John' }), {
+      wrapper: getTestWrapper(queryClient),
+    });
 
     await waitFor(() => {
       expect(result.current.isPending).toBe(false);
@@ -65,12 +64,9 @@ describe('ReactiveQueryFactory', () => {
         queryFn: async () => mockQueryFn(args),
       }),
     );
-    const { result } = renderHook(
-      () => chimericQuery.useQuery({ name: 'John' }),
-      {
-        wrapper: getTestWrapper(queryClient),
-      },
-    );
+    const { result } = renderHook(() => chimericQuery.use({ name: 'John' }), {
+      wrapper: getTestWrapper(queryClient),
+    });
 
     await waitFor(() => {
       expect(result.current.isPending).toBe(false);
@@ -90,7 +86,7 @@ describe('ReactiveQueryFactory', () => {
       }),
     );
     const { result } = renderHook(
-      () => reactiveQuery.useQuery({ options: { enabled: false } }),
+      () => reactiveQuery.use({ options: { enabled: false } }),
       { wrapper: getTestWrapper(queryClient) },
     );
 
@@ -108,8 +104,7 @@ describe('ReactiveQueryFactory', () => {
       }),
     );
     const { result } = renderHook(
-      () =>
-        reactiveQuery.useQuery({ name: 'John', options: { enabled: false } }),
+      () => reactiveQuery.use({ name: 'John', options: { enabled: false } }),
       { wrapper: getTestWrapper(queryClient) },
     );
 
@@ -127,8 +122,7 @@ describe('ReactiveQueryFactory', () => {
       }),
     );
     const { result } = renderHook(
-      () =>
-        reactiveQuery.useQuery({ name: 'John', options: { enabled: false } }),
+      () => reactiveQuery.use({ name: 'John', options: { enabled: false } }),
       { wrapper: getTestWrapper(queryClient) },
     );
 
@@ -147,7 +141,7 @@ describe('ReactiveQueryFactory', () => {
         }),
       );
 
-    const { result } = renderHook(() => reactiveQuery.useQuery(), {
+    const { result } = renderHook(() => reactiveQuery.use(), {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -172,10 +166,9 @@ describe('ReactiveQueryFactory', () => {
           queryFn: async () => mockQueryFn(args),
         }),
       );
-    const { result } = renderHook(
-      () => reactiveQuery.useQuery({ name: 'John' }),
-      { wrapper: getTestWrapper(queryClient) },
-    );
+    const { result } = renderHook(() => reactiveQuery.use({ name: 'John' }), {
+      wrapper: getTestWrapper(queryClient),
+    });
 
     await waitFor(() => {
       expect(result.current.isPending).toBe(false);

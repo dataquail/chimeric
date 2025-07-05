@@ -15,7 +15,7 @@ describe('ChimericAsyncFactory', () => {
     const mockPromise = makeAsyncFnWithoutParamsReturnsString();
     const chimericAsync = ChimericAsyncFactory(mockPromise);
 
-    const { result } = renderHook(chimericAsync.useAsync);
+    const { result } = renderHook(chimericAsync.use);
 
     expect(result.current.isIdle).toBe(true);
     expect(result.current.isSuccess).toBe(false);
@@ -42,7 +42,7 @@ describe('ChimericAsyncFactory', () => {
   it('should invoke the reactive hook with params', async () => {
     const mockPromise = makeAsyncFnWithParamsReturnsString();
     const chimericAsync = ChimericAsyncFactory(mockPromise);
-    const { result } = renderHook(chimericAsync.useAsync);
+    const { result } = renderHook(chimericAsync.use);
 
     expect(result.current.isIdle).toBe(true);
     expect(result.current.isSuccess).toBe(false);

@@ -12,7 +12,7 @@ export type ReactiveQuery<
           nativeOptions?: TNativeOptions;
         }
     ? {
-        useQuery: (params?: {
+        use: (params?: {
           options?: ReactiveQueryOptions;
           nativeOptions?: TNativeOptions;
         }) => {
@@ -27,7 +27,7 @@ export type ReactiveQuery<
         };
       }
     : {
-        useQuery: (
+        use: (
           paramsAndConfig: TParams & {
             options?: ReactiveQueryOptions;
             nativeOptions?: TNativeOptions;
@@ -45,7 +45,7 @@ export type ReactiveQuery<
       }
   : TParams extends void
   ? {
-      useQuery: (params?: {
+      use: (params?: {
         options?: ReactiveQueryOptions;
         nativeOptions?: TNativeOptions;
       }) => {

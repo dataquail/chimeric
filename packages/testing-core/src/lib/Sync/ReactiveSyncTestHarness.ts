@@ -18,8 +18,7 @@ export const ReactiveSyncTestHarness = <TParams = void, TResult = unknown>(
 ): SyncTestHarnessReturnType<TResult> => {
   const { reactiveSync, wrapper } = args;
   const hook = renderHook(
-    () =>
-      reactiveSync.useSync((args as { params?: TParams })?.params as TParams),
+    () => reactiveSync.use((args as { params?: TParams })?.params as TParams),
     { wrapper },
   );
   return {
