@@ -1,3 +1,14 @@
+## 0.4.0 (2025-09-25)
+
+### 🚀 Features
+
+- rename all hooks to 'use' ([847c908](https://github.com/dataquail/chimeric/commit/847c908))
+- 'use' for hooks, reducers ([4e464f6](https://github.com/dataquail/chimeric/commit/4e464f6))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 0.3.0 (2025-07-05)
 
 ### 🚀 Features
