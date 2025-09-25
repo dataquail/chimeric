@@ -1,21 +1,36 @@
-export const makeReactiveEagerAsyncWithoutParamsReturnsString = () => ({
-  use: vi.fn(() => ({
-    isIdle: false,
-    isPending: false,
-    isSuccess: true,
-    isError: false,
-    error: null,
-    data: 'test',
-  })),
-});
+import {
+  createIdiomaticEagerAsync,
+  createReactiveEagerAsync,
+} from '@chimeric/core';
 
-export const makeReactiveEagerAsyncWithParamsReturnsString = () => ({
-  use: vi.fn((args: { name: string }) => ({
-    isIdle: false,
-    isPending: false,
-    isSuccess: true,
-    isError: false,
-    error: null,
-    data: `Hello ${args.name}`,
-  })),
-});
+export const makeIdiomaticEagerAsyncWithoutParamsReturnsString = () =>
+  createIdiomaticEagerAsync(vi.fn(async () => 'test'));
+
+export const makeIdiomaticEagerAsyncWithParamsReturnsString = () =>
+  createIdiomaticEagerAsync(
+    vi.fn(async (args: { name: string }) => `Hello ${args.name}`),
+  );
+
+export const makeReactiveEagerAsyncWithoutParamsReturnsString = () =>
+  createReactiveEagerAsync(
+    vi.fn(() => ({
+      isIdle: false,
+      isPending: false,
+      isSuccess: true,
+      isError: false,
+      error: null,
+      data: 'test',
+    })),
+  );
+
+export const makeReactiveEagerAsyncWithParamsReturnsString = () =>
+  createReactiveEagerAsync(
+    vi.fn((args: { name: string }) => ({
+      isIdle: false,
+      isPending: false,
+      isSuccess: true,
+      isError: false,
+      error: null,
+      data: `Hello ${args.name}`,
+    })),
+  );

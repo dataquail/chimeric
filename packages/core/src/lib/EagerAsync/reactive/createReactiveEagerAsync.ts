@@ -1,5 +1,7 @@
-import { isReactiveEagerAsync } from './isReactiveEagerAsync';
+import { isEligibleReactive } from '../../utilities/isEligibleReactive';
 import { ReactiveEagerAsync } from './types';
+import { TYPE_MARKERS } from '../../utilities/typeMarkers';
+import { markReactive } from '../../utilities/markReactive';
 
 export function createReactiveEagerAsync<
   TParams = void,
@@ -11,8 +13,11 @@ export function createReactiveEagerAsync<
   const reactiveEagerAsync = {
     use: reactiveFn,
   };
-  if (isReactiveEagerAsync<TParams, TResult, E>(reactiveEagerAsync)) {
-    return reactiveEagerAsync;
+  if (isEligibleReactive(reactiveEagerAsync)) {
+    return markReactive(
+      reactiveEagerAsync,
+      TYPE_MARKERS.REACTIVE_EAGER_ASYNC,
+    ) as ReactiveEagerAsync<TParams, TResult, E>;
   } else {
     throw new Error('reactiveFn is not qualified to be reactive eager async');
   }

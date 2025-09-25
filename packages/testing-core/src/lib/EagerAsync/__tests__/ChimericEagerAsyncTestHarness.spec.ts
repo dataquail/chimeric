@@ -1,17 +1,16 @@
 import { fuseChimericEagerAsync } from '@chimeric/core';
 import { ChimericEagerAsyncTestHarness } from '../ChimericEagerAsyncTestHarness';
 import {
-  makeAsyncFnWithoutParamsReturnsString,
-  makeAsyncFnWithParamsReturnsString,
-} from '../../__tests__/functionFixtures';
-import {
   makeReactiveEagerAsyncWithoutParamsReturnsString,
   makeReactiveEagerAsyncWithParamsReturnsString,
+  makeIdiomaticEagerAsyncWithoutParamsReturnsString,
+  makeIdiomaticEagerAsyncWithParamsReturnsString,
 } from '../../__tests__/eagerAsyncFixtures';
 
 describe('ChimericEagerAsyncTestHarness', () => {
   it('should be a function', () => {
-    const mockIdiomaticQuery = makeAsyncFnWithoutParamsReturnsString();
+    const mockIdiomaticQuery =
+      makeIdiomaticEagerAsyncWithoutParamsReturnsString();
     const mockReactiveQuery =
       makeReactiveEagerAsyncWithoutParamsReturnsString();
 
@@ -29,7 +28,7 @@ describe('ChimericEagerAsyncTestHarness', () => {
   });
 
   it('should handle params', () => {
-    const mockIdiomaticQuery = makeAsyncFnWithParamsReturnsString();
+    const mockIdiomaticQuery = makeIdiomaticEagerAsyncWithParamsReturnsString();
     const mockReactiveQuery = makeReactiveEagerAsyncWithParamsReturnsString();
 
     ChimericEagerAsyncTestHarness({

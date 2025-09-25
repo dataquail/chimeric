@@ -28,5 +28,13 @@ export * from './lib/Query/reactive/createReactiveQuery.js';
 export * from './lib/QueryWithManagedStore/ChimericQueryWithManagedStoreFactory.js';
 export * from './lib/QueryWithManagedStore/IdiomaticQueryWithManagedStoreFactory.js';
 export * from './lib/QueryWithManagedStore/ReactiveQueryWithManagedStoreFactory.js';
+// SyncReducer
+export * from './lib/utilities/SyncReducer/ChimericSyncReducer';
+export * from './lib/utilities/SyncReducer/IdiomaticSyncReducer';
+export * from './lib/utilities/SyncReducer/ReactiveSyncReducer';
+// AsyncReducer
+export * from './lib/utilities/AsyncReducer/ChimericAsyncReducer';
+export * from './lib/utilities/AsyncReducer/IdiomaticAsyncReducer';
+export * from './lib/utilities/AsyncReducer/ReactiveAsyncReducer';
 // external types
 export * from './lib/externalTypes.js';

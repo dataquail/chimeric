@@ -5,17 +5,16 @@ import {
 } from '@chimeric/core';
 import { ChimericMutationTestHarness } from '../ChimericMutationTestHarness';
 import {
-  makeAsyncFnWithoutParamsReturnsString,
-  makeAsyncFnWithParamsReturnsString,
-} from '../../__tests__/functionFixtures';
-import {
+  makeIdiomaticMutationWithoutParamsReturnsString,
+  makeIdiomaticMutationWithParamsReturnsString,
   makeReactiveMutationWithoutParamsReturnsString,
   makeReactiveMutationWithParamsReturnsString,
 } from '../../__tests__/mutationFixtures';
 
 describe('ChimericMutationTestHarness', () => {
   it('should be a function', () => {
-    const mockIdiomaticMutation = makeAsyncFnWithoutParamsReturnsString();
+    const mockIdiomaticMutation =
+      makeIdiomaticMutationWithoutParamsReturnsString();
     const mockReactiveMutation =
       makeReactiveMutationWithoutParamsReturnsString();
 
@@ -37,7 +36,7 @@ describe('ChimericMutationTestHarness', () => {
   it('should handle type annotations without params', () => {
     type TestIdiomaticMutation = DefineIdiomaticMutation<() => Promise<string>>;
     const mockIdiomaticMutation: TestIdiomaticMutation =
-      makeAsyncFnWithoutParamsReturnsString();
+      makeIdiomaticMutationWithoutParamsReturnsString();
     const mockReactiveMutation =
       makeReactiveMutationWithoutParamsReturnsString();
     type TestChimericMutation = DefineChimericMutation<() => Promise<string>>;
@@ -61,7 +60,7 @@ describe('ChimericMutationTestHarness', () => {
       (args: { name: string }) => Promise<string>
     >;
     const mockIdiomaticMutation: TestIdiomaticMutation =
-      makeAsyncFnWithParamsReturnsString();
+      makeIdiomaticMutationWithParamsReturnsString();
     const mockReactiveMutation = makeReactiveMutationWithParamsReturnsString();
 
     type TestChimericMutation = DefineChimericMutation<

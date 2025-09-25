@@ -1,11 +1,11 @@
-import { makeSyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
+import { makeIdiomaticSyncWithoutParamsReturnsString } from '../__tests__/syncFixtures';
 import { isIdiomaticSync } from './isIdiomaticSync';
 
 describe('isIdiomaticSync', () => {
   it('should return true for a function', () => {
-    const mockSyncFn = makeSyncFnWithoutParamsReturnsString();
+    const mockIdiomaticSync = makeIdiomaticSyncWithoutParamsReturnsString();
 
-    expect(isIdiomaticSync(mockSyncFn)).toBe(true);
+    expect(isIdiomaticSync(mockIdiomaticSync)).toBe(true);
   });
 
   it('should return false for non-function values', () => {

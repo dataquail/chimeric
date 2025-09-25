@@ -1,4 +1,7 @@
 import { IdiomaticMutation } from './types';
+import { TYPE_MARKERS } from '../../utilities/typeMarkers';
+import { isEligibleIdiomatic } from '../../utilities/isEligibleIdiomatic';
+import { hasIdiomaticMarker } from '../../utilities/hasIdiomaticMarker';
 
 export const isIdiomaticMutation = <
   TParams = void,
@@ -11,5 +14,11 @@ export const isIdiomaticMutation = <
   TResult,
   TNativeOptions
 > => {
-  return typeof maybeIdiomaticMutation === 'function';
+  return (
+    isEligibleIdiomatic(maybeIdiomaticMutation) &&
+    hasIdiomaticMarker(
+      maybeIdiomaticMutation,
+      TYPE_MARKERS.IDIOMATIC_MUTATION,
+    )
+  );
 };

@@ -1,17 +1,15 @@
 import { fuseChimericQuery } from '@chimeric/core';
 import { ChimericQueryTestHarness } from '../ChimericQueryTestHarness';
 import {
-  makeAsyncFnWithoutParamsReturnsString,
-  makeAsyncFnWithParamsReturnsString,
-} from '../../__tests__/functionFixtures';
-import {
+  makeIdiomaticQueryWithoutParamsReturnsString,
+  makeIdiomaticQueryWithParamsReturnsString,
   makeReactiveQueryWithoutParamsReturnsString,
   makeReactiveQueryWithParamsReturnsString,
 } from '../../__tests__/queryFixtures';
 
 describe('ChimericQueryTestHarness', () => {
   it('should be a function', () => {
-    const mockIdiomaticQuery = makeAsyncFnWithoutParamsReturnsString();
+    const mockIdiomaticQuery = makeIdiomaticQueryWithoutParamsReturnsString();
     const mockReactiveQuery = makeReactiveQueryWithoutParamsReturnsString();
 
     const chimericQuery = fuseChimericQuery({
@@ -29,7 +27,7 @@ describe('ChimericQueryTestHarness', () => {
   });
 
   it('should handle params', () => {
-    const mockIdiomaticQuery = makeAsyncFnWithParamsReturnsString();
+    const mockIdiomaticQuery = makeIdiomaticQueryWithParamsReturnsString();
     const mockReactiveQuery = makeReactiveQueryWithParamsReturnsString();
 
     ChimericQueryTestHarness({

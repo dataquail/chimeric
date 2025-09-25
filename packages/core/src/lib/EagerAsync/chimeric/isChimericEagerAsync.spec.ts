@@ -1,15 +1,25 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { makeEagerAsyncHookWithoutParamsReturnsString } from '../../__tests__/eagerAsyncFixtures';
 import { makeAsyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
 import { isChimericEagerAsync } from './isChimericEagerAsync';
+import { createIdiomaticEagerAsync } from '../idiomatic/createIdiomaticEagerAsync';
+import { createReactiveEagerAsync } from '../reactive/createReactiveEagerAsync';
+import { fuseChimericEagerAsync } from './fuseChimericEagerAsync';
 
 describe('isChimericEagerAsync', () => {
   it('should return true for a chimeric eager async function', () => {
-    const mockChimericEagerAsync =
-      makeAsyncFnWithoutParamsReturnsString() as any;
-    mockChimericEagerAsync.use = makeEagerAsyncHookWithoutParamsReturnsString();
+    const mockIdiomaticEagerAsync = createIdiomaticEagerAsync(
+      makeAsyncFnWithoutParamsReturnsString(),
+    );
+    const mockReactiveEagerAsync = createReactiveEagerAsync(
+      makeEagerAsyncHookWithoutParamsReturnsString(),
+    );
 
-    expect(isChimericEagerAsync(mockChimericEagerAsync)).toBe(true);
+    const chimericEagerAsync = fuseChimericEagerAsync({
+      idiomatic: mockIdiomaticEagerAsync,
+      reactive: mockReactiveEagerAsync,
+    });
+
+    expect(isChimericEagerAsync(chimericEagerAsync)).toBe(true);
   });
 
   it('should return false for non-chimeric inputs', () => {

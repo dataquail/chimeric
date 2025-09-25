@@ -10,7 +10,7 @@ export type ReactiveEagerAsync<
         isSuccess: boolean;
         isError: boolean;
         error: TError | null;
-        data: TResult;
+        data: TResult | undefined;
       };
     }
   : TParams extends object
@@ -21,7 +21,7 @@ export type ReactiveEagerAsync<
         isSuccess: boolean;
         isError: boolean;
         error: TError | null;
-        data: TResult;
+        data: TResult | undefined;
       };
     }
   : never;

@@ -1,4 +1,7 @@
 import { ReactiveQuery } from './types';
+import { TYPE_MARKERS } from '../../utilities/typeMarkers';
+import { isEligibleReactive } from '../../utilities/isEligibleReactive';
+import { hasReactiveMarker } from '../../utilities/hasReactiveMarker';
 
 export const isReactiveQuery = <
   TParams = void,
@@ -16,18 +19,7 @@ export const isReactiveQuery = <
   TNativeReturnType
 > => {
   return (
-    (typeof maybeReactiveQuery === 'function' ||
-      typeof maybeReactiveQuery === 'object') &&
-    maybeReactiveQuery !== null &&
-    'use' in maybeReactiveQuery &&
-    typeof (
-      maybeReactiveQuery as ReactiveQuery<
-        TParams,
-        TResult,
-        TError,
-        TNativeOptions,
-        TNativeReturnType
-      >
-    ).use === 'function'
+    isEligibleReactive(maybeReactiveQuery) &&
+    hasReactiveMarker(maybeReactiveQuery, TYPE_MARKERS.REACTIVE_QUERY)
   );
 };

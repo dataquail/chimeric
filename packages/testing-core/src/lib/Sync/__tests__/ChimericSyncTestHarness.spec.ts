@@ -32,7 +32,9 @@ describe('ChimericSyncTestHarness', () => {
   });
 
   it('should handle params', () => {
-    const mockIdiomaticQuery = makeSyncFnWithParamsReturnsString();
+    const mockIdiomaticQuery = createIdiomaticSync(
+      makeSyncFnWithParamsReturnsString(),
+    );
     const mockReactiveQuery = createReactiveSync(
       makeSyncFnWithParamsReturnsString(),
     );

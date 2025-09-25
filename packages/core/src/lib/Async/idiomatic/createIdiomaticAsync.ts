@@ -1,10 +1,13 @@
-import { isIdiomaticAsync } from './isIdiomaticAsync';
+import { isEligibleIdiomatic } from '../../utilities/isEligibleIdiomatic';
+import { TYPE_MARKERS } from '../../utilities/typeMarkers';
+import { markIdiomatic } from '../../utilities/markIdiomatic';
 import { IdiomaticAsync } from './types';
 
 export function createIdiomaticAsync<TParams = void, TResult = unknown>(
-  idiomaticFn: IdiomaticAsync<TParams, TResult>,
+  idiomaticFn: (params: TParams) => Promise<TResult>,
 ): IdiomaticAsync<TParams, TResult> {
-  if (isIdiomaticAsync<TParams, TResult>(idiomaticFn)) {
+  if (isEligibleIdiomatic(idiomaticFn)) {
+    markIdiomatic(idiomaticFn, TYPE_MARKERS.IDIOMATIC_ASYNC);
     return idiomaticFn as IdiomaticAsync<TParams, TResult>;
   } else {
     throw new Error('idiomaticFn is not qualified to be idiomatic async');

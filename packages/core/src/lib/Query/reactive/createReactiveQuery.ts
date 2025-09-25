@@ -1,5 +1,7 @@
+import { isEligibleReactive } from '../../utilities/isEligibleReactive';
 import { ReactiveQuery } from './types';
-import { isReactiveQuery } from './isReactiveQuery';
+import { TYPE_MARKERS } from '../../utilities/typeMarkers';
+import { markReactive } from '../../utilities/markReactive';
 
 export function createReactiveQuery<
   TParams = void,
@@ -19,16 +21,17 @@ export function createReactiveQuery<
   const reactiveQuery = {
     use: reactiveFn,
   };
-  if (
-    isReactiveQuery<
+  if (isEligibleReactive(reactiveQuery)) {
+    return markReactive(
+      reactiveQuery,
+      TYPE_MARKERS.REACTIVE_QUERY,
+    ) as ReactiveQuery<
       TParams,
       TResult,
       TError,
       TNativeOptions,
       TNativeReturnType
-    >(reactiveQuery)
-  ) {
-    return reactiveQuery;
+    >;
   } else {
     throw new Error('reactiveFn is not qualified to be reactive query');
   }

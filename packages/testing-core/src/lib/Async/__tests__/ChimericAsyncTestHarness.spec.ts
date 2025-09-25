@@ -7,11 +7,9 @@ import {
 import {
   makeReactiveAsyncWithoutParamsReturnsString,
   makeReactiveAsyncWithParamsReturnsString,
+  makeIdiomaticAsyncWithoutParamsReturnsString,
+  makeIdiomaticAsyncWithParamsReturnsString,
 } from '../../__tests__/asyncFixtures';
-import {
-  makeAsyncFnWithoutParamsReturnsString,
-  makeAsyncFnWithParamsReturnsString,
-} from '../../__tests__/functionFixtures';
 
 describe('ChimericAsyncTestHarness', () => {
   it('should be a function', () => {
@@ -36,7 +34,7 @@ describe('ChimericAsyncTestHarness', () => {
   });
 
   it('should handle type annotations without params', () => {
-    const mockIdiomaticAsync = makeAsyncFnWithoutParamsReturnsString();
+    const mockIdiomaticAsync = makeIdiomaticAsyncWithoutParamsReturnsString();
     const mockReactiveAsync = makeReactiveAsyncWithoutParamsReturnsString();
     const testChimericAsync = fuseChimericAsync({
       idiomatic: mockIdiomaticAsync,
@@ -54,7 +52,7 @@ describe('ChimericAsyncTestHarness', () => {
   });
 
   it('should handle type annotations with params', () => {
-    const mockIdiomaticAsync = makeAsyncFnWithParamsReturnsString();
+    const mockIdiomaticAsync = makeIdiomaticAsyncWithParamsReturnsString();
     const mockReactiveAsync = makeReactiveAsyncWithParamsReturnsString();
     const testChimericAsync = fuseChimericAsync({
       idiomatic: mockIdiomaticAsync,

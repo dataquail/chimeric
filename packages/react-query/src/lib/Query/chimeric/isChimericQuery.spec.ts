@@ -1,20 +1,19 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  makeIdiomaticQueryWithoutParamsReturnsString,
+  makeReactiveQueryWithoutParamsReturnsString,
+} from '../__tests__/queryFixtures';
+import { fuseChimericQuery } from './fuseChimericQuery';
 import { isChimericQuery } from './isChimericQuery';
 import { UseQueryResult } from '@tanstack/react-query';
 
 describe('isChimericQuery', () => {
   it('should return true for a chimeric query function', () => {
-    const mockChimericQuery = vi.fn(async () => 'test') as any;
-    mockChimericQuery.use = vi.fn(() => ({
-      isIdle: true,
-      isPending: false,
-      isSuccess: false,
-      isError: false,
-      error: null,
-      data: undefined,
-      refetch: vi.fn(() => Promise.resolve('test')),
-      native: {} as UseQueryResult<string, Error>,
-    }));
+    const mockIdiomaticQuery = makeIdiomaticQueryWithoutParamsReturnsString();
+    const mockReactiveQuery = makeReactiveQueryWithoutParamsReturnsString();
+    const mockChimericQuery = fuseChimericQuery({
+      idiomatic: mockIdiomaticQuery,
+      reactive: mockReactiveQuery,
+    });
 
     expect(isChimericQuery(mockChimericQuery)).toBe(true);
   });

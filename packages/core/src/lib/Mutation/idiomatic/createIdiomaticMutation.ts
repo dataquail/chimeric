@@ -1,4 +1,6 @@
-import { isIdiomaticMutation } from './isIdiomaticMutation';
+import { isEligibleIdiomatic } from '../../utilities/isEligibleIdiomatic';
+import { TYPE_MARKERS } from '../../utilities/typeMarkers';
+import { markIdiomatic } from '../../utilities/markIdiomatic';
 import { IdiomaticMutation } from './types';
 
 export function createIdiomaticMutation<
@@ -6,10 +8,13 @@ export function createIdiomaticMutation<
   TResult = unknown,
   TNativeOptions = unknown,
 >(
-  idiomaticFn: IdiomaticMutation<TParams, TResult, TNativeOptions>,
+  idiomaticFn: (params: TParams, options?: TNativeOptions) => Promise<TResult>,
 ): IdiomaticMutation<TParams, TResult, TNativeOptions> {
-  if (isIdiomaticMutation<TParams, TResult, TNativeOptions>(idiomaticFn)) {
-    return idiomaticFn;
+  if (isEligibleIdiomatic(idiomaticFn)) {
+    return markIdiomatic(
+      idiomaticFn,
+      TYPE_MARKERS.IDIOMATIC_MUTATION,
+    ) as IdiomaticMutation<TParams, TResult, TNativeOptions>;
   } else {
     throw new Error('idiomaticFn is not qualified to be idiomatic mutation');
   }

@@ -1,3 +1,8 @@
+import { createIdiomaticAsync } from '@chimeric/core';
+
+export const makeIdiomaticAsyncWithoutParamsReturnsString = () =>
+  createIdiomaticAsync(vi.fn(async () => 'test'));
+
 export const makeReactiveAsyncWithoutParamsReturnsString = () =>
   vi.fn(() => ({
     invoke: vi.fn(() => Promise.resolve('test')),
@@ -8,6 +13,11 @@ export const makeReactiveAsyncWithoutParamsReturnsString = () =>
     error: null,
     data: 'test',
   }));
+
+export const makeIdiomaticAsyncWithParamsReturnsString = () =>
+  createIdiomaticAsync(
+    vi.fn(async (args: { name: string }) => `Hello ${args.name}`),
+  );
 
 export const makeReactiveAsyncWithParamsReturnsString = () =>
   vi.fn(() => ({

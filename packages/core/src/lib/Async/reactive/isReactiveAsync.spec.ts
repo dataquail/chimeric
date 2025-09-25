@@ -1,20 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { makeAsyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
-import { makeAsyncHookWithoutParamsReturnsString } from '../__tests__/asyncFixtures';
+import { makeReactiveAsyncWithoutParamsReturnsString } from '../__tests__/asyncFixtures';
 import { isReactiveAsync } from './isReactiveAsync';
 
 describe('isReactiveAsync', () => {
   it('should return true for an object with use function', () => {
-    const mockReactiveAsync = {
-      use: makeAsyncHookWithoutParamsReturnsString(),
-    };
+    const mockReactiveAsync = makeReactiveAsyncWithoutParamsReturnsString();
 
     expect(isReactiveAsync(mockReactiveAsync)).toBe(true);
   });
 
   it('should return true for a function with use property', () => {
-    const mockReactiveAsync = makeAsyncFnWithoutParamsReturnsString() as any;
-    mockReactiveAsync.use = makeAsyncHookWithoutParamsReturnsString();
+    const mockReactiveAsync = makeReactiveAsyncWithoutParamsReturnsString();
 
     expect(isReactiveAsync(mockReactiveAsync)).toBe(true);
   });
