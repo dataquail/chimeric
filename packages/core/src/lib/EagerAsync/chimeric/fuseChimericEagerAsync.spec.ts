@@ -1,21 +1,19 @@
 import {
   ChimericEagerAsyncWithoutParamsReturnsString,
   ChimericEagerAsyncWithParamsReturnsString,
-  makeEagerAsyncHookWithoutParamsReturnsString,
-  makeEagerAsyncHookWithParamsReturnsString,
+  makeIdiomaticEagerAsyncWithoutParamsReturnsString,
+  makeIdiomaticEagerAsyncWithParamsReturnsString,
+  makeReactiveEagerAsyncWithoutParamsReturnsString,
+  makeReactiveEagerAsyncWithParamsReturnsString,
 } from '../../__tests__/eagerAsyncFixtures';
-import {
-  makeAsyncFnWithoutParamsReturnsString,
-  makeAsyncFnWithParamsReturnsString,
-} from '../../__tests__/functionFixtures';
 import { fuseChimericEagerAsync } from './fuseChimericEagerAsync';
 
 describe('fuseChimericEagerAsync', () => {
   it('should invoke the idiomatic async function', async () => {
-    const mockIdiomaticEagerAsync = makeAsyncFnWithoutParamsReturnsString();
-    const mockReactiveEagerAsync = {
-      use: makeEagerAsyncHookWithoutParamsReturnsString(),
-    };
+    const mockIdiomaticEagerAsync =
+      makeIdiomaticEagerAsyncWithoutParamsReturnsString();
+    const mockReactiveEagerAsync =
+      makeReactiveEagerAsyncWithoutParamsReturnsString();
     const testChimericEagerAsync = fuseChimericEagerAsync({
       idiomatic: mockIdiomaticEagerAsync,
       reactive: mockReactiveEagerAsync,
@@ -27,10 +25,10 @@ describe('fuseChimericEagerAsync', () => {
   });
 
   it('should invoke the idiomatic function with params', async () => {
-    const mockIdiomaticEagerAsync = makeAsyncFnWithParamsReturnsString();
-    const mockReactiveEagerAsync = {
-      use: makeEagerAsyncHookWithParamsReturnsString(),
-    };
+    const mockIdiomaticEagerAsync =
+      makeIdiomaticEagerAsyncWithParamsReturnsString();
+    const mockReactiveEagerAsync =
+      makeReactiveEagerAsyncWithParamsReturnsString();
     const testChimericEagerAsync = fuseChimericEagerAsync({
       idiomatic: mockIdiomaticEagerAsync,
       reactive: mockReactiveEagerAsync,
@@ -42,10 +40,10 @@ describe('fuseChimericEagerAsync', () => {
   });
 
   it('should invoke the reactive function', async () => {
-    const mockIdiomaticEagerAsync = makeAsyncFnWithoutParamsReturnsString();
-    const mockReactiveEagerAsync = {
-      use: makeEagerAsyncHookWithoutParamsReturnsString(),
-    };
+    const mockIdiomaticEagerAsync =
+      makeIdiomaticEagerAsyncWithoutParamsReturnsString();
+    const mockReactiveEagerAsync =
+      makeReactiveEagerAsyncWithoutParamsReturnsString();
     const testChimericEagerAsync = fuseChimericEagerAsync({
       idiomatic: mockIdiomaticEagerAsync,
       reactive: mockReactiveEagerAsync,
@@ -57,10 +55,10 @@ describe('fuseChimericEagerAsync', () => {
   });
 
   it('should invoke the reactive function with params', async () => {
-    const mockIdiomaticEagerAsync = makeAsyncFnWithParamsReturnsString();
-    const mockReactiveEagerAsync = {
-      use: makeEagerAsyncHookWithParamsReturnsString(),
-    };
+    const mockIdiomaticEagerAsync =
+      makeIdiomaticEagerAsyncWithParamsReturnsString();
+    const mockReactiveEagerAsync =
+      makeReactiveEagerAsyncWithParamsReturnsString();
     const testChimericEagerAsync = fuseChimericEagerAsync({
       idiomatic: mockIdiomaticEagerAsync,
       reactive: mockReactiveEagerAsync,
@@ -74,10 +72,10 @@ describe('fuseChimericEagerAsync', () => {
   });
 
   it('should handle type annotations with no params', async () => {
-    const mockIdiomaticEagerAsync = makeAsyncFnWithoutParamsReturnsString();
-    const mockReactiveEagerAsync = {
-      use: makeEagerAsyncHookWithoutParamsReturnsString(),
-    };
+    const mockIdiomaticEagerAsync =
+      makeIdiomaticEagerAsyncWithoutParamsReturnsString();
+    const mockReactiveEagerAsync =
+      makeReactiveEagerAsyncWithoutParamsReturnsString();
     const testChimericEagerAsync: ChimericEagerAsyncWithoutParamsReturnsString =
       fuseChimericEagerAsync({
         idiomatic: mockIdiomaticEagerAsync,
@@ -88,10 +86,10 @@ describe('fuseChimericEagerAsync', () => {
   });
 
   it('should handle type annotations with params', async () => {
-    const mockIdiomaticEagerAsync = makeAsyncFnWithParamsReturnsString();
-    const mockReactiveEagerAsync = {
-      use: makeEagerAsyncHookWithParamsReturnsString(),
-    };
+    const mockIdiomaticEagerAsync =
+      makeIdiomaticEagerAsyncWithParamsReturnsString();
+    const mockReactiveEagerAsync =
+      makeReactiveEagerAsyncWithParamsReturnsString();
     const testChimericEagerAsync: ChimericEagerAsyncWithParamsReturnsString =
       fuseChimericEagerAsync({
         idiomatic: mockIdiomaticEagerAsync,

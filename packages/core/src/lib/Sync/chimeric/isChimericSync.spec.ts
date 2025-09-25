@@ -1,11 +1,19 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { makeSyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
 import { isChimericSync } from './isChimericSync';
+import { fuseChimericSync } from './fuseChimericSync';
+import {
+  makeIdiomaticSyncWithoutParamsReturnsString,
+  makeReactiveSyncWithoutParamsReturnsString,
+  makeSyncFnWithoutParamsReturnsString,
+} from '../__tests__/syncFixtures';
 
 describe('isChimericSync', () => {
   it('should return true for a chimeric sync function', () => {
-    const mockChimericSync = makeSyncFnWithoutParamsReturnsString() as any;
-    mockChimericSync.use = makeSyncFnWithoutParamsReturnsString();
+    const mockIdiomaticSync = makeIdiomaticSyncWithoutParamsReturnsString();
+    const mockReactiveSync = makeReactiveSyncWithoutParamsReturnsString();
+    const mockChimericSync = fuseChimericSync({
+      idiomatic: mockIdiomaticSync,
+      reactive: mockReactiveSync,
+    });
 
     expect(isChimericSync(mockChimericSync)).toBe(true);
   });

@@ -1,4 +1,7 @@
 import { ReactiveMutation } from './types';
+import { TYPE_MARKERS } from '../../utilities/typeMarkers';
+import { isEligibleReactive } from '../../utilities/isEligibleReactive';
+import { hasReactiveMarker } from '../../utilities/hasReactiveMarker';
 
 export const isReactiveMutation = <
   TParams = void,
@@ -18,19 +21,7 @@ export const isReactiveMutation = <
   TNativeReturnType
 > => {
   return (
-    (typeof maybeReactiveMutation === 'function' ||
-      typeof maybeReactiveMutation === 'object') &&
-    maybeReactiveMutation !== null &&
-    'use' in maybeReactiveMutation &&
-    typeof (
-      maybeReactiveMutation as ReactiveMutation<
-        TParams,
-        TResult,
-        TError,
-        TNativeOptions,
-        TNativeInvokeOptions,
-        TNativeReturnType
-      >
-    ).use === 'function'
+    isEligibleReactive(maybeReactiveMutation) &&
+    hasReactiveMarker(maybeReactiveMutation, TYPE_MARKERS.REACTIVE_MUTATION)
   );
 };

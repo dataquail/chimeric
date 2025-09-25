@@ -1,4 +1,7 @@
 import { ReactiveEagerAsync } from './types';
+import { TYPE_MARKERS } from '../../utilities/typeMarkers';
+import { isEligibleReactive } from '../../utilities/isEligibleReactive';
+import { hasReactiveMarker } from '../../utilities/hasReactiveMarker';
 
 export const isReactiveEagerAsync = <
   TParams = void,
@@ -8,11 +11,7 @@ export const isReactiveEagerAsync = <
   maybeReactiveAsync: unknown,
 ): maybeReactiveAsync is ReactiveEagerAsync<TParams, TResult, E> => {
   return (
-    (typeof maybeReactiveAsync === 'function' ||
-      typeof maybeReactiveAsync === 'object') &&
-    maybeReactiveAsync !== null &&
-    'use' in maybeReactiveAsync &&
-    typeof (maybeReactiveAsync as ReactiveEagerAsync<TParams, TResult, E>)
-      .use === 'function'
+    isEligibleReactive(maybeReactiveAsync) &&
+    hasReactiveMarker(maybeReactiveAsync, TYPE_MARKERS.REACTIVE_EAGER_ASYNC)
   );
 };

@@ -1,12 +1,20 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { makeAsyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
-import { makeAsyncHookWithoutParamsReturnsString } from '../__tests__/asyncFixtures';
+import {
+  makeAsyncHookWithoutParamsReturnsString,
+  makeIdiomaticAsyncWithoutParamsReturnsString,
+  makeReactiveAsyncWithoutParamsReturnsString,
+} from '../__tests__/asyncFixtures';
+import { fuseChimericAsync } from './fuseChimericAsync';
 import { isChimericAsync } from './isChimericAsync';
 
 describe('isChimericAsync', () => {
   it('should return true for a chimeric async function', () => {
-    const mockChimericAsync = makeAsyncFnWithoutParamsReturnsString() as any;
-    mockChimericAsync.use = makeAsyncHookWithoutParamsReturnsString();
+    const mockIdiomaticAsync = makeIdiomaticAsyncWithoutParamsReturnsString();
+    const mockReactiveAsync = makeReactiveAsyncWithoutParamsReturnsString();
+    const mockChimericAsync = fuseChimericAsync({
+      idiomatic: mockIdiomaticAsync,
+      reactive: mockReactiveAsync,
+    });
 
     expect(isChimericAsync(mockChimericAsync)).toBe(true);
   });

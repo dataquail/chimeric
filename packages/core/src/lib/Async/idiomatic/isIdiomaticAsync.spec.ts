@@ -1,11 +1,11 @@
-import { makeAsyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
+import { makeIdiomaticAsyncWithoutParamsReturnsString } from '../__tests__/asyncFixtures';
 import { isIdiomaticAsync } from './isIdiomaticAsync';
 
 describe('isIdiomaticAsync', () => {
   it('should return true for a function', () => {
-    const mockAsyncFn = makeAsyncFnWithoutParamsReturnsString();
+    const mockIdiomaticAsync = makeIdiomaticAsyncWithoutParamsReturnsString();
 
-    expect(isIdiomaticAsync(mockAsyncFn)).toBe(true);
+    expect(isIdiomaticAsync(mockIdiomaticAsync)).toBe(true);
   });
 
   it('should return false for non-function values', () => {

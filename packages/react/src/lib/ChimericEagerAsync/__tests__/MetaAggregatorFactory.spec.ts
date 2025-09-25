@@ -2,7 +2,7 @@ import { MetaAggregatorFactory } from '../MetaAggregatorFactory';
 import { renderHook, waitFor } from '@testing-library/react';
 import { ChimericAsyncFactory } from '../../Async/ChimericAsyncFactory';
 import {
-  createIdiomaticAsync,
+  createIdiomaticEagerAsync,
   createReactiveEagerAsync,
   DefineChimericAsync,
   fuseChimericEagerAsync,
@@ -125,10 +125,12 @@ describe('MetaAggregatorFactory', () => {
         ChimericAsyncFactory(mockPromise);
 
       const chimericEagerAsync = fuseChimericEagerAsync({
-        idiomatic: createIdiomaticAsync(async (args: { number: number }) => {
-          const number = await chimericAsync(args);
-          return `+ ${number}`;
-        }),
+        idiomatic: createIdiomaticEagerAsync(
+          async (args: { number: number }) => {
+            const number = await chimericAsync(args);
+            return `+ ${number}`;
+          },
+        ),
         reactive: createReactiveEagerAsync((args: { number: number }) => {
           const chimericAsyncResult = chimericAsync.use();
           const { isSuccess, isPending, invoke } = chimericAsyncResult;

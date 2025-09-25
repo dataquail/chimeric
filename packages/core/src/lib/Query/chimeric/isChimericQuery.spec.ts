@@ -1,16 +1,19 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { makeAsyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
 import {
   makeIdiomaticQueryWithoutParamsReturnsString,
   makeReactiveQueryWithoutParamsReturnsString,
 } from '../__tests__/queryFixtures';
+import { fuseChimericQuery } from './fuseChimericQuery';
 import { isChimericQuery } from './isChimericQuery';
 
 describe('isChimericQuery', () => {
   it('should return true for a chimeric query function', () => {
-    const mockChimericQuery =
-      makeIdiomaticQueryWithoutParamsReturnsString() as any;
-    mockChimericQuery.use = makeReactiveQueryWithoutParamsReturnsString().use;
+    const mockIdiomaticQuery = makeIdiomaticQueryWithoutParamsReturnsString();
+    const mockReactiveQuery = makeReactiveQueryWithoutParamsReturnsString();
+    const mockChimericQuery = fuseChimericQuery({
+      idiomatic: mockIdiomaticQuery,
+      reactive: mockReactiveQuery,
+    });
 
     expect(isChimericQuery(mockChimericQuery)).toBe(true);
   });

@@ -1,15 +1,20 @@
+import { isEligibleIdiomatic } from '../../utilities/isEligibleIdiomatic';
+import { TYPE_MARKERS } from '../../utilities/typeMarkers';
+import { markIdiomatic } from '../../utilities/markIdiomatic';
 import { IdiomaticQuery } from './types';
-import { isIdiomaticQuery } from './isIdiomaticQuery';
 
 export function createIdiomaticQuery<
   TParams = void,
   TResult = unknown,
   TNativeOptions = unknown,
 >(
-  idiomaticFn: IdiomaticQuery<TParams, TResult, TNativeOptions>,
+  idiomaticFn: (params: TParams, options?: TNativeOptions) => Promise<TResult>,
 ): IdiomaticQuery<TParams, TResult, TNativeOptions> {
-  if (isIdiomaticQuery<TParams, TResult, TNativeOptions>(idiomaticFn)) {
-    return idiomaticFn;
+  if (isEligibleIdiomatic(idiomaticFn)) {
+    return markIdiomatic(
+      idiomaticFn,
+      TYPE_MARKERS.IDIOMATIC_QUERY,
+    ) as IdiomaticQuery<TParams, TResult, TNativeOptions>;
   } else {
     throw new Error('idiomaticFn is not qualified to be idiomatic query');
   }

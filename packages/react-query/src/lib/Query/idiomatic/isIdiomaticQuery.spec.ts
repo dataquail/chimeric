@@ -1,11 +1,11 @@
-import { makeAsyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
+import { makeIdiomaticQueryWithoutParamsReturnsString } from '../__tests__/queryFixtures';
 import { isIdiomaticQuery } from './isIdiomaticQuery';
 
 describe('isIdiomaticQuery', () => {
   it('should return true for a function', () => {
-    const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
+    const mockIdiomaticQuery = makeIdiomaticQueryWithoutParamsReturnsString();
 
-    expect(isIdiomaticQuery(mockQueryFn)).toBe(true);
+    expect(isIdiomaticQuery(mockIdiomaticQuery)).toBe(true);
   });
 
   it('should return false for non-function values', () => {

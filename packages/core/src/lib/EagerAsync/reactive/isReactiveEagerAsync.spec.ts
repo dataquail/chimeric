@@ -1,21 +1,20 @@
-import {
-  makeEagerAsyncHookWithoutParamsReturnsString,
-  makeReactiveEagerAsyncWithoutParamsReturnsString,
-} from '../../__tests__/eagerAsyncFixtures';
+import { makeEagerAsyncHookWithoutParamsReturnsString } from '../../__tests__/eagerAsyncFixtures';
+import { createReactiveEagerAsync } from './createReactiveEagerAsync';
 import { isReactiveEagerAsync } from './isReactiveEagerAsync';
 
 describe('isReactiveEagerAsync', () => {
-  it('should return true for an object with useEagerAsync function', () => {
+  it('should return false for unmarked function', () => {
     const mockReactiveEagerAsync = {
       use: makeEagerAsyncHookWithoutParamsReturnsString(),
     };
 
-    expect(isReactiveEagerAsync(mockReactiveEagerAsync)).toBe(true);
+    expect(isReactiveEagerAsync(mockReactiveEagerAsync)).toBe(false);
   });
 
-  it('should return true for a function with use property', () => {
-    const mockReactiveEagerAsync =
-      makeReactiveEagerAsyncWithoutParamsReturnsString();
+  it('should return true for marked function', () => {
+    const mockReactiveEagerAsync = createReactiveEagerAsync(
+      makeEagerAsyncHookWithoutParamsReturnsString(),
+    );
 
     expect(isReactiveEagerAsync(mockReactiveEagerAsync)).toBe(true);
   });
