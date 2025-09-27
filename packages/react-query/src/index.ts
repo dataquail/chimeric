@@ -24,6 +24,19 @@ export * from './lib/Query/reactive/types.js';
 export * from './lib/Query/reactive/ReactiveQueryFactory.js';
 export * from './lib/Query/reactive/isReactiveQuery.js';
 export * from './lib/Query/reactive/createReactiveQuery.js';
+// InfiniteQuery
+export * from './lib/InfiniteQuery/chimeric/types.js';
+export * from './lib/InfiniteQuery/chimeric/ChimericInfiniteQueryFactory.js';
+export * from './lib/InfiniteQuery/chimeric/isChimericInfiniteQuery.js';
+export * from './lib/InfiniteQuery/chimeric/fuseChimericInfiniteQuery.js';
+export * from './lib/InfiniteQuery/idiomatic/types.js';
+export * from './lib/InfiniteQuery/idiomatic/IdiomaticInfiniteQueryFactory.js';
+export * from './lib/InfiniteQuery/idiomatic/isIdiomaticInfiniteQuery.js';
+export * from './lib/InfiniteQuery/idiomatic/createIdiomaticInfiniteQuery.js';
+export * from './lib/InfiniteQuery/reactive/types.js';
+export * from './lib/InfiniteQuery/reactive/ReactiveInfiniteQueryFactory.js';
+export * from './lib/InfiniteQuery/reactive/isReactiveInfiniteQuery.js';
+export * from './lib/InfiniteQuery/reactive/createReactiveInfiniteQuery.js';
 // QueryWithManagedStore
 export * from './lib/QueryWithManagedStore/ChimericQueryWithManagedStoreFactory.js';
 export * from './lib/QueryWithManagedStore/IdiomaticQueryWithManagedStoreFactory.js';
