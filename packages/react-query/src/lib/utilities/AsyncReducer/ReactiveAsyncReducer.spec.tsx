@@ -7,8 +7,10 @@ import {
   QueryClient,
   QueryClientProvider,
   queryOptions,
+  infiniteQueryOptions,
 } from '@tanstack/react-query';
 import { ReactiveQueryFactory } from '../../Query/reactive/ReactiveQueryFactory';
+import { ReactiveInfiniteQueryFactory } from '../../InfiniteQuery/reactive/ReactiveInfiniteQueryFactory';
 
 describe('ReactiveAsyncReducer', () => {
   const createTodoHookAndStore = () => {
@@ -77,6 +79,54 @@ describe('ReactiveAsyncReducer', () => {
         data: { age: 42 as const },
       };
     });
+  };
+
+  const createParamsInfiniteQuery = () => {
+    return ReactiveInfiniteQueryFactory(
+      (params: { filter: string }) =>
+        infiniteQueryOptions({
+          queryKey: ['infiniteTest', params.filter],
+          queryFn: ({ pageParam = 0 }) => {
+            return Promise.resolve({
+              data: [
+                {
+                  id: `${params.filter}-${pageParam}-1`,
+                  text: `Item 1 for ${params.filter}`,
+                },
+                {
+                  id: `${params.filter}-${pageParam}-2`,
+                  text: `Item 2 for ${params.filter}`,
+                },
+              ],
+              nextCursor: pageParam + 1,
+            });
+          },
+          initialPageParam: 0,
+          getNextPageParam: () => 1,
+          getPreviousPageParam: () => null,
+        }),
+    );
+  };
+
+  const createNoParamsInfiniteQuery = () => {
+    return ReactiveInfiniteQueryFactory(
+      () =>
+        infiniteQueryOptions({
+          queryKey: ['infiniteTestNoParams'],
+          queryFn: ({ pageParam = 0 }) => {
+            return Promise.resolve({
+              data: [
+                { id: `item-${pageParam}-1`, text: `Default Item 1` },
+                { id: `item-${pageParam}-2`, text: `Default Item 2` },
+              ],
+              nextCursor: pageParam + 1,
+            });
+          },
+          initialPageParam: 0,
+          getNextPageParam: () => 1,
+          getPreviousPageParam: () => null,
+        }),
+    );
   };
 
   it('should be defined', () => {
@@ -343,6 +393,86 @@ describe('ReactiveAsyncReducer', () => {
     expect(reducerCalls).toBe(1);
     expect(initialReducerCalls).toBe(2); // No change
     expect(result.current.data).toEqual('0 + John + 20 + 0');
+  });
+
+  it('should aggregate services including infinite queries', async () => {
+    const queryClient = new QueryClient();
+    const { todoStore, getTodoById, getAllTodos } = createTodoHookAndStore();
+
+    type Args = {
+      index: number;
+      filter: string;
+      name: string;
+    };
+    const TestReactiveAsyncReducerWithInfiniteQuery = ReactiveAsyncReducer<Args>().build({
+      serviceList: [
+        {
+          service: getTodoById,
+          getParams: ({ index }: Args) => index,
+        },
+        {
+          service: getAllTodos,
+        },
+        {
+          service: createParamsInfiniteQuery(),
+          getParams: ({ filter }: Args) => ({ filter }),
+        },
+        {
+          service: createNoParamsInfiniteQuery(),
+        },
+        {
+          service: createParamsQuery(),
+          getParams: ({ name }: Args) => ({ name }),
+        },
+      ],
+      reducer: (
+        [todo, todos, infiniteWithParams, infiniteWithoutParams, name],
+        _params,
+      ) => {
+        const firstInfiniteItem = infiniteWithParams?.pages?.[0]?.data?.[0];
+        const firstDefaultItem = infiniteWithoutParams?.pages?.[0]?.data?.[0];
+        return `${todo?.id} + ${todos.length} + ${firstInfiniteItem?.id} + ${firstDefaultItem?.id} + ${name}`;
+      },
+      initialValueReducer: (
+        [todo, todos, infiniteWithParams, infiniteWithoutParams, name],
+        _params,
+      ) => {
+        const parts = [];
+        if (todo?.id !== undefined) parts.push(todo.id);
+        if (todos !== undefined) parts.push(todos.length);
+        if (infiniteWithParams?.pages?.[0]?.data?.[0]?.id)
+          parts.push(infiniteWithParams.pages[0].data[0].id);
+        if (infiniteWithoutParams?.pages?.[0]?.data?.[0]?.id)
+          parts.push(infiniteWithoutParams.pages[0].data[0].id);
+        if (name !== undefined) parts.push(name);
+        parts.push(_params.index);
+        return parts.join(' + ');
+      },
+    });
+
+    const { result } = renderHook(TestReactiveAsyncReducerWithInfiniteQuery.use, {
+      initialProps: { index: 0, filter: 'test', name: 'Alice' },
+      wrapper: ({ children }) => (
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
+      ),
+    });
+
+    // Should show initial value
+    expect(result.current.data).toEqual('0 + 0');
+
+    act(() => {
+      todoStore.addTodo();
+    });
+
+    expect(result.current.data).toEqual('0 + 1 + 0');
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toEqual(true);
+    });
+
+    expect(result.current.data).toEqual('0 + 1 + test-0-1 + item-0-1 + Alice');
   });
 
   it('demonstrates render behavior differences with changing args', async () => {

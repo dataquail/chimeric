@@ -1,8 +1,9 @@
 import { createIdiomaticEagerAsync, createIdiomaticSync } from '@chimeric/core';
 import { IdiomaticAsyncReducer } from './IdiomaticAsyncReducer';
 import { TestTodoStore } from '../__tests__/TestTodoStore';
-import { QueryClient, queryOptions } from '@tanstack/react-query';
+import { QueryClient, queryOptions, infiniteQueryOptions } from '@tanstack/react-query';
 import { IdiomaticQueryFactory } from '../../Query/idiomatic/IdiomaticQueryFactory';
+import { IdiomaticInfiniteQueryFactory } from '../../InfiniteQuery/idiomatic/IdiomaticInfiniteQueryFactory';
 
 describe('IdiomaticAsyncReducer', () => {
   const createTodoStoreAndGetters = () => {
@@ -53,6 +54,58 @@ describe('IdiomaticAsyncReducer', () => {
     return createIdiomaticEagerAsync(async () => {
       return { age: 42 as const };
     });
+  };
+
+  const createParamsInfiniteQuery = () => {
+    const queryClient = new QueryClient();
+    return IdiomaticInfiniteQueryFactory(
+      queryClient,
+      (params: { filter: string }) =>
+        infiniteQueryOptions({
+          queryKey: ['infiniteTest', params.filter],
+          queryFn: ({ pageParam = 0 }) => {
+            return Promise.resolve({
+              data: [
+                {
+                  id: `${params.filter}-${pageParam}-1`,
+                  text: `Item 1 for ${params.filter}`,
+                },
+                {
+                  id: `${params.filter}-${pageParam}-2`,
+                  text: `Item 2 for ${params.filter}`,
+                },
+              ],
+              nextCursor: pageParam + 1,
+            });
+          },
+          initialPageParam: 0,
+          getNextPageParam: () => 1,
+          getPreviousPageParam: () => null,
+        }),
+    );
+  };
+
+  const createNoParamsInfiniteQuery = () => {
+    const queryClient = new QueryClient();
+    return IdiomaticInfiniteQueryFactory(
+      queryClient,
+      () =>
+        infiniteQueryOptions({
+          queryKey: ['infiniteTestNoParams'],
+          queryFn: ({ pageParam = 0 }) => {
+            return Promise.resolve({
+              data: [
+                { id: `item-${pageParam}-1`, text: `Default Item 1` },
+                { id: `item-${pageParam}-2`, text: `Default Item 2` },
+              ],
+              nextCursor: pageParam + 1,
+            });
+          },
+          initialPageParam: 0,
+          getNextPageParam: () => 1,
+          getPreviousPageParam: () => null,
+        }),
+    );
   };
 
   it('should be defined', () => {
@@ -108,5 +161,51 @@ describe('IdiomaticAsyncReducer', () => {
         age: 20,
       }),
     ).toEqual('0 + 0 + John + Bob + 20 + 42');
+  });
+
+  it('should aggregate services including infinite queries', async () => {
+    const { todoStore, getAllTodos, getTodoById } = createTodoStoreAndGetters();
+
+    todoStore.addTodo();
+
+    type Args = { index: number; filter: string; name: string };
+    const TestIdiomaticAsyncReducerWithInfiniteQuery = IdiomaticAsyncReducer<Args>().build({
+      serviceList: [
+        {
+          service: getTodoById,
+          getParams: ({ index }: Args) => index,
+        },
+        {
+          service: getAllTodos,
+        },
+        {
+          service: createParamsInfiniteQuery(),
+          getParams: ({ filter }: Args) => ({ filter }),
+        },
+        {
+          service: createNoParamsInfiniteQuery(),
+        },
+        {
+          service: createParamsQuery(),
+          getParams: ({ name }: Args) => ({ name }),
+        },
+      ],
+      reducer: (
+        [todo, todos, infiniteWithParams, infiniteWithoutParams, name],
+        _params,
+      ) => {
+        const firstInfiniteItem = infiniteWithParams?.pages?.[0]?.data?.[0];
+        const firstDefaultItem = infiniteWithoutParams?.pages?.[0]?.data?.[0];
+        return `${todo?.id} + ${todos.length} + ${firstInfiniteItem?.id} + ${firstDefaultItem?.id} + ${name}`;
+      },
+    });
+
+    expect(
+      await TestIdiomaticAsyncReducerWithInfiniteQuery({
+        index: 0,
+        filter: 'test',
+        name: 'Alice',
+      }),
+    ).toEqual('0 + 1 + test-0-1 + item-0-1 + Alice');
   });
 });

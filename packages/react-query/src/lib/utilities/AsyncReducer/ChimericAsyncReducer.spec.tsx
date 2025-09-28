@@ -14,8 +14,10 @@ import {
   QueryClient,
   QueryClientProvider,
   queryOptions,
+  infiniteQueryOptions,
 } from '@tanstack/react-query';
 import { ChimericQueryFactory } from '../../Query/chimeric/ChimericQueryFactory';
+import { ChimericInfiniteQueryFactory } from '../../InfiniteQuery/chimeric/ChimericInfiniteQueryFactory';
 
 describe('ChimericAsyncReducer', () => {
   const createTodoHookAndStore = () => {
@@ -97,6 +99,56 @@ describe('ChimericAsyncReducer', () => {
         error: null,
         data: { age: 42 as const },
       })),
+    });
+  };
+
+  const createParamsInfiniteQuery = () => {
+    return ChimericInfiniteQueryFactory({
+      queryClient: new QueryClient(),
+      getInfiniteQueryOptions: (params: { filter: string }) =>
+        infiniteQueryOptions({
+          queryKey: ['infiniteTest', params.filter],
+          queryFn: ({ pageParam = 0 }) => {
+            return Promise.resolve({
+              data: [
+                {
+                  id: `${params.filter}-${pageParam}-1`,
+                  text: `Item 1 for ${params.filter}`,
+                },
+                {
+                  id: `${params.filter}-${pageParam}-2`,
+                  text: `Item 2 for ${params.filter}`,
+                },
+              ],
+              nextCursor: pageParam + 1,
+            });
+          },
+          initialPageParam: 0,
+          getNextPageParam: () => 1,
+          getPreviousPageParam: () => null,
+        }),
+    });
+  };
+
+  const createNoParamsInfiniteQuery = () => {
+    return ChimericInfiniteQueryFactory({
+      queryClient: new QueryClient(),
+      getInfiniteQueryOptions: () =>
+        infiniteQueryOptions({
+          queryKey: ['infiniteTestNoParams'],
+          queryFn: ({ pageParam = 0 }) => {
+            return Promise.resolve({
+              data: [
+                { id: `item-${pageParam}-1`, text: `Default Item 1` },
+                { id: `item-${pageParam}-2`, text: `Default Item 2` },
+              ],
+              nextCursor: pageParam + 1,
+            });
+          },
+          initialPageParam: 0,
+          getNextPageParam: () => 1,
+          getPreviousPageParam: () => null,
+        }),
     });
   };
 
@@ -242,6 +294,135 @@ describe('ChimericAsyncReducer', () => {
         age: 20,
       }),
     ).toEqual('0 + 0 + John + Bob + 20 + 42');
+  });
+
+  it('should work with infinite queries reactively', async () => {
+    const queryClient = new QueryClient();
+    const { todoStore, getTodoById, getAllTodos } = createTodoHookAndStore();
+
+    type Args = {
+      index: number;
+      filter: string;
+      name: string;
+    };
+    const TestChimericAsyncReducerWithInfiniteQuery = ChimericAsyncReducer<Args>().build({
+      serviceList: [
+        {
+          service: getTodoById,
+          getParams: ({ index }: Args) => index,
+        },
+        {
+          service: getAllTodos,
+        },
+        {
+          service: createParamsInfiniteQuery(),
+          getParams: ({ filter }: Args) => ({ filter }),
+        },
+        {
+          service: createNoParamsInfiniteQuery(),
+        },
+        {
+          service: createParamsQuery(),
+          getParams: ({ name }: Args) => ({ name }),
+        },
+      ],
+      reducer: (
+        [todo, todos, infiniteWithParams, infiniteWithoutParams, name],
+        _params,
+      ) => {
+        const firstInfiniteItem = infiniteWithParams?.pages?.[0]?.data?.[0];
+        const firstDefaultItem = infiniteWithoutParams?.pages?.[0]?.data?.[0];
+        return `${todo?.id} + ${todos.length} + ${firstInfiniteItem?.id} + ${firstDefaultItem?.id} + ${name}`;
+      },
+      initialValueReducer: (
+        [todo, todos, infiniteWithParams, infiniteWithoutParams, name],
+        params,
+      ) => {
+        const parts = [];
+        if (todo?.id !== undefined) parts.push(todo.id);
+        if (todos !== undefined) parts.push(todos.length);
+        if (infiniteWithParams?.pages?.[0]?.data?.[0]?.id)
+          parts.push(infiniteWithParams.pages[0].data[0].id);
+        if (infiniteWithoutParams?.pages?.[0]?.data?.[0]?.id)
+          parts.push(infiniteWithoutParams.pages[0].data[0].id);
+        if (name !== undefined) parts.push(name);
+        parts.push(params.index);
+        return parts.join(' + ');
+      },
+    });
+
+    const { result } = renderHook(TestChimericAsyncReducerWithInfiniteQuery.use, {
+      initialProps: { index: 0, filter: 'test', name: 'Alice' },
+      wrapper: ({ children }) => (
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
+      ),
+    });
+
+    expect(result.current.data).toEqual('0 + 0');
+
+    act(() => {
+      todoStore.addTodo();
+    });
+
+    expect(result.current.data).toEqual('0 + 1 + 0');
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toEqual(true);
+    });
+
+    expect(result.current.data).toEqual('0 + 1 + test-0-1 + item-0-1 + Alice');
+  });
+
+  it('should work with infinite queries idiomatically', async () => {
+    const { todoStore, getTodoById, getAllTodos } = createTodoHookAndStore();
+
+    todoStore.addTodo();
+
+    type Args = {
+      index: number;
+      filter: string;
+      name: string;
+    };
+    const TestChimericAsyncReducerWithInfiniteQuery = ChimericAsyncReducer<Args>().build({
+      serviceList: [
+        {
+          service: getTodoById,
+          getParams: ({ index }: Args) => index,
+        },
+        {
+          service: getAllTodos,
+        },
+        {
+          service: createParamsInfiniteQuery(),
+          getParams: ({ filter }: Args) => ({ filter }),
+        },
+        {
+          service: createNoParamsInfiniteQuery(),
+        },
+        {
+          service: createParamsQuery(),
+          getParams: ({ name }: Args) => ({ name }),
+        },
+      ],
+      reducer: (
+        [todo, todos, infiniteWithParams, infiniteWithoutParams, name],
+        _params,
+      ) => {
+        const firstInfiniteItem = infiniteWithParams?.pages?.[0]?.data?.[0];
+        const firstDefaultItem = infiniteWithoutParams?.pages?.[0]?.data?.[0];
+        return `${todo?.id} + ${todos.length} + ${firstInfiniteItem?.id} + ${firstDefaultItem?.id} + ${name}`;
+      },
+    });
+
+    expect(
+      await TestChimericAsyncReducerWithInfiniteQuery({
+        index: 0,
+        filter: 'test',
+        name: 'Alice',
+      }),
+    ).toEqual('0 + 1 + test-0-1 + item-0-1 + Alice');
   });
 
   describe('Performance Characteristics', () => {

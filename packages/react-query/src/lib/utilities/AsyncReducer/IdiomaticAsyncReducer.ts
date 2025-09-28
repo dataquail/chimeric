@@ -3,21 +3,30 @@ import {
   createIdiomaticEagerAsync,
   IdiomaticEagerAsync,
   IdiomaticQueryOptions,
+  IdiomaticInfiniteQueryOptions,
   IdiomaticSync,
   isIdiomaticEagerAsync,
   isIdiomaticQuery,
+  isIdiomaticInfiniteQuery,
   isIdiomaticSync,
 } from '@chimeric/core';
 import {
   IdiomaticQuery,
   TanstackQueryIdiomaticNativeOptions,
 } from 'src/lib/Query/idiomatic/types';
+import {
+  IdiomaticInfiniteQuery,
+} from 'src/lib/InfiniteQuery/idiomatic/types';
 
 // Helper type to extract the result type from a service configuration
 type ExtractServiceResult<TConfig> = TConfig extends {
   service: IdiomaticQuery<any, infer TResult>;
 }
   ? TResult
+  : TConfig extends {
+      service: IdiomaticInfiniteQuery<any, infer TPageData, any>;
+    }
+  ? { pages: TPageData[]; pageParams: any[] }
   : TConfig extends {
       service: IdiomaticEagerAsync<any, infer TResult>;
     }
@@ -160,7 +169,8 @@ type AnyServiceConfig = {
   service:
     | IdiomaticSync<any, any>
     | IdiomaticEagerAsync<any, any>
-    | IdiomaticQuery<any, any>;
+    | IdiomaticQuery<any, any>
+    | IdiomaticInfiniteQuery<any, any, any, any>;
   getParams?: (params: any) => any;
 };
 
@@ -186,6 +196,14 @@ type WithParamsQueryServiceConfig = {
   getParams: (params: any) => any;
 };
 
+type NoParamsInfiniteQueryServiceConfig = {
+  service: IdiomaticInfiniteQuery<void, any, any, any>;
+};
+type WithParamsInfiniteQueryServiceConfig = {
+  service: IdiomaticInfiniteQuery<any, any, any, any>;
+  getParams: (params: any) => any;
+};
+
 type InferService<TConfig, TServiceParams> =
   TConfig extends NoParamsQueryServiceConfig
     ? TConfig['service'] extends IdiomaticQuery<
@@ -207,6 +225,22 @@ type InferService<TConfig, TServiceParams> =
           };
         }
       : never
+    : TConfig extends NoParamsInfiniteQueryServiceConfig
+    ? TConfig['service'] extends IdiomaticInfiniteQuery<
+        void,
+        infer TPageData,
+        infer TPageParam,
+        infer TNativeOptions
+      >
+      ? {
+          service: IdiomaticInfiniteQuery<void, TPageData, TPageParam, TNativeOptions>;
+          getParams?: never;
+          getOptions?: () => {
+            options?: IdiomaticInfiniteQueryOptions<TPageParam>;
+            nativeOptions?: TNativeOptions;
+          };
+        }
+      : never
     : TConfig extends WithParamsQueryServiceConfig
     ? TConfig['service'] extends IdiomaticQuery<
         infer TParams,
@@ -224,6 +258,22 @@ type InferService<TConfig, TServiceParams> =
               TError,
               TQueryKey
             >;
+          };
+        }
+      : never
+    : TConfig extends WithParamsInfiniteQueryServiceConfig
+    ? TConfig['service'] extends IdiomaticInfiniteQuery<
+        infer TParams,
+        infer TPageData,
+        infer TPageParam,
+        infer TNativeOptions
+      >
+      ? {
+          service: IdiomaticInfiniteQuery<TParams, TPageData, TPageParam, TNativeOptions>;
+          getParams: (params: TServiceParams) => TParams;
+          getOptions?: () => {
+            options?: IdiomaticInfiniteQueryOptions<TPageParam>;
+            nativeOptions?: TNativeOptions;
           };
         }
       : never
@@ -409,6 +459,15 @@ const getArgs = <TServiceParams>(
   } else if (isIdiomaticEagerAsync(service.service)) {
     return params;
   } else if (isIdiomaticQuery(service.service)) {
+    const options =
+      (service as { getOptions?: (serviceParams: any) => void })?.getOptions?.(
+        params,
+      ) ?? {};
+    return {
+      ...params,
+      ...options,
+    };
+  } else if (isIdiomaticInfiniteQuery(service.service)) {
     const options =
       (service as { getOptions?: (serviceParams: any) => void })?.getOptions?.(
         params,

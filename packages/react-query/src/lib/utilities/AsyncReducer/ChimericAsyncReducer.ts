@@ -5,8 +5,10 @@ import {
   fuseChimericEagerAsync,
   IdiomaticEagerAsync,
   IdiomaticQueryOptions,
+  IdiomaticInfiniteQueryOptions,
   ReactiveEagerAsync,
   ReactiveQueryOptions,
+  ReactiveInfiniteQueryOptions,
 } from '@chimeric/core';
 import { UseQueryResult } from '@tanstack/react-query';
 import { IdiomaticAsyncReducer } from './IdiomaticAsyncReducer';
@@ -14,12 +16,19 @@ import { ReactiveAsyncReducer } from './ReactiveAsyncReducer';
 import { TanstackQueryIdiomaticNativeOptions } from 'src/lib/Query/idiomatic/types';
 import { ChimericQuery } from 'src/lib/Query/chimeric/types';
 import { TanstackQueryReactiveNativeOptions } from 'src/lib/Query/reactive/types';
+import { ChimericInfiniteQuery } from 'src/lib/InfiniteQuery/chimeric/types';
+import { TanstackInfiniteQueryIdiomaticNativeOptions } from 'src/lib/InfiniteQuery/idiomatic/types';
+import { TanstackInfiniteQueryReactiveNativeOptions } from 'src/lib/InfiniteQuery/reactive/types';
 
 // Helper type to extract the result type from a service configuration
 type ExtractServiceResult<TConfig> = TConfig extends {
   service: ChimericQuery<any, infer TResult, infer TError, any>;
 }
   ? UseQueryResult<TResult, TError>['data']
+  : TConfig extends {
+      service: ChimericInfiniteQuery<any, infer TPageData, any, any, any>;
+    }
+  ? { pages: TPageData[]; pageParams: any[] }
   : TConfig extends {
       service: ChimericEagerAsync<any, infer TResult, any>;
     }
@@ -34,6 +43,10 @@ type ExtractServiceResultWithUndefined<TConfig> = TConfig extends {
   service: ChimericQuery<any, infer TResult, infer TError, any>;
 }
   ? UseQueryResult<TResult, TError>['data'] | undefined
+  : TConfig extends {
+      service: ChimericInfiniteQuery<any, infer TPageData, any, any, any>;
+    }
+  ? { pages: TPageData[]; pageParams: any[] } | undefined
   : TConfig extends {
       service: ChimericEagerAsync<any, infer TResult, any>;
     }
@@ -307,7 +320,8 @@ type AnyServiceConfig = {
   service:
     | ChimericSync<any, any>
     | ChimericEagerAsync<any, any>
-    | ChimericQuery<any, any>;
+    | ChimericQuery<any, any>
+    | ChimericInfiniteQuery<any, any, any, any, any>;
   getParams?: (params: any) => any;
   getIdiomaticOptions?: (params: any) => any;
   getReactiveOptions?: (params: any) => any;
@@ -332,6 +346,14 @@ type NoParamsQueryServiceConfig = {
 };
 type WithParamsQueryServiceConfig = {
   service: ChimericQuery<any, any, any, any>;
+  getParams: (params: any) => any;
+};
+
+type NoParamsInfiniteQueryServiceConfig = {
+  service: ChimericInfiniteQuery<void, any, any, any, any>;
+};
+type WithParamsInfiniteQueryServiceConfig = {
+  service: ChimericInfiniteQuery<any, any, any, any, any>;
   getParams: (params: any) => any;
 };
 
@@ -364,6 +386,37 @@ type InferService<TConfig, TServiceParams> =
           };
         }
       : never
+    : TConfig extends NoParamsInfiniteQueryServiceConfig
+    ? TConfig['service'] extends ChimericInfiniteQuery<
+        void,
+        infer TPageData,
+        infer TPageParam,
+        infer TError,
+        infer TQueryKey
+      >
+      ? {
+          service: ChimericInfiniteQuery<void, TPageData, TPageParam, TError, TQueryKey>;
+          getParams?: never;
+          getIdiomaticOptions?: () => {
+            options?: IdiomaticInfiniteQueryOptions<TPageParam>;
+            nativeOptions?: TanstackInfiniteQueryIdiomaticNativeOptions<
+              TPageData,
+              TError,
+              TPageParam,
+              TQueryKey
+            >;
+          };
+          getReactiveOptions?: () => {
+            options?: ReactiveInfiniteQueryOptions;
+            nativeOptions?: TanstackInfiniteQueryReactiveNativeOptions<
+              TPageData,
+              TError,
+              TPageParam,
+              TQueryKey
+            >;
+          };
+        }
+      : never
     : TConfig extends WithParamsQueryServiceConfig
     ? TConfig['service'] extends ChimericQuery<
         infer TParams,
@@ -387,6 +440,37 @@ type InferService<TConfig, TServiceParams> =
             nativeOptions?: TanstackQueryReactiveNativeOptions<
               TResult,
               TError,
+              TQueryKey
+            >;
+          };
+        }
+      : never
+    : TConfig extends WithParamsInfiniteQueryServiceConfig
+    ? TConfig['service'] extends ChimericInfiniteQuery<
+        infer TParams,
+        infer TPageData,
+        infer TPageParam,
+        infer TError,
+        infer TQueryKey
+      >
+      ? {
+          service: ChimericInfiniteQuery<TParams, TPageData, TPageParam, TError, TQueryKey>;
+          getParams: (params: TServiceParams) => TParams;
+          getIdiomaticOptions?: (params: TServiceParams) => {
+            options?: IdiomaticInfiniteQueryOptions<TPageParam>;
+            nativeOptions?: TanstackInfiniteQueryIdiomaticNativeOptions<
+              TPageData,
+              TError,
+              TPageParam,
+              TQueryKey
+            >;
+          };
+          getReactiveOptions?: (params: TServiceParams) => {
+            options?: ReactiveInfiniteQueryOptions;
+            nativeOptions?: TanstackInfiniteQueryReactiveNativeOptions<
+              TPageData,
+              TError,
+              TPageParam,
               TQueryKey
             >;
           };

@@ -3,9 +3,11 @@ import {
   createReactiveEagerAsync,
   isReactiveEagerAsync,
   isReactiveQuery,
+  isReactiveInfiniteQuery,
   isReactiveSync,
   ReactiveEagerAsync,
   ReactiveQueryOptions,
+  ReactiveInfiniteQueryOptions,
   ReactiveSync,
 } from '@chimeric/core';
 import { UseQueryResult } from '@tanstack/react-query';
@@ -14,6 +16,9 @@ import {
   ReactiveQuery,
   TanstackQueryReactiveNativeOptions,
 } from '../../Query/reactive/types';
+import {
+  ReactiveInfiniteQuery,
+} from '../../InfiniteQuery/reactive/types';
 import {
   ExtractTResultExtends,
   MetaAggregatorFactory,
@@ -24,6 +29,10 @@ type ExtractServiceResult<TConfig> = TConfig extends {
   service: ReactiveQuery<any, infer TResult, any, any>;
 }
   ? TResult
+  : TConfig extends {
+      service: ReactiveInfiniteQuery<any, infer TPageData, any, any, any>;
+    }
+  ? { pages: TPageData[]; pageParams: any[] }
   : TConfig extends {
       service: ReactiveEagerAsync<any, infer TResult, any>;
     }
@@ -38,6 +47,10 @@ type ExtractServiceResultWithUndefined<TConfig> = TConfig extends {
   service: ReactiveQuery<any, infer TResult, infer TError, any>;
 }
   ? UseQueryResult<TResult, TError>['data'] | undefined
+  : TConfig extends {
+      service: ReactiveInfiniteQuery<any, infer TPageData, any, any, any>;
+    }
+  ? { pages: TPageData[]; pageParams: any[] } | undefined
   : TConfig extends {
       service: ReactiveEagerAsync<any, infer TResult, any>;
     }
@@ -311,7 +324,8 @@ type AnyServiceConfig = {
   service:
     | ReactiveSync<any, any>
     | ReactiveEagerAsync<any, any>
-    | ReactiveQuery<any, any>;
+    | ReactiveQuery<any, any>
+    | ReactiveInfiniteQuery<any, any, any, any, any>;
   getParams?: (params: any) => any;
 };
 
@@ -337,6 +351,14 @@ type WithParamsQueryServiceConfig = {
   getParams: (params: any) => any;
 };
 
+type NoParamsInfiniteQueryServiceConfig = {
+  service: ReactiveInfiniteQuery<void, any, any, any, any>;
+};
+type WithParamsInfiniteQueryServiceConfig = {
+  service: ReactiveInfiniteQuery<any, any, any, any, any>;
+  getParams: (params: any) => any;
+};
+
 type InferService<TConfig, TServiceParams> =
   TConfig extends NoParamsQueryServiceConfig
     ? TConfig['service'] extends ReactiveQuery<
@@ -358,6 +380,23 @@ type InferService<TConfig, TServiceParams> =
           };
         }
       : never
+    : TConfig extends NoParamsInfiniteQueryServiceConfig
+    ? TConfig['service'] extends ReactiveInfiniteQuery<
+        void,
+        infer TPageData,
+        infer TPageParam,
+        infer TError,
+        infer TNativeOptions
+      >
+      ? {
+          service: ReactiveInfiniteQuery<void, TPageData, TPageParam, TError, TNativeOptions>;
+          getParams?: never;
+          getOptions?: () => {
+            options?: ReactiveInfiniteQueryOptions;
+            nativeOptions?: TNativeOptions;
+          };
+        }
+      : never
     : TConfig extends WithParamsQueryServiceConfig
     ? TConfig['service'] extends ReactiveQuery<
         infer TParams,
@@ -375,6 +414,23 @@ type InferService<TConfig, TServiceParams> =
               TError,
               TQueryKey
             >;
+          };
+        }
+      : never
+    : TConfig extends WithParamsInfiniteQueryServiceConfig
+    ? TConfig['service'] extends ReactiveInfiniteQuery<
+        infer TParams,
+        infer TPageData,
+        infer TPageParam,
+        infer TError,
+        infer TNativeOptions
+      >
+      ? {
+          service: ReactiveInfiniteQuery<TParams, TPageData, TPageParam, TError, TNativeOptions>;
+          getParams: (params: TServiceParams) => TParams;
+          getOptions?: (params: TServiceParams) => {
+            options?: ReactiveInfiniteQueryOptions;
+            nativeOptions?: TNativeOptions;
           };
         }
       : never
@@ -697,6 +753,20 @@ export const extractMemoKey = (
       data: result.data,
       error: result.error,
     };
+  } else if (isReactiveInfiniteQuery(serviceConfig.service)) {
+    // For infinite query services, extract only the relevant state properties
+    return {
+      isIdle: result.isIdle,
+      isPending: result.isPending,
+      isSuccess: result.isSuccess,
+      isError: result.isError,
+      data: result.data,
+      error: result.error,
+      isFetchingNextPage: result.isFetchingNextPage,
+      isFetchingPreviousPage: result.isFetchingPreviousPage,
+      hasNextPage: result.hasNextPage,
+      hasPreviousPage: result.hasPreviousPage,
+    };
   } else {
     return result;
   }
@@ -720,6 +790,15 @@ const getArgs = <TServiceParams>(
   } else if (isReactiveEagerAsync(service.service)) {
     return params;
   } else if (isReactiveQuery(service.service)) {
+    const options =
+      (service as { getOptions?: (serviceParams: any) => void })?.getOptions?.(
+        params,
+      ) ?? {};
+    return {
+      ...params,
+      ...options,
+    };
+  } else if (isReactiveInfiniteQuery(service.service)) {
     const options =
       (service as { getOptions?: (serviceParams: any) => void })?.getOptions?.(
         params,
