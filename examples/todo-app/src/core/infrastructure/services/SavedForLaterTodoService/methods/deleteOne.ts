@@ -43,7 +43,7 @@ export const DeleteOneMethodImpl = (
         queryKey: getQueryOptionsGetAll().queryKey,
       });
       await queryClient.invalidateQueries({
-        queryKey: getQueryOptionsGetOneById(args).queryKey,
+        queryKey: getQueryOptionsGetOneById(args.id).queryKey,
       });
     },
   });

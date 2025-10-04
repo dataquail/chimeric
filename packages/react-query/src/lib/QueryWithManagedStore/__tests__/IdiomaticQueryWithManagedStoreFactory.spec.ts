@@ -14,7 +14,8 @@ describe('IdiomaticQueryWithManagedStoreFactory', () => {
     const queryClient = new QueryClient();
     const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
     let storeValue: string | null = null;
-    const idiomaticQuery = IdiomaticQueryWithManagedStoreFactory(queryClient, {
+    const idiomaticQuery = IdiomaticQueryWithManagedStoreFactory({
+      queryClient,
       getQueryOptions: () =>
         queryOptions({
           queryKey: ['test'],
@@ -34,7 +35,8 @@ describe('IdiomaticQueryWithManagedStoreFactory', () => {
     const queryClient = new QueryClient();
     const mockQueryFn = makeAsyncFnWithParamsReturnsString();
     let storeValue: string | null = null;
-    const idiomaticQuery = IdiomaticQueryWithManagedStoreFactory(queryClient, {
+    const idiomaticQuery = IdiomaticQueryWithManagedStoreFactory({
+      queryClient,
       getQueryOptions: (args: { name: string }) =>
         queryOptions({
           queryKey: ['test'],
@@ -55,7 +57,8 @@ describe('IdiomaticQueryWithManagedStoreFactory', () => {
     const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
     let storeValue = 'initial';
     const idiomaticQuery: IdiomaticQueryWithoutParamsReturnsString =
-      IdiomaticQueryWithManagedStoreFactory(queryClient, {
+      IdiomaticQueryWithManagedStoreFactory({
+        queryClient,
         getQueryOptions: () =>
           queryOptions({
             queryKey: ['test'],
@@ -76,7 +79,8 @@ describe('IdiomaticQueryWithManagedStoreFactory', () => {
     const mockQueryFn = makeAsyncFnWithParamsReturnsString();
     let storeValue = 'initial';
     const idiomaticQuery: IdiomaticQueryWithParamsReturnsString =
-      IdiomaticQueryWithManagedStoreFactory(queryClient, {
+      IdiomaticQueryWithManagedStoreFactory({
+        queryClient,
         getQueryOptions: (args: { name: string }) =>
           queryOptions({
             queryKey: ['test'],

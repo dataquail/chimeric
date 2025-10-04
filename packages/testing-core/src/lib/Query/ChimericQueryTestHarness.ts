@@ -11,6 +11,101 @@ import { ChimericQueryTestHarnessReturnType } from './types.js';
 import { IdiomaticQueryTestHarness } from './IdiomaticQueryTestHarness.js';
 import { ReactiveQueryTestHarness } from './ReactiveQueryTestHarness.js';
 
+// Required params (must come first - most specific)
+export function ChimericQueryTestHarness<
+  TParams,
+  TResult,
+  TError extends Error = Error,
+  TMethod extends (typeof chimericMethods)[number] = (typeof chimericMethods)[number],
+  TIdiomaticNativeOptions = unknown,
+  TReactiveNativeOptions = unknown,
+  TReactiveNativeReturnType = unknown,
+>(args: {
+  chimericQuery: ChimericQuery<
+    TParams,
+    TResult,
+    TError,
+    TIdiomaticNativeOptions,
+    TReactiveNativeOptions,
+    TReactiveNativeReturnType
+  >;
+  method: TMethod;
+  params: TParams;
+  reactiveOptions?: ReactiveQueryOptions;
+  reactiveNativeOptions?: TReactiveNativeOptions;
+  idiomaticOptions?: IdiomaticQueryOptions;
+  idiomaticNativeOptions?: TIdiomaticNativeOptions;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): ChimericQueryTestHarnessReturnType<
+  TResult,
+  TError,
+  TMethod,
+  TReactiveNativeReturnType
+>;
+
+// Optional params (must come before no params)
+export function ChimericQueryTestHarness<
+  TParams,
+  TResult,
+  TError extends Error = Error,
+  TMethod extends (typeof chimericMethods)[number] = (typeof chimericMethods)[number],
+  TIdiomaticNativeOptions = unknown,
+  TReactiveNativeOptions = unknown,
+  TReactiveNativeReturnType = unknown,
+>(args: {
+  chimericQuery: ChimericQuery<
+    TParams | undefined,
+    TResult,
+    TError,
+    TIdiomaticNativeOptions,
+    TReactiveNativeOptions,
+    TReactiveNativeReturnType
+  >;
+  method: TMethod;
+  params?: TParams | undefined;
+  reactiveOptions?: ReactiveQueryOptions;
+  reactiveNativeOptions?: TReactiveNativeOptions;
+  idiomaticOptions?: IdiomaticQueryOptions;
+  idiomaticNativeOptions?: TIdiomaticNativeOptions;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): ChimericQueryTestHarnessReturnType<
+  TResult,
+  TError,
+  TMethod,
+  TReactiveNativeReturnType
+>;
+
+// No params (least specific - must come last)
+export function ChimericQueryTestHarness<
+  TResult,
+  TError extends Error = Error,
+  TMethod extends (typeof chimericMethods)[number] = (typeof chimericMethods)[number],
+  TIdiomaticNativeOptions = unknown,
+  TReactiveNativeOptions = unknown,
+  TReactiveNativeReturnType = unknown,
+>(args: {
+  chimericQuery: ChimericQuery<
+    void,
+    TResult,
+    TError,
+    TIdiomaticNativeOptions,
+    TReactiveNativeOptions,
+    TReactiveNativeReturnType
+  >;
+  method: TMethod;
+  reactiveOptions?: ReactiveQueryOptions;
+  reactiveNativeOptions?: TReactiveNativeOptions;
+  idiomaticOptions?: IdiomaticQueryOptions;
+  idiomaticNativeOptions?: TIdiomaticNativeOptions;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): ChimericQueryTestHarnessReturnType<
+  TResult,
+  TError,
+  TMethod,
+  TReactiveNativeReturnType
+>;
+
+// Implementation
 export function ChimericQueryTestHarness<
   TParams = void,
   TResult = unknown,
@@ -19,42 +114,23 @@ export function ChimericQueryTestHarness<
   TIdiomaticNativeOptions = unknown,
   TReactiveNativeOptions = unknown,
   TReactiveNativeReturnType = unknown,
->(
-  args: TParams extends void
-    ? {
-        chimericQuery: ChimericQuery<
-          TParams,
-          TResult,
-          TError,
-          TIdiomaticNativeOptions,
-          TReactiveNativeOptions,
-          TReactiveNativeReturnType
-        >;
-        method: TMethod;
-        reactiveOptions?: ReactiveQueryOptions;
-        reactiveNativeOptions?: TReactiveNativeOptions;
-        idiomaticOptions?: IdiomaticQueryOptions;
-        idiomaticNativeOptions?: TIdiomaticNativeOptions;
-        wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-      }
-    : {
-        chimericQuery: ChimericQuery<
-          TParams,
-          TResult,
-          TError,
-          TIdiomaticNativeOptions,
-          TReactiveNativeOptions,
-          TReactiveNativeReturnType
-        >;
-        method: TMethod;
-        params: TParams;
-        reactiveOptions?: ReactiveQueryOptions;
-        reactiveNativeOptions?: TReactiveNativeOptions;
-        idiomaticOptions?: IdiomaticQueryOptions;
-        idiomaticNativeOptions?: TIdiomaticNativeOptions;
-        wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-      },
-): ChimericQueryTestHarnessReturnType<
+>(args: {
+  chimericQuery: ChimericQuery<
+    TParams,
+    TResult,
+    TError,
+    TIdiomaticNativeOptions,
+    TReactiveNativeOptions,
+    TReactiveNativeReturnType
+  >;
+  method: TMethod;
+  params?: TParams;
+  reactiveOptions?: ReactiveQueryOptions;
+  reactiveNativeOptions?: TReactiveNativeOptions;
+  idiomaticOptions?: IdiomaticQueryOptions;
+  idiomaticNativeOptions?: TIdiomaticNativeOptions;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): ChimericQueryTestHarnessReturnType<
   TResult,
   TError,
   TMethod,

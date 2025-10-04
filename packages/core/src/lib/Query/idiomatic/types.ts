@@ -2,29 +2,31 @@ export type IdiomaticQuery<
   TParams = void,
   TResult = unknown,
   TIdiomaticNativeOptions = unknown,
-> = TParams extends object
-  ? Omit<TParams, 'options' | 'nativeOptions'> extends
-      | undefined
-      | {
-          options?: IdiomaticQueryOptions;
-          nativeOptions?: TIdiomaticNativeOptions;
-        }
-    ? (params?: {
-        options?: IdiomaticQueryOptions;
-        nativeOptions?: TIdiomaticNativeOptions;
-      }) => Promise<TResult>
-    : (
-        paramsAndConfig: TParams & {
-          options?: IdiomaticQueryOptions;
-          nativeOptions?: TIdiomaticNativeOptions;
-        },
-      ) => Promise<TResult>
-  : TParams extends void
-  ? (params?: {
+> = [TParams] extends [void]
+  ? (allOptions?: {
       options?: IdiomaticQueryOptions;
       nativeOptions?: TIdiomaticNativeOptions;
     }) => Promise<TResult>
-  : never;
+  : [TParams] extends [undefined]
+  ? (allOptions?: {
+      options?: IdiomaticQueryOptions;
+      nativeOptions?: TIdiomaticNativeOptions;
+    }) => Promise<TResult>
+  : undefined extends TParams
+  ? (
+      params?: NonNullable<TParams>,
+      allOptions?: {
+        options?: IdiomaticQueryOptions;
+        nativeOptions?: TIdiomaticNativeOptions;
+      },
+    ) => Promise<TResult>
+  : (
+      params: TParams,
+      allOptions?: {
+        options?: IdiomaticQueryOptions;
+        nativeOptions?: TIdiomaticNativeOptions;
+      },
+    ) => Promise<TResult>;
 
 export type IdiomaticQueryOptions = { forceRefetch?: boolean };
 
@@ -34,7 +36,7 @@ export type DefineIdiomaticQuery<
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   TIdiomaticNativeOptions = unknown,
 > = IdiomaticQuery<
-  Parameters<T>[0] extends void | object ? Parameters<T>[0] : never,
+  Parameters<T>[0],
   Awaited<ReturnType<T>>,
   TIdiomaticNativeOptions
 >;

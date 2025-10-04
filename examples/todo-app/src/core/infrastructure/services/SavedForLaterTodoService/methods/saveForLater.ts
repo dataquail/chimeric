@@ -41,7 +41,7 @@ export const SaveForLaterMethodImpl = (
         queryKey: getQueryOptionsGetAll().queryKey,
       });
       await queryClient.invalidateQueries({
-        queryKey: getQueryOptionsGetOneById(data).queryKey,
+        queryKey: getQueryOptionsGetOneById(data.id).queryKey,
       });
       await queryClient.invalidateQueries({
         queryKey: getQueryOptionsGetAllActiveTodos(appStore)().queryKey,

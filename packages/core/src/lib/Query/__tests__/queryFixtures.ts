@@ -1,4 +1,5 @@
 import {
+  makeAsyncFnWithOptionalParamsReturnsString,
   makeAsyncFnWithoutParamsReturnsString,
   makeAsyncFnWithParamsReturnsObj,
   makeAsyncFnWithParamsReturnsString,
@@ -38,6 +39,13 @@ export const makeQueryFnWithParamsReturnsString = () =>
 export const makeIdiomaticQueryWithParamsReturnsString = () =>
   createIdiomaticQuery(makeQueryFnWithParamsReturnsString());
 
+// With optional params
+export const makeQueryFnWithOptionalParamsReturnsString = () =>
+  makeAsyncFnWithOptionalParamsReturnsString();
+
+export const makeIdiomaticQueryWithOptionalParamsReturnsString = () =>
+  createIdiomaticQuery(makeQueryFnWithOptionalParamsReturnsString());
+
 export const makeQueryHookWithParamsReturnsString = () =>
   vi.fn((args: { name: string }) => ({
     isIdle: true,
@@ -47,6 +55,20 @@ export const makeQueryHookWithParamsReturnsString = () =>
     error: null,
     data: `Hello ${args.name}`,
     refetch: vi.fn(() => Promise.resolve(`Hello ${args.name}`)),
+    native: 'test',
+  }));
+
+export const makeQueryHookWithOptionalParamsReturnsString = () =>
+  vi.fn((args?: { name: string }) => ({
+    isIdle: true,
+    isPending: false,
+    isSuccess: true,
+    isError: false,
+    error: null,
+    data: args?.name ? `Hello ${args.name}` : 'Hello',
+    refetch: vi.fn(() =>
+      Promise.resolve(args?.name ? `Hello ${args.name}` : 'Hello'),
+    ),
     native: 'test',
   }));
 
@@ -75,12 +97,19 @@ export const makeQueryHookWithParamsReturnsObj = () =>
 export const makeReactiveQueryWithParamsReturnsObj = () =>
   createReactiveQuery(makeQueryHookWithParamsReturnsObj());
 
+export const makeReactiveQueryWithOptionalParamsReturnsString = () =>
+  createReactiveQuery(makeQueryHookWithOptionalParamsReturnsString());
+
 export type ChimericQueryWithoutParamsReturnsString = DefineChimericQuery<
   () => Promise<string>
 >;
 
 export type ChimericQueryWithParamsReturnsString = DefineChimericQuery<
   (args: { name: string }) => Promise<string>
+>;
+
+export type ChimericQueryWithOptionalParamsReturnsString = DefineChimericQuery<
+  (args?: { name: string }) => Promise<string>
 >;
 
 export type IdiomaticQueryWithoutParamsReturnsString = DefineIdiomaticQuery<
@@ -91,12 +120,19 @@ export type IdiomaticQueryWithParamsReturnsString = DefineIdiomaticQuery<
   (args: { name: string }) => Promise<string>
 >;
 
+export type IdiomaticQueryWithOptionalParamsReturnsString =
+  DefineIdiomaticQuery<(args?: { name: string }) => Promise<string>>;
+
 export type ReactiveQueryWithoutParamsReturnsString = DefineReactiveQuery<
   () => Promise<string>
 >;
 
 export type ReactiveQueryWithParamsReturnsString = DefineReactiveQuery<
   (args: { name: string }) => Promise<string>
+>;
+
+export type ReactiveQueryWithOptionalParamsReturnsString = DefineReactiveQuery<
+  (args?: { name: string }) => Promise<string>
 >;
 
 export type IdiomaticQueryWithParamsReturnsObj = DefineIdiomaticQuery<

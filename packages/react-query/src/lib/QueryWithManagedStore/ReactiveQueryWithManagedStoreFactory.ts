@@ -4,40 +4,122 @@ import {
   queryOptions,
   DefinedInitialDataOptions,
 } from '@tanstack/react-query';
-import { ReactiveQuery } from '../Query/reactive/types';
+import {
+  ReactiveQuery,
+  TanstackQueryReactiveNativeOptions,
+} from '../Query/reactive/types';
 import { createReactiveQuery } from '../Query/reactive/createReactiveQuery';
+import { validateMaxArgLength } from '../utilities/validateMaxArgLength';
+import { ReactiveQueryOptions } from '@chimeric/core';
 
+// Required params (must come first - most specific)
+export function ReactiveQueryWithManagedStoreFactory<
+  TParams,
+  TResult,
+  TError extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
+>(config: {
+  getQueryOptions: (
+    params: TParams,
+  ) => ReturnType<typeof queryOptions<void, TError, void, TQueryKey>>;
+  useFromStore: (params: TParams) => TResult;
+}): ReactiveQuery<TParams, TResult, TError, TQueryKey>;
+
+// Optional params (must come before no params)
+export function ReactiveQueryWithManagedStoreFactory<
+  TParams,
+  TResult,
+  TError extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
+>(config: {
+  getQueryOptions: (
+    params?: TParams,
+  ) => ReturnType<typeof queryOptions<void, TError, void, TQueryKey>>;
+  useFromStore: (params?: TParams) => TResult;
+}): ReactiveQuery<TParams | undefined, TResult, TError, TQueryKey>;
+
+// No params (least specific - must come last)
+export function ReactiveQueryWithManagedStoreFactory<
+  TResult,
+  TError extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
+>(config: {
+  getQueryOptions: () => ReturnType<
+    typeof queryOptions<void, TError, void, TQueryKey>
+  >;
+  useFromStore: () => TResult;
+}): ReactiveQuery<void, TResult, TError, TQueryKey>;
+
+// Implementation
 export function ReactiveQueryWithManagedStoreFactory<
   TParams = void,
   TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
->(initialOptions: {
-  getQueryOptions: (
-    params: TParams,
-  ) => ReturnType<typeof queryOptions<void, TError, void, TQueryKey>>;
-  useFromStore: (args: TParams) => TResult;
-}): ReactiveQuery<
-  TParams extends undefined ? void : TParams,
-  TResult,
-  TError,
-  TQueryKey
-> {
-  const { useFromStore, getQueryOptions } = initialOptions;
+>({
+  getQueryOptions,
+  useFromStore,
+}: {
+  getQueryOptions: any;
+  useFromStore: any;
+}): ReactiveQuery<TParams, TResult, TError, TQueryKey> {
+  validateMaxArgLength({
+    fn: getQueryOptions,
+    fnName: 'getQueryOptions',
+    maximumLength: 1,
+  });
+  validateMaxArgLength({
+    fn: useFromStore,
+    fnName: 'useFromStore',
+    maximumLength: 1,
+  });
   return createReactiveQuery(
     (
-      paramsAndOptions: Parameters<
-        ReactiveQuery<TParams, TResult, TError>['use']
+      paramsOrOptions?: Parameters<
+        ReactiveQuery<TParams, TResult, TError, TQueryKey>['use']
       >[0],
+      maybeOptions?: Parameters<
+        ReactiveQuery<TParams, TResult, TError, TQueryKey>['use']
+      >[1],
     ) => {
-      const { options, nativeOptions, ...params } = paramsAndOptions ?? {};
-      const { queryFn, ...restInitialQueryOptions } = getQueryOptions(
-        params as TParams,
-      );
-      const query = useQuery<TResult, TError, TResult, TQueryKey>({
+      const params =
+        getQueryOptions.length === 0
+          ? (undefined as TParams)
+          : (paramsOrOptions as TParams);
+      const allOptions =
+        getQueryOptions.length === 0
+          ? (paramsOrOptions as {
+              options?: ReactiveQueryOptions;
+              nativeOptions?: TanstackQueryReactiveNativeOptions<
+                TResult,
+                TError,
+                TQueryKey
+              >;
+            })
+          : maybeOptions;
+      const nativeOptions = allOptions?.nativeOptions as
+        | TanstackQueryReactiveNativeOptions<TResult, TError, TQueryKey>
+        | undefined;
+      let fetchQueryOptions: ReturnType<
+        typeof queryOptions<any, TError, void, TQueryKey>
+      > = getQueryOptions(params);
+
+      if (allOptions?.options?.enabled === false) {
+        fetchQueryOptions.enabled = false;
+      }
+
+      // Prioritize native options last so they can override anything
+      if (nativeOptions) {
+        fetchQueryOptions = {
+          ...fetchQueryOptions,
+          ...nativeOptions,
+        };
+      }
+
+      const { queryFn, ...restInitialQueryOptions } = fetchQueryOptions;
+
+      const query = useQuery({
         ...restInitialQueryOptions,
-        enabled: options?.enabled ?? true,
-        ...nativeOptions,
         queryFn: async (context): Promise<TResult> => {
           if (typeof queryFn === 'function') {
             await queryFn(context);
@@ -65,10 +147,5 @@ export function ReactiveQueryWithManagedStoreFactory<
         native: query,
       };
     },
-  ) as ReactiveQuery<
-    TParams extends undefined ? void : TParams,
-    TResult,
-    TError,
-    TQueryKey
-  >;
+  ) as ReactiveQuery<TParams, TResult, TError, TQueryKey>;
 }

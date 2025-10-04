@@ -1,8 +1,66 @@
 import { isEligibleReactive } from '../../utilities/isEligibleReactive';
-import { ReactiveQuery } from './types';
+import {
+  ReactiveQuery,
+  ReactiveQueryReturn,
+  ReactiveQueryOptions,
+} from './types';
 import { TYPE_MARKERS } from '../../utilities/typeMarkers';
 import { markReactive } from '../../utilities/markReactive';
 
+// Overload for no params (allOptions as first arg)
+export function createReactiveQuery<
+  TResult,
+  TError extends Error = Error,
+  TNativeOptions = unknown,
+  TNativeReturnType = unknown,
+>(
+  reactiveFn: (allOptions?: {
+    options?: ReactiveQueryOptions;
+    nativeOptions?: TNativeOptions;
+  }) => ReactiveQueryReturn<TResult, TError, TNativeReturnType>,
+): ReactiveQuery<void, TResult, TError, TNativeOptions, TNativeReturnType>;
+
+// Overload for optional params (params as first arg, allOptions as second)
+export function createReactiveQuery<
+  TParams,
+  TResult,
+  TError extends Error = Error,
+  TNativeOptions = unknown,
+  TNativeReturnType = unknown,
+>(
+  reactiveFn: (
+    params?: TParams,
+    allOptions?: {
+      options?: ReactiveQueryOptions;
+      nativeOptions?: TNativeOptions;
+    },
+  ) => ReactiveQueryReturn<TResult, TError, TNativeReturnType>,
+): ReactiveQuery<
+  TParams | undefined,
+  TResult,
+  TError,
+  TNativeOptions,
+  TNativeReturnType
+>;
+
+// Overload for required params (params as first arg, allOptions as second)
+export function createReactiveQuery<
+  TParams,
+  TResult,
+  TError extends Error = Error,
+  TNativeOptions = unknown,
+  TNativeReturnType = unknown,
+>(
+  reactiveFn: (
+    params: TParams,
+    allOptions?: {
+      options?: ReactiveQueryOptions;
+      nativeOptions?: TNativeOptions;
+    },
+  ) => ReactiveQueryReturn<TResult, TError, TNativeReturnType>,
+): ReactiveQuery<TParams, TResult, TError, TNativeOptions, TNativeReturnType>;
+
+// Implementation
 export function createReactiveQuery<
   TParams = void,
   TResult = unknown,
@@ -10,28 +68,13 @@ export function createReactiveQuery<
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
 >(
-  reactiveFn: ReactiveQuery<
-    TParams,
-    TResult,
-    TError,
-    TNativeOptions,
-    TNativeReturnType
-  >['use'],
+  reactiveFn: any,
 ): ReactiveQuery<TParams, TResult, TError, TNativeOptions, TNativeReturnType> {
   const reactiveQuery = {
     use: reactiveFn,
   };
   if (isEligibleReactive(reactiveQuery)) {
-    return markReactive(
-      reactiveQuery,
-      TYPE_MARKERS.REACTIVE_QUERY,
-    ) as ReactiveQuery<
-      TParams,
-      TResult,
-      TError,
-      TNativeOptions,
-      TNativeReturnType
-    >;
+    return markReactive(reactiveQuery, TYPE_MARKERS.REACTIVE_QUERY) as any;
   } else {
     throw new Error('reactiveFn is not qualified to be reactive query');
   }

@@ -7,23 +7,23 @@ import { wrappedFetch } from 'src/utils/network/wrappedFetch';
 import { TodoDto } from 'src/core/domain/activeTodo/dtos/out/TodoDto';
 import { SavedForLaterTodoDto } from 'src/core/domain/savedForLaterTodo/dtos/out/SavedForLaterTodoDto';
 
-export type IGetSavedForLaterTodo = (args: {
-  id: string;
-}) => Promise<SavedForLaterTodoDto>;
+export type IGetSavedForLaterTodo = (
+  id: string,
+) => Promise<SavedForLaterTodoDto>;
 
-export const getSavedForLaterTodo: IGetSavedForLaterTodo = async (args: {
-  id: string;
-}) => {
+export const getSavedForLaterTodo: IGetSavedForLaterTodo = async (
+  id: string,
+) => {
   return wrappedFetch<TodoDto>(
-    `${getConfig().API_URL}/saved-for-later-todo/${args.id}`,
+    `${getConfig().API_URL}/saved-for-later-todo/${id}`,
   );
 };
 
-export const getQueryOptionsGetOneById = (args: { id: string }) =>
+export const getQueryOptionsGetOneById = (id: string) =>
   queryOptions({
-    queryKey: ['GET_SAVED_FOR_LATER_TODO', args.id],
+    queryKey: ['GET_SAVED_FOR_LATER_TODO', id],
     queryFn: async () => {
-      const savedForLaterTodoDto = await getSavedForLaterTodo(args);
+      const savedForLaterTodoDto = await getSavedForLaterTodo(id);
       return mapSavedForLaterTodoDtoToSavedForLaterTodo(savedForLaterTodoDto);
     },
   });
@@ -31,5 +31,8 @@ export const getQueryOptionsGetOneById = (args: { id: string }) =>
 export const GetOneByIdMethodImpl = (
   queryClient: QueryClient,
 ): ISavedForLaterTodoService['getOneById'] => {
-  return ChimericQueryFactory(queryClient, getQueryOptionsGetOneById);
+  return ChimericQueryFactory({
+    queryClient,
+    getQueryOptions: getQueryOptionsGetOneById,
+  });
 };
