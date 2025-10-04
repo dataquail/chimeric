@@ -105,7 +105,7 @@ describe('SavedForLaterTodoServiceImpl', () => {
     const harness = ChimericQueryTestHarness({
       chimericQuery: savedForLaterTodoService.getOneById,
       method,
-      params: { id: '1' },
+      params: '1',
       wrapper: getTestWrapper(),
     });
     expect(harness.result.current.isPending).toBe(true);

@@ -21,26 +21,30 @@ describe('IdiomaticAsyncReducer', () => {
 
   const createParamsQuery = () => {
     const queryClient = new QueryClient();
-    return IdiomaticQueryFactory(queryClient, (params: { name: string }) =>
-      queryOptions({
-        queryKey: ['test'],
-        queryFn: () => {
-          return Promise.resolve(params.name);
-        },
-      }),
-    );
+    return IdiomaticQueryFactory({
+      queryClient,
+      getQueryOptions: (params: { name: string }) =>
+        queryOptions({
+          queryKey: ['test'],
+          queryFn: () => {
+            return Promise.resolve(params.name);
+          },
+        }),
+    });
   };
 
   const createNoParamsQuery = () => {
     const queryClient = new QueryClient();
-    return IdiomaticQueryFactory(queryClient, () =>
-      queryOptions({
-        queryKey: ['test'],
-        queryFn: () => {
-          return Promise.resolve('Bob' as const);
-        },
-      }),
-    );
+    return IdiomaticQueryFactory({
+      queryClient,
+      getQueryOptions: () =>
+        queryOptions({
+          queryKey: ['test'],
+          queryFn: () => {
+            return Promise.resolve('Bob' as const);
+          },
+        }),
+    });
   };
 
   const createParamsEagerAsync = () => {

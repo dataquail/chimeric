@@ -16,18 +16,21 @@ describe('ChimericQueryTestHarness', () => {
     const queryClient = new QueryClient();
     const mockIdiomaticQueryFn = makeAsyncFnWithoutParamsReturnsString();
     const mockReactiveQueryFn = makeAsyncFnWithoutParamsReturnsString();
-    const idiomaticQuery = IdiomaticQueryFactory(queryClient, () =>
-      queryOptions({
-        queryKey: ['test'],
-        queryFn: mockIdiomaticQueryFn,
-      }),
-    );
-    const reactiveQuery = ReactiveQueryFactory(() =>
-      queryOptions({
-        queryKey: ['test'],
-        queryFn: mockReactiveQueryFn,
-      }),
-    );
+    const idiomaticQuery = IdiomaticQueryFactory({
+      queryClient,
+      getQueryOptions: () =>
+        queryOptions({
+          queryKey: ['test'],
+          queryFn: mockIdiomaticQueryFn,
+        }),
+    });
+    const reactiveQuery = ReactiveQueryFactory({
+      getQueryOptions: () =>
+        queryOptions({
+          queryKey: ['test'],
+          queryFn: mockReactiveQueryFn,
+        }),
+    });
 
     const query = ChimericQueryTestHarness({
       chimericQuery: fuseChimericQuery({
@@ -62,20 +65,21 @@ describe('ChimericQueryTestHarness', () => {
     const queryClient = new QueryClient();
     const mockIdiomaticQueryFn = makeAsyncFnWithParamsReturnsString();
     const mockReactiveQueryFn = makeAsyncFnWithParamsReturnsString();
-    const idiomaticQuery = IdiomaticQueryFactory(
+    const idiomaticQuery = IdiomaticQueryFactory({
       queryClient,
-      (args: { name: string }) =>
+      getQueryOptions: (args: { name: string }) =>
         queryOptions({
           queryKey: ['test', args.name],
           queryFn: () => mockIdiomaticQueryFn(args),
         }),
-    );
-    const reactiveQuery = ReactiveQueryFactory((args: { name: string }) =>
-      queryOptions({
-        queryKey: ['test', args.name],
-        queryFn: () => mockReactiveQueryFn(args),
-      }),
-    );
+    });
+    const reactiveQuery = ReactiveQueryFactory({
+      getQueryOptions: (args: { name: string }) =>
+        queryOptions({
+          queryKey: ['test', args.name],
+          queryFn: () => mockReactiveQueryFn(args),
+        }),
+    });
 
     const query = ChimericQueryTestHarness({
       chimericQuery: fuseChimericQuery({
@@ -111,18 +115,21 @@ describe('ChimericQueryTestHarness', () => {
     const queryClient = new QueryClient();
     const mockIdiomaticQueryFn = makeAsyncFnWithoutParamsReturnsString();
     const mockReactiveQueryFn = makeAsyncFnWithoutParamsReturnsString();
-    const idiomaticQuery = IdiomaticQueryFactory(queryClient, () =>
-      queryOptions({
-        queryKey: ['test'],
-        queryFn: mockIdiomaticQueryFn,
-      }),
-    );
-    const reactiveQuery = ReactiveQueryFactory(() =>
-      queryOptions({
-        queryKey: ['test'],
-        queryFn: mockReactiveQueryFn,
-      }),
-    );
+    const idiomaticQuery = IdiomaticQueryFactory({
+      queryClient,
+      getQueryOptions: () =>
+        queryOptions({
+          queryKey: ['test'],
+          queryFn: mockIdiomaticQueryFn,
+        }),
+    });
+    const reactiveQuery = ReactiveQueryFactory({
+      getQueryOptions: () =>
+        queryOptions({
+          queryKey: ['test'],
+          queryFn: mockReactiveQueryFn,
+        }),
+    });
 
     const query = ChimericQueryTestHarness({
       chimericQuery: fuseChimericQuery({
@@ -157,20 +164,21 @@ describe('ChimericQueryTestHarness', () => {
     const queryClient = new QueryClient();
     const mockIdiomaticQueryFn = makeAsyncFnWithParamsReturnsString();
     const mockReactiveQueryFn = makeAsyncFnWithParamsReturnsString();
-    const idiomaticQuery = IdiomaticQueryFactory(
+    const idiomaticQuery = IdiomaticQueryFactory({
       queryClient,
-      (args: { name: string }) =>
+      getQueryOptions: (args: { name: string }) =>
         queryOptions({
           queryKey: ['test', args.name],
           queryFn: () => mockIdiomaticQueryFn(args),
         }),
-    );
-    const reactiveQuery = ReactiveQueryFactory((args: { name: string }) =>
-      queryOptions({
-        queryKey: ['test', args.name],
-        queryFn: () => mockReactiveQueryFn(args),
-      }),
-    );
+    });
+    const reactiveQuery = ReactiveQueryFactory({
+      getQueryOptions: (args: { name: string }) =>
+        queryOptions({
+          queryKey: ['test', args.name],
+          queryFn: () => mockReactiveQueryFn(args),
+        }),
+    });
 
     const query = ChimericQueryTestHarness({
       chimericQuery: fuseChimericQuery({

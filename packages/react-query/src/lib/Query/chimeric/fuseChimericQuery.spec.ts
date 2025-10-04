@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  ChimericQueryWithOptionalParamsReturnsString,
+  makeIdiomaticQueryWithOptionalParamsReturnsString,
   makeIdiomaticQueryWithoutParamsReturnsString,
   makeIdiomaticQueryWithParamsReturnsString,
+  makeReactiveQueryWithOptionalParamsReturnsString,
   makeReactiveQueryWithoutParamsReturnsString,
   makeReactiveQueryWithParamsReturnsString,
 } from '../__tests__/queryFixtures';
@@ -115,5 +118,45 @@ describe('fuseChimericQuery', () => {
     expect(result).toBe('Hello John');
     expect(testChimericQuery).toHaveBeenCalled();
     expect(testChimericQuery.use).not.toHaveBeenCalled();
+  });
+
+  it('should handle optional Params', async () => {
+    makeReactiveQueryWithOptionalParamsReturnsString();
+    const testChimericQuery = fuseChimericQuery({
+      idiomatic: makeIdiomaticQueryWithOptionalParamsReturnsString(),
+      reactive: makeReactiveQueryWithOptionalParamsReturnsString(),
+    });
+
+    const result = await testChimericQuery();
+    expect(result).toEqual('Hello');
+
+    const resultWithParams = await testChimericQuery({ name: 'John' });
+    expect(resultWithParams).toEqual('Hello John');
+
+    const hookResult = testChimericQuery.use();
+    expect(hookResult.data).toEqual('Hello');
+
+    const hookResultWithParams = testChimericQuery.use({ name: 'John' });
+    expect(hookResultWithParams.data).toEqual('Hello John');
+  });
+
+  it('should handle type annotations with optional params', async () => {
+    const testChimericQuery: ChimericQueryWithOptionalParamsReturnsString =
+      fuseChimericQuery({
+        idiomatic: makeIdiomaticQueryWithOptionalParamsReturnsString(),
+        reactive: makeReactiveQueryWithOptionalParamsReturnsString(),
+      });
+
+    const result = await testChimericQuery();
+    expect(result).toEqual('Hello');
+
+    const resultWithParams = await testChimericQuery({ name: 'John' });
+    expect(resultWithParams).toEqual('Hello John');
+
+    const hookResult = testChimericQuery.use();
+    expect(hookResult.data).toEqual('Hello');
+
+    const hookResultWithParams = testChimericQuery.use({ name: 'John' });
+    expect(hookResultWithParams.data).toEqual('Hello John');
   });
 });

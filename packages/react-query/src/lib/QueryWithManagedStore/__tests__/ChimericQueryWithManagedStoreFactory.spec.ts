@@ -13,7 +13,8 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
     const queryClient = new QueryClient();
     const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
     let storeValue = 'initial';
-    const chimericQuery = ChimericQueryWithManagedStoreFactory(queryClient, {
+    const chimericQuery = ChimericQueryWithManagedStoreFactory({
+      queryClient,
       getQueryOptions: () =>
         queryOptions({
           queryKey: ['test'],
@@ -40,7 +41,8 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
     const queryClient = new QueryClient();
     const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
     let storeValue = 'initial';
-    const chimericQuery = ChimericQueryWithManagedStoreFactory(queryClient, {
+    const chimericQuery = ChimericQueryWithManagedStoreFactory({
+      queryClient,
       getQueryOptions: () =>
         queryOptions({
           queryKey: ['test'],
@@ -61,7 +63,8 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
     const queryClient = new QueryClient();
     const mockQueryFn = makeAsyncFnWithParamsReturnsString();
     let storeValue = 'initial';
-    const chimericQuery = ChimericQueryWithManagedStoreFactory(queryClient, {
+    const chimericQuery = ChimericQueryWithManagedStoreFactory({
+      queryClient,
       getQueryOptions: (args: { name: string }) =>
         queryOptions({
           queryKey: ['test'],
@@ -88,7 +91,8 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
     const queryClient = new QueryClient();
     const mockQueryFn = makeAsyncFnWithParamsReturnsString();
     let storeValue = 'initial';
-    const chimericQuery = ChimericQueryWithManagedStoreFactory(queryClient, {
+    const chimericQuery = ChimericQueryWithManagedStoreFactory({
+      queryClient,
       getQueryOptions: (args: { name: string }) =>
         queryOptions({
           queryKey: ['test'],
@@ -113,7 +117,8 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
     >;
     const queryClient = new QueryClient();
     const chimericQuery: TestChimericQuery =
-      ChimericQueryWithManagedStoreFactory(queryClient, {
+      ChimericQueryWithManagedStoreFactory({
+        queryClient,
         getQueryOptions: () =>
           queryOptions({
             queryKey: ['test'],
@@ -138,7 +143,8 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
     >;
     const queryClient = new QueryClient();
     const chimericQuery: TestChimericQuery =
-      ChimericQueryWithManagedStoreFactory(queryClient, {
+      ChimericQueryWithManagedStoreFactory({
+        queryClient,
         getQueryOptions: (args: { name: string }) =>
           queryOptions({
             queryKey: ['test', args.name],

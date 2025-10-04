@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createReactiveQuery } from './createReactiveQuery';
 import {
+  makeQueryHookWithOptionalParamsReturnsString,
   makeQueryHookWithoutParamsReturnsString,
   makeQueryHookWithParamsReturnsString,
+  ReactiveQueryWithOptionalParamsReturnsString,
   ReactiveQueryWithoutParamsReturnsString,
   ReactiveQueryWithParamsReturnsString,
 } from '../__tests__/queryFixtures';
@@ -78,5 +80,55 @@ describe('createReactiveQuery', () => {
     expect(result.error).toBeNull();
     expect(result.data).toBe('Hello John');
     expect(result.refetch).toBeDefined();
+  });
+
+  it('should handle optional params', () => {
+    const mockReactiveFn = makeQueryHookWithOptionalParamsReturnsString();
+    const reactiveQuery = createReactiveQuery(mockReactiveFn);
+    const resultWithParams = reactiveQuery.use({ name: 'John' });
+    const resultWithoutParams = reactiveQuery.use();
+
+    expect(resultWithParams.isIdle).toBe(true);
+    expect(resultWithParams.isPending).toBe(false);
+    expect(resultWithParams.isSuccess).toBe(true);
+    expect(resultWithParams.isError).toBe(false);
+    expect(resultWithParams.error).toBeNull();
+    expect(resultWithParams.data).toBe('Hello John');
+    expect(resultWithParams.refetch).toBeDefined();
+
+    expect(resultWithoutParams.isIdle).toBe(true);
+    expect(resultWithoutParams.isPending).toBe(false);
+    expect(resultWithoutParams.isSuccess).toBe(true);
+    expect(resultWithoutParams.isError).toBe(false);
+    expect(resultWithoutParams.error).toBeNull();
+    expect(resultWithoutParams.data).toBe('Hello');
+    expect(resultWithoutParams.refetch).toBeDefined();
+    expect(resultWithoutParams.native).toBeDefined();
+  });
+
+  it('should handle type annotations with optional params', () => {
+    const mockReactiveFn = makeQueryHookWithOptionalParamsReturnsString();
+    const reactiveQuery: ReactiveQueryWithOptionalParamsReturnsString =
+      createReactiveQuery(mockReactiveFn);
+    const resultWithParams = reactiveQuery.use({ name: 'John' });
+    const resultWithoutParams = reactiveQuery.use();
+
+    expect(resultWithParams.isIdle).toBe(true);
+    expect(resultWithParams.isPending).toBe(false);
+    expect(resultWithParams.isSuccess).toBe(true);
+    expect(resultWithParams.isError).toBe(false);
+    expect(resultWithParams.error).toBeNull();
+    expect(resultWithParams.data).toBe('Hello John');
+    expect(resultWithParams.refetch).toBeDefined();
+    expect(resultWithParams.native).toBeDefined();
+
+    expect(resultWithoutParams.isIdle).toBe(true);
+    expect(resultWithoutParams.isPending).toBe(false);
+    expect(resultWithoutParams.isSuccess).toBe(true);
+    expect(resultWithoutParams.isError).toBe(false);
+    expect(resultWithoutParams.error).toBeNull();
+    expect(resultWithoutParams.data).toBe('Hello');
+    expect(resultWithoutParams.refetch).toBeDefined();
+    expect(resultWithoutParams.native).toBeDefined();
   });
 });

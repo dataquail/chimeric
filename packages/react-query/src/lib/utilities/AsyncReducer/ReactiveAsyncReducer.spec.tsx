@@ -32,25 +32,27 @@ describe('ReactiveAsyncReducer', () => {
   };
 
   const createParamsQuery = () => {
-    return ReactiveQueryFactory((params: { name: string }) =>
-      queryOptions({
-        queryKey: ['test1'],
-        queryFn: () => {
-          return Promise.resolve(params.name);
-        },
-      }),
-    );
+    return ReactiveQueryFactory({
+      getQueryOptions: (params: { name: string }) =>
+        queryOptions({
+          queryKey: ['test1'],
+          queryFn: () => {
+            return Promise.resolve(params.name);
+          },
+        }),
+    });
   };
 
   const createNoParamsQuery = () => {
-    return ReactiveQueryFactory(() =>
-      queryOptions({
-        queryKey: ['test2'],
-        queryFn: () => {
-          return Promise.resolve('Bob' as const);
-        },
-      }),
-    );
+    return ReactiveQueryFactory({
+      getQueryOptions: () =>
+        queryOptions({
+          queryKey: ['test2'],
+          queryFn: () => {
+            return Promise.resolve('Bob' as const);
+          },
+        }),
+    });
   };
 
   const createParamsEagerAsync = () => {

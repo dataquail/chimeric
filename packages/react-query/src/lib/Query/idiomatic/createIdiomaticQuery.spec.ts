@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createIdiomaticQuery } from './createIdiomaticQuery';
 import {
+  makeAsyncFnWithOptionalParamsReturnsString,
   makeAsyncFnWithoutParamsReturnsString,
   makeAsyncFnWithParamsReturnsString,
 } from '../../__tests__/functionFixtures';
 import {
+  IdiomaticQueryWithOptionalParamsReturnsString,
   IdiomaticQueryWithoutParamsReturnsString,
   IdiomaticQueryWithParamsReturnsString,
 } from '../__tests__/queryFixtures';
@@ -66,5 +68,36 @@ describe('createIdiomaticQuery', () => {
 
     expect(result).toBe('Hello John');
     expect(mockQueryFn).toHaveBeenCalledWith({ name: 'John' });
+  });
+
+  it('should handle optional params', async () => {
+    const mockQueryFn = makeAsyncFnWithOptionalParamsReturnsString();
+    const idiomaticQuery = createIdiomaticQuery(mockQueryFn);
+
+    const resultWithParams = await idiomaticQuery({ name: 'John' });
+
+    expect(resultWithParams).toBe('Hello John');
+    expect(mockQueryFn).toHaveBeenCalledWith({ name: 'John' });
+
+    const resultWithoutParams = await idiomaticQuery();
+
+    expect(resultWithoutParams).toBe('Hello');
+    expect(mockQueryFn).toHaveBeenCalledWith();
+  });
+
+  it('should handle type annotations with optional params', async () => {
+    const mockQueryFn = makeAsyncFnWithOptionalParamsReturnsString();
+    const idiomaticQuery: IdiomaticQueryWithOptionalParamsReturnsString =
+      createIdiomaticQuery(mockQueryFn);
+
+    const resultWithParams = await idiomaticQuery({ name: 'John' });
+
+    expect(resultWithParams).toBe('Hello John');
+    expect(mockQueryFn).toHaveBeenCalledWith({ name: 'John' });
+
+    const resultWithoutParams = await idiomaticQuery();
+
+    expect(resultWithoutParams).toBe('Hello');
+    expect(mockQueryFn).toHaveBeenCalledWith();
   });
 });

@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  makeQueryHookWithOptionalParamsReturnsString,
   makeQueryHookWithoutParamsReturnsString,
   makeQueryHookWithParamsReturnsString,
+  ReactiveQueryWithOptionalParamsReturnsString,
   ReactiveQueryWithoutParamsReturnsString,
   ReactiveQueryWithParamsReturnsString,
 } from '../__tests__/queryFixtures';
@@ -76,6 +78,35 @@ describe('createReactiveQuery', () => {
     expect(result.isError).toBe(false);
     expect(result.error).toBeNull();
     expect(result.data).toBe(`Hello John`);
+    expect(result.refetch).toBeDefined();
+  });
+
+  it('should handle optional params', () => {
+    const mockReactiveFn = makeQueryHookWithOptionalParamsReturnsString();
+    const reactiveQuery = createReactiveQuery(mockReactiveFn);
+    const result = reactiveQuery.use();
+
+    expect(result.isIdle).toBe(true);
+    expect(result.isPending).toBe(false);
+    expect(result.isSuccess).toBe(true);
+    expect(result.isError).toBe(false);
+    expect(result.error).toBeNull();
+    expect(result.data).toBe(`Hello`);
+    expect(result.refetch).toBeDefined();
+  });
+
+  it('should handle type annotations with optional params', () => {
+    const mockReactiveFn = makeQueryHookWithOptionalParamsReturnsString();
+    const reactiveQuery: ReactiveQueryWithOptionalParamsReturnsString =
+      createReactiveQuery(mockReactiveFn);
+    const result = reactiveQuery.use();
+
+    expect(result.isIdle).toBe(true);
+    expect(result.isPending).toBe(false);
+    expect(result.isSuccess).toBe(true);
+    expect(result.isError).toBe(false);
+    expect(result.error).toBeNull();
+    expect(result.data).toBe(`Hello`);
     expect(result.refetch).toBeDefined();
   });
 });

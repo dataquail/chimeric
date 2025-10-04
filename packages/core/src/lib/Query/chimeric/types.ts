@@ -26,7 +26,7 @@ export type DefineChimericQuery<
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
 > = ChimericQuery<
-  Parameters<T>[0] extends void | object ? Parameters<T>[0] : never,
+  Parameters<T>[0],
   Awaited<ReturnType<T>>,
   E,
   TNativeIdiomaticOptions,

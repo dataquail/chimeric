@@ -4,34 +4,60 @@ import { checkOnInterval } from '../checkOnInterval.js';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
 import { IdiomaticQueryTestHarnessReturnType } from './types.js';
 
+// Required params (must come first - most specific)
+export function IdiomaticQueryTestHarness<
+  TParams,
+  TResult,
+  TError extends Error = Error,
+  TIdiomaticNativeOptions = unknown,
+>(args: {
+  idiomaticQuery: IdiomaticQuery<TParams, TResult, TIdiomaticNativeOptions>;
+  params: TParams;
+  options?: IdiomaticQueryOptions;
+  nativeOptions?: TIdiomaticNativeOptions;
+}): IdiomaticQueryTestHarnessReturnType<TResult, TError>;
+
+// Optional params (must come before no params)
+export function IdiomaticQueryTestHarness<
+  TParams,
+  TResult,
+  TError extends Error = Error,
+  TIdiomaticNativeOptions = unknown,
+>(args: {
+  idiomaticQuery: IdiomaticQuery<
+    TParams | undefined,
+    TResult,
+    TIdiomaticNativeOptions
+  >;
+  params?: TParams | undefined;
+  options?: IdiomaticQueryOptions;
+  nativeOptions?: TIdiomaticNativeOptions;
+}): IdiomaticQueryTestHarnessReturnType<TResult, TError>;
+
+// No params (least specific - must come last)
+export function IdiomaticQueryTestHarness<
+  TResult,
+  TError extends Error = Error,
+  TIdiomaticNativeOptions = unknown,
+>(args: {
+  idiomaticQuery: IdiomaticQuery<void, TResult, TIdiomaticNativeOptions>;
+  options?: IdiomaticQueryOptions;
+  nativeOptions?: TIdiomaticNativeOptions;
+}): IdiomaticQueryTestHarnessReturnType<TResult, TError>;
+
+// Implementation
 export function IdiomaticQueryTestHarness<
   TParams = void,
   TResult = unknown,
   TError extends Error = Error,
   TIdiomaticNativeOptions = unknown,
->(
-  args: TParams extends void
-    ? {
-        idiomaticQuery: IdiomaticQuery<
-          TParams,
-          TResult,
-          TIdiomaticNativeOptions
-        >;
-        options?: IdiomaticQueryOptions;
-        nativeOptions?: TIdiomaticNativeOptions;
-      }
-    : {
-        idiomaticQuery: IdiomaticQuery<
-          TParams,
-          TResult,
-          TIdiomaticNativeOptions
-        >;
-        params: TParams;
-        options?: IdiomaticQueryOptions;
-        nativeOptions?: TIdiomaticNativeOptions;
-      },
-): IdiomaticQueryTestHarnessReturnType<TResult, TError> {
-  const { idiomaticQuery, options, nativeOptions } = args;
+>(args: {
+  idiomaticQuery: IdiomaticQuery<TParams, TResult, TIdiomaticNativeOptions>;
+  params?: TParams;
+  options?: IdiomaticQueryOptions;
+  nativeOptions?: TIdiomaticNativeOptions;
+}): IdiomaticQueryTestHarnessReturnType<TResult, TError> {
+  const { idiomaticQuery, options, nativeOptions, params } = args;
   const result = {
     current: {
       data: undefined as TResult | undefined,
@@ -49,17 +75,26 @@ export function IdiomaticQueryTestHarness<
     | 'rejected';
   result.current.isIdle = false;
   result.current.isPending = true;
-  let promise = idiomaticQuery({
-    ...(args as { params: TParams }).params,
-    options,
-    nativeOptions,
-  } as {
-    options: IdiomaticQueryOptions;
-    nativeOptions: TIdiomaticNativeOptions;
-  } & TParams & {
-      options?: IdiomaticQueryOptions;
-      nativeOptions?: TIdiomaticNativeOptions;
-    });
+
+  const allOptions = {};
+  if (options) {
+    (allOptions as { options?: IdiomaticQueryOptions }).options = options;
+  }
+  if (nativeOptions) {
+    (allOptions as { nativeOptions?: TIdiomaticNativeOptions }).nativeOptions =
+      nativeOptions;
+  }
+
+  const hookArgs =
+    idiomaticQuery.length === 1
+      ? Object.keys(allOptions).length
+        ? ([allOptions] as const)
+        : []
+      : Object.keys(allOptions).length
+      ? ([params, allOptions] as const)
+      : ([params] as const);
+
+  let promise = idiomaticQuery(...(hookArgs as [any]));
   promiseStatus = 'pending';
   promise
     .then((data) => {
@@ -85,17 +120,7 @@ export function IdiomaticQueryTestHarness<
       return new Promise<void>(async (resolve, reject) => {
         try {
           if (options?.reinvokeIdiomaticFn && promiseStatus === 'resolved') {
-            promise = idiomaticQuery({
-              ...(args as { params: TParams }).params,
-              options,
-              nativeOptions,
-            } as {
-              options: IdiomaticQueryOptions;
-              nativeOptions: TIdiomaticNativeOptions;
-            } & TParams & {
-                options?: IdiomaticQueryOptions;
-                nativeOptions?: TIdiomaticNativeOptions;
-              });
+            promise = idiomaticQuery(...(hookArgs as [any]));
             promiseStatus = 'pending';
             promise
               .then((data) => {
