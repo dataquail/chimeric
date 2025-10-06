@@ -13,19 +13,17 @@ export function ChimericQueryFactory<
   TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
->(
-  queryClient: QueryClient,
+>({
+  queryClient,
+  getQueryOptions,
+}: {
+  queryClient: QueryClient;
   getQueryOptions: (
     params: TParams,
-  ) => ReturnType<typeof queryOptions<TResult, TError, TResult, TQueryKey>>,
-): ChimericQuery<
-  TParams extends undefined ? void : TParams,
-  TResult,
-  TError,
-  TQueryKey
-> {
+  ) => ReturnType<typeof queryOptions<TResult, TError, TResult, TQueryKey>>;
+}): ChimericQuery<TParams, TResult, TError, TQueryKey> {
   return fuseChimericQuery({
-    idiomatic: IdiomaticQueryFactory(queryClient, getQueryOptions),
-    reactive: ReactiveQueryFactory(getQueryOptions),
+    idiomatic: IdiomaticQueryFactory({ queryClient, getQueryOptions }),
+    reactive: ReactiveQueryFactory({ getQueryOptions }),
   });
 }

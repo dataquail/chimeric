@@ -7,24 +7,17 @@ export function ReactiveQueryFactory<
   TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
->(
+>({
+  getQueryOptions,
+}: {
   getQueryOptions: (
     params: TParams,
-  ) => ReturnType<typeof queryOptions<TResult, TError, TResult, TQueryKey>>,
-): ReactiveQuery<
-  TParams extends undefined ? void : TParams,
-  TResult,
-  TError,
-  TQueryKey
-> {
-  const query = (
-    paramsAndOptions: Parameters<
-      ReactiveQuery<TParams, TResult, TError, TQueryKey>['use']
-    >[0],
-  ) => {
-    const { options, nativeOptions, ...params } = paramsAndOptions ?? {};
+  ) => ReturnType<typeof queryOptions<TResult, TError, TResult, TQueryKey>>;
+}): ReactiveQuery<TParams, TResult, TError, TQueryKey> {
+  return createReactiveQuery((params, queryAllOptions = {}) => {
+    const { options, nativeOptions } = queryAllOptions;
     const query = useQuery({
-      ...getQueryOptions(params as TParams),
+      ...getQueryOptions(params),
       enabled: options?.enabled ?? true,
       ...nativeOptions,
     });
@@ -38,13 +31,6 @@ export function ReactiveQueryFactory<
       data: query.data,
       refetch: async () => (await query.refetch()).data as TResult,
       native: query,
-    } as ReturnType<ReactiveQuery<TParams, TResult, TError, TQueryKey>['use']>;
-  };
-
-  return createReactiveQuery(query) as ReactiveQuery<
-    TParams extends undefined ? void : TParams,
-    TResult,
-    TError,
-    TQueryKey
-  >;
+    };
+  });
 }

@@ -86,5 +86,7 @@ export function ChimericQueryTestHarness<
       }
     : never,
 ): ChimericQueryTestHarnessReturnType<TResult, TError, TMethod> {
-  return CoreChimericQueryTestHarness(args);
+  return CoreChimericQueryTestHarness(
+    args as any, // TS can't seem to infer the type here correctly
+  ) as ChimericQueryTestHarnessReturnType<TResult, TError, TMethod>;
 }

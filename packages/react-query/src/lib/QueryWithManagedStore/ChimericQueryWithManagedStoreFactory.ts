@@ -13,28 +13,28 @@ export function ChimericQueryWithManagedStoreFactory<
   TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
->(
-  queryClient: QueryClient,
-  options: {
-    getFromStore: (args: TParams) => TResult;
-    useFromStore: (args: TParams) => TResult;
-    getQueryOptions: (
-      args: TParams,
-    ) => ReturnType<typeof queryOptions<void, TError, void, TQueryKey>>;
-  },
-): ChimericQuery<
-  TParams extends undefined ? void : TParams,
-  TResult,
-  TError,
-  TQueryKey
-> {
+>({
+  queryClient,
+  getFromStore,
+  useFromStore,
+  getQueryOptions,
+}: {
+  queryClient: QueryClient;
+  getFromStore: (params: TParams) => TResult;
+  useFromStore: (params: TParams) => TResult;
+  getQueryOptions: (
+    params: TParams,
+  ) => ReturnType<typeof queryOptions<void, TError, void, TQueryKey>>;
+}): ChimericQuery<TParams, TResult, TError, TQueryKey> {
   return fuseChimericQuery({
-    idiomatic: IdiomaticQueryWithManagedStoreFactory(queryClient, options),
-    reactive: ReactiveQueryWithManagedStoreFactory(options),
-  }) as ChimericQuery<
-    TParams extends undefined ? void : TParams,
-    TResult,
-    TError,
-    TQueryKey
-  >;
+    idiomatic: IdiomaticQueryWithManagedStoreFactory({
+      queryClient,
+      getFromStore,
+      getQueryOptions,
+    }),
+    reactive: ReactiveQueryWithManagedStoreFactory({
+      useFromStore,
+      getQueryOptions,
+    }),
+  });
 }

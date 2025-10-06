@@ -49,25 +49,29 @@ describe('ChimericAsyncReducer', () => {
   };
 
   const createParamsQuery = () => {
-    return ChimericQueryFactory(new QueryClient(), (params: { name: string }) =>
-      queryOptions({
-        queryKey: ['test1'],
-        queryFn: () => {
-          return Promise.resolve(params.name);
-        },
-      }),
-    );
+    return ChimericQueryFactory({
+      queryClient: new QueryClient(),
+      getQueryOptions: (params: { name: string }) =>
+        queryOptions({
+          queryKey: ['test1'],
+          queryFn: () => {
+            return Promise.resolve(params.name);
+          },
+        }),
+    });
   };
 
   const createNoParamsQuery = () => {
-    return ChimericQueryFactory(new QueryClient(), () =>
-      queryOptions({
-        queryKey: ['test2'],
-        queryFn: () => {
-          return Promise.resolve('Bob' as const);
-        },
-      }),
-    );
+    return ChimericQueryFactory({
+      queryClient: new QueryClient(),
+      getQueryOptions: () =>
+        queryOptions({
+          queryKey: ['test2'],
+          queryFn: () => {
+            return Promise.resolve('Bob' as const);
+          },
+        }),
+    });
   };
 
   const createParamsEagerAsync = () => {

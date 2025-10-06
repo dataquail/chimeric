@@ -30,7 +30,8 @@ export const GetOneByIdMethodImpl = (
   appStore: AppStore,
   queryClient: QueryClient,
 ): IActiveTodoService['getOneById'] => {
-  return ChimericQueryWithManagedStoreFactory(queryClient, {
+  return ChimericQueryWithManagedStoreFactory({
+    queryClient,
     getFromStore: (args) => appStore.getState().todo.activeTodos.dict[args.id],
     useFromStore: (args) =>
       useAppSelector((state) => state.todo.activeTodos.dict[args.id]),

@@ -11,53 +11,28 @@ export function IdiomaticQueryFactory<
   TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
->(
-  queryClient: QueryClient,
+>({
+  queryClient,
+  getQueryOptions,
+}: {
+  queryClient: QueryClient;
   getQueryOptions: (
     args: TParams,
-  ) => ReturnType<typeof queryOptions<TResult, TError, TResult, TQueryKey>>,
-): IdiomaticQuery<
-  TParams extends undefined ? void : TParams,
-  TResult,
-  TError,
-  TQueryKey
-> {
-  const idiomaticQuery = async (
-    paramsAndOptions: Parameters<
-      IdiomaticQuery<
-        TParams extends undefined ? void : TParams,
-        TResult,
-        TError,
-        TQueryKey
-      >
-    >[0],
-  ) => {
-    const { options, nativeOptions, ...params } = paramsAndOptions ?? {};
-    const queryOptions = getQueryOptions(params as TParams);
+  ) => ReturnType<typeof queryOptions<TResult, TError, TResult, TQueryKey>>;
+}): IdiomaticQuery<TParams, TResult, TError, TQueryKey> {
+  return createIdiomaticQuery(async (params, allOptions = {}) => {
+    const { options, nativeOptions } = allOptions ?? {};
+    const queryOptions = getQueryOptions(params);
 
     const fetchQueryOptions = {
       ...queryOptions,
       ...nativeOptions,
     };
 
-    if (options?.forceRefetch) {
+    if (options?.forceRefetch && fetchQueryOptions.staleTime === undefined) {
       fetchQueryOptions.staleTime = 0;
     }
 
     return queryClient.fetchQuery(fetchQueryOptions);
-  };
-
-  return createIdiomaticQuery(
-    idiomaticQuery as IdiomaticQuery<
-      TParams extends undefined ? void : TParams,
-      TResult,
-      TError,
-      TQueryKey
-    >,
-  ) as IdiomaticQuery<
-    TParams extends undefined ? void : TParams,
-    TResult,
-    TError,
-    TQueryKey
-  >;
+  });
 }

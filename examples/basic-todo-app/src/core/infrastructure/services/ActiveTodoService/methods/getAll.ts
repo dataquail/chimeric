@@ -32,7 +32,8 @@ export const getQueryOptionsGetAll = () =>
   });
 
 export const GetAllMethodImpl: IActiveTodoService['getAll'] =
-  ChimericQueryWithManagedStoreFactory(queryClient, {
+  ChimericQueryWithManagedStoreFactory({
+    queryClient,
     getQueryOptions: getQueryOptionsGetAll,
     getFromStore: () =>
       Object.values(appStore.getState().todo.activeTodos.dict).filter(

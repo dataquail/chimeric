@@ -15,12 +15,13 @@ describe('ReactiveQueryFactory', () => {
   it('should invoke the reactive hook', async () => {
     const queryClient = new QueryClient();
     const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
-    const reactiveQuery = ReactiveQueryFactory(() =>
-      queryOptions({
-        queryKey: ['test'],
-        queryFn: mockQueryFn,
-      }),
-    );
+    const reactiveQuery = ReactiveQueryFactory({
+      getQueryOptions: () =>
+        queryOptions({
+          queryKey: ['test'],
+          queryFn: mockQueryFn,
+        }),
+    });
 
     const { result } = renderHook(reactiveQuery.use, {
       wrapper: getTestWrapper(queryClient),
@@ -37,12 +38,13 @@ describe('ReactiveQueryFactory', () => {
   it('should invoke the reactive hook with object params', async () => {
     const queryClient = new QueryClient();
     const mockQueryFn = makeAsyncFnWithParamsReturnsString();
-    const chimericQuery = ReactiveQueryFactory((args: { name: string }) =>
-      queryOptions({
-        queryKey: ['test', args.name],
-        queryFn: async () => mockQueryFn(args),
-      }),
-    );
+    const chimericQuery = ReactiveQueryFactory({
+      getQueryOptions: (args: { name: string }) =>
+        queryOptions({
+          queryKey: ['test', args.name],
+          queryFn: async () => mockQueryFn(args),
+        }),
+    });
     const { result } = renderHook(() => chimericQuery.use({ name: 'John' }), {
       wrapper: getTestWrapper(queryClient),
     });
@@ -58,12 +60,13 @@ describe('ReactiveQueryFactory', () => {
   it('should invoke the reactive hook with non-object params', async () => {
     const queryClient = new QueryClient();
     const mockQueryFn = makeAsyncFnWithParamsReturnsString();
-    const chimericQuery = ReactiveQueryFactory((args: { name: string }) =>
-      queryOptions({
-        queryKey: ['test', args.name],
-        queryFn: async () => mockQueryFn(args),
-      }),
-    );
+    const chimericQuery = ReactiveQueryFactory({
+      getQueryOptions: (args: { name: string }) =>
+        queryOptions({
+          queryKey: ['test', args.name],
+          queryFn: async () => mockQueryFn(args),
+        }),
+    });
     const { result } = renderHook(() => chimericQuery.use({ name: 'John' }), {
       wrapper: getTestWrapper(queryClient),
     });
@@ -79,14 +82,15 @@ describe('ReactiveQueryFactory', () => {
   it('should disable the reactive hook', async () => {
     const queryClient = new QueryClient();
     const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
-    const reactiveQuery = ReactiveQueryFactory(() =>
-      queryOptions({
-        queryKey: ['test'],
-        queryFn: mockQueryFn,
-      }),
-    );
+    const reactiveQuery = ReactiveQueryFactory({
+      getQueryOptions: () =>
+        queryOptions({
+          queryKey: ['test'],
+          queryFn: mockQueryFn,
+        }),
+    });
     const { result } = renderHook(
-      () => reactiveQuery.use({ options: { enabled: false } }),
+      () => reactiveQuery.use(undefined, { options: { enabled: false } }),
       { wrapper: getTestWrapper(queryClient) },
     );
 
@@ -97,14 +101,16 @@ describe('ReactiveQueryFactory', () => {
   it('should disable the reactive hook with params', async () => {
     const queryClient = new QueryClient();
     const mockQueryFn = makeAsyncFnWithParamsReturnsString();
-    const reactiveQuery = ReactiveQueryFactory((args: { name: string }) =>
-      queryOptions({
-        queryKey: ['test', args.name],
-        queryFn: async () => mockQueryFn(args),
-      }),
-    );
+    const reactiveQuery = ReactiveQueryFactory({
+      getQueryOptions: (args: { name: string }) =>
+        queryOptions({
+          queryKey: ['test', args.name],
+          queryFn: async () => mockQueryFn(args),
+        }),
+    });
     const { result } = renderHook(
-      () => reactiveQuery.use({ name: 'John', options: { enabled: false } }),
+      () =>
+        reactiveQuery.use({ name: 'John' }, { options: { enabled: false } }),
       { wrapper: getTestWrapper(queryClient) },
     );
 
@@ -115,14 +121,16 @@ describe('ReactiveQueryFactory', () => {
   it('should disable the reactive hook with non-object params', async () => {
     const queryClient = new QueryClient();
     const mockQueryFn = makeAsyncFnWithParamsReturnsString();
-    const reactiveQuery = ReactiveQueryFactory((args: { name: string }) =>
-      queryOptions({
-        queryKey: ['test', args.name],
-        queryFn: async () => mockQueryFn(args),
-      }),
-    );
+    const reactiveQuery = ReactiveQueryFactory({
+      getQueryOptions: (args: { name: string }) =>
+        queryOptions({
+          queryKey: ['test', args.name],
+          queryFn: async () => mockQueryFn(args),
+        }),
+    });
     const { result } = renderHook(
-      () => reactiveQuery.use({ name: 'John', options: { enabled: false } }),
+      () =>
+        reactiveQuery.use({ name: 'John' }, { options: { enabled: false } }),
       { wrapper: getTestWrapper(queryClient) },
     );
 
@@ -134,12 +142,13 @@ describe('ReactiveQueryFactory', () => {
     const queryClient = new QueryClient();
     const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
     const reactiveQuery: ReactiveQueryWithoutParamsReturnsString =
-      ReactiveQueryFactory(() =>
-        queryOptions({
-          queryKey: ['test'],
-          queryFn: mockQueryFn,
-        }),
-      );
+      ReactiveQueryFactory({
+        getQueryOptions: () =>
+          queryOptions({
+            queryKey: ['test'],
+            queryFn: mockQueryFn,
+          }),
+      });
 
     const { result } = renderHook(() => reactiveQuery.use(), {
       wrapper: getTestWrapper(queryClient),
@@ -160,12 +169,13 @@ describe('ReactiveQueryFactory', () => {
     const queryClient = new QueryClient();
     const mockQueryFn = makeAsyncFnWithParamsReturnsString();
     const reactiveQuery: ReactiveQueryWithParamsReturnsString =
-      ReactiveQueryFactory((args: { name: string }) =>
-        queryOptions({
-          queryKey: ['test', args.name],
-          queryFn: async () => mockQueryFn(args),
-        }),
-      );
+      ReactiveQueryFactory({
+        getQueryOptions: (args: { name: string }) =>
+          queryOptions({
+            queryKey: ['test', args.name],
+            queryFn: async () => mockQueryFn(args),
+          }),
+      });
     const { result } = renderHook(() => reactiveQuery.use({ name: 'John' }), {
       wrapper: getTestWrapper(queryClient),
     });

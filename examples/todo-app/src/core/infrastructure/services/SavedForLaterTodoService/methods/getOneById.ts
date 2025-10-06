@@ -31,5 +31,8 @@ export const getQueryOptionsGetOneById = (args: { id: string }) =>
 export const GetOneByIdMethodImpl = (
   queryClient: QueryClient,
 ): ISavedForLaterTodoService['getOneById'] => {
-  return ChimericQueryFactory(queryClient, getQueryOptionsGetOneById);
+  return ChimericQueryFactory({
+    queryClient,
+    getQueryOptions: getQueryOptionsGetOneById,
+  });
 };

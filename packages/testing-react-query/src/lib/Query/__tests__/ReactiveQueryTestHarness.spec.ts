@@ -11,12 +11,13 @@ describe('ReactiveQueryTestHarness', () => {
   it('should be a function', async () => {
     const queryClient = new QueryClient();
     const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
-    const reactiveQuery = ReactiveQueryFactory(() =>
-      queryOptions({
-        queryKey: ['test'],
-        queryFn: mockQueryFn,
-      }),
-    );
+    const reactiveQuery = ReactiveQueryFactory({
+      getQueryOptions: () =>
+        queryOptions({
+          queryKey: ['test'],
+          queryFn: mockQueryFn,
+        }),
+    });
 
     const query = ReactiveQueryTestHarness({
       reactiveQuery,
@@ -45,12 +46,13 @@ describe('ReactiveQueryTestHarness', () => {
   it('should wait for success with params', async () => {
     const queryClient = new QueryClient();
     const mockQueryFn = makeAsyncFnWithParamsReturnsString();
-    const reactiveQuery = ReactiveQueryFactory((args: { name: string }) =>
-      queryOptions({
-        queryKey: ['test', args.name],
-        queryFn: () => mockQueryFn(args),
-      }),
-    );
+    const reactiveQuery = ReactiveQueryFactory({
+      getQueryOptions: (args: { name: string }) =>
+        queryOptions({
+          queryKey: ['test', args.name],
+          queryFn: () => mockQueryFn(args),
+        }),
+    });
 
     const query = ReactiveQueryTestHarness({
       reactiveQuery,

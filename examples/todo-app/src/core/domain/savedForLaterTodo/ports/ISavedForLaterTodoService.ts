@@ -7,10 +7,15 @@ import { SaveForLaterBody } from 'src/core/domain/savedForLaterTodo/dtos/in/Save
 import { ActivateBody } from 'src/core/domain/savedForLaterTodo/dtos/in/ActivateBody';
 
 export type ISavedForLaterTodoService = {
-  getAll: DefineChimericQuery<() => Promise<SavedForLaterTodo[]>, Error>;
+  getAll: DefineChimericQuery<
+    () => Promise<SavedForLaterTodo[]>,
+    Error,
+    string[]
+  >;
   getOneById: DefineChimericQuery<
     (args: { id: string }) => Promise<SavedForLaterTodo>,
-    Error
+    Error,
+    string[]
   >;
   saveForLater: DefineChimericMutation<
     (body: SaveForLaterBody) => Promise<{ id: string }>,

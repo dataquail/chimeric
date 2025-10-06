@@ -1,8 +1,8 @@
 import {
   ChimericQuery,
-  IdiomaticQuery,
+  // IdiomaticQuery,
   IdiomaticQueryOptions,
-  ReactiveQuery,
+  // ReactiveQuery,
   ReactiveQueryOptions,
 } from '@chimeric/core';
 import { JSX, ReactNode } from 'react';
@@ -71,12 +71,8 @@ export function ChimericQueryTestHarness<
   } = args;
   if (method === 'idiomatic') {
     return IdiomaticQueryTestHarness({
-      idiomaticQuery: chimericQuery as IdiomaticQuery<
-        object,
-        TResult,
-        TIdiomaticNativeOptions
-      >,
-      params: (args as { params: object }).params,
+      idiomaticQuery: chimericQuery as any,
+      params: (args as { params: TParams }).params as any,
       options: idiomaticOptions,
       nativeOptions: idiomaticNativeOptions,
     }) as ChimericQueryTestHarnessReturnType<
@@ -87,14 +83,8 @@ export function ChimericQueryTestHarness<
     >;
   } else {
     return ReactiveQueryTestHarness({
-      reactiveQuery: chimericQuery as ReactiveQuery<
-        object,
-        TResult,
-        TError,
-        TReactiveNativeOptions,
-        TReactiveNativeReturnType
-      >,
-      params: (args as { params: object }).params,
+      reactiveQuery: chimericQuery as any,
+      params: (args as { params: TParams }).params as any,
       options: reactiveOptions,
       nativeOptions: reactiveNativeOptions,
       wrapper,

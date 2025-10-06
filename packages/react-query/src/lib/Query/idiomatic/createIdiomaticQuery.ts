@@ -9,16 +9,6 @@ export function createIdiomaticQuery<
   TQueryKey extends QueryKey = QueryKey,
 >(
   idiomaticFn: IdiomaticQuery<TParams, TResult, TError, TQueryKey>,
-): IdiomaticQuery<
-  TParams extends undefined ? void : TParams,
-  TResult,
-  TError,
-  TQueryKey
-> {
-  return coreCreateIdiomaticQuery(idiomaticFn) as IdiomaticQuery<
-    TParams extends undefined ? void : TParams,
-    TResult,
-    TError,
-    TQueryKey
-  >;
+): IdiomaticQuery<TParams, TResult, TError, TQueryKey> {
+  return coreCreateIdiomaticQuery(idiomaticFn);
 }

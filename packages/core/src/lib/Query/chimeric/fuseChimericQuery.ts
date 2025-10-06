@@ -31,11 +31,8 @@ export function fuseChimericQuery<
   TNativeReactiveOptions,
   TNativeReactiveResult
 > {
-  if (
-    isIdiomaticQuery(args.idiomatic) &&
-    isReactiveQuery(args.reactive)
-  ) {
-    const chimericFn = args.idiomatic as ChimericQuery<
+  if (isIdiomaticQuery(args.idiomatic) && isReactiveQuery(args.reactive)) {
+    const chimericFn = args.idiomatic as unknown as ChimericQuery<
       TParams,
       TResult,
       TError,

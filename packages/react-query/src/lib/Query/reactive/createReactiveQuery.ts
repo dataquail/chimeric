@@ -23,10 +23,5 @@ export function createReactiveQuery<
     TanstackQueryReactiveReturnType<TResult, TError>
   >['use'],
 ): ReactiveQuery<TParams, TResult, TError, TQueryKey> {
-  return coreCreateReactiveQuery(reactiveFn) as ReactiveQuery<
-    TParams,
-    TResult,
-    TError,
-    TQueryKey
-  >;
+  return coreCreateReactiveQuery(reactiveFn);
 }

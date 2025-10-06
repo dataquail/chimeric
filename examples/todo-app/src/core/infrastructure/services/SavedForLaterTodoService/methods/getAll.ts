@@ -29,5 +29,8 @@ export const getQueryOptionsGetAll = () =>
 export const GetAllMethodImpl = (
   queryClient: QueryClient,
 ): ISavedForLaterTodoService['getAll'] => {
-  return ChimericQueryFactory(queryClient, getQueryOptionsGetAll);
+  return ChimericQueryFactory({
+    queryClient,
+    getQueryOptions: getQueryOptionsGetAll,
+  });
 };
