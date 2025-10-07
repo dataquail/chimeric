@@ -12,81 +12,109 @@ import {
   ChimericQueryTestHarness as CoreChimericQueryTestHarness,
 } from '@chimeric/testing-core';
 
+// Required params (must come first - most specific)
 export function ChimericQueryTestHarness<
   TParams = void,
   TResult = unknown,
   TError extends Error = Error,
-  TMethod = (typeof chimericMethods)[number],
+  TMethod extends (typeof chimericMethods)[number] = (typeof chimericMethods)[number],
   TQueryKey extends QueryKey = QueryKey,
->(
-  args: TParams extends object
-    ? Omit<TParams, 'options' | 'nativeOptions'> extends
-        | undefined
-        | {
-            options?: ReactiveQueryOptions;
-            nativeOptions?: TanstackQueryReactiveNativeOptions<
-              TResult,
-              TError,
-              TQueryKey
-            >;
-          }
-      ? {
-          chimericQuery: ChimericQuery<TParams, TResult, TError, TQueryKey>;
-          method: TMethod;
-          params: TParams;
-          reactiveOptions?: ReactiveQueryOptions;
-          reactiveNativeOptions?: TanstackQueryReactiveNativeOptions<
-            TResult,
-            TError,
-            TQueryKey
-          >;
-          idiomaticOptions?: IdiomaticQueryOptions;
-          idiomaticNativeOptions?: TanstackQueryIdiomaticNativeOptions<
-            TResult,
-            TError,
-            TQueryKey
-          >;
-          wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-        }
-      : {
-          chimericQuery: ChimericQuery<TParams, TResult, TError, TQueryKey>;
-          method: TMethod;
-          params: TParams;
-          reactiveOptions?: ReactiveQueryOptions;
-          reactiveNativeOptions?: TanstackQueryReactiveNativeOptions<
-            TResult,
-            TError,
-            TQueryKey
-          >;
-          idiomaticOptions?: IdiomaticQueryOptions;
-          idiomaticNativeOptions?: TanstackQueryIdiomaticNativeOptions<
-            TResult,
-            TError,
-            TQueryKey
-          >;
-          wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-        }
-    : TParams extends void
-    ? {
-        chimericQuery: ChimericQuery<TParams, TResult, TError, TQueryKey>;
-        method: TMethod;
-        reactiveOptions?: ReactiveQueryOptions;
-        reactiveNativeOptions?: TanstackQueryReactiveNativeOptions<
-          TResult,
-          TError,
-          TQueryKey
-        >;
-        idiomaticOptions?: IdiomaticQueryOptions;
-        idiomaticNativeOptions?: TanstackQueryIdiomaticNativeOptions<
-          TResult,
-          TError,
-          TQueryKey
-        >;
-        wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-      }
-    : never,
-): ChimericQueryTestHarnessReturnType<TResult, TError, TMethod> {
+>(args: {
+  chimericQuery: ChimericQuery<TParams, TResult, TError, TQueryKey>;
+  method: TMethod;
+  params: TParams;
+  reactiveOptions?: ReactiveQueryOptions;
+  reactiveNativeOptions?: TanstackQueryReactiveNativeOptions<
+    TResult,
+    TError,
+    TQueryKey
+  >;
+  idiomaticOptions?: IdiomaticQueryOptions;
+  idiomaticNativeOptions?: TanstackQueryIdiomaticNativeOptions<
+    TResult,
+    TError,
+    TQueryKey
+  >;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): ChimericQueryTestHarnessReturnType<TResult, TError, TMethod>;
+
+// Optional params (must come before no params)
+
+export function ChimericQueryTestHarness<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+  TMethod extends (typeof chimericMethods)[number] = (typeof chimericMethods)[number],
+  TQueryKey extends QueryKey = QueryKey,
+>(args: {
+  chimericQuery: ChimericQuery<TParams | undefined, TResult, TError, TQueryKey>;
+  method: TMethod;
+  params?: NonNullable<TParams>;
+  reactiveOptions?: ReactiveQueryOptions;
+  reactiveNativeOptions?: TanstackQueryReactiveNativeOptions<
+    TResult,
+    TError,
+    TQueryKey
+  >;
+  idiomaticOptions?: IdiomaticQueryOptions;
+  idiomaticNativeOptions?: TanstackQueryIdiomaticNativeOptions<
+    TResult,
+    TError,
+    TQueryKey
+  >;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): ChimericQueryTestHarnessReturnType<TResult, TError, TMethod>;
+
+// No params (least specific - must come last)
+export function ChimericQueryTestHarness<
+  TResult = unknown,
+  TError extends Error = Error,
+  TMethod extends (typeof chimericMethods)[number] = (typeof chimericMethods)[number],
+  TQueryKey extends QueryKey = QueryKey,
+>(args: {
+  chimericQuery: ChimericQuery<void, TResult, TError, TQueryKey>;
+  method: TMethod;
+  reactiveOptions?: ReactiveQueryOptions;
+  reactiveNativeOptions?: TanstackQueryReactiveNativeOptions<
+    TResult,
+    TError,
+    TQueryKey
+  >;
+  idiomaticOptions?: IdiomaticQueryOptions;
+  idiomaticNativeOptions?: TanstackQueryIdiomaticNativeOptions<
+    TResult,
+    TError,
+    TQueryKey
+  >;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): ChimericQueryTestHarnessReturnType<TResult, TError, TMethod>;
+
+// Implementation
+export function ChimericQueryTestHarness<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+  TMethod extends (typeof chimericMethods)[number] = (typeof chimericMethods)[number],
+  TQueryKey extends QueryKey = QueryKey,
+>(args: {
+  chimericQuery: ChimericQuery<TParams | void, TResult, TError, TQueryKey>;
+  method: TMethod;
+  params?: TParams;
+  reactiveOptions?: ReactiveQueryOptions;
+  reactiveNativeOptions?: TanstackQueryReactiveNativeOptions<
+    TResult,
+    TError,
+    TQueryKey
+  >;
+  idiomaticOptions?: IdiomaticQueryOptions;
+  idiomaticNativeOptions?: TanstackQueryIdiomaticNativeOptions<
+    TResult,
+    TError,
+    TQueryKey
+  >;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): ChimericQueryTestHarnessReturnType<TResult, TError, TMethod> {
   return CoreChimericQueryTestHarness(
-    args as any, // TS can't seem to infer the type here correctly
+    args,
   ) as ChimericQueryTestHarnessReturnType<TResult, TError, TMethod>;
 }

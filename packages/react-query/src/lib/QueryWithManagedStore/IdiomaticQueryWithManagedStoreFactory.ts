@@ -27,7 +27,7 @@ export function IdiomaticQueryWithManagedStoreFactory<
       const { queryFn, queryKey, ...restInitialQueryOptions } =
         getQueryOptions(params);
 
-      let chimericOptions: { staleTime?: number } = {};
+      const chimericOptions: { staleTime?: number } = {};
 
       if (options?.forceRefetch) {
         chimericOptions.staleTime = 0;

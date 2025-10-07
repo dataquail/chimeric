@@ -4,17 +4,19 @@ import {
   IdiomaticQueryOptions,
   ReactiveQueryOptions,
 } from '@chimeric/core';
+import { TanstackQueryIdiomaticNativeOptions } from '@chimeric/react-query';
 
 export const makeIdiomaticQueryWithoutParamsReturnsString = () =>
   createIdiomaticQuery(
     vi.fn(
-      async (
-        _noarg?: undefined,
-        _allOptions?: {
-          options?: IdiomaticQueryOptions;
-          nativeOptions?: undefined;
-        },
-      ) => 'test',
+      async (_allOptions?: {
+        options?: IdiomaticQueryOptions;
+        nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+          string,
+          Error,
+          string[]
+        >;
+      }) => 'test',
     ),
   );
 
@@ -25,7 +27,11 @@ export const makeIdiomaticQueryWithParamsReturnsString = () =>
         args: { name: string },
         _allOptions?: {
           options?: IdiomaticQueryOptions;
-          nativeOptions?: undefined;
+          nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+            string,
+            Error,
+            string[]
+          >;
         },
       ) => `Hello ${args.name}`,
     ),
@@ -38,7 +44,11 @@ export const makeIdiomaticQueryWithOptionalParamsReturnsString = () =>
         args?: { name: string },
         _allOptions?: {
           options?: IdiomaticQueryOptions;
-          nativeOptions?: undefined;
+          nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+            string,
+            Error,
+            string[]
+          >;
         },
       ) => (args ? `Hello ${args.name}` : 'Hello'),
     ),
@@ -47,13 +57,14 @@ export const makeIdiomaticQueryWithOptionalParamsReturnsString = () =>
 export const makeReactiveQueryWithoutParamsReturnsString = () =>
   createReactiveQuery(
     vi.fn(
-      (
-        _noarg?: undefined,
-        _allOptions?: {
-          options?: ReactiveQueryOptions;
-          nativeOptions?: undefined;
-        },
-      ) => ({
+      (_allOptions?: {
+        options?: ReactiveQueryOptions;
+        nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+          string,
+          Error,
+          string[]
+        >;
+      }) => ({
         isIdle: true,
         isPending: false,
         isSuccess: false,
@@ -73,7 +84,11 @@ export const makeReactiveQueryWithParamsReturnsString = () =>
         args: { name: string },
         _allOptions?: {
           options?: ReactiveQueryOptions;
-          nativeOptions?: undefined;
+          nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+            string,
+            Error,
+            string[]
+          >;
         },
       ) => ({
         isIdle: true,
@@ -95,7 +110,11 @@ export const makeReactiveQueryWithOptionalParamsReturnsString = () =>
         args?: { name: string },
         _allOptions?: {
           options?: ReactiveQueryOptions;
-          nativeOptions?: undefined;
+          nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+            string,
+            Error,
+            string[]
+          >;
         },
       ) => ({
         isIdle: true,

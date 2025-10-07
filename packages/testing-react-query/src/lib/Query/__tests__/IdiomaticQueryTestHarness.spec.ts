@@ -1,12 +1,13 @@
 import {
-  makeAsyncFnWithoutParamsReturnsString,
-  makeAsyncFnWithParamsReturnsString,
-} from '../../__tests__/functionFixtures';
+  makeIdiomaticQueryWithOptionalParamsReturnsString,
+  makeIdiomaticQueryWithoutParamsReturnsString,
+  makeIdiomaticQueryWithParamsReturnsString,
+} from '../../__tests__/queryFixtures';
 import { IdiomaticQueryTestHarness } from '../IdiomaticQueryTestHarness';
 
 describe('IdiomaticQueryTestHarness', () => {
   it('should wait for success', async () => {
-    const mockPromise = makeAsyncFnWithoutParamsReturnsString();
+    const mockPromise = makeIdiomaticQueryWithoutParamsReturnsString();
     const query = IdiomaticQueryTestHarness({
       idiomaticQuery: mockPromise,
     });
@@ -31,7 +32,7 @@ describe('IdiomaticQueryTestHarness', () => {
   });
 
   it('should reinvokeIdiomaticFn', async () => {
-    const mockPromise = makeAsyncFnWithoutParamsReturnsString();
+    const mockPromise = makeIdiomaticQueryWithoutParamsReturnsString();
     const query = IdiomaticQueryTestHarness({
       idiomaticQuery: mockPromise,
     });
@@ -68,7 +69,7 @@ describe('IdiomaticQueryTestHarness', () => {
   });
 
   it('should wait for success with params', async () => {
-    const mockPromise = makeAsyncFnWithParamsReturnsString();
+    const mockPromise = makeIdiomaticQueryWithParamsReturnsString();
     const query = IdiomaticQueryTestHarness({
       idiomaticQuery: mockPromise,
       params: { name: 'John' },
@@ -90,6 +91,26 @@ describe('IdiomaticQueryTestHarness', () => {
     expect(query.result.current.isError).toBe(false);
     expect(query.result.current.error).toBe(null);
     expect(query.result.current.data).toBe('Hello John');
+    expect(mockPromise).toHaveBeenCalledWith({ name: 'John' });
     expect(mockPromise).toHaveBeenCalledTimes(1);
+  });
+
+  it('should handle optional params', () => {
+    const mockPromise = makeIdiomaticQueryWithOptionalParamsReturnsString();
+    IdiomaticQueryTestHarness({
+      idiomaticQuery: mockPromise,
+      // params: { name: 'John' }, --- IGNORE ---
+    });
+
+    expect(mockPromise).toHaveBeenCalledWith();
+    expect(mockPromise).toHaveBeenCalledTimes(1);
+
+    IdiomaticQueryTestHarness({
+      idiomaticQuery: mockPromise,
+      params: { name: 'John' },
+    });
+
+    expect(mockPromise).toHaveBeenCalledWith({ name: 'John' });
+    expect(mockPromise).toHaveBeenCalledTimes(2);
   });
 });

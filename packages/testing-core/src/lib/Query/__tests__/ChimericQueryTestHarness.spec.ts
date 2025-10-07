@@ -1,8 +1,10 @@
 import { fuseChimericQuery } from '@chimeric/core';
 import { ChimericQueryTestHarness } from '../ChimericQueryTestHarness';
 import {
+  makeIdiomaticQueryWithOptionalParamsReturnsString,
   makeIdiomaticQueryWithoutParamsReturnsString,
   makeIdiomaticQueryWithParamsReturnsString,
+  makeReactiveQueryWithOptionalParamsReturnsString,
   makeReactiveQueryWithoutParamsReturnsString,
   makeReactiveQueryWithParamsReturnsString,
 } from '../../__tests__/queryFixtures';
@@ -41,5 +43,36 @@ describe('ChimericQueryTestHarness', () => {
 
     expect(mockReactiveQuery.use).toHaveBeenCalledWith({ name: 'John' });
     expect(mockReactiveQuery.use).toHaveBeenCalledTimes(1);
+  });
+
+  it('should handle optional params', () => {
+    const mockIdiomaticQuery =
+      makeIdiomaticQueryWithOptionalParamsReturnsString();
+    const mockReactiveQuery =
+      makeReactiveQueryWithOptionalParamsReturnsString();
+
+    ChimericQueryTestHarness({
+      chimericQuery: fuseChimericQuery({
+        idiomatic: mockIdiomaticQuery,
+        reactive: mockReactiveQuery,
+      }),
+      method: 'reactive',
+      // no params
+    });
+
+    expect(mockReactiveQuery.use).toHaveBeenCalledWith();
+    expect(mockReactiveQuery.use).toHaveBeenCalledTimes(1);
+
+    ChimericQueryTestHarness({
+      chimericQuery: fuseChimericQuery({
+        idiomatic: mockIdiomaticQuery,
+        reactive: mockReactiveQuery,
+      }),
+      method: 'reactive',
+      params: { name: 'John' },
+    });
+
+    expect(mockReactiveQuery.use).toHaveBeenCalledWith({ name: 'John' });
+    expect(mockReactiveQuery.use).toHaveBeenCalledTimes(2);
   });
 });
