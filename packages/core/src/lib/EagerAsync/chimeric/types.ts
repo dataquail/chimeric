@@ -14,7 +14,7 @@ export type DefineChimericEagerAsync<
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   TError extends Error = Error,
 > = ChimericEagerAsync<
-  Parameters<T>[0] extends void | object ? Parameters<T>[0] : never,
+  Parameters<T>[0] extends undefined ? void : Parameters<T>[0],
   Awaited<ReturnType<T>>,
   TError
 >;

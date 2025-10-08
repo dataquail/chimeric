@@ -1,15 +1,14 @@
 import {
-  makeAsyncFnWithoutParamsReturnsString,
-  makeAsyncFnWithParamsReturnsString,
-} from '../../__tests__/functionFixtures';
+  makeIdiomaticEagerAsyncWithoutParamsReturnsString,
+  makeIdiomaticEagerAsyncWithParamsReturnsString,
+} from '../../__tests__/eagerAsyncFixtures';
 import { IdiomaticEagerAsyncTestHarness } from '../IdiomaticEagerAsyncTestHarness';
-import { createIdiomaticAsync } from '@chimeric/core';
 
 describe('IdiomaticEagerAsyncTestHarness', () => {
   it('should wait for success', async () => {
-    const mockPromise = makeAsyncFnWithoutParamsReturnsString();
+    const mockPromise = makeIdiomaticEagerAsyncWithoutParamsReturnsString();
     const asyncRead = IdiomaticEagerAsyncTestHarness({
-      idiomaticEagerAsync: createIdiomaticAsync(mockPromise),
+      idiomaticEagerAsync: mockPromise,
     });
 
     expect(asyncRead.result.current.isIdle).toBe(false);
@@ -32,9 +31,9 @@ describe('IdiomaticEagerAsyncTestHarness', () => {
   });
 
   it('should reinvokeIdiomaticFn', async () => {
-    const mockPromise = makeAsyncFnWithoutParamsReturnsString();
+    const mockPromise = makeIdiomaticEagerAsyncWithoutParamsReturnsString();
     const asyncRead = IdiomaticEagerAsyncTestHarness({
-      idiomaticEagerAsync: createIdiomaticAsync(mockPromise),
+      idiomaticEagerAsync: mockPromise,
     });
 
     expect(asyncRead.result.current.isIdle).toBe(false);
@@ -69,9 +68,9 @@ describe('IdiomaticEagerAsyncTestHarness', () => {
   });
 
   it('should handle params', async () => {
-    const mockPromise = makeAsyncFnWithParamsReturnsString();
+    const mockPromise = makeIdiomaticEagerAsyncWithParamsReturnsString();
     const asyncRead = IdiomaticEagerAsyncTestHarness({
-      idiomaticEagerAsync: createIdiomaticAsync(mockPromise),
+      idiomaticEagerAsync: mockPromise,
       params: { name: 'John' },
     });
 

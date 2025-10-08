@@ -511,6 +511,7 @@ export const ChimericAsyncReducer = <TServiceParams = void>() => ({
           InferService<TConfigList[9], TServiceParams>,
         ],
     TServiceResult,
+    TError extends Error = Error,
   >({
     reducer,
     initialValueReducer,
@@ -525,7 +526,7 @@ export const ChimericAsyncReducer = <TServiceParams = void>() => ({
       args: ExtractResultsWithUndefined<TConfigList>,
       serviceParams: TServiceParams,
     ) => TServiceResult;
-  }): ChimericEagerAsync<TServiceParams, TServiceResult> => {
+  }): ChimericEagerAsync<TServiceParams, TServiceResult, TError> => {
     const idiomatic = IdiomaticAsyncReducer<TServiceParams>().build({
       serviceList: serviceList.map((service) => {
         return {
@@ -549,12 +550,16 @@ export const ChimericAsyncReducer = <TServiceParams = void>() => ({
       initialValueReducer: initialValueReducer as any,
     });
 
-    return fuseChimericEagerAsync<TServiceParams, TServiceResult>({
+    return fuseChimericEagerAsync({
       idiomatic: idiomatic as IdiomaticEagerAsync<
         TServiceParams,
         TServiceResult
       >,
-      reactive: reactive as ReactiveEagerAsync<TServiceParams, TServiceResult>,
+      reactive: reactive as ReactiveEagerAsync<
+        TServiceParams,
+        TServiceResult,
+        TError
+      >,
     });
   },
 });

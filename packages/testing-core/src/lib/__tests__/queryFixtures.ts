@@ -9,7 +9,7 @@ export const makeIdiomaticQueryWithoutParamsReturnsString = () =>
   createIdiomaticQuery(
     vi.fn(
       async (
-        _noarg?: undefined,
+        _noarg: void,
         _allOptions?: {
           options?: IdiomaticQueryOptions;
           nativeOptions?: undefined;
@@ -48,7 +48,7 @@ export const makeReactiveQueryWithoutParamsReturnsString = () =>
   createReactiveQuery(
     vi.fn(
       (
-        _noarg?: undefined,
+        _noarg: void,
         _allOptions?: {
           options?: ReactiveQueryOptions;
           nativeOptions?: undefined;

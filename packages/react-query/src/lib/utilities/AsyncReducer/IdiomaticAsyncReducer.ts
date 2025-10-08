@@ -362,24 +362,24 @@ export const IdiomaticAsyncReducer = <TServiceParams = void>() => ({
     const service8 = getService(serviceList[8]);
     const service9 = getService(serviceList[9]);
 
-    return createIdiomaticEagerAsync<TServiceParams, TServiceResult>(
-      async (params) => {
-        const results = [
-          await service0(getArgs(serviceList[0], params)),
-          await service1(getArgs(serviceList[1], params)),
-          await service2(getArgs(serviceList[2], params)),
-          await service3(getArgs(serviceList[3], params)),
-          await service4(getArgs(serviceList[4], params)),
-          await service5(getArgs(serviceList[5], params)),
-          await service6(getArgs(serviceList[6], params)),
-          await service7(getArgs(serviceList[7], params)),
-          await service8(getArgs(serviceList[8], params)),
-          await service9(getArgs(serviceList[9], params)),
-        ].slice(0, serviceList.length) as ExtractResults<TConfigList>;
+    return createIdiomaticEagerAsync(async (params) => {
+      const results = (
+        await Promise.all([
+          service0(getArgs(serviceList[0], params)),
+          service1(getArgs(serviceList[1], params)),
+          service2(getArgs(serviceList[2], params)),
+          service3(getArgs(serviceList[3], params)),
+          service4(getArgs(serviceList[4], params)),
+          service5(getArgs(serviceList[5], params)),
+          service6(getArgs(serviceList[6], params)),
+          service7(getArgs(serviceList[7], params)),
+          service8(getArgs(serviceList[8], params)),
+          service9(getArgs(serviceList[9], params)),
+        ])
+      ).slice(0, serviceList.length) as ExtractResults<TConfigList>;
 
-        return reducer(results, params);
-      },
-    );
+      return reducer(results, params);
+    });
   },
 });
 

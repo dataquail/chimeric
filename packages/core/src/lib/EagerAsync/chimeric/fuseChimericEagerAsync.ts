@@ -19,7 +19,7 @@ export function fuseChimericEagerAsync<
     isIdiomaticEagerAsync(args.idiomatic) &&
     isReactiveEagerAsync(args.reactive)
   ) {
-    const chimericFn = args.idiomatic as ChimericEagerAsync<
+    const chimericFn = args.idiomatic as unknown as ChimericEagerAsync<
       TParams,
       TResult,
       TError

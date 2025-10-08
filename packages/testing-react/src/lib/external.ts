@@ -14,6 +14,9 @@ import {
   chimericMethods,
   idiomaticMethods,
   reactiveMethods,
+  type ChimericMethod,
+  type IdiomaticMethod,
+  type ReactiveMethod,
 } from '@chimeric/testing-core';
 
 export {
@@ -32,4 +35,7 @@ export {
   chimericMethods,
   idiomaticMethods,
   reactiveMethods,
+  type ChimericMethod,
+  type IdiomaticMethod,
+  type ReactiveMethod,
 };

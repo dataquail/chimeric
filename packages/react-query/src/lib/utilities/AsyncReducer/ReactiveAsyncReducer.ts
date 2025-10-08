@@ -523,7 +523,7 @@ export const ReactiveAsyncReducer = <TServiceParams = void>() => ({
     const useService8 = getService(serviceList[8]);
     const useService9 = getService(serviceList[9]);
 
-    const useEagerAsync = (params: TServiceParams | void) => {
+    return createReactiveEagerAsync((params) => {
       // Memoize arguments
       const args0 = useMemo(() => getArgs(serviceList[0], params), [params]);
       const args1 = useMemo(() => getArgs(serviceList[1], params), [params]);
@@ -597,11 +597,8 @@ export const ReactiveAsyncReducer = <TServiceParams = void>() => ({
         return MetaAggregatorFactory({
           metaList: results as ExtractTResultExtends<any[]>,
           dataReducer: (dataList) =>
-            reducer(
-              dataList as ExtractResults<TConfigList>,
-              params as TServiceParams,
-            ),
-          context: params as TServiceParams,
+            reducer(dataList as ExtractResults<TConfigList>, params),
+          context: params,
           initialValueReducer: initialValueReducer as any,
         });
       }, [
@@ -617,14 +614,7 @@ export const ReactiveAsyncReducer = <TServiceParams = void>() => ({
         memoizedResult9,
         params,
       ]);
-    };
-
-    return createReactiveEagerAsync<TServiceParams, TServiceResult>(
-      useEagerAsync as ReactiveEagerAsync<
-        TServiceParams,
-        TServiceResult
-      >['use'],
-    );
+    });
   },
 });
 

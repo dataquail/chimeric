@@ -28,7 +28,26 @@ export function ReactiveQueryTestHarness<
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
 }): ReactiveQueryTestHarnessReturnType<TResult, TError>;
 
-// Optional params (must come before no params)
+// No params (must come before optional params)
+export function ReactiveQueryTestHarness<
+  TResult,
+  TError extends Error = Error,
+  TNativeOptions = unknown,
+  TNativeReturnType = unknown,
+>(args: {
+  reactiveQuery: ReactiveQuery<
+    void,
+    TResult,
+    TError,
+    TNativeOptions,
+    TNativeReturnType
+  >;
+  options?: ReactiveQueryOptions;
+  nativeOptions?: TNativeOptions;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): ReactiveQueryTestHarnessReturnType<TResult, TError>;
+
+// Optional params (must come last)
 export function ReactiveQueryTestHarness<
   TParams,
   TResult,
@@ -44,25 +63,6 @@ export function ReactiveQueryTestHarness<
     TNativeReturnType
   >;
   params?: TParams | undefined;
-  options?: ReactiveQueryOptions;
-  nativeOptions?: TNativeOptions;
-  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-}): ReactiveQueryTestHarnessReturnType<TResult, TError>;
-
-// No params (least specific - must come last)
-export function ReactiveQueryTestHarness<
-  TResult,
-  TError extends Error = Error,
-  TNativeOptions = unknown,
-  TNativeReturnType = unknown,
->(args: {
-  reactiveQuery: ReactiveQuery<
-    void,
-    TResult,
-    TError,
-    TNativeOptions,
-    TNativeReturnType
-  >;
   options?: ReactiveQueryOptions;
   nativeOptions?: TNativeOptions;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
