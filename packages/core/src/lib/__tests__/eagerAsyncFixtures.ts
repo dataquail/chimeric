@@ -46,6 +46,16 @@ export const makeEagerAsyncHookWithParamsReturnsString = () =>
     data: `Hello ${args.name}`,
   }));
 
+export const makeEagerAsyncHookWithOptionalParamsReturnsString = () =>
+  vi.fn((params?: { name: string }) => ({
+    isIdle: true,
+    isPending: false,
+    isSuccess: true,
+    isError: false,
+    error: null,
+    data: params ? `Hello ${params.name}` : 'Hello',
+  }));
+
 export const makeReactiveEagerAsyncWithParamsReturnsString = () =>
   createReactiveEagerAsync(makeEagerAsyncHookWithParamsReturnsString());
 

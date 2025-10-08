@@ -24,3 +24,8 @@ export const makeSyncFnWithoutParamsReturnsObj = () =>
   vi.fn(() => ({
     name: 'test',
   }));
+
+export const makeSyncFnWithOptionalParamsReturnsString = () =>
+  vi.fn((params?: { name: string }) =>
+    params && params.name ? `Hello ${params.name}` : 'Hello',
+  );

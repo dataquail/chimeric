@@ -50,6 +50,20 @@ export const makeQueryHookWithParamsReturnsString = () =>
     native: 'test',
   }));
 
+export const makeQueryHookWithOptionalParamsReturnsString = () =>
+  vi.fn((params?: { name: string }) => ({
+    isIdle: true,
+    isPending: false,
+    isSuccess: true,
+    isError: false,
+    error: null,
+    data: params ? `Hello ${params.name}` : 'Hello',
+    refetch: vi.fn(() =>
+      Promise.resolve(params ? `Hello ${params.name}` : 'Hello'),
+    ),
+    native: 'test',
+  }));
+
 export const makeReactiveQueryWithParamsReturnsString = () =>
   createReactiveQuery(makeQueryHookWithParamsReturnsString());
 
