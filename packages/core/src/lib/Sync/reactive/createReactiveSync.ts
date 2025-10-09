@@ -3,9 +3,9 @@ import { ReactiveSync } from './types';
 import { TYPE_MARKERS } from '../../utilities/typeMarkers';
 import { markReactive } from '../../utilities/markReactive';
 
-export const createReactiveSync = <TParams = void, TResult = unknown>(
+export function createReactiveSync<TParams = void, TResult = unknown>(
   reactiveFn: (params: TParams) => TResult,
-): ReactiveSync<TParams, TResult> => {
+): ReactiveSync<TParams, TResult> {
   const reactiveSync = {
     use: reactiveFn,
   };
@@ -17,4 +17,4 @@ export const createReactiveSync = <TParams = void, TResult = unknown>(
   } else {
     throw new Error('reactiveFn is not qualified to be reactive sync');
   }
-};
+}

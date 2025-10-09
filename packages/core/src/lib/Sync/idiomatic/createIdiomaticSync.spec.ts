@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  makeSyncFnWithOptionalParamsReturnsString,
   makeSyncFnWithoutParamsReturnsString,
   makeSyncFnWithParamsReturnsString,
 } from '../../__tests__/functionFixtures';
 import { createIdiomaticSync } from './createIdiomaticSync';
+import { DefineIdiomaticSync } from './types';
 
 describe('createIdiomaticSync', () => {
   it('should create an idiomatic sync function', () => {
@@ -28,6 +30,13 @@ describe('createIdiomaticSync', () => {
 
     expect(idiomaticSync()).toBe('test');
     expect(mockSyncFn).toHaveBeenCalled();
+
+    try {
+      // @ts-expect-error
+      idiomaticSync('test');
+    } catch (e) {
+      // Expected error
+    }
   });
 
   it('should invoke the idiomatic function with params', () => {
@@ -36,5 +45,74 @@ describe('createIdiomaticSync', () => {
 
     expect(idiomaticSync({ name: 'John' })).toBe('Hello John');
     expect(mockSyncFn).toHaveBeenCalledWith({ name: 'John' });
+
+    try {
+      // @ts-expect-error
+      idiomaticSync();
+    } catch (e) {
+      // Expected error
+    }
+  });
+
+  it('should invoke the idiomatic function with optional params', () => {
+    const mockSyncFn = makeSyncFnWithOptionalParamsReturnsString();
+    const idiomaticSync = createIdiomaticSync(mockSyncFn);
+
+    expect(idiomaticSync()).toBe('Hello');
+    expect(mockSyncFn).toHaveBeenCalledWith();
+
+    expect(idiomaticSync({ name: 'John' })).toBe('Hello John');
+    expect(mockSyncFn).toHaveBeenCalledWith({ name: 'John' });
+
+    try {
+      // @ts-expect-error
+      idiomaticSync({ name: 1 });
+    } catch (e) {
+      // Expected error
+    }
+  });
+
+  it('should handle type annotations without params', () => {
+    type TestIdiomaticSync = DefineIdiomaticSync<() => string>;
+    const idiomaticSync: TestIdiomaticSync = createIdiomaticSync(() => 'test');
+    expect(idiomaticSync()).toBe('test');
+    try {
+      // @ts-expect-error
+      idiomaticSync('test');
+    } catch (e) {
+      // Expected error
+    }
+  });
+
+  it('should handle type annotations with params', () => {
+    type TestIdiomaticSync = DefineIdiomaticSync<
+      (args: { a: string }) => string
+    >;
+    const idiomaticSync: TestIdiomaticSync = createIdiomaticSync(({ a }) => a);
+    expect(idiomaticSync({ a: 'test' })).toBe('test');
+    try {
+      // @ts-expect-error
+      idiomaticSync();
+    } catch (e) {
+      // Expected error
+    }
+  });
+
+  it('should handle type annotations with optional params', () => {
+    type TestIdiomaticSync = DefineIdiomaticSync<
+      (params?: { name: string }) => string
+    >;
+    const mockFn = makeSyncFnWithOptionalParamsReturnsString();
+    const idiomaticSync: TestIdiomaticSync = createIdiomaticSync(mockFn);
+
+    expect(idiomaticSync()).toBe('Hello');
+    expect(idiomaticSync({ name: 'test' })).toBe('Hello test');
+
+    try {
+      // @ts-expect-error
+      idiomaticSync({ name: 1 });
+    } catch (e) {
+      // Expected error
+    }
   });
 });

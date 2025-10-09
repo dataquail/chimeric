@@ -7,7 +7,7 @@ import {
 import { useMemo, useRef } from 'react';
 
 type ExtractServiceResult<TConfig> = TConfig extends {
-  service: ReactiveSync<any, infer TResult>;
+  service: ReactiveSync<infer TParams, infer TResult>;
 }
   ? TResult
   : never;
@@ -145,26 +145,34 @@ type AnyServiceConfig = {
   getParams?: (params: any) => any;
 };
 
-type NoParamsServiceConfig = { service: ReactiveSync<void, any> };
-
-type WithParamsServiceConfig = {
-  service: ReactiveSync<any, any>;
-  getParams: (params: any) => any;
-};
-
-type InferService<TConfig, TServiceParams> =
-  TConfig extends NoParamsServiceConfig
-    ? TConfig['service'] extends ReactiveSync<void, infer TResult>
-      ? { service: ReactiveSync<void, TResult>; getParams?: never }
-      : never
-    : TConfig extends WithParamsServiceConfig
-    ? TConfig['service'] extends ReactiveSync<infer TParams, infer TResult>
-      ? {
-          service: ReactiveSync<TParams, TResult>;
-          getParams: (params: TServiceParams) => TParams;
-        }
-      : never
-    : never;
+type InferService<TConfig, TServiceParams> = TConfig extends {
+  service: ReactiveSync<infer TParams, infer TResult>;
+}
+  ? [TParams] extends [void]
+    ? {
+        service: ReactiveSync<void, TResult>;
+        getParams?: never;
+      }
+    : void extends TParams
+    ? {
+        service: ReactiveSync<void, TResult>;
+        getParams?: never;
+      }
+    : undefined extends TParams
+    ? {
+        service: ReactiveSync<TParams, TResult>;
+        getParams: (params?: TServiceParams) => TParams;
+      }
+    : undefined extends TServiceParams
+    ? {
+        service: ReactiveSync<TParams, TResult>;
+        getParams?: (params: TServiceParams) => TParams;
+      }
+    : {
+        service: ReactiveSync<TParams, TResult>;
+        getParams: (params: TServiceParams) => TParams;
+      }
+  : never;
 
 export const ReactiveSyncReducer = <TServiceParams = void>() => ({
   build: <
@@ -263,7 +271,8 @@ export const ReactiveSyncReducer = <TServiceParams = void>() => ({
     const useService7 = getService(serviceList[7]);
     const useService8 = getService(serviceList[8]);
     const useService9 = getService(serviceList[9]);
-    const useSync = (params: TServiceParams | void) => {
+
+    return createReactiveSync<TServiceParams, TServiceResult>((params) => {
       // Memoize arguments
       const args0 = useMemo(() => getArgs(serviceList[0], params), [params]);
       const args1 = useMemo(() => getArgs(serviceList[1], params), [params]);
@@ -350,15 +359,13 @@ export const ReactiveSyncReducer = <TServiceParams = void>() => ({
         memoizedResult9,
         params,
       ]);
-    };
-
-    return createReactiveSync<TServiceParams, TServiceResult>(
-      useSync as ReactiveSync<TServiceParams, TServiceResult>['use'],
-    );
+    });
   },
 });
 
-const getService = (service: AnyServiceConfig | undefined) => {
+const getService = (
+  service: AnyServiceConfig | undefined,
+): ((params?: any) => any) => {
   if (!service) {
     return () => undefined;
   } else {

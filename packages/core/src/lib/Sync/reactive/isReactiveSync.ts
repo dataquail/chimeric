@@ -4,7 +4,7 @@ import { isEligibleReactive } from '../../utilities/isEligibleReactive';
 import { hasReactiveMarker } from '../../utilities/hasReactiveMarker';
 
 export const isReactiveSync = <TParams = void, TResult = unknown>(
-  maybeReactiveSync: unknown,
+  maybeReactiveSync: ReactiveSync<TParams, TResult>,
 ): maybeReactiveSync is ReactiveSync<TParams, TResult> => {
   return (
     isEligibleReactive(maybeReactiveSync) &&
