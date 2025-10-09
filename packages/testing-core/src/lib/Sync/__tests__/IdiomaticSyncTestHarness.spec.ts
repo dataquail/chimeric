@@ -46,4 +46,68 @@ describe('IdiomaticReadTestHarness', () => {
     expect(read.result.current).toBe('test2');
     expect(mockFn).toHaveBeenCalled();
   });
+
+  it('should handle params', async () => {
+    const mockFn = vi.fn((params: { name: string }) => `Hello ${params.name}`);
+    const read = IdiomaticSyncTestHarness({
+      idiomaticSync: mockFn,
+      params: { name: 'John' },
+    });
+
+    expect(read.result.current).toBe('Hello John');
+    expect(mockFn).toHaveBeenCalledTimes(1);
+    expect(mockFn).toHaveBeenCalledWith({
+      name: 'John',
+    });
+
+    try {
+      IdiomaticSyncTestHarness({
+        // @ts-expect-error Testing invalid usage
+        idiomaticSync: mockFn,
+        params: 1,
+      });
+    } catch (e) {}
+  });
+
+  it('should handle optional params', async () => {
+    const mockFn = vi.fn((params?: { name: string }) =>
+      params?.name ? `Hello ${params.name}` : 'Hello',
+    );
+    const read = IdiomaticSyncTestHarness({
+      idiomaticSync: mockFn,
+      params: { name: 'John' },
+    });
+
+    expect(read.result.current).toBe('Hello John');
+    expect(mockFn).toHaveBeenCalledTimes(1);
+    expect(mockFn).toHaveBeenCalledWith({
+      name: 'John',
+    });
+
+    const testHarnessNoParams = IdiomaticSyncTestHarness({
+      idiomaticSync: mockFn,
+    });
+
+    expect(testHarnessNoParams.result.current).toBe('Hello');
+    expect(mockFn).toHaveBeenCalledTimes(2);
+    expect(mockFn).toHaveBeenCalledWith(undefined);
+
+    try {
+      IdiomaticSyncTestHarness({
+        idiomaticSync: mockFn,
+        // @ts-expect-error Testing invalid usage
+        params: 1,
+      });
+    } catch (e) {}
+  });
+
+  it('should handle no params', async () => {
+    const mockFn = makeSyncFnWithoutParamsReturnsString();
+    const read = IdiomaticSyncTestHarness({
+      idiomaticSync: mockFn,
+    });
+
+    expect(read.result.current).toBe('test');
+    expect(mockFn).toHaveBeenCalledTimes(1);
+  });
 });
