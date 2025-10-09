@@ -145,32 +145,29 @@ type AnyServiceConfig = {
   getParams?: (params: any) => any;
 };
 
+type InferIdiomaticSync<T extends (args: Parameters<T>[0]) => ReturnType<T>> =
+  T;
+
 type InferService<TConfig, TServiceParams> = TConfig extends {
-  service: IdiomaticSync<infer TParams, infer TResult>;
+  service: InferIdiomaticSync<infer T>;
 }
-  ? [TParams] extends [void]
+  ? Parameters<T> extends []
     ? {
-        service: IdiomaticSync<void, TResult>;
+        service: IdiomaticSync<void, ReturnType<T>>;
         getParams?: never;
       }
-    : void extends TParams
+    : undefined extends Parameters<T>[0]
     ? {
-        service: IdiomaticSync<void, TResult>;
-        getParams?: never;
-      }
-    : undefined extends TParams
-    ? {
-        service: IdiomaticSync<TParams, TResult>;
-        getParams: (params?: TServiceParams) => TParams;
-      }
-    : undefined extends TServiceParams
-    ? {
-        service: IdiomaticSync<TParams, TResult>;
-        getParams?: (params: TServiceParams) => TParams;
+        service: IdiomaticSync<Parameters<T>[0], ReturnType<T>>;
+        getParams?:
+          | ((params: TServiceParams) => Parameters<T>[0])
+          | (() => Parameters<T>[0]);
       }
     : {
-        service: IdiomaticSync<TParams, TResult>;
-        getParams: (params: TServiceParams) => TParams;
+        service: IdiomaticSync<Parameters<T>[0], ReturnType<T>>;
+        getParams:
+          | ((params: TServiceParams) => Parameters<T>[0])
+          | (() => Parameters<T>[0]);
       }
   : never;
 

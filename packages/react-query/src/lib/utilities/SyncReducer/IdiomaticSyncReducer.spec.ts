@@ -80,4 +80,84 @@ describe('IdiomaticSyncFactoryFromMany', () => {
 
     expect(TestIdiomaticSyncReducer(0)).toEqual('0 + 0 + 0');
   });
+
+  it('should handle optional service params', () => {
+    const {
+      todoStore: todoStore1,
+      getAllTodos: getAllTodos1,
+      getTodoIdOrReturn1,
+    } = createTodoStoreAndGetters();
+
+    type Args = number | undefined;
+    const TestIdiomaticSyncReducer = IdiomaticSyncReducer<Args>().build({
+      serviceList: [
+        { service: getAllTodos1 },
+        {
+          service: getTodoIdOrReturn1,
+          getParams: (index: Args) => index || 1,
+        },
+      ],
+      reducer: ([todos, todoId], params) => {
+        return `${todos[params || 0]?.id} + ${todoId}`;
+      },
+    });
+
+    expect(TestIdiomaticSyncReducer(0)).toEqual('undefined + 1');
+
+    todoStore1.addTodo();
+
+    expect(TestIdiomaticSyncReducer(0)).toEqual('0 + 1');
+  });
+
+  it('should throw ts error when mixing optional service params with required params', () => {
+    const { getAllTodos, getTodoById, getTodoIdOrReturn1 } =
+      createTodoStoreAndGetters();
+
+    type Args = number | undefined;
+    IdiomaticSyncReducer<Args>().build({
+      serviceList: [
+        // @ts-expect-error
+        { service: getTodoById, getParams: (index: Args) => index },
+        {
+          service: getTodoIdOrReturn1,
+          getParams: (index: Args) => index,
+        },
+      ],
+      reducer: () => 'test',
+    });
+
+    IdiomaticSyncReducer<Args>().build({
+      serviceList: [
+        // @ts-expect-error
+        { service: getTodoById },
+        {
+          service: getTodoIdOrReturn1,
+          getParams: () => 1,
+        },
+      ],
+      reducer: () => 'test',
+    });
+
+    IdiomaticSyncReducer<Args>().build({
+      serviceList: [
+        {
+          service: getTodoById,
+          getParams: (index: Args) => index || 0,
+        },
+        { service: getTodoIdOrReturn1 },
+      ],
+      reducer: () => 'test',
+    });
+
+    IdiomaticSyncReducer<Args>().build({
+      serviceList: [
+        {
+          service: getAllTodos,
+          // @ts-expect-error
+          getParams: (index: Args) => index,
+        },
+      ],
+      reducer: () => 'test',
+    });
+  });
 });

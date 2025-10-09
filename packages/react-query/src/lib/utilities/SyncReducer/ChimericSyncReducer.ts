@@ -154,16 +154,11 @@ type InferService<TConfig, TServiceParams> = TConfig extends {
     : undefined extends TParams
     ? {
         service: ChimericSync<TParams, TResult>;
-        getParams: (params?: TServiceParams) => TParams;
-      }
-    : undefined extends TServiceParams
-    ? {
-        service: ChimericSync<TParams, TResult>;
-        getParams?: (params: TServiceParams) => TParams;
+        getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
       }
     : {
         service: ChimericSync<TParams, TResult>;
-        getParams: (params: TServiceParams) => TParams;
+        getParams: ((params: TServiceParams) => TParams) | (() => TParams);
       }
   : never;
 
