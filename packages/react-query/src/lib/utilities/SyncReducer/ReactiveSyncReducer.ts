@@ -7,7 +7,7 @@ import {
 import { useMemo, useRef } from 'react';
 
 type ExtractServiceResult<TConfig> = TConfig extends {
-  service: ReactiveSync<infer TParams, infer TResult>;
+  service: ReactiveSync<infer _TParams, infer TResult>;
 }
   ? TResult
   : never;

@@ -32,9 +32,9 @@ describe('createIdiomaticSync', () => {
     expect(mockSyncFn).toHaveBeenCalled();
 
     try {
-      // @ts-expect-error
+      // @ts-expect-error - no params expected
       idiomaticSync('test');
-    } catch (e) {
+    } catch {
       // Expected error
     }
   });
@@ -47,9 +47,9 @@ describe('createIdiomaticSync', () => {
     expect(mockSyncFn).toHaveBeenCalledWith({ name: 'John' });
 
     try {
-      // @ts-expect-error
+      // @ts-expect-error - missing params
       idiomaticSync();
-    } catch (e) {
+    } catch {
       // Expected error
     }
   });
@@ -65,9 +65,9 @@ describe('createIdiomaticSync', () => {
     expect(mockSyncFn).toHaveBeenCalledWith({ name: 'John' });
 
     try {
-      // @ts-expect-error
+      // @ts-expect-error - wrong param type
       idiomaticSync({ name: 1 });
-    } catch (e) {
+    } catch {
       // Expected error
     }
   });
@@ -77,9 +77,9 @@ describe('createIdiomaticSync', () => {
     const idiomaticSync: TestIdiomaticSync = createIdiomaticSync(() => 'test');
     expect(idiomaticSync()).toBe('test');
     try {
-      // @ts-expect-error
+      // @ts-expect-error - no params expected
       idiomaticSync('test');
-    } catch (e) {
+    } catch {
       // Expected error
     }
   });
@@ -91,9 +91,9 @@ describe('createIdiomaticSync', () => {
     const idiomaticSync: TestIdiomaticSync = createIdiomaticSync(({ a }) => a);
     expect(idiomaticSync({ a: 'test' })).toBe('test');
     try {
-      // @ts-expect-error
+      // @ts-expect-error - missing params
       idiomaticSync();
-    } catch (e) {
+    } catch {
       // Expected error
     }
   });
@@ -109,9 +109,9 @@ describe('createIdiomaticSync', () => {
     expect(idiomaticSync({ name: 'test' })).toBe('Hello test');
 
     try {
-      // @ts-expect-error
+      // @ts-expect-error - wrong param type
       idiomaticSync({ name: 1 });
-    } catch (e) {
+    } catch {
       // Expected error
     }
   });

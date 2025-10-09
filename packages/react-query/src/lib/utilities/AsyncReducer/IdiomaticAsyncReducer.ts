@@ -15,15 +15,15 @@ import {
 
 // Helper type to extract the result type from a service configuration
 type ExtractServiceResult<TConfig> = TConfig extends {
-  service: IdiomaticQuery<infer TParams, infer TResult>;
+  service: IdiomaticQuery<infer _TParams, infer TResult>;
 }
   ? TResult
   : TConfig extends {
-      service: IdiomaticEagerAsync<infer TParams, infer TResult>;
+      service: IdiomaticEagerAsync<infer _TParams, infer TResult>;
     }
   ? TResult
   : TConfig extends {
-      service: IdiomaticSync<infer TParams, infer TResult>;
+      service: IdiomaticSync<infer _TParams, infer TResult>;
     }
   ? TResult
   : never;

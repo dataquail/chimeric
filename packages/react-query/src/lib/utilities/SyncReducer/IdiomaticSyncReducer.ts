@@ -7,7 +7,7 @@ import {
 
 // Helper type to extract the result type from a service configuration
 type ExtractServiceResult<TConfig> = TConfig extends {
-  service: IdiomaticSync<infer TParams, infer TResult>;
+  service: IdiomaticSync<infer _TParams, infer TResult>;
 }
   ? TResult
   : never;

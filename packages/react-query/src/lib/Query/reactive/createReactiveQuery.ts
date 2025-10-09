@@ -18,8 +18,16 @@ export function createReactiveQuery<
 >(
   reactiveFn: (allOptions?: {
     options?: ReactiveQueryOptions;
-    nativeOptions?: TanstackQueryReactiveNativeOptions<TResult, TError, TQueryKey>;
-  }) => ReactiveQueryReturn<TResult, TError, TanstackQueryReactiveReturnType<TResult, TError>>,
+    nativeOptions?: TanstackQueryReactiveNativeOptions<
+      TResult,
+      TError,
+      TQueryKey
+    >;
+  }) => ReactiveQueryReturn<
+    TResult,
+    TError,
+    TanstackQueryReactiveReturnType<TResult, TError>
+  >,
 ): ReactiveQuery<void, TResult, TError, TQueryKey>;
 
 // Overload for optional params (params as first arg, allOptions as second)
@@ -33,9 +41,17 @@ export function createReactiveQuery<
     params?: TParams,
     allOptions?: {
       options?: ReactiveQueryOptions;
-      nativeOptions?: TanstackQueryReactiveNativeOptions<TResult, TError, TQueryKey>;
+      nativeOptions?: TanstackQueryReactiveNativeOptions<
+        TResult,
+        TError,
+        TQueryKey
+      >;
     },
-  ) => ReactiveQueryReturn<TResult, TError, TanstackQueryReactiveReturnType<TResult, TError>>,
+  ) => ReactiveQueryReturn<
+    TResult,
+    TError,
+    TanstackQueryReactiveReturnType<TResult, TError>
+  >,
 ): ReactiveQuery<TParams | undefined, TResult, TError, TQueryKey>;
 
 // Overload for required params (params as first arg, allOptions as second)
@@ -49,9 +65,17 @@ export function createReactiveQuery<
     params: TParams,
     allOptions?: {
       options?: ReactiveQueryOptions;
-      nativeOptions?: TanstackQueryReactiveNativeOptions<TResult, TError, TQueryKey>;
+      nativeOptions?: TanstackQueryReactiveNativeOptions<
+        TResult,
+        TError,
+        TQueryKey
+      >;
     },
-  ) => ReactiveQueryReturn<TResult, TError, TanstackQueryReactiveReturnType<TResult, TError>>,
+  ) => ReactiveQueryReturn<
+    TResult,
+    TError,
+    TanstackQueryReactiveReturnType<TResult, TError>
+  >,
 ): ReactiveQuery<TParams, TResult, TError, TQueryKey>;
 
 // Implementation
@@ -61,7 +85,21 @@ export function createReactiveQuery<
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(
-  reactiveFn: any,
+  reactiveFn: (
+    params?: TParams,
+    allOptions?: {
+      options?: ReactiveQueryOptions;
+      nativeOptions?: TanstackQueryReactiveNativeOptions<
+        TResult,
+        TError,
+        TQueryKey
+      >;
+    },
+  ) => ReactiveQueryReturn<
+    TResult,
+    TError,
+    TanstackQueryReactiveReturnType<TResult, TError>
+  >,
 ): ReactiveQuery<TParams, TResult, TError, TQueryKey> {
   return coreCreateReactiveQuery(reactiveFn) as ReactiveQuery<
     TParams,

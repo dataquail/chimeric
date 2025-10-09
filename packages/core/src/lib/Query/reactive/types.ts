@@ -62,10 +62,18 @@ export type DefineReactiveQuery<
   TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
-> = ReactiveQuery<
-  Parameters<T>[0],
-  Awaited<ReturnType<T>>,
-  TError,
-  TNativeOptions,
-  TNativeReturnType
->;
+> = Parameters<T> extends []
+  ? ReactiveQuery<
+      void,
+      Awaited<ReturnType<T>>,
+      TError,
+      TNativeOptions,
+      TNativeReturnType
+    >
+  : ReactiveQuery<
+      Parameters<T>[0],
+      Awaited<ReturnType<T>>,
+      TError,
+      TNativeOptions,
+      TNativeReturnType
+    >;

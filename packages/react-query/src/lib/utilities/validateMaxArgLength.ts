@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const validateMaxArgLength = (config: {
   fn: (...args: any[]) => any;
   fnName: string;

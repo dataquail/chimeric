@@ -35,8 +35,10 @@ export type DefineIdiomaticQuery<
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   TIdiomaticNativeOptions = unknown,
-> = IdiomaticQuery<
-  Parameters<T>[0],
-  Awaited<ReturnType<T>>,
-  TIdiomaticNativeOptions
->;
+> = Parameters<T> extends []
+  ? IdiomaticQuery<void, Awaited<ReturnType<T>>, TIdiomaticNativeOptions>
+  : IdiomaticQuery<
+      Parameters<T>[0],
+      Awaited<ReturnType<T>>,
+      TIdiomaticNativeOptions
+    >;

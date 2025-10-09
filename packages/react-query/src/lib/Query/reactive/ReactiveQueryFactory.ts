@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { type QueryKey, useQuery, queryOptions } from '@tanstack/react-query';
 import {
   TanstackQueryReactiveNativeOptions,

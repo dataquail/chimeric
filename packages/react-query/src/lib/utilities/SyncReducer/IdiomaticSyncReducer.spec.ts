@@ -116,7 +116,7 @@ describe('IdiomaticSyncFactoryFromMany', () => {
     type Args = number | undefined;
     IdiomaticSyncReducer<Args>().build({
       serviceList: [
-        // @ts-expect-error
+        // @ts-expect-error - getParams cannot return undefined
         { service: getTodoById, getParams: (index: Args) => index },
         {
           service: getTodoIdOrReturn1,
@@ -128,7 +128,7 @@ describe('IdiomaticSyncFactoryFromMany', () => {
 
     IdiomaticSyncReducer<Args>().build({
       serviceList: [
-        // @ts-expect-error
+        // @ts-expect-error - getTodoById expects getParams
         { service: getTodoById },
         {
           service: getTodoIdOrReturn1,
@@ -153,7 +153,7 @@ describe('IdiomaticSyncFactoryFromMany', () => {
       serviceList: [
         {
           service: getAllTodos,
-          // @ts-expect-error
+          // @ts-expect-error - getAllTodos cannot have params
           getParams: (index: Args) => index,
         },
       ],

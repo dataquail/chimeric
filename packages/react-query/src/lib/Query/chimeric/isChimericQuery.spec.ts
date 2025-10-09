@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   makeIdiomaticQueryWithoutParamsReturnsString,
   makeReactiveQueryWithoutParamsReturnsString,
@@ -20,11 +21,11 @@ describe('isChimericQuery', () => {
 
   it('should return false for non-chimeric inputs', () => {
     // Not a function
-    expect(isChimericQuery('not a function')).toBe(false);
+    expect(isChimericQuery('not a function' as any)).toBe(false);
 
     // Function without use
     const mockQueryFn = vi.fn(async () => 'test');
-    expect(isChimericQuery(mockQueryFn)).toBe(false);
+    expect(isChimericQuery(mockQueryFn as any)).toBe(false);
 
     // Object with use but not a function
     const mockReactiveQuery = {
@@ -39,12 +40,12 @@ describe('isChimericQuery', () => {
         native: {} as UseQueryResult<string, Error>,
       })),
     };
-    expect(isChimericQuery(mockReactiveQuery)).toBe(false);
+    expect(isChimericQuery(mockReactiveQuery as any)).toBe(false);
 
     // Other invalid inputs
-    expect(isChimericQuery(123)).toBe(false);
-    expect(isChimericQuery(null)).toBe(false);
-    expect(isChimericQuery(undefined)).toBe(false);
-    expect(isChimericQuery({})).toBe(false);
+    expect(isChimericQuery(123 as any)).toBe(false);
+    expect(isChimericQuery(null as any)).toBe(false);
+    expect(isChimericQuery(undefined as any)).toBe(false);
+    expect(isChimericQuery({} as any)).toBe(false);
   });
 });

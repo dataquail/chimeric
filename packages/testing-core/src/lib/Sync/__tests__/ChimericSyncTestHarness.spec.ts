@@ -77,7 +77,9 @@ describe('ChimericSyncTestHarness', () => {
         }),
         method: 'reactive',
       });
-    } catch (e) {}
+    } catch {
+      // Expected error
+    }
   });
 
   it('should handle optional params', async () => {
@@ -152,7 +154,9 @@ describe('ChimericSyncTestHarness', () => {
         // @ts-expect-error Testing invalid usage
         params: 1,
       });
-    } catch (e) {}
+    } catch {
+      // Expected error
+    }
   });
 
   it('should handle no params', () => {
@@ -195,6 +199,8 @@ describe('ChimericSyncTestHarness', () => {
         // @ts-expect-error Testing invalid usage
         params: 1,
       });
-    } catch (e) {}
+    } catch {
+      // Expected error
+    }
   });
 });

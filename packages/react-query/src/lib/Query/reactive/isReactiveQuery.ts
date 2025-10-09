@@ -5,6 +5,8 @@ export function isReactiveQuery<
   TParams = void,
   TResult = unknown,
   TError extends Error = Error,
->(query: unknown): query is ReactiveQuery<TParams, TResult, TError> {
+>(
+  query: ReactiveQuery<TParams, TResult, TError>,
+): query is ReactiveQuery<TParams, TResult, TError> {
   return coreIsReactiveQuery(query);
 }

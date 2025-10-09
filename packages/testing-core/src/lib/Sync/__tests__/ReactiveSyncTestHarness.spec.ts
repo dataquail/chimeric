@@ -63,6 +63,8 @@ describe('ReactiveSyncTestHarness', () => {
         reactiveSync: mockReactiveSync,
         params: 1,
       });
-    } catch (e) {}
+    } catch {
+      // Expected error
+    }
   });
 });

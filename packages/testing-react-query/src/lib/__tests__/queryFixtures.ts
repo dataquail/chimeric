@@ -1,9 +1,11 @@
+import { IdiomaticQueryOptions, ReactiveQueryOptions } from '@chimeric/core';
 import {
   createIdiomaticQuery,
   createReactiveQuery,
-  IdiomaticQueryOptions,
-  ReactiveQueryOptions,
-} from '@chimeric/core';
+  TanstackQueryIdiomaticNativeOptions,
+  TanstackQueryReactiveNativeOptions,
+  TanstackQueryReactiveReturnType,
+} from '@chimeric/react-query';
 
 export const makeIdiomaticQueryWithoutParamsReturnsString = () =>
   createIdiomaticQuery(
@@ -22,7 +24,11 @@ export const makeIdiomaticQueryWithParamsReturnsString = () =>
         args: { name: string },
         _allOptions?: {
           options?: IdiomaticQueryOptions;
-          nativeOptions?: undefined;
+          nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+            string,
+            Error,
+            string[]
+          >;
         },
       ) => `Hello ${args.name}`,
     ),
@@ -35,7 +41,11 @@ export const makeIdiomaticQueryWithOptionalParamsReturnsString = () =>
         args?: { name: string },
         _allOptions?: {
           options?: IdiomaticQueryOptions;
-          nativeOptions?: undefined;
+          nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+            string,
+            Error,
+            string[]
+          >;
         },
       ) => (args ? `Hello ${args.name}` : 'Hello'),
     ),
@@ -46,7 +56,11 @@ export const makeReactiveQueryWithoutParamsReturnsString = () =>
     vi.fn(
       (_allOptions?: {
         options?: ReactiveQueryOptions;
-        nativeOptions?: undefined;
+        nativeOptions?: TanstackQueryReactiveNativeOptions<
+          string,
+          Error,
+          string[]
+        >;
       }) => ({
         isIdle: true,
         isPending: false,
@@ -55,7 +69,10 @@ export const makeReactiveQueryWithoutParamsReturnsString = () =>
         error: null,
         data: undefined,
         refetch: vi.fn(),
-        native: null,
+        native: undefined as unknown as TanstackQueryReactiveReturnType<
+          string,
+          Error
+        >,
       }),
     ),
   );
@@ -67,7 +84,11 @@ export const makeReactiveQueryWithParamsReturnsString = () =>
         args: { name: string },
         _allOptions?: {
           options?: ReactiveQueryOptions;
-          nativeOptions?: undefined;
+          nativeOptions?: TanstackQueryReactiveNativeOptions<
+            string,
+            Error,
+            string[]
+          >;
         },
       ) => ({
         isIdle: true,
@@ -77,7 +98,10 @@ export const makeReactiveQueryWithParamsReturnsString = () =>
         error: null,
         data: `Hello ${args.name}`,
         refetch: vi.fn(),
-        native: null,
+        native: undefined as unknown as TanstackQueryReactiveReturnType<
+          string,
+          Error
+        >,
       }),
     ),
   );
@@ -89,7 +113,11 @@ export const makeReactiveQueryWithOptionalParamsReturnsString = () =>
         args?: { name: string },
         _allOptions?: {
           options?: ReactiveQueryOptions;
-          nativeOptions?: undefined;
+          nativeOptions?: TanstackQueryReactiveNativeOptions<
+            string,
+            Error,
+            string[]
+          >;
         },
       ) => ({
         isIdle: true,
@@ -99,7 +127,10 @@ export const makeReactiveQueryWithOptionalParamsReturnsString = () =>
         error: null,
         data: args ? `Hello ${args.name}` : 'Hello',
         refetch: vi.fn(),
-        native: null,
+        native: undefined as unknown as TanstackQueryReactiveReturnType<
+          string,
+          Error
+        >,
       }),
     ),
   );

@@ -18,38 +18,38 @@ import { TanstackQueryReactiveNativeOptions } from 'src/lib/Query/reactive/types
 // Helper type to extract the result type from a service configuration
 type ExtractServiceResult<TConfig> = TConfig extends {
   service: ChimericQuery<
-    infer TParams,
+    infer _TParams,
     infer TResult,
     infer TError,
-    infer TQueryKey
+    infer _TQueryKey
   >;
 }
   ? UseQueryResult<TResult, TError>['data']
   : TConfig extends {
-      service: ChimericEagerAsync<any, infer TResult, infer TError>;
+      service: ChimericEagerAsync<any, infer TResult, infer _TError>;
     }
   ? TResult
   : TConfig extends {
-      service: ChimericSync<infer TParams, infer TResult>;
+      service: ChimericSync<infer _TParams, infer TResult>;
     }
   ? TResult
   : never;
 
 type ExtractServiceResultWithUndefined<TConfig> = TConfig extends {
   service: ChimericQuery<
-    infer TParams,
+    infer _TParams,
     infer TResult,
     infer TError,
-    infer TQueryKey
+    infer _TQueryKey
   >;
 }
   ? UseQueryResult<TResult, TError>['data'] | undefined
   : TConfig extends {
-      service: ChimericEagerAsync<any, infer TResult, infer TError>;
+      service: ChimericEagerAsync<any, infer TResult, infer _TError>;
     }
   ? TResult | undefined
   : TConfig extends {
-      service: ChimericSync<infer TParams, infer TResult>;
+      service: ChimericSync<infer _TParams, infer TResult>;
     }
   ? TResult
   : never;
