@@ -8,7 +8,7 @@ export const isChimericQuery = <
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(
-  maybeChimericQuery: unknown,
+  maybeChimericQuery: ChimericQuery<TParams, TResult, TError, TQueryKey>,
 ): maybeChimericQuery is ChimericQuery<TParams, TResult, TError, TQueryKey> => {
   return coreIsChimericQuery(maybeChimericQuery);
 };

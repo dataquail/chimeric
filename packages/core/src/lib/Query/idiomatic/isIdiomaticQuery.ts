@@ -8,13 +8,10 @@ export const isIdiomaticQuery = <
   TResult = unknown,
   TNativeOptions = unknown,
 >(
-  maybeIdiomaticQuery: unknown,
+  maybeIdiomaticQuery: IdiomaticQuery<TParams, TResult, TNativeOptions>,
 ): maybeIdiomaticQuery is IdiomaticQuery<TParams, TResult, TNativeOptions> => {
   return (
     isEligibleIdiomatic(maybeIdiomaticQuery) &&
-    hasIdiomaticMarker(
-      maybeIdiomaticQuery,
-      TYPE_MARKERS.IDIOMATIC_QUERY,
-    )
+    hasIdiomaticMarker(maybeIdiomaticQuery, TYPE_MARKERS.IDIOMATIC_QUERY)
   );
 };

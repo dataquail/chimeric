@@ -17,9 +17,9 @@ describe('isIdiomaticSync', () => {
       expect(result).toBe('test');
 
       try {
-        // @ts-expect-error
+        // @ts-expect-error - no params expected
         mockIdiomaticSync('test');
-      } catch (e) {
+      } catch {
         // Expected error
       }
     }
@@ -35,9 +35,9 @@ describe('isIdiomaticSync', () => {
       expect(result).toBe('Hello John');
 
       try {
-        // @ts-expect-error
+        // @ts-expect-error - missing params
         mockIdiomaticSync();
-      } catch (e) {
+      } catch {
         // Expected error
       }
     }
@@ -57,9 +57,9 @@ describe('isIdiomaticSync', () => {
       expect(resultWithoutParams).toBe('Hello');
 
       try {
-        // @ts-expect-error
+        // @ts-expect-error - wrong param type
         mockIdiomaticSync(1);
-      } catch (e) {
+      } catch {
         // Expected error
       }
     }

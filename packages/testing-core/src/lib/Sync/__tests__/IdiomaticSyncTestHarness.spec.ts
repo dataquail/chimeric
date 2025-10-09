@@ -66,7 +66,9 @@ describe('IdiomaticReadTestHarness', () => {
         idiomaticSync: mockFn,
         params: 1,
       });
-    } catch (e) {}
+    } catch {
+      // Expected error
+    }
   });
 
   it('should handle optional params', async () => {
@@ -98,7 +100,9 @@ describe('IdiomaticReadTestHarness', () => {
         // @ts-expect-error Testing invalid usage
         params: 1,
       });
-    } catch (e) {}
+    } catch {
+      // Expected error
+    }
   });
 
   it('should handle no params', async () => {

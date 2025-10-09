@@ -150,7 +150,7 @@ describe('ReactiveSyncReducer', () => {
     type Args = number | undefined;
     ReactiveSyncReducer<Args>().build({
       serviceList: [
-        // @ts-expect-error
+        // @ts-expect-error - getParams cannot return undefined
         { service: getTodoById1, getParams: (index: Args) => index },
         {
           service: getTodoIdOrReturn1,
@@ -162,7 +162,7 @@ describe('ReactiveSyncReducer', () => {
 
     ReactiveSyncReducer<Args>().build({
       serviceList: [
-        // @ts-expect-error
+        // @ts-expect-error - getTodoById expects getParams
         { service: getTodoById1 },
         {
           service: getTodoIdOrReturn1,

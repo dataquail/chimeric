@@ -10,7 +10,13 @@ export const isReactiveQuery = <
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
 >(
-  maybeReactiveQuery: unknown,
+  maybeReactiveQuery: ReactiveQuery<
+    TParams,
+    TResult,
+    TError,
+    TNativeOptions,
+    TNativeReturnType
+  >,
 ): maybeReactiveQuery is ReactiveQuery<
   TParams,
   TResult,

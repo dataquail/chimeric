@@ -17,9 +17,9 @@ describe('isReactiveSync', () => {
       expect(result).toBe('test');
 
       try {
-        // @ts-expect-error
+        // @ts-expect-error - no params expected
         mockReactiveSync('test');
-      } catch (e) {
+      } catch {
         // Expected error
       }
     }
@@ -35,9 +35,9 @@ describe('isReactiveSync', () => {
       expect(result).toBe('Hello John');
 
       try {
-        // @ts-expect-error
+        // @ts-expect-error - missing params
         mockReactiveSync();
-      } catch (e) {
+      } catch {
         // Expected error
       }
     }
@@ -56,9 +56,9 @@ describe('isReactiveSync', () => {
       expect(resultWithoutParams).toBe('Hello');
 
       try {
-        // @ts-expect-error
+        // @ts-expect-error - wrong param type
         mockReactiveSync(1);
-      } catch (e) {
+      } catch {
         // Expected error
       }
     }

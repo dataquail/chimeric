@@ -32,9 +32,9 @@ describe('createReactiveSync', () => {
     expect(reactiveSync.use()).toBe('test');
 
     try {
-      // @ts-expect-error
+      // @ts-expect-error - no params expected
       reactiveSync.use('test');
-    } catch (e) {
+    } catch {
       // Expected error
     }
   });
@@ -46,9 +46,9 @@ describe('createReactiveSync', () => {
     expect(reactiveSync.use()).toBe('test');
 
     try {
-      // @ts-expect-error
+      // @ts-expect-error - no params expected
       reactiveSync.use('test');
-    } catch (e) {
+    } catch {
       // Expected error
     }
   });
@@ -60,9 +60,9 @@ describe('createReactiveSync', () => {
     expect(reactiveSync.use({ name: 'test' })).toBe('Hello test');
 
     try {
-      // @ts-expect-error
+      // @ts-expect-error - missing params
       reactiveSync.use();
-    } catch (e) {
+    } catch {
       // Expected error
     }
   });
@@ -74,9 +74,9 @@ describe('createReactiveSync', () => {
     expect(reactiveSync.use({ a: 'test' })).toBe('test');
 
     try {
-      // @ts-expect-error
+      // @ts-expect-error - missing params
       reactiveSync.use();
-    } catch (e) {
+    } catch {
       // Expected error
     }
   });
@@ -92,9 +92,9 @@ describe('createReactiveSync', () => {
     expect(reactiveSync.use({ name: 'test' })).toBe('Hello test');
 
     try {
-      // @ts-expect-error
+      // @ts-expect-error - wrong param type
       reactiveSync.use({ name: 1 });
-    } catch (e) {
+    } catch {
       // Expected error
     }
   });
@@ -107,9 +107,9 @@ describe('createReactiveSync', () => {
     expect(reactiveSync.use({ name: 'test' })).toBe('Hello test');
 
     try {
-      // @ts-expect-error
+      // @ts-expect-error - wrong param type
       reactiveSync.use({ name: 1 });
-    } catch (e) {
+    } catch {
       // Expected error
     }
   });

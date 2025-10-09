@@ -50,16 +50,16 @@ describe('fuseChimericSync', () => {
     expect(mockIdiomaticSync).toHaveBeenCalledTimes(1);
 
     try {
-      // @ts-expect-error
+      // @ts-expect-error - no params expected
       testChimericSync('test');
-    } catch (e) {
+    } catch {
       // Expected error
     }
 
     try {
-      // @ts-expect-error
+      // @ts-expect-error - no params expected
       testChimericSync.use('test');
-    } catch (e) {
+    } catch {
       // Expected error
     }
   });
@@ -86,16 +86,16 @@ describe('fuseChimericSync', () => {
     expect(mockIdiomaticSync).toHaveBeenCalledTimes(1);
 
     try {
-      // @ts-expect-error
+      // @ts-expect-error - missing params
       testChimericSync();
-    } catch (e) {
+    } catch {
       // Expected error
     }
 
     try {
-      // @ts-expect-error
+      // @ts-expect-error - missing params
       testChimericSync.use();
-    } catch (e) {
+    } catch {
       // Expected error
     }
   });
@@ -132,16 +132,16 @@ describe('fuseChimericSync', () => {
     expect(mockIdiomaticSync).toHaveBeenCalledTimes(2); // once for each previous call
 
     try {
-      // @ts-expect-error
+      // @ts-expect-error - wrong param type
       testChimericSync({ name: 1 });
-    } catch (e) {
+    } catch {
       // Expected error
     }
 
     try {
-      // @ts-expect-error
+      // @ts-expect-error - wrong param type
       testChimericSync.use({ name: 1 });
-    } catch (e) {
+    } catch {
       // Expected error
     }
   });

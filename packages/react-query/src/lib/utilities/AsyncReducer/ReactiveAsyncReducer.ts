@@ -22,19 +22,19 @@ import {
 // Helper type to extract the result type from a service configuration
 type ExtractServiceResult<TConfig> = TConfig extends {
   service: ReactiveQuery<
-    infer TParams,
+    infer _TParams,
     infer TResult,
-    infer TError,
-    infer TQueryKey
+    infer _TError,
+    infer _TQueryKey
   >;
 }
   ? TResult
   : TConfig extends {
-      service: ReactiveEagerAsync<any, infer TResult, infer TError>;
+      service: ReactiveEagerAsync<any, infer TResult, infer _TError>;
     }
   ? TResult
   : TConfig extends {
-      service: ReactiveSync<infer TParams, infer TResult>;
+      service: ReactiveSync<infer _TParams, infer TResult>;
     }
   ? TResult
   : never;

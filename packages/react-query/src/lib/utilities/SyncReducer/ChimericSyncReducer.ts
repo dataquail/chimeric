@@ -5,7 +5,7 @@ import { ReactiveSyncReducer } from './ReactiveSyncReducer';
 
 // Helper type to extract the result type from a service configuration
 type ExtractServiceResult<TConfig> = TConfig extends {
-  service: ChimericSync<infer TParams, infer TResult>;
+  service: ChimericSync<infer _TParams, infer TResult>;
 }
   ? TResult
   : never;

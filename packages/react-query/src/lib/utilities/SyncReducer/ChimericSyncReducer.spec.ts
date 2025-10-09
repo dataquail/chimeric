@@ -154,7 +154,7 @@ describe('ChimericSyncReducer', () => {
       type Args = number | undefined;
       ChimericSyncReducer<Args>().build({
         serviceList: [
-          // @ts-expect-error
+          // @ts-expect-error - getParams cannot return undefined
           { service: getTodoById, getParams: (index: Args) => index },
           {
             service: getTodoIdOrReturn1,
@@ -166,7 +166,7 @@ describe('ChimericSyncReducer', () => {
 
       ChimericSyncReducer<Args>().build({
         serviceList: [
-          // @ts-expect-error
+          // @ts-expect-error - getTodoById expects getParams
           { service: getTodoById },
           {
             service: getTodoIdOrReturn1,
@@ -191,7 +191,7 @@ describe('ChimericSyncReducer', () => {
         serviceList: [
           {
             service: getAllTodos,
-            // @ts-expect-error
+            // @ts-expect-error - getAllTodos cannot have params
             getParams: (index: Args) => index,
           },
         ],
@@ -300,7 +300,7 @@ describe('ChimericSyncReducer', () => {
       type Args = number | undefined;
       ChimericSyncReducer<Args>().build({
         serviceList: [
-          // @ts-expect-error
+          // @ts-expect-error - getParams cannot return undefined
           { service: getTodoById1, getParams: (index: Args) => index },
           {
             service: getTodoIdOrReturn1,
@@ -312,7 +312,7 @@ describe('ChimericSyncReducer', () => {
 
       ChimericSyncReducer<Args>().build({
         serviceList: [
-          // @ts-expect-error
+          // @ts-expect-error - getTodoById expects getParams
           { service: getTodoById1 },
           {
             service: getTodoIdOrReturn1,

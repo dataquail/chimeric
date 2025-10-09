@@ -8,7 +8,8 @@ export type ReactiveSync<TParams = void, TResult = unknown> = {
     : (params: TParams) => TResult;
 };
 
-export type DefineReactiveSync<T extends (...args: any[]) => any> =
-  Parameters<T> extends []
-    ? ReactiveSync<void, ReturnType<T>>
-    : ReactiveSync<Parameters<T>[0], ReturnType<T>>;
+export type DefineReactiveSync<
+  T extends (args: Parameters<T>[0]) => ReturnType<T>,
+> = Parameters<T> extends []
+  ? ReactiveSync<void, ReturnType<T>>
+  : ReactiveSync<Parameters<T>[0], ReturnType<T>>;

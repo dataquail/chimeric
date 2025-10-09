@@ -10,7 +10,14 @@ export const isChimericQuery = <
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
 >(
-  maybeChimericQuery: unknown,
+  maybeChimericQuery: ChimericQuery<
+    TParams,
+    TResult,
+    TError,
+    TNativeIdiomaticOptions,
+    TNativeReactiveOptions,
+    TNativeReactiveResult
+  >,
 ): maybeChimericQuery is ChimericQuery<
   TParams,
   TResult,

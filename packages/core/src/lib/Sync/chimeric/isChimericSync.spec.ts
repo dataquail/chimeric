@@ -25,16 +25,16 @@ describe('isChimericSync', () => {
       expect(reactiveResult).toBe('test');
 
       try {
-        // @ts-expect-error
+        // @ts-expect-error - no params expected
         mockChimericSync('test');
-      } catch (e) {
+      } catch {
         // Expected error
       }
 
       try {
-        // @ts-expect-error
+        // @ts-expect-error - no params expected
         mockChimericSync.use('test');
-      } catch (e) {
+      } catch {
         // Expected error
       }
     } else {
