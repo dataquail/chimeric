@@ -1,18 +1,75 @@
-import { makeIdiomaticSyncWithoutParamsReturnsString } from '../__tests__/syncFixtures';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  makeIdiomaticSyncWithOptionalParamsReturnsString,
+  makeIdiomaticSyncWithoutParamsReturnsString,
+  makeIdiomaticSyncWithParamsReturnsString,
+} from '../__tests__/syncFixtures';
 import { isIdiomaticSync } from './isIdiomaticSync';
 
 describe('isIdiomaticSync', () => {
-  it('should return true for a function', () => {
+  it('should handle no params', () => {
     const mockIdiomaticSync = makeIdiomaticSyncWithoutParamsReturnsString();
 
     expect(isIdiomaticSync(mockIdiomaticSync)).toBe(true);
+
+    if (isIdiomaticSync(mockIdiomaticSync)) {
+      const result = mockIdiomaticSync();
+      expect(result).toBe('test');
+
+      try {
+        // @ts-expect-error
+        mockIdiomaticSync('test');
+      } catch (e) {
+        // Expected error
+      }
+    }
+  });
+
+  it('should handle params', () => {
+    const mockIdiomaticSync = makeIdiomaticSyncWithParamsReturnsString();
+
+    expect(isIdiomaticSync(mockIdiomaticSync)).toBe(true);
+
+    if (isIdiomaticSync(mockIdiomaticSync)) {
+      const result = mockIdiomaticSync({ name: 'John' });
+      expect(result).toBe('Hello John');
+
+      try {
+        // @ts-expect-error
+        mockIdiomaticSync();
+      } catch (e) {
+        // Expected error
+      }
+    }
+  });
+
+  it('should handle optional params', () => {
+    const mockIdiomaticSync =
+      makeIdiomaticSyncWithOptionalParamsReturnsString();
+
+    expect(isIdiomaticSync(mockIdiomaticSync)).toBe(true);
+
+    if (isIdiomaticSync(mockIdiomaticSync)) {
+      const resultWithParams = mockIdiomaticSync({ name: 'John' });
+      expect(resultWithParams).toBe('Hello John');
+
+      const resultWithoutParams = mockIdiomaticSync();
+      expect(resultWithoutParams).toBe('Hello');
+
+      try {
+        // @ts-expect-error
+        mockIdiomaticSync(1);
+      } catch (e) {
+        // Expected error
+      }
+    }
   });
 
   it('should return false for non-function values', () => {
-    expect(isIdiomaticSync('not a function')).toBe(false);
-    expect(isIdiomaticSync(123)).toBe(false);
-    expect(isIdiomaticSync({})).toBe(false);
-    expect(isIdiomaticSync(null)).toBe(false);
-    expect(isIdiomaticSync(undefined)).toBe(false);
+    expect(isIdiomaticSync('not a function' as any)).toBe(false);
+    expect(isIdiomaticSync(123 as any)).toBe(false);
+    expect(isIdiomaticSync({} as any)).toBe(false);
+    expect(isIdiomaticSync(null as any)).toBe(false);
+    expect(isIdiomaticSync(undefined as any)).toBe(false);
   });
 });

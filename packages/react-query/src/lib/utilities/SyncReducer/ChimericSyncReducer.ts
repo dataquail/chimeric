@@ -5,7 +5,7 @@ import { ReactiveSyncReducer } from './ReactiveSyncReducer';
 
 // Helper type to extract the result type from a service configuration
 type ExtractServiceResult<TConfig> = TConfig extends {
-  service: ChimericSync<any, infer TResult>;
+  service: ChimericSync<infer TParams, infer TResult>;
 }
   ? TResult
   : never;
@@ -138,26 +138,34 @@ type ExtractResults<T extends readonly any[]> = T extends readonly [infer C0]
     ]
   : never;
 
-type NoParamsServiceConfig = { service: ChimericSync<void, any> };
-
-type WithParamsServiceConfig = {
-  service: ChimericSync<any, any>;
-  getParams: (params: any) => any;
-};
-
-type InferService<TConfig, TServiceParams> =
-  TConfig extends NoParamsServiceConfig
-    ? TConfig['service'] extends ChimericSync<void, infer TResult>
-      ? { service: ChimericSync<void, TResult>; getParams?: never }
-      : never
-    : TConfig extends WithParamsServiceConfig
-    ? TConfig['service'] extends ChimericSync<infer TParams, infer TResult>
-      ? {
-          service: ChimericSync<TParams, TResult>;
-          getParams: (params: TServiceParams) => TParams;
-        }
-      : never
-    : never;
+type InferService<TConfig, TServiceParams> = TConfig extends {
+  service: ChimericSync<infer TParams, infer TResult>;
+}
+  ? [TParams] extends [void]
+    ? {
+        service: ChimericSync<void, TResult>;
+        getParams?: never;
+      }
+    : void extends TParams
+    ? {
+        service: ChimericSync<void, TResult>;
+        getParams?: never;
+      }
+    : undefined extends TParams
+    ? {
+        service: ChimericSync<TParams, TResult>;
+        getParams: (params?: TServiceParams) => TParams;
+      }
+    : undefined extends TServiceParams
+    ? {
+        service: ChimericSync<TParams, TResult>;
+        getParams?: (params: TServiceParams) => TParams;
+      }
+    : {
+        service: ChimericSync<TParams, TResult>;
+        getParams: (params: TServiceParams) => TParams;
+      }
+  : never;
 
 export const ChimericSyncReducer = <TServiceParams = void>() => ({
   build: <

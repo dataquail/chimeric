@@ -7,7 +7,7 @@ import {
 
 // Helper type to extract the result type from a service configuration
 type ExtractServiceResult<TConfig> = TConfig extends {
-  service: IdiomaticSync<any, infer TResult>;
+  service: IdiomaticSync<infer TParams, infer TResult>;
 }
   ? TResult
   : never;
@@ -145,26 +145,34 @@ type AnyServiceConfig = {
   getParams?: (params: any) => any;
 };
 
-type NoParamsServiceConfig = { service: IdiomaticSync<void, any> };
-
-type WithParamsServiceConfig = {
-  service: IdiomaticSync<any, any>;
-  getParams: (params: any) => any;
-};
-
-type InferService<TConfig, TServiceParams> =
-  TConfig extends NoParamsServiceConfig
-    ? TConfig['service'] extends IdiomaticSync<void, infer TResult>
-      ? { service: IdiomaticSync<void, TResult>; getParams?: never }
-      : never
-    : TConfig extends WithParamsServiceConfig
-    ? TConfig['service'] extends IdiomaticSync<infer TParams, infer TResult>
-      ? {
-          service: IdiomaticSync<TParams, TResult>;
-          getParams: (params: TServiceParams) => TParams;
-        }
-      : never
-    : never;
+type InferService<TConfig, TServiceParams> = TConfig extends {
+  service: IdiomaticSync<infer TParams, infer TResult>;
+}
+  ? [TParams] extends [void]
+    ? {
+        service: IdiomaticSync<void, TResult>;
+        getParams?: never;
+      }
+    : void extends TParams
+    ? {
+        service: IdiomaticSync<void, TResult>;
+        getParams?: never;
+      }
+    : undefined extends TParams
+    ? {
+        service: IdiomaticSync<TParams, TResult>;
+        getParams: (params?: TServiceParams) => TParams;
+      }
+    : undefined extends TServiceParams
+    ? {
+        service: IdiomaticSync<TParams, TResult>;
+        getParams?: (params: TServiceParams) => TParams;
+      }
+    : {
+        service: IdiomaticSync<TParams, TResult>;
+        getParams: (params: TServiceParams) => TParams;
+      }
+  : never;
 
 export const IdiomaticSyncReducer = <TServiceParams = void>() => ({
   build: <
@@ -282,7 +290,9 @@ export const IdiomaticSyncReducer = <TServiceParams = void>() => ({
   },
 });
 
-const getService = (service: AnyServiceConfig | undefined) => {
+const getService = (
+  service: AnyServiceConfig | undefined,
+): ((params?: any) => any) => {
   if (!service) {
     return () => undefined;
   } else {

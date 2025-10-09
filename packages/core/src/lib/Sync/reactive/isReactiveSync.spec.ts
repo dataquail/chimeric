@@ -1,26 +1,76 @@
-import { makeReactiveSyncWithoutParamsReturnsString } from '../__tests__/syncFixtures';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  makeReactiveSyncWithOptionalParamsReturnsString,
+  makeReactiveSyncWithoutParamsReturnsString,
+  makeReactiveSyncWithParamsReturnsString,
+} from '../__tests__/syncFixtures';
 import { isReactiveSync } from './isReactiveSync';
 
 describe('isReactiveSync', () => {
-  it('should return true for an object with use function', () => {
+  it('should handle no params', () => {
     const mockReactiveSync = makeReactiveSyncWithoutParamsReturnsString();
 
     expect(isReactiveSync(mockReactiveSync)).toBe(true);
+
+    if (isReactiveSync(mockReactiveSync)) {
+      const result = mockReactiveSync.use();
+      expect(result).toBe('test');
+
+      try {
+        // @ts-expect-error
+        mockReactiveSync('test');
+      } catch (e) {
+        // Expected error
+      }
+    }
   });
 
-  it('should return true for a function with use property', () => {
-    const mockReactiveSync = makeReactiveSyncWithoutParamsReturnsString();
+  it('should handle params', () => {
+    const mockReactiveSync = makeReactiveSyncWithParamsReturnsString();
 
     expect(isReactiveSync(mockReactiveSync)).toBe(true);
+
+    if (isReactiveSync(mockReactiveSync)) {
+      const result = mockReactiveSync.use({ name: 'John' });
+      expect(result).toBe('Hello John');
+
+      try {
+        // @ts-expect-error
+        mockReactiveSync();
+      } catch (e) {
+        // Expected error
+      }
+    }
+  });
+
+  it('should handle optional params', () => {
+    const mockReactiveSync = makeReactiveSyncWithOptionalParamsReturnsString();
+
+    expect(isReactiveSync(mockReactiveSync)).toBe(true);
+
+    if (isReactiveSync(mockReactiveSync)) {
+      const resultWithParams = mockReactiveSync.use({ name: 'John' });
+      expect(resultWithParams).toBe('Hello John');
+
+      const resultWithoutParams = mockReactiveSync.use();
+      expect(resultWithoutParams).toBe('Hello');
+
+      try {
+        // @ts-expect-error
+        mockReactiveSync(1);
+      } catch (e) {
+        // Expected error
+      }
+    }
   });
 
   it('should return false for invalid inputs', () => {
-    expect(isReactiveSync('not an object')).toBe(false);
-    expect(isReactiveSync(123)).toBe(false);
-    expect(isReactiveSync(null)).toBe(false);
-    expect(isReactiveSync(undefined)).toBe(false);
-    expect(isReactiveSync({})).toBe(false);
-    expect(isReactiveSync({ notUse: 'something' })).toBe(false);
-    expect(isReactiveSync({ use: 'not a function' })).toBe(false);
+    expect(isReactiveSync('not an object' as any)).toBe(false);
+    expect(isReactiveSync(123 as any)).toBe(false);
+    expect(isReactiveSync(null as any)).toBe(false);
+    expect(isReactiveSync(undefined as any)).toBe(false);
+    expect(isReactiveSync({} as any)).toBe(false);
+    expect(isReactiveSync({ notUse: 'something' } as any)).toBe(false);
+    expect(isReactiveSync({ use: 'not a function' } as any)).toBe(false);
   });
 });

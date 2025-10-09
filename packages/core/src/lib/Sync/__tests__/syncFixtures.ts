@@ -1,7 +1,8 @@
 import {
-  makeAsyncFnWithoutParamsReturnsString,
-  makeAsyncFnWithParamsReturnsObj,
-  makeAsyncFnWithParamsReturnsString,
+  makeSyncFnWithParamsReturnsObj,
+  makeSyncFnWithParamsReturnsString,
+  makeSyncFnWithoutParamsReturnsString,
+  makeSyncFnWithOptionalParamsReturnsString,
 } from '../../__tests__/functionFixtures';
 import { DefineChimericSync } from '../chimeric/types';
 import { createIdiomaticSync } from '../idiomatic/createIdiomaticSync';
@@ -10,22 +11,13 @@ import { createReactiveSync } from '../reactive/createReactiveSync';
 import { DefineReactiveSync } from '../reactive/types';
 
 // No params
-export const makeSyncFnWithoutParamsReturnsString = () =>
-  makeAsyncFnWithoutParamsReturnsString();
-
 export const makeIdiomaticSyncWithoutParamsReturnsString = () =>
   createIdiomaticSync(makeSyncFnWithoutParamsReturnsString());
 
-export const makeSyncHookWithoutParamsReturnsString = () =>
-  makeSyncFnWithoutParamsReturnsString();
-
 export const makeReactiveSyncWithoutParamsReturnsString = () =>
-  createReactiveSync(makeSyncHookWithoutParamsReturnsString());
+  createReactiveSync(makeSyncFnWithoutParamsReturnsString());
 
 // With params
-export const makeSyncFnWithParamsReturnsString = () =>
-  makeAsyncFnWithParamsReturnsString();
-
 export const makeIdiomaticSyncWithParamsReturnsString = () =>
   createIdiomaticSync(makeSyncFnWithParamsReturnsString());
 
@@ -36,9 +28,6 @@ export const makeReactiveSyncWithParamsReturnsString = () =>
   createReactiveSync(makeSyncHookWithParamsReturnsString());
 
 // With params and returns obj
-export const makeSyncFnWithParamsReturnsObj = () =>
-  makeAsyncFnWithParamsReturnsObj();
-
 export const makeIdiomaticSyncWithParamsReturnsObj = () =>
   createIdiomaticSync(makeSyncFnWithParamsReturnsObj());
 
@@ -48,6 +37,14 @@ export const makeSyncHookWithParamsReturnsObj = () =>
 export const makeReactiveSyncWithParamsReturnsObj = () =>
   createReactiveSync(makeSyncHookWithParamsReturnsObj());
 
+// With optional params
+export const makeIdiomaticSyncWithOptionalParamsReturnsString = () =>
+  createIdiomaticSync(makeSyncFnWithOptionalParamsReturnsString());
+
+export const makeReactiveSyncWithOptionalParamsReturnsString = () =>
+  createReactiveSync(makeSyncFnWithOptionalParamsReturnsString());
+
+// Types
 export type ChimericSyncWithoutParamsReturnsString = DefineChimericSync<
   () => Promise<string>
 >;

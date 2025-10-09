@@ -9,4 +9,6 @@ export type ChimericSync<TParams = void, TResult = unknown> = IdiomaticSync<
 
 export type DefineChimericSync<
   T extends (args: Parameters<T>[0]) => ReturnType<T>,
-> = ChimericSync<Parameters<T>[0], ReturnType<T>>;
+> = Parameters<T> extends []
+  ? ChimericSync<void, ReturnType<T>>
+  : ChimericSync<Parameters<T>[0], ReturnType<T>>;
