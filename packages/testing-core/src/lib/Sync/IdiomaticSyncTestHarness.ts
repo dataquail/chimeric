@@ -4,16 +4,31 @@ import { checkOnInterval } from '../checkOnInterval.js';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
 import { SyncTestHarnessReturnType } from './types.js';
 
-export const IdiomaticSyncTestHarness = <TParams = void, TResult = unknown>(
-  args: TParams extends void | undefined
-    ? {
-        idiomaticSync: IdiomaticSync<TParams, TResult>;
-      }
-    : {
-        idiomaticSync: IdiomaticSync<TParams, TResult>;
-        params: TParams;
-      },
-): SyncTestHarnessReturnType<TResult> => {
+// Required params (must come first - most specific)
+export function IdiomaticSyncTestHarness<TParams, TResult>(args: {
+  idiomaticSync: IdiomaticSync<TParams, TResult>;
+  params: TParams;
+}): SyncTestHarnessReturnType<TResult>;
+
+// Optional params (must come before no params)
+export function IdiomaticSyncTestHarness<TParams, TResult>(args: {
+  idiomaticSync: IdiomaticSync<TParams | undefined, TResult>;
+  params?: TParams | undefined;
+}): SyncTestHarnessReturnType<TResult>;
+
+// No params (least specific - must come last)
+export function IdiomaticSyncTestHarness<TResult>(args: {
+  idiomaticSync: IdiomaticSync<void, TResult>;
+}): SyncTestHarnessReturnType<TResult>;
+
+// Implementation
+export function IdiomaticSyncTestHarness<
+  TParams = void,
+  TResult = unknown,
+>(args: {
+  idiomaticSync: IdiomaticSync<TParams, TResult>;
+  params?: TParams;
+}): SyncTestHarnessReturnType<TResult> {
   const { idiomaticSync } = args;
   const params = (args as { params?: TParams })?.params as TParams;
   const result = {
@@ -40,4 +55,4 @@ export const IdiomaticSyncTestHarness = <TParams = void, TResult = unknown>(
   };
   result.current = idiomaticSync(params as TParams);
   return returnValue;
-};
+}

@@ -42,14 +42,14 @@ describe('ReactiveQueryTestHarness', () => {
       reactiveQuery: mockReactiveQuery,
       params: { name: 'John' },
       options: { enabled: false },
-      nativeOptions: { staleTime: 1000 },
+      nativeOptions: undefined,
     });
 
     expect(mockReactiveQuery.use).toHaveBeenCalledWith(
       { name: 'John' },
       {
         options: { enabled: false },
-        nativeOptions: { staleTime: 1000 },
+        nativeOptions: undefined,
       },
     );
     expect(mockReactiveQuery.use).toHaveBeenCalledTimes(2);
@@ -77,12 +77,12 @@ describe('ReactiveQueryTestHarness', () => {
     ReactiveQueryTestHarness({
       reactiveQuery: mockReactiveQuery,
       options: { enabled: false },
-      nativeOptions: { staleTime: 1000 },
+      nativeOptions: undefined,
     });
 
     expect(mockReactiveQuery.use).toHaveBeenCalledWith(undefined, {
       options: { enabled: false },
-      nativeOptions: { staleTime: 1000 },
+      nativeOptions: undefined,
     });
     expect(mockReactiveQuery.use).toHaveBeenCalledTimes(3);
 
@@ -90,14 +90,14 @@ describe('ReactiveQueryTestHarness', () => {
       reactiveQuery: mockReactiveQuery,
       params: { name: 'Jane' },
       options: { enabled: false },
-      nativeOptions: { staleTime: 1000 },
+      nativeOptions: undefined,
     });
 
     expect(mockReactiveQuery.use).toHaveBeenCalledWith(
       { name: 'Jane' },
       {
         options: { enabled: false },
-        nativeOptions: { staleTime: 1000 },
+        nativeOptions: undefined,
       },
     );
     expect(mockReactiveQuery.use).toHaveBeenCalledTimes(4);
