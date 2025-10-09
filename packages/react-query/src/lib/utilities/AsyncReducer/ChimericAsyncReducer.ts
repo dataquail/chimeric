@@ -17,29 +17,39 @@ import { TanstackQueryReactiveNativeOptions } from 'src/lib/Query/reactive/types
 
 // Helper type to extract the result type from a service configuration
 type ExtractServiceResult<TConfig> = TConfig extends {
-  service: ChimericQuery<any, infer TResult, infer TError, any>;
+  service: ChimericQuery<
+    infer TParams,
+    infer TResult,
+    infer TError,
+    infer TQueryKey
+  >;
 }
   ? UseQueryResult<TResult, TError>['data']
   : TConfig extends {
-      service: ChimericEagerAsync<any, infer TResult, any>;
+      service: ChimericEagerAsync<any, infer TResult, infer TError>;
     }
   ? TResult
   : TConfig extends {
-      service: ChimericSync<any, infer TResult>;
+      service: ChimericSync<infer TParams, infer TResult>;
     }
   ? TResult
   : never;
 
 type ExtractServiceResultWithUndefined<TConfig> = TConfig extends {
-  service: ChimericQuery<any, infer TResult, infer TError, any>;
+  service: ChimericQuery<
+    infer TParams,
+    infer TResult,
+    infer TError,
+    infer TQueryKey
+  >;
 }
   ? UseQueryResult<TResult, TError>['data'] | undefined
   : TConfig extends {
-      service: ChimericEagerAsync<any, infer TResult, any>;
+      service: ChimericEagerAsync<any, infer TResult, infer TError>;
     }
   ? TResult | undefined
   : TConfig extends {
-      service: ChimericSync<any, infer TResult>;
+      service: ChimericSync<infer TParams, infer TResult>;
     }
   ? TResult
   : never;
@@ -313,12 +323,6 @@ type AnyServiceConfig = {
   getReactiveOptions?: (params: any) => any;
 };
 
-type NoParamsSyncServiceConfig = { service: ChimericSync<void, any> };
-type WithParamsSyncServiceConfig = {
-  service: ChimericSync<any, any>;
-  getParams: (params: any) => any;
-};
-
 type NoParamsEagerAsyncServiceConfig = {
   service: ChimericEagerAsync<void, any, any>;
 };
@@ -416,22 +420,28 @@ type InferService<TConfig, TServiceParams> =
           getOptions?: never;
         }
       : never
-    : TConfig extends NoParamsSyncServiceConfig
-    ? TConfig['service'] extends ChimericSync<void, infer TResult>
+    : TConfig extends {
+        service: ChimericSync<infer TParams, infer TResult>;
+      }
+    ? [TParams] extends [void]
       ? {
           service: ChimericSync<void, TResult>;
           getParams?: never;
-          getOptions?: never;
         }
-      : never
-    : TConfig extends WithParamsSyncServiceConfig
-    ? TConfig['service'] extends ChimericSync<infer TParams, infer TResult>
+      : void extends TParams
+      ? {
+          service: ChimericSync<void, TResult>;
+          getParams?: never;
+        }
+      : undefined extends TParams
       ? {
           service: ChimericSync<TParams, TResult>;
-          getParams: (params: TServiceParams) => TParams;
-          getOptions?: never;
+          getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
         }
-      : never
+      : {
+          service: ChimericSync<TParams, TResult>;
+          getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+        }
     : never;
 
 export const ChimericAsyncReducer = <TServiceParams = void>() => ({

@@ -21,15 +21,20 @@ import {
 
 // Helper type to extract the result type from a service configuration
 type ExtractServiceResult<TConfig> = TConfig extends {
-  service: ReactiveQuery<any, infer TResult, any, any>;
+  service: ReactiveQuery<
+    infer TParams,
+    infer TResult,
+    infer TError,
+    infer TQueryKey
+  >;
 }
   ? TResult
   : TConfig extends {
-      service: ReactiveEagerAsync<any, infer TResult, any>;
+      service: ReactiveEagerAsync<any, infer TResult, infer TError>;
     }
   ? TResult
   : TConfig extends {
-      service: ReactiveSync<any, infer TResult>;
+      service: ReactiveSync<infer TParams, infer TResult>;
     }
   ? TResult
   : never;
@@ -315,12 +320,6 @@ type AnyServiceConfig = {
   getParams?: (params: any) => any;
 };
 
-type NoParamsSyncServiceConfig = { service: ReactiveSync<void, any> };
-type WithParamsSyncServiceConfig = {
-  service: ReactiveSync<any, any>;
-  getParams: (params: any) => any;
-};
-
 type NoParamsEagerAsyncServiceConfig = {
   service: ReactiveEagerAsync<void, any, any>;
 };
@@ -402,22 +401,32 @@ type InferService<TConfig, TServiceParams> =
           getOptions?: never;
         }
       : never
-    : TConfig extends NoParamsSyncServiceConfig
-    ? TConfig['service'] extends ReactiveSync<void, infer TResult>
+    : TConfig extends {
+        service: ReactiveSync<infer TParams, infer TResult>;
+      }
+    ? [TParams] extends [void]
       ? {
           service: ReactiveSync<void, TResult>;
           getParams?: never;
           getOptions?: never;
         }
-      : never
-    : TConfig extends WithParamsSyncServiceConfig
-    ? TConfig['service'] extends ReactiveSync<infer TParams, infer TResult>
+      : void extends TParams
       ? {
-          service: ReactiveSync<TParams, TResult>;
-          getParams: (params: TServiceParams) => TParams;
+          service: ReactiveSync<void, TResult>;
+          getParams?: never;
           getOptions?: never;
         }
-      : never
+      : undefined extends TParams
+      ? {
+          service: ReactiveSync<TParams, TResult>;
+          getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+          getOptions?: never;
+        }
+      : {
+          service: ReactiveSync<TParams, TResult>;
+          getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+          getOptions?: never;
+        }
     : never;
 
 export const ReactiveAsyncReducer = <TServiceParams = void>() => ({

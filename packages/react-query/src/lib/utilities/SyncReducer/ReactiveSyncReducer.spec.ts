@@ -22,7 +22,16 @@ describe('ReactiveSyncReducer', () => {
       ).find((todo) => todo.id === id);
     });
 
-    return { todoStore, getAllTodos, getTodoById };
+    const getTodoIdOrReturn1 = createReactiveSync((id?: number) => {
+      return (
+        useSyncExternalStore(
+          todoStore.subscribe.bind(todoStore),
+          todoStore.getSnapshot.bind(todoStore),
+        ).find((todo) => todo.id === id)?.id ?? 1
+      );
+    });
+
+    return { todoStore, getAllTodos, getTodoById, getTodoIdOrReturn1 };
   };
 
   it('should be defined', () => {
@@ -49,9 +58,7 @@ describe('ReactiveSyncReducer', () => {
           service: getAllTodos,
         },
       ],
-      reducer: ([todos], params) => {
-        return todos[params].id;
-      },
+      reducer: ([todos], params) => todos[params].id,
     });
 
     const { result: result2 } = renderHook(TestReactiveSyncReducer.use, {
@@ -62,8 +69,11 @@ describe('ReactiveSyncReducer', () => {
   });
 
   it('should aggregate multiple idiomactic sync interfaces', () => {
-    const { todoStore: todoStore1, getAllTodos: getAllTodos1 } =
-      createTodoHookAndStore();
+    const {
+      todoStore: todoStore1,
+      getAllTodos: getAllTodos1,
+      getTodoIdOrReturn1,
+    } = createTodoHookAndStore();
     const { todoStore: todoStore2, getTodoById: getTodoById2 } =
       createTodoHookAndStore();
 
@@ -75,9 +85,13 @@ describe('ReactiveSyncReducer', () => {
           service: getTodoById2,
           getParams: (index: Args) => index,
         },
+        {
+          service: getTodoIdOrReturn1,
+          getParams: (index: Args) => index,
+        },
       ],
-      reducer: ([todos, todo], params) => {
-        return `${todos[params]?.id} + ${todo?.id}`;
+      reducer: ([todos, todo, todoId], params) => {
+        return `${todos[params]?.id} + ${todo?.id} + ${todoId}`;
       },
     });
 
@@ -85,14 +99,91 @@ describe('ReactiveSyncReducer', () => {
       initialProps: 0,
     });
 
-    expect(result.current).toEqual('undefined + undefined');
+    expect(result.current).toEqual('undefined + undefined + 1');
 
     act(() => {
       todoStore1.addTodo();
       todoStore2.addTodo();
     });
 
+    expect(result.current).toEqual('0 + 0 + 0');
+  });
+
+  it('should handle optional service params', () => {
+    const {
+      todoStore: todoStore1,
+      getAllTodos: getAllTodos1,
+      getTodoIdOrReturn1,
+    } = createTodoHookAndStore();
+
+    type Args = number | undefined;
+    const TestReactiveSyncReducer = ReactiveSyncReducer<Args>().build({
+      serviceList: [
+        { service: getAllTodos1 },
+        {
+          service: getTodoIdOrReturn1,
+          getParams: (index: Args) => index,
+        },
+      ],
+      reducer: ([todos, todoId], params) => {
+        return `${todos[params || 0]?.id} + ${todoId}`;
+      },
+    });
+
+    const { result } = renderHook(TestReactiveSyncReducer.use, {
+      initialProps: 0,
+    });
+
+    expect(result.current).toEqual('undefined + 1');
+
+    act(() => {
+      todoStore1.addTodo();
+    });
+
     expect(result.current).toEqual('0 + 0');
+  });
+
+  it('should throw ts error when mixing optional service params with required params', () => {
+    const { getTodoById: getTodoById1, getTodoIdOrReturn1 } =
+      createTodoHookAndStore();
+
+    type Args = number | undefined;
+    ReactiveSyncReducer<Args>().build({
+      serviceList: [
+        // @ts-expect-error
+        { service: getTodoById1, getParams: (index: Args) => index },
+        {
+          service: getTodoIdOrReturn1,
+          getParams: (index: Args) => index,
+        },
+      ],
+      reducer: () => 'test',
+    });
+
+    ReactiveSyncReducer<Args>().build({
+      serviceList: [
+        // @ts-expect-error
+        { service: getTodoById1 },
+        {
+          service: getTodoIdOrReturn1,
+          getParams: () => 1,
+        },
+      ],
+      reducer: () => 'test',
+    });
+
+    ReactiveSyncReducer<Args>().build({
+      serviceList: [
+        {
+          service: getTodoById1,
+          getParams: (index: Args) => index || 0,
+        },
+        {
+          service: getTodoIdOrReturn1,
+        },
+      ],
+      reducer: () => 'test',
+    });
   });
 
   describe('Performance Characteristics', () => {

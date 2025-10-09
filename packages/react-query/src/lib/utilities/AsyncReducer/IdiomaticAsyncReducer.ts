@@ -15,15 +15,15 @@ import {
 
 // Helper type to extract the result type from a service configuration
 type ExtractServiceResult<TConfig> = TConfig extends {
-  service: IdiomaticQuery<any, infer TResult>;
+  service: IdiomaticQuery<infer TParams, infer TResult>;
 }
   ? TResult
   : TConfig extends {
-      service: IdiomaticEagerAsync<any, infer TResult>;
+      service: IdiomaticEagerAsync<infer TParams, infer TResult>;
     }
   ? TResult
   : TConfig extends {
-      service: IdiomaticSync<any, infer TResult>;
+      service: IdiomaticSync<infer TParams, infer TResult>;
     }
   ? TResult
   : never;
@@ -164,12 +164,6 @@ type AnyServiceConfig = {
   getParams?: (params: any) => any;
 };
 
-type NoParamsSyncServiceConfig = { service: IdiomaticSync<void, any> };
-type WithParamsSyncServiceConfig = {
-  service: IdiomaticSync<any, any>;
-  getParams: (params: any) => any;
-};
-
 type NoParamsEagerAsyncServiceConfig = {
   service: IdiomaticEagerAsync<void, any>;
 };
@@ -185,6 +179,9 @@ type WithParamsQueryServiceConfig = {
   service: IdiomaticQuery<any, any, any, any>;
   getParams: (params: any) => any;
 };
+
+type InferIdiomaticSync<T extends (args: Parameters<T>[0]) => ReturnType<T>> =
+  T;
 
 type InferService<TConfig, TServiceParams> =
   TConfig extends NoParamsQueryServiceConfig
@@ -246,22 +243,30 @@ type InferService<TConfig, TServiceParams> =
           getOptions?: never;
         }
       : never
-    : TConfig extends NoParamsSyncServiceConfig
-    ? TConfig['service'] extends IdiomaticSync<void, infer TResult>
+    : TConfig extends {
+        service: InferIdiomaticSync<infer T>;
+      }
+    ? Parameters<T> extends []
       ? {
-          service: IdiomaticSync<void, TResult>;
+          service: IdiomaticSync<void, ReturnType<T>>;
           getParams?: never;
           getOptions?: never;
         }
-      : never
-    : TConfig extends WithParamsSyncServiceConfig
-    ? TConfig['service'] extends IdiomaticSync<infer TParams, infer TResult>
+      : undefined extends Parameters<T>[0]
       ? {
-          service: IdiomaticSync<TParams, TResult>;
-          getParams: (params: TServiceParams) => TParams;
+          service: IdiomaticSync<Parameters<T>[0], ReturnType<T>>;
+          getParams?:
+            | ((params: TServiceParams) => Parameters<T>[0])
+            | (() => Parameters<T>[0]);
           getOptions?: never;
         }
-      : never
+      : {
+          service: IdiomaticSync<Parameters<T>[0], ReturnType<T>>;
+          getParams:
+            | ((params: TServiceParams) => Parameters<T>[0])
+            | (() => Parameters<T>[0]);
+          getOptions?: never;
+        }
     : never;
 
 export const IdiomaticAsyncReducer = <TServiceParams = void>() => ({
