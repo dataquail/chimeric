@@ -1,206 +1,309 @@
-import {
-  createIdiomaticSync,
-  createReactiveSync,
-  fuseChimericSync,
-} from '@chimeric/core';
+import { fuseChimericSync } from '@chimeric/core';
+import { SyncTestFixtures } from '../../__tests__/syncFixtures';
 import { ChimericSyncTestHarness } from '../ChimericSyncTestHarness';
-import {
-  makeSyncFnWithOptionalParamsReturnsString,
-  makeSyncFnWithoutParamsReturnsString,
-  makeSyncFnWithParamsReturnsString,
-} from '../../__tests__/functionFixtures';
 
 describe('ChimericSyncTestHarness', () => {
-  it('should be a function', () => {
-    const mockIdiomaticQuery = createIdiomaticSync(
-      makeSyncFnWithoutParamsReturnsString(),
-    );
-    const mockReactiveQuery = createReactiveSync(
-      makeSyncFnWithoutParamsReturnsString(),
-    );
-
+  // USAGE: REACTIVE
+  it('USAGE: REACTIVE: no params', () => {
+    const { idiomaticSync, reactiveSync } =
+      SyncTestFixtures.withoutParams.getChimeric();
     const chimericSync = fuseChimericSync({
-      idiomatic: mockIdiomaticQuery,
-      reactive: mockReactiveQuery,
+      idiomatic: idiomaticSync,
+      reactive: reactiveSync,
     });
 
-    ChimericSyncTestHarness({
+    const testHarness = ChimericSyncTestHarness({
       chimericSync,
       method: 'reactive',
     });
 
-    expect(mockReactiveQuery.use).toHaveBeenCalledTimes(1);
+    expect(testHarness.result.current).toBe('test');
+    expect(reactiveSync.use).toHaveBeenCalledTimes(1);
+    expect(reactiveSync.use).toHaveBeenCalledWith(undefined);
   });
 
-  it('should handle params', () => {
-    const mockIdiomaticQuery = createIdiomaticSync(
-      makeSyncFnWithParamsReturnsString(),
-    );
-    const mockReactiveQuery = createReactiveSync(
-      makeSyncFnWithParamsReturnsString(),
-    );
+  it('USAGE: REACTIVE: with params', () => {
+    const { idiomaticSync, reactiveSync } =
+      SyncTestFixtures.withParams.getChimeric();
+    const chimericSync = fuseChimericSync({
+      idiomatic: idiomaticSync,
+      reactive: reactiveSync,
+    });
 
-    ChimericSyncTestHarness({
-      chimericSync: fuseChimericSync({
-        idiomatic: mockIdiomaticQuery,
-        reactive: mockReactiveQuery,
-      }),
+    const testHarness = ChimericSyncTestHarness({
+      chimericSync,
       method: 'reactive',
       params: { name: 'John' },
     });
 
-    expect(mockReactiveQuery.use).toHaveBeenCalledWith({
-      name: 'John',
-    });
-    expect(mockReactiveQuery.use).toHaveBeenCalledTimes(1);
+    expect(testHarness.result.current).toBe('Hello John');
+    expect(reactiveSync.use).toHaveBeenCalledTimes(1);
+    expect(reactiveSync.use).toHaveBeenCalledWith({ name: 'John' });
+  });
 
-    ChimericSyncTestHarness({
-      chimericSync: fuseChimericSync({
-        idiomatic: mockIdiomaticQuery,
-        reactive: mockReactiveQuery,
-      }),
+  it('USAGE: REACTIVE: with optional params', () => {
+    const { idiomaticSync, reactiveSync } =
+      SyncTestFixtures.withOptionalParams.getChimeric();
+    const chimericSync = fuseChimericSync({
+      idiomatic: idiomaticSync,
+      reactive: reactiveSync,
+    });
+
+    const testHarnessWithParams = ChimericSyncTestHarness({
+      chimericSync,
+      method: 'reactive',
+      params: { name: 'John' },
+    });
+
+    expect(testHarnessWithParams.result.current).toBe('Hello John');
+    expect(reactiveSync.use).toHaveBeenCalledTimes(1);
+    expect(reactiveSync.use).toHaveBeenCalledWith({ name: 'John' });
+
+    const testHarnessNoParams = ChimericSyncTestHarness({
+      chimericSync,
+      method: 'reactive',
+    });
+
+    expect(testHarnessNoParams.result.current).toBe('Hello');
+    expect(reactiveSync.use).toHaveBeenCalledTimes(2);
+    expect(reactiveSync.use).toHaveBeenCalledWith(undefined);
+  });
+
+  // USAGE: IDIOMATIC
+  it('USAGE: IDIOMATIC: no params', () => {
+    const { idiomaticSync, reactiveSync } =
+      SyncTestFixtures.withoutParams.getChimeric();
+    const chimericSync = fuseChimericSync({
+      idiomatic: idiomaticSync,
+      reactive: reactiveSync,
+    });
+
+    const testHarness = ChimericSyncTestHarness({
+      chimericSync,
+      method: 'idiomatic',
+    });
+
+    expect(testHarness.result.current).toBe('test');
+    expect(idiomaticSync).toHaveBeenCalledTimes(1);
+    expect(idiomaticSync).toHaveBeenCalledWith(undefined);
+  });
+
+  it('USAGE: IDIOMATIC: with params', () => {
+    const { idiomaticSync, reactiveSync } =
+      SyncTestFixtures.withParams.getChimeric();
+    const chimericSync = fuseChimericSync({
+      idiomatic: idiomaticSync,
+      reactive: reactiveSync,
+    });
+
+    const testHarness = ChimericSyncTestHarness({
+      chimericSync,
       method: 'idiomatic',
       params: { name: 'John' },
     });
 
-    expect(mockIdiomaticQuery).toHaveBeenCalledWith({
-      name: 'John',
+    expect(testHarness.result.current).toBe('Hello John');
+    expect(idiomaticSync).toHaveBeenCalledTimes(1);
+    expect(idiomaticSync).toHaveBeenCalledWith({ name: 'John' });
+  });
+
+  it('USAGE: IDIOMATIC: with optional params', () => {
+    const { idiomaticSync, reactiveSync } =
+      SyncTestFixtures.withOptionalParams.getChimeric();
+    const chimericSync = fuseChimericSync({
+      idiomatic: idiomaticSync,
+      reactive: reactiveSync,
     });
-    expect(mockIdiomaticQuery).toHaveBeenCalledTimes(1);
+
+    const testHarnessWithParams = ChimericSyncTestHarness({
+      chimericSync,
+      method: 'idiomatic',
+      params: { name: 'John' },
+    });
+
+    expect(testHarnessWithParams.result.current).toBe('Hello John');
+    expect(idiomaticSync).toHaveBeenCalledTimes(1);
+    expect(idiomaticSync).toHaveBeenCalledWith({ name: 'John' });
+
+    const testHarnessNoParams = ChimericSyncTestHarness({
+      chimericSync,
+      method: 'idiomatic',
+    });
+
+    expect(testHarnessNoParams.result.current).toBe('Hello');
+    expect(idiomaticSync).toHaveBeenCalledTimes(2);
+    expect(idiomaticSync).toHaveBeenCalledWith(undefined);
+  });
+
+  // TYPE ERRORS: REACTIVE
+  it('TYPE ERRORS: REACTIVE: no params', () => {
+    const { idiomaticSync, reactiveSync } =
+      SyncTestFixtures.withoutParams.getChimeric();
+    const chimericSync = fuseChimericSync({
+      idiomatic: idiomaticSync,
+      reactive: reactiveSync,
+    });
 
     try {
-      // @ts-expect-error Testing invalid usage
       ChimericSyncTestHarness({
-        chimericSync: fuseChimericSync({
-          idiomatic: mockIdiomaticQuery,
-          reactive: mockReactiveQuery,
-        }),
+        chimericSync,
         method: 'reactive',
+        // @ts-expect-error - Testing type error: params should not be provided for sync without params
+        params: { name: 'John' },
       });
     } catch {
       // Expected error
     }
   });
 
-  it('should handle optional params', async () => {
-    const mockIdiomaticQuery = createIdiomaticSync(
-      makeSyncFnWithOptionalParamsReturnsString(),
-    );
-    const mockReactiveQuery = createReactiveSync(
-      makeSyncFnWithOptionalParamsReturnsString(),
-    );
-
-    const reactiveTestHarness = ChimericSyncTestHarness({
-      chimericSync: fuseChimericSync({
-        idiomatic: mockIdiomaticQuery,
-        reactive: mockReactiveQuery,
-      }),
-      method: 'reactive',
-      params: { name: 'John' },
+  it('TYPE ERRORS: REACTIVE: with params', () => {
+    const { idiomaticSync, reactiveSync } =
+      SyncTestFixtures.withParams.getChimeric();
+    const chimericSync = fuseChimericSync({
+      idiomatic: idiomaticSync,
+      reactive: reactiveSync,
     });
 
-    expect(reactiveTestHarness.result.current).toBe('Hello John');
-    expect(mockReactiveQuery.use).toHaveBeenCalledTimes(1);
-    expect(mockReactiveQuery.use).toHaveBeenCalledWith({
-      name: 'John',
+    try {
+      // @ts-expect-error - Testing type error: params are required for sync with params
+      ChimericSyncTestHarness({
+        chimericSync,
+        method: 'reactive',
+      });
+
+      ChimericSyncTestHarness({
+        // @ts-expect-error - Testing type error: wrong param shape provided
+        chimericSync,
+        method: 'reactive',
+        params: { wrong: 'param' },
+      });
+
+      ChimericSyncTestHarness({
+        // @ts-expect-error - Testing type error: params must be an object not a number
+        chimericSync,
+        method: 'reactive',
+        params: 1,
+      });
+    } catch {
+      // Expected errors
+    }
+  });
+
+  it('TYPE ERRORS: REACTIVE: with optional params', () => {
+    const { idiomaticSync, reactiveSync } =
+      SyncTestFixtures.withOptionalParams.getChimeric();
+    const chimericSync = fuseChimericSync({
+      idiomatic: idiomaticSync,
+      reactive: reactiveSync,
     });
 
-    const reactiveTestHarnessNoParams = ChimericSyncTestHarness({
-      chimericSync: fuseChimericSync({
-        idiomatic: mockIdiomaticQuery,
-        reactive: mockReactiveQuery,
-      }),
-      method: 'reactive',
+    try {
+      // @ts-expect-error - Testing type error: wrong param shape provided
+      ChimericSyncTestHarness({
+        chimericSync,
+        method: 'reactive',
+        params: { wrong: 'param' },
+      });
+
+      ChimericSyncTestHarness({
+        chimericSync,
+        method: 'reactive',
+        // @ts-expect-error - Testing type error: params must be an object not a number
+        params: 1,
+      });
+
+      ChimericSyncTestHarness({
+        chimericSync,
+        method: 'reactive',
+      });
+    } catch {
+      // Expected errors
+    }
+  });
+
+  // TYPE ERRORS: IDIOMATIC
+  it('TYPE ERRORS: IDIOMATIC: no params', () => {
+    const { idiomaticSync, reactiveSync } =
+      SyncTestFixtures.withoutParams.getChimeric();
+    const chimericSync = fuseChimericSync({
+      idiomatic: idiomaticSync,
+      reactive: reactiveSync,
     });
-
-    expect(reactiveTestHarnessNoParams.result.current).toBe('Hello');
-    expect(mockReactiveQuery.use).toHaveBeenCalledTimes(2);
-    expect(mockReactiveQuery.use).toHaveBeenCalledWith(undefined);
-
-    const idiomaticTestHarness = ChimericSyncTestHarness({
-      chimericSync: fuseChimericSync({
-        idiomatic: mockIdiomaticQuery,
-        reactive: mockReactiveQuery,
-      }),
-      method: 'idiomatic',
-      params: { name: 'John' },
-    });
-
-    expect(idiomaticTestHarness.result.current).toBe('Hello John');
-    expect(mockIdiomaticQuery).toHaveBeenCalledTimes(1);
-    expect(mockIdiomaticQuery).toHaveBeenCalledWith({
-      name: 'John',
-    });
-
-    const idiomaticTestHarnessNoParams = ChimericSyncTestHarness({
-      chimericSync: fuseChimericSync({
-        idiomatic: mockIdiomaticQuery,
-        reactive: mockReactiveQuery,
-      }),
-      method: 'idiomatic',
-    });
-
-    expect(idiomaticTestHarnessNoParams.result.current).toBe('Hello');
-    expect(mockIdiomaticQuery).toHaveBeenCalledTimes(2);
-    expect(mockIdiomaticQuery).toHaveBeenCalledWith(undefined);
 
     try {
       ChimericSyncTestHarness({
-        chimericSync: fuseChimericSync({
-          idiomatic: mockIdiomaticQuery,
-          reactive: mockReactiveQuery,
-        }),
-        method: 'reactive',
-        // @ts-expect-error Testing invalid usage
-        params: 1,
+        chimericSync,
+        method: 'idiomatic',
+        // @ts-expect-error - Testing type error: params should not be provided for sync without params
+        params: { name: 'John' },
       });
     } catch {
       // Expected error
     }
   });
 
-  it('should handle no params', () => {
-    const mockIdiomaticQuery = createIdiomaticSync(
-      makeSyncFnWithoutParamsReturnsString(),
-    );
-    const mockReactiveQuery = createReactiveSync(
-      makeSyncFnWithoutParamsReturnsString(),
-    );
-
-    ChimericSyncTestHarness({
-      chimericSync: fuseChimericSync({
-        idiomatic: mockIdiomaticQuery,
-        reactive: mockReactiveQuery,
-      }),
-      method: 'reactive',
+  it('TYPE ERRORS: IDIOMATIC: with params', () => {
+    const { idiomaticSync, reactiveSync } =
+      SyncTestFixtures.withParams.getChimeric();
+    const chimericSync = fuseChimericSync({
+      idiomatic: idiomaticSync,
+      reactive: reactiveSync,
     });
-
-    expect(mockReactiveQuery.use).toHaveBeenCalledWith(undefined);
-    expect(mockReactiveQuery.use).toHaveBeenCalledTimes(1);
-
-    ChimericSyncTestHarness({
-      chimericSync: fuseChimericSync({
-        idiomatic: mockIdiomaticQuery,
-        reactive: mockReactiveQuery,
-      }),
-      method: 'idiomatic',
-    });
-
-    expect(mockIdiomaticQuery).toHaveBeenCalledWith(undefined);
-    expect(mockIdiomaticQuery).toHaveBeenCalledTimes(1);
 
     try {
+      // @ts-expect-error - Testing type error: params are required for sync with params
       ChimericSyncTestHarness({
-        chimericSync: fuseChimericSync({
-          idiomatic: mockIdiomaticQuery,
-          reactive: mockReactiveQuery,
-        }),
-        method: 'reactive',
-        // @ts-expect-error Testing invalid usage
+        chimericSync,
+        method: 'idiomatic',
+      });
+
+      ChimericSyncTestHarness({
+        // @ts-expect-error - Testing type error: wrong param shape provided
+        chimericSync,
+        method: 'idiomatic',
+        params: { wrong: 'param' },
+      });
+
+      ChimericSyncTestHarness({
+        // @ts-expect-error - Testing type error: params must be an object not a number
+        chimericSync,
+        method: 'idiomatic',
         params: 1,
       });
     } catch {
-      // Expected error
+      // Expected errors
+    }
+  });
+
+  it('TYPE ERRORS: IDIOMATIC: with optional params', () => {
+    const { idiomaticSync, reactiveSync } =
+      SyncTestFixtures.withOptionalParams.getChimeric();
+    const chimericSync = fuseChimericSync({
+      idiomatic: idiomaticSync,
+      reactive: reactiveSync,
+    });
+
+    try {
+      // @ts-expect-error - Testing type error: wrong param shape provided
+      ChimericSyncTestHarness({
+        chimericSync,
+        method: 'idiomatic',
+        params: { wrong: 'param' },
+      });
+
+      ChimericSyncTestHarness({
+        chimericSync,
+        method: 'idiomatic',
+        // @ts-expect-error - Testing type error: params must be an object not a number
+        params: 1,
+      });
+
+      ChimericSyncTestHarness({
+        chimericSync,
+        method: 'idiomatic',
+      });
+    } catch {
+      // Expected errors
     }
   });
 });

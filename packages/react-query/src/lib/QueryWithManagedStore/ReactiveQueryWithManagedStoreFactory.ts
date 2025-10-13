@@ -15,8 +15,8 @@ import { ReactiveQueryOptions } from '@chimeric/core';
 
 // Required params (must come first - most specific)
 export function ReactiveQueryWithManagedStoreFactory<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(config: {
@@ -28,8 +28,8 @@ export function ReactiveQueryWithManagedStoreFactory<
 
 // Optional params (must come before no params)
 export function ReactiveQueryWithManagedStoreFactory<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(config: {
@@ -41,7 +41,7 @@ export function ReactiveQueryWithManagedStoreFactory<
 
 // No params (least specific - must come last)
 export function ReactiveQueryWithManagedStoreFactory<
-  TResult,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(config: {

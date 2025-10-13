@@ -11,8 +11,8 @@ import { validateMaxArgLength } from '../../utilities/validateMaxArgLength';
 
 // Required params (must come first - most specific)
 export function IdiomaticQueryFactory<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(config: {
@@ -24,8 +24,8 @@ export function IdiomaticQueryFactory<
 
 // Optional params (must come before no params)
 export function IdiomaticQueryFactory<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(config: {
@@ -37,7 +37,7 @@ export function IdiomaticQueryFactory<
 
 // No params (least specific - must come last)
 export function IdiomaticQueryFactory<
-  TResult,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(config: {

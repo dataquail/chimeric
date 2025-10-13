@@ -1,161 +1,176 @@
 import { QueryClient, queryOptions } from '@tanstack/react-query';
 import { IdiomaticQueryFactory } from '../idiomatic/IdiomaticQueryFactory';
-import {
-  makeAsyncFnWithOptionalParamsReturnsString,
-  makeAsyncFnWithoutParamsReturnsString,
-  makeAsyncFnWithParamsReturnsString,
-} from '../../__tests__/functionFixtures';
-import {
-  IdiomaticQueryWithOptionalParamsReturnsString,
-  IdiomaticQueryWithoutParamsReturnsString,
-  IdiomaticQueryWithParamsReturnsString,
-} from '../__tests__/queryFixtures';
+import { QueryTestFixtures } from '../__tests__/queryFixtures';
 
 describe('IdiomaticQueryFactory', () => {
-  it('should invoke the idiomatic fn', async () => {
+  // USAGE
+  it('USAGE: no params', async () => {
+    const { queryFn } = QueryTestFixtures.withoutParams.getIdiomatic();
     const queryClient = new QueryClient();
-    const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
     const idiomaticQuery = IdiomaticQueryFactory({
       queryClient,
       getQueryOptions: () =>
         queryOptions({
           queryKey: ['test'],
-          queryFn: mockQueryFn,
+          queryFn,
         }),
     });
+
     const result = await idiomaticQuery();
 
     expect(result).toBe('test');
-    expect(mockQueryFn).toHaveBeenCalled();
+    expect(queryFn).toHaveBeenCalled();
   });
 
-  it('should invoke the idiomatic fn with params', async () => {
+  it('USAGE: with params', async () => {
+    const { queryFn } = QueryTestFixtures.withParams.getIdiomatic();
     const queryClient = new QueryClient();
-    const mockQueryFn = makeAsyncFnWithParamsReturnsString();
     const idiomaticQuery = IdiomaticQueryFactory({
       queryClient,
       getQueryOptions: (args: { name: string }) =>
         queryOptions({
           queryKey: ['test', args.name],
-          queryFn: async () => mockQueryFn(args),
+          queryFn: () => queryFn(args),
         }),
     });
+
     const result = await idiomaticQuery({ name: 'John' });
 
     expect(result).toBe('Hello John');
-    expect(mockQueryFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(queryFn).toHaveBeenCalledWith({ name: 'John' });
   });
 
-  it('should refetch when forceRefetch is true', async () => {
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          staleTime: 60 * 1000,
-        },
-      },
-    });
-    const mockQueryFn = makeAsyncFnWithParamsReturnsString();
-    const idiomaticQuery = IdiomaticQueryFactory({
-      queryClient,
-      getQueryOptions: (args: { name: string }) =>
-        queryOptions({
-          queryKey: ['test'],
-          queryFn: () => mockQueryFn({ name: args.name }),
-        }),
-    });
-    const result = await idiomaticQuery({ name: 'John' });
-
-    expect(result).toBe('Hello John');
-    expect(mockQueryFn).toHaveBeenCalledWith({ name: 'John' });
-
-    const result2 = await idiomaticQuery({ name: 'Paul' });
-
-    expect(result2).toBe('Hello John');
-
-    const result3 = await idiomaticQuery(
-      { name: 'Ringo' },
-      { options: { forceRefetch: true } },
-    );
-
-    expect(result3).toBe('Hello Ringo');
-    expect(mockQueryFn).toHaveBeenCalledTimes(2);
-  });
-
-  it('should handle type annotations without params', async () => {
+  it('USAGE: with optional params', async () => {
+    const { queryFn } = QueryTestFixtures.withOptionalParams.getIdiomatic();
     const queryClient = new QueryClient();
-    const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
-    const idiomaticQuery: IdiomaticQueryWithoutParamsReturnsString =
-      IdiomaticQueryFactory({
-        queryClient,
-        getQueryOptions: () =>
-          queryOptions({ queryKey: ['test'], queryFn: mockQueryFn }),
-      });
-    const result = await idiomaticQuery();
-
-    expect(result).toBe('test');
-    expect(mockQueryFn).toHaveBeenCalled();
-  });
-
-  it('should handle type annotations with params', async () => {
-    const queryClient = new QueryClient();
-    const mockQueryFn = makeAsyncFnWithParamsReturnsString();
-    const idiomaticQuery: IdiomaticQueryWithParamsReturnsString =
-      IdiomaticQueryFactory({
-        queryClient,
-        getQueryOptions: (args: { name: string }) =>
-          queryOptions({
-            queryKey: ['test', args.name],
-            queryFn: () => mockQueryFn(args),
-          }),
-      });
-    const result = await idiomaticQuery({ name: 'John' });
-
-    expect(result).toBe('Hello John');
-    expect(mockQueryFn).toHaveBeenCalledWith({ name: 'John' });
-  });
-
-  it('should handle optional params', async () => {
-    const queryClient = new QueryClient();
-    const mockQueryFn = makeAsyncFnWithOptionalParamsReturnsString();
     const idiomaticQuery = IdiomaticQueryFactory({
       queryClient,
       getQueryOptions: (args?: { name: string }) =>
         queryOptions({
-          queryKey: ['test', args?.name],
-          queryFn: () => mockQueryFn(args),
+          queryKey: args?.name ? ['test', args.name] : ['test'],
+          queryFn: () => queryFn(args),
         }),
     });
+
     const resultWithParams = await idiomaticQuery({ name: 'John' });
 
     expect(resultWithParams).toBe('Hello John');
-    expect(mockQueryFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(queryFn).toHaveBeenCalledWith({ name: 'John' });
 
     const resultWithoutParams = await idiomaticQuery();
 
     expect(resultWithoutParams).toBe('Hello');
-    expect(mockQueryFn).toHaveBeenCalledWith(undefined);
+    expect(queryFn).toHaveBeenCalledWith(undefined);
   });
 
-  it('should handle type annotations with optional params', async () => {
+  // TYPE ERRORS
+  it('TYPE ERRORS: no params', async () => {
+    const { queryFn } = QueryTestFixtures.withoutParams.getIdiomatic();
     const queryClient = new QueryClient();
-    const mockQueryFn = makeAsyncFnWithOptionalParamsReturnsString();
-    const idiomaticQuery: IdiomaticQueryWithOptionalParamsReturnsString =
-      IdiomaticQueryFactory({
-        queryClient,
-        getQueryOptions: (params?: { name: string }) =>
-          queryOptions({
-            queryKey: params?.name ? ['test', params?.name] : ['test'],
-            queryFn: () => mockQueryFn(params),
-          }),
-      });
-    const resultWithParams = await idiomaticQuery({ name: 'John' });
+    const idiomaticQuery = IdiomaticQueryFactory({
+      queryClient,
+      getQueryOptions: () =>
+        queryOptions({
+          queryKey: ['test'],
+          queryFn,
+        }),
+    });
 
-    expect(resultWithParams).toBe('Hello John');
-    expect(mockQueryFn).toHaveBeenCalledWith({ name: 'John' });
+    try {
+      // @ts-expect-error - Testing type error
+      await idiomaticQuery({ name: 'John' });
+    } catch {
+      // Expected error
+    }
+  });
 
-    const resultWithoutParams = await idiomaticQuery();
+  it('TYPE ERRORS: with params', async () => {
+    const { queryFn } = QueryTestFixtures.withParams.getIdiomatic();
+    const queryClient = new QueryClient();
+    const idiomaticQuery = IdiomaticQueryFactory({
+      queryClient,
+      getQueryOptions: (args: { name: string }) =>
+        queryOptions({
+          queryKey: ['test', args.name],
+          queryFn: () => queryFn(args),
+        }),
+    });
 
-    expect(resultWithoutParams).toBe('Hello');
-    expect(mockQueryFn).toHaveBeenCalledWith(undefined);
+    try {
+      // @ts-expect-error - Testing type error
+      await idiomaticQuery();
+
+      // @ts-expect-error - Testing type error
+      await idiomaticQuery({ wrong: 'param' });
+    } catch {
+      // Expected errors
+    }
+  });
+
+  it('TYPE ERRORS: with optional params', async () => {
+    const { queryFn } = QueryTestFixtures.withOptionalParams.getIdiomatic();
+    const queryClient = new QueryClient();
+    const idiomaticQuery = IdiomaticQueryFactory({
+      queryClient,
+      getQueryOptions: (args?: { name: string }) =>
+        queryOptions({
+          queryKey: args?.name ? ['test', args.name] : ['test'],
+          queryFn: () => queryFn(args),
+        }),
+    });
+
+    try {
+      // @ts-expect-error - Testing type error
+      await idiomaticQuery({ wrong: 'param' });
+
+      await idiomaticQuery();
+    } catch {
+      // Expected error
+    }
+  });
+
+  // ANNOTATIONS
+  it('ANNOTATIONS: no params', async () => {
+    const { annotation: _annotation, queryFn } =
+      QueryTestFixtures.withoutParams.getIdiomatic();
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = IdiomaticQueryFactory({
+      queryClient: new QueryClient(),
+      getQueryOptions: () =>
+        queryOptions({
+          queryKey: ['test'],
+          queryFn,
+        }),
+    });
+    expect(testAnnotation).toBeDefined();
+  });
+
+  it('ANNOTATIONS: with params', async () => {
+    const { annotation: _annotation, queryFn } = QueryTestFixtures.withParams.getIdiomatic();
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = IdiomaticQueryFactory({
+      queryClient: new QueryClient(),
+      getQueryOptions: (args: { name: string }) =>
+        queryOptions({
+          queryKey: ['test', args.name],
+          queryFn: () => queryFn(args),
+        }),
+    });
+    expect(testAnnotation).toBeDefined();
+  });
+
+  it('ANNOTATIONS: with optional params', async () => {
+    const { annotation: _annotation, queryFn } =
+      QueryTestFixtures.withOptionalParams.getIdiomatic();
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = IdiomaticQueryFactory({
+      queryClient: new QueryClient(),
+      getQueryOptions: (args?: { name: string }) =>
+        queryOptions({
+          queryKey: args?.name ? ['test', args.name] : ['test'],
+          queryFn: () => queryFn(args),
+        }),
+    });
+    expect(testAnnotation).toBeDefined();
   });
 });

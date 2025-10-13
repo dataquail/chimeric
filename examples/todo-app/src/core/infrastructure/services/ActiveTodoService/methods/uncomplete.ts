@@ -30,7 +30,8 @@ export const UncompleteOneMethodImpl = (
   appStore: AppStore,
   queryClient: QueryClient,
 ): IActiveTodoService['uncompleteOne'] => {
-  return ChimericMutationFactory(queryClient, {
+  return ChimericMutationFactory({
+    queryClient,
     mutationFn: async (args: { id: string }) => {
       await uncompleteActiveTodo(args);
       return args;

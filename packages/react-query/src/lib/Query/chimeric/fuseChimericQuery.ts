@@ -6,7 +6,7 @@ import { QueryKey } from '@tanstack/react-query';
 
 // Overload for no params
 export function fuseChimericQuery<
-  TResult,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(args: {
@@ -16,8 +16,8 @@ export function fuseChimericQuery<
 
 // Overload for optional params
 export function fuseChimericQuery<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(args: {
@@ -27,8 +27,8 @@ export function fuseChimericQuery<
 
 // Overload for required params
 export function fuseChimericQuery<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(args: {

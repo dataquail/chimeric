@@ -30,7 +30,8 @@ export const saveActiveTodoForLater: ISaveActiveTodoForLater = async (
 };
 
 export const SaveForLaterMethodImpl: ISavedForLaterTodoService['saveForLater'] =
-  ChimericMutationFactory(queryClient, {
+  ChimericMutationFactory({
+    queryClient,
     mutationFn: saveActiveTodoForLater,
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({

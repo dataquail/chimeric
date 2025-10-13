@@ -28,12 +28,22 @@ export type DefineChimericMutation<
   TNativeReactiveOptions = unknown,
   TNativeInvokeOptions = unknown,
   TNativeReturnType = unknown,
-> = ChimericMutation<
-  Parameters<T>[0] extends void | object ? Parameters<T>[0] : never,
-  Awaited<ReturnType<T>>,
-  TError,
-  TNativeIdiomaticOptions,
-  TNativeReactiveOptions,
-  TNativeInvokeOptions,
-  TNativeReturnType
->;
+> = Parameters<T> extends []
+  ? ChimericMutation<
+      void,
+      Awaited<ReturnType<T>>,
+      TError,
+      TNativeIdiomaticOptions,
+      TNativeReactiveOptions,
+      TNativeInvokeOptions,
+      TNativeReturnType
+    >
+  : ChimericMutation<
+      Parameters<T>[0],
+      Awaited<ReturnType<T>>,
+      TError,
+      TNativeIdiomaticOptions,
+      TNativeReactiveOptions,
+      TNativeInvokeOptions,
+      TNativeReturnType
+    >;

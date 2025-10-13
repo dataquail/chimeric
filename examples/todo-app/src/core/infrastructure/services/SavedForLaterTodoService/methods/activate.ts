@@ -34,7 +34,8 @@ export const ActivateMethodImpl = (
   appStore: AppStore,
   queryClient: QueryClient,
 ): ISavedForLaterTodoService['activate'] => {
-  return ChimericMutationFactory(queryClient, {
+  return ChimericMutationFactory({
+    queryClient,
     mutationFn: activateSavedForLaterTodo,
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({

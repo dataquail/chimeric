@@ -14,33 +14,31 @@ export type IdiomaticMutationTestHarnessReturnType<
   waitFor: (cb: () => void, options?: BaseWaitForOptions) => Promise<void>;
   result: {
     current: {
-      invoke: TParams extends object
-        ? Omit<TParams, 'options' | 'nativeOptions'> extends
-            | undefined
-            | {
-                options?: IdiomaticMutationOptions;
-                nativeOptions?: TIdiomaticNativeOptions;
-              }
-          ? (config?: {
+      invoke: [TParams] extends [void]
+        ? (allOptions?: {
+            options?: IdiomaticMutationOptions;
+            nativeOptions?: TIdiomaticNativeOptions;
+          }) => Promise<TResult>
+        : void extends TParams
+        ? (allOptions?: {
+            options?: IdiomaticMutationOptions;
+            nativeOptions?: TIdiomaticNativeOptions;
+          }) => Promise<TResult>
+        : undefined extends TParams
+        ? (
+            params?: TParams,
+            allOptions?: {
               options?: IdiomaticMutationOptions;
               nativeOptions?: TIdiomaticNativeOptions;
-            }) => Promise<TResult>
-          : (
-              paramsAndConfig: TParams & {
-                options?: IdiomaticMutationOptions;
-                nativeOptions?: TIdiomaticNativeOptions;
-              },
-            ) => Promise<TResult>
-        : TParams extends void
-        ? (
-            config?:
-              | {
-                  options?: IdiomaticMutationOptions;
-                  nativeOptions?: TIdiomaticNativeOptions;
-                }
-              | TParams,
+            },
           ) => Promise<TResult>
-        : never;
+        : (
+            params: TParams,
+            allOptions?: {
+              options?: IdiomaticMutationOptions;
+              nativeOptions?: TIdiomaticNativeOptions;
+            },
+          ) => Promise<TResult>;
       data: TResult | undefined;
       isIdle: boolean;
       isSuccess: boolean;
@@ -61,35 +59,31 @@ export type ReactiveMutationTestHarnessReturnType<
   waitFor: (cb: () => void, options?: BaseWaitForOptions) => Promise<void>;
   result: {
     current: {
-      invoke: TParams extends object
-        ? Omit<TParams, 'options' | 'nativeOptions'> extends
-            | undefined
-            | {
-                options?: ReactiveMutationInvokeOptions;
-                nativeOptions?: TNativeInvokeOptions;
-              }
-          ? (
-              config?: TParams & {
-                options?: ReactiveMutationInvokeOptions;
-                nativeOptions?: TNativeInvokeOptions;
-              },
-            ) => Promise<TResult>
-          : (
-              paramsAndConfig: TParams & {
-                options?: ReactiveMutationInvokeOptions;
-                nativeOptions?: TNativeInvokeOptions;
-              },
-            ) => Promise<TResult>
-        : TParams extends void
+      invoke: [TParams] extends [void]
+        ? (allInvokeOptions?: {
+            options?: ReactiveMutationInvokeOptions;
+            nativeOptions?: TNativeInvokeOptions;
+          }) => Promise<TResult>
+        : void extends TParams
+        ? (allInvokeOptions?: {
+            options?: ReactiveMutationInvokeOptions;
+            nativeOptions?: TNativeInvokeOptions;
+          }) => Promise<TResult>
+        : undefined extends TParams
         ? (
-            config?:
-              | {
-                  options?: ReactiveMutationInvokeOptions;
-                  nativeOptions?: TNativeInvokeOptions;
-                }
-              | TParams,
+            params?: TParams,
+            allInvokeOptions?: {
+              options?: ReactiveMutationInvokeOptions;
+              nativeOptions?: TNativeInvokeOptions;
+            },
           ) => Promise<TResult>
-        : never;
+        : (
+            params: TParams,
+            allInvokeOptions?: {
+              options?: ReactiveMutationInvokeOptions;
+              nativeOptions?: TNativeInvokeOptions;
+            },
+          ) => Promise<TResult>;
       data: TResult | undefined;
       isIdle: boolean;
       isSuccess: boolean;

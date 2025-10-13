@@ -11,7 +11,15 @@ export const isChimericMutation = <
   TNativeInvokeOptions = unknown,
   TNativeReactiveReturnType = unknown,
 >(
-  maybeChimericMutation: unknown,
+  maybeChimericMutation: ChimericMutation<
+    TParams,
+    TResult,
+    TError,
+    TNativeIdiomaticOptions,
+    TNativeReactiveOptions,
+    TNativeInvokeOptions,
+    TNativeReactiveReturnType
+  >,
 ): maybeChimericMutation is ChimericMutation<
   TParams,
   TResult,
@@ -22,7 +30,8 @@ export const isChimericMutation = <
   TNativeReactiveReturnType
 > => {
   return (
-    isIdiomaticMutation(maybeChimericMutation) &&
-    isReactiveMutation(maybeChimericMutation)
+    isIdiomaticMutation<TParams, TResult, TNativeIdiomaticOptions>(
+      maybeChimericMutation,
+    ) && isReactiveMutation(maybeChimericMutation)
   );
 };

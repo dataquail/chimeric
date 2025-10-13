@@ -13,8 +13,8 @@ import { ReactiveQueryTestHarness } from './ReactiveQueryTestHarness.js';
 
 // Required params (must come first - most specific)
 export function ChimericQueryTestHarness<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TMethod extends (typeof chimericMethods)[number] = (typeof chimericMethods)[number],
   TIdiomaticNativeOptions = unknown,
@@ -45,8 +45,8 @@ export function ChimericQueryTestHarness<
 
 // Optional params (must come before no params)
 export function ChimericQueryTestHarness<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TMethod extends (typeof chimericMethods)[number] = (typeof chimericMethods)[number],
   TIdiomaticNativeOptions = unknown,
@@ -77,7 +77,7 @@ export function ChimericQueryTestHarness<
 
 // No params (least specific - must come last)
 export function ChimericQueryTestHarness<
-  TResult,
+  TResult = unknown,
   TError extends Error = Error,
   TMethod extends (typeof chimericMethods)[number] = (typeof chimericMethods)[number],
   TIdiomaticNativeOptions = unknown,

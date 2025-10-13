@@ -1,8 +1,4 @@
-import { DefineChimericSync } from '../chimeric/types';
-import { createIdiomaticSync } from '../idiomatic/createIdiomaticSync';
-import { DefineIdiomaticSync } from '../idiomatic/types';
-import { createReactiveSync } from '../reactive/createReactiveSync';
-import { DefineReactiveSync } from '../reactive/types';
+import { createIdiomaticSync, createReactiveSync } from '@chimeric/core';
 
 export const SyncTestFixtures = {
   withoutParams: {
@@ -11,7 +7,6 @@ export const SyncTestFixtures = {
       return {
         fn,
         idiomaticSync: createIdiomaticSync(fn),
-        annotation: {} as DefineIdiomaticSync<() => string>,
       };
     },
     getReactive: () => {
@@ -19,7 +14,6 @@ export const SyncTestFixtures = {
       return {
         fn,
         reactiveSync: createReactiveSync(fn),
-        annotation: {} as DefineReactiveSync<() => string>,
       };
     },
     getChimeric: () => {
@@ -32,7 +26,6 @@ export const SyncTestFixtures = {
         idiomaticFn,
         reactiveSync,
         reactiveFn,
-        annotation: {} as DefineChimericSync<() => string>,
       };
     },
   },
@@ -42,9 +35,6 @@ export const SyncTestFixtures = {
       return {
         fn,
         idiomaticSync: createIdiomaticSync(fn),
-        annotation: {} as DefineIdiomaticSync<
-          (params: { name: string }) => string
-        >,
       };
     },
     getReactive: () => {
@@ -52,9 +42,6 @@ export const SyncTestFixtures = {
       return {
         fn,
         reactiveSync: createReactiveSync(fn),
-        annotation: {} as DefineReactiveSync<
-          (params: { name: string }) => string
-        >,
       };
     },
     getChimeric: () => {
@@ -67,37 +54,26 @@ export const SyncTestFixtures = {
         idiomaticFn,
         reactiveSync,
         reactiveFn,
-        annotation: {} as DefineChimericSync<
-          (params: { name: string }) => string
-        >,
       };
     },
   },
   withOptionalParams: {
     getIdiomatic: () => {
-      const fn = vi.fn(
-        (params?: { name: string }) =>
-          params ? `Hello ${params.name}` : 'Hello',
+      const fn = vi.fn((params?: { name: string }) =>
+        params ? `Hello ${params.name}` : 'Hello',
       );
       return {
         fn,
         idiomaticSync: createIdiomaticSync(fn),
-        annotation: {} as DefineIdiomaticSync<
-          (params?: { name: string }) => string
-        >,
       };
     },
     getReactive: () => {
-      const fn = vi.fn(
-        (params?: { name: string }) =>
-          params ? `Hello ${params.name}` : 'Hello',
+      const fn = vi.fn((params?: { name: string }) =>
+        params ? `Hello ${params.name}` : 'Hello',
       );
       return {
         fn,
         reactiveSync: createReactiveSync(fn),
-        annotation: {} as DefineReactiveSync<
-          (params?: { name: string }) => string
-        >,
       };
     },
     getChimeric: () => {
@@ -110,9 +86,6 @@ export const SyncTestFixtures = {
         idiomaticFn,
         reactiveSync,
         reactiveFn,
-        annotation: {} as DefineChimericSync<
-          (params?: { name: string }) => string
-        >,
       };
     },
   },

@@ -30,7 +30,8 @@ export const deleteActiveTodo: IDeleteActiveTodo = async (args: {
 };
 
 export const DeleteOneMethodImpl: IActiveTodoService['deleteOne'] =
-  ChimericMutationFactory(queryClient, {
+  ChimericMutationFactory({
+    queryClient,
     mutationFn: async (args: { id: string }) => {
       await deleteActiveTodo(args);
     },

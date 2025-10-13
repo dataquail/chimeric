@@ -6,8 +6,8 @@ import { IdiomaticQueryTestHarnessReturnType } from './types.js';
 
 // Required params (must come first - most specific)
 export function IdiomaticQueryTestHarness<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TIdiomaticNativeOptions = unknown,
 >(args: {
@@ -19,8 +19,8 @@ export function IdiomaticQueryTestHarness<
 
 // Optional params (must come before no params)
 export function IdiomaticQueryTestHarness<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TIdiomaticNativeOptions = unknown,
 >(args: {
@@ -36,7 +36,7 @@ export function IdiomaticQueryTestHarness<
 
 // No params (least specific - must come last)
 export function IdiomaticQueryTestHarness<
-  TResult,
+  TResult = unknown,
   TError extends Error = Error,
   TIdiomaticNativeOptions = unknown,
 >(args: {

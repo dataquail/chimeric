@@ -1,7 +1,4 @@
-import {
-  type ChimericMutation as CoreChimericMutation,
-  type DefineChimericMutation as CoreDefineChimericMutation,
-} from '@chimeric/core';
+import { type ChimericMutation as CoreChimericMutation } from '@chimeric/core';
 import {
   TanstackMutationReactiveInvokeOptions,
   TanstackMutationReactiveNativeOptions,
@@ -28,27 +25,6 @@ export type DefineChimericMutation<
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   TError extends Error = Error,
-> = CoreDefineChimericMutation<
-  T,
-  TError,
-  TanstackIdiomaticNativeOptions<
-    Parameters<T>[0] extends undefined ? void : Parameters<T>[0],
-    Awaited<ReturnType<T>>,
-    TError
-  >,
-  TanstackMutationReactiveNativeOptions<
-    Parameters<T>[0] extends undefined ? void : Parameters<T>[0],
-    Awaited<ReturnType<T>>,
-    TError
-  >,
-  TanstackMutationReactiveInvokeOptions<
-    Parameters<T>[0] extends undefined ? void : Parameters<T>[0],
-    Awaited<ReturnType<T>>,
-    TError
-  >,
-  TanstackMutationReactiveReturnType<
-    Parameters<T>[0] extends undefined ? void : Parameters<T>[0],
-    Awaited<ReturnType<T>>,
-    TError
-  >
->;
+> = Parameters<T> extends []
+  ? ChimericMutation<void, Awaited<ReturnType<T>>, TError>
+  : ChimericMutation<Parameters<T>[0], Awaited<ReturnType<T>>, TError>;

@@ -22,7 +22,8 @@ export const createActiveTodo: ICreateActiveTodo = async (createTodoBody) => {
 };
 
 export const CreateOneMethodImpl: IActiveTodoService['createOne'] =
-  ChimericMutationFactory(queryClient, {
+  ChimericMutationFactory({
+    queryClient,
     mutationFn: createActiveTodo,
     onSuccess: async () => {
       await queryClient.invalidateQueries({

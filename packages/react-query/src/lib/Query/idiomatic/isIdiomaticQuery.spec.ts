@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { makeIdiomaticQueryWithoutParamsReturnsString } from '../__tests__/queryFixtures';
+import { QueryTestFixtures } from '../__tests__/queryFixtures';
 import { isIdiomaticQuery } from './isIdiomaticQuery';
 
 describe('isIdiomaticQuery', () => {
   it('should return true for a function', () => {
-    const mockIdiomaticQuery = makeIdiomaticQueryWithoutParamsReturnsString();
-
-    expect(isIdiomaticQuery(mockIdiomaticQuery)).toBe(true);
+    const testIdiomaticQuery =
+      QueryTestFixtures.withoutParams.getIdiomatic().idiomaticQuery;
+    expect(isIdiomaticQuery(testIdiomaticQuery)).toBe(true);
   });
 
   it('should return false for non-function values', () => {

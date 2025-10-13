@@ -6,7 +6,7 @@ import {
 import { IdiomaticQueryTestHarness as CoreIdiomaticQueryTestHarness } from '@chimeric/testing-core';
 import { IdiomaticQueryTestHarnessReturnType } from './types.js';
 
-// Required params (must come first - most specific)
+// Required params
 export function IdiomaticQueryTestHarness<
   TParams,
   TResult,
@@ -27,7 +27,7 @@ export function IdiomaticQueryTestHarness<
   >;
 }): IdiomaticQueryTestHarnessReturnType<TResult, TError>;
 
-// Optional params (must come before no params)
+// Optional params
 export function IdiomaticQueryTestHarness<
   TParams,
   TResult,
@@ -48,7 +48,7 @@ export function IdiomaticQueryTestHarness<
   >;
 }): IdiomaticQueryTestHarnessReturnType<TResult, TError>;
 
-// No params (least specific - must come last)
+// No params
 export function IdiomaticQueryTestHarness<
   TResult,
   TError extends Error = Error,

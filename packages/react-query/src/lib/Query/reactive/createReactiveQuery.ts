@@ -10,9 +10,9 @@ import {
 } from './types';
 import { QueryKey } from '@tanstack/react-query';
 
-// Overload for no params (allOptions as first arg)
+// Overload for no params
 export function createReactiveQuery<
-  TResult,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(
@@ -30,10 +30,10 @@ export function createReactiveQuery<
   >,
 ): ReactiveQuery<void, TResult, TError, TQueryKey>;
 
-// Overload for optional params (params as first arg, allOptions as second)
+// Overload for optional params
 export function createReactiveQuery<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(
@@ -54,10 +54,10 @@ export function createReactiveQuery<
   >,
 ): ReactiveQuery<TParams | undefined, TResult, TError, TQueryKey>;
 
-// Overload for required params (params as first arg, allOptions as second)
+// Overload for required params
 export function createReactiveQuery<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(

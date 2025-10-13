@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { makeReactiveQueryWithoutParamsReturnsString } from '../__tests__/queryFixtures';
+import { QueryTestFixtures } from '../__tests__/queryFixtures';
 import { isReactiveQuery } from './isReactiveQuery';
 
 describe('isReactiveQuery', () => {
   it('should return true for an object with use function', () => {
-    const mockReactiveQuery = makeReactiveQueryWithoutParamsReturnsString();
-
+    const mockReactiveQuery =
+      QueryTestFixtures.withoutParams.getReactive().reactiveQuery;
     expect(isReactiveQuery(mockReactiveQuery)).toBe(true);
   });
 

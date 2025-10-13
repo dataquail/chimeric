@@ -1,118 +1,120 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  makeSyncFnWithOptionalParamsReturnsString,
-  makeSyncFnWithoutParamsReturnsString,
-  makeSyncFnWithParamsReturnsString,
-} from '../../__tests__/functionFixtures';
 import { createIdiomaticSync } from './createIdiomaticSync';
-import { DefineIdiomaticSync } from './types';
+import { SyncTestFixtures } from '../__tests__/syncFixtures';
 
 describe('createIdiomaticSync', () => {
   it('should create an idiomatic sync function', () => {
-    const mockSyncFn = makeSyncFnWithoutParamsReturnsString();
-    const idiomaticSync = createIdiomaticSync(mockSyncFn);
-
+    const { fn } = SyncTestFixtures.withoutParams.getIdiomatic();
+    const idiomaticSync = createIdiomaticSync(fn);
     expect(typeof idiomaticSync).toBe('function');
-    expect(idiomaticSync).toBe(mockSyncFn);
+    expect(idiomaticSync).toBe(fn);
   });
 
   it('should throw an error for invalid input', () => {
     const invalidInput = 'not a function';
-
     expect(() => {
       createIdiomaticSync(invalidInput as any);
     }).toThrow('idiomaticFn is not qualified to be idiomatic sync');
   });
 
-  it('should invoke the idiomatic function without params', () => {
-    const mockSyncFn = makeSyncFnWithoutParamsReturnsString();
-    const idiomaticSync = createIdiomaticSync(mockSyncFn);
+  // USAGE TESTS
+  it('USAGE: no params', () => {
+    const { fn, idiomaticSync } =
+      SyncTestFixtures.withoutParams.getIdiomatic();
+    // Usage implementation test
+    const result = idiomaticSync();
+    expect(idiomaticSync).toHaveBeenCalledWith();
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(result).toBe('test');
+  });
 
-    expect(idiomaticSync()).toBe('test');
-    expect(mockSyncFn).toHaveBeenCalled();
+  it('USAGE: with params', () => {
+    const { fn, idiomaticSync } =
+      SyncTestFixtures.withParams.getIdiomatic();
+    // Usage implementation test
+    const result = idiomaticSync({ name: 'John' });
+    expect(idiomaticSync).toHaveBeenCalledWith({ name: 'John' });
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(result).toBe('Hello John');
+  });
+
+  it('USAGE: optional params', () => {
+    const { fn, idiomaticSync } =
+      SyncTestFixtures.withOptionalParams.getIdiomatic();
+    // Usage implementation test
+    const resultWithParams = idiomaticSync({ name: 'John' });
+    expect(idiomaticSync).toHaveBeenCalledWith({ name: 'John' });
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(resultWithParams).toBe('Hello John');
+
+    const resultWithoutParams = idiomaticSync();
+    expect(idiomaticSync).toHaveBeenCalledWith();
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(resultWithoutParams).toBe('Hello');
+  });
+
+  // TYPE ERROR TESTS
+  it('TYPE ERRORS: no params', () => {
+    const { idiomaticSync } =
+      SyncTestFixtures.withoutParams.getIdiomatic();
 
     try {
-      // @ts-expect-error - no params expected
-      idiomaticSync('test');
+      // @ts-expect-error testing invalid call
+      idiomaticSync({ name: 'John' });
     } catch {
-      // Expected error
+      // Expected to throw
     }
   });
 
-  it('should invoke the idiomatic function with params', () => {
-    const mockSyncFn = makeSyncFnWithParamsReturnsString();
-    const idiomaticSync = createIdiomaticSync(mockSyncFn);
-
-    expect(idiomaticSync({ name: 'John' })).toBe('Hello John');
-    expect(mockSyncFn).toHaveBeenCalledWith({ name: 'John' });
+  it('TYPE ERRORS: with params', () => {
+    const { idiomaticSync } =
+      SyncTestFixtures.withParams.getIdiomatic();
 
     try {
-      // @ts-expect-error - missing params
+      // @ts-expect-error testing invalid call
       idiomaticSync();
     } catch {
-      // Expected error
+      // Expected to throw
     }
   });
 
-  it('should invoke the idiomatic function with optional params', () => {
-    const mockSyncFn = makeSyncFnWithOptionalParamsReturnsString();
-    const idiomaticSync = createIdiomaticSync(mockSyncFn);
-
-    expect(idiomaticSync()).toBe('Hello');
-    expect(mockSyncFn).toHaveBeenCalledWith();
-
-    expect(idiomaticSync({ name: 'John' })).toBe('Hello John');
-    expect(mockSyncFn).toHaveBeenCalledWith({ name: 'John' });
+  it('TYPE ERRORS: optional params', () => {
+    const { idiomaticSync } =
+      SyncTestFixtures.withOptionalParams.getIdiomatic();
 
     try {
-      // @ts-expect-error - wrong param type
-      idiomaticSync({ name: 1 });
+      // @ts-expect-error testing invalid call
+      idiomaticSync(1);
     } catch {
-      // Expected error
+      // Expected to throw
     }
   });
 
-  it('should handle type annotations without params', () => {
-    type TestIdiomaticSync = DefineIdiomaticSync<() => string>;
-    const idiomaticSync: TestIdiomaticSync = createIdiomaticSync(() => 'test');
-    expect(idiomaticSync()).toBe('test');
-    try {
-      // @ts-expect-error - no params expected
-      idiomaticSync('test');
-    } catch {
-      // Expected error
-    }
+  // ANNOTATION TESTS
+  it('ANNOTATION: no params', () => {
+    const { idiomaticSync, annotation: _annotation } =
+      SyncTestFixtures.withoutParams.getIdiomatic();
+
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = idiomaticSync;
+    expect(testAnnotation).toBe(idiomaticSync);
   });
 
-  it('should handle type annotations with params', () => {
-    type TestIdiomaticSync = DefineIdiomaticSync<
-      (args: { a: string }) => string
-    >;
-    const idiomaticSync: TestIdiomaticSync = createIdiomaticSync(({ a }) => a);
-    expect(idiomaticSync({ a: 'test' })).toBe('test');
-    try {
-      // @ts-expect-error - missing params
-      idiomaticSync();
-    } catch {
-      // Expected error
-    }
+  it('ANNOTATION: with params', () => {
+    const { idiomaticSync, annotation: _annotation } =
+      SyncTestFixtures.withParams.getIdiomatic();
+
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = idiomaticSync;
+    expect(testAnnotation).toBe(idiomaticSync);
   });
 
-  it('should handle type annotations with optional params', () => {
-    type TestIdiomaticSync = DefineIdiomaticSync<
-      (params?: { name: string }) => string
-    >;
-    const mockFn = makeSyncFnWithOptionalParamsReturnsString();
-    const idiomaticSync: TestIdiomaticSync = createIdiomaticSync(mockFn);
+  it('ANNOTATION: optional params', () => {
+    const { idiomaticSync, annotation: _annotation } =
+      SyncTestFixtures.withOptionalParams.getIdiomatic();
 
-    expect(idiomaticSync()).toBe('Hello');
-    expect(idiomaticSync({ name: 'test' })).toBe('Hello test');
-
-    try {
-      // @ts-expect-error - wrong param type
-      idiomaticSync({ name: 1 });
-    } catch {
-      // Expected error
-    }
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = idiomaticSync;
+    expect(testAnnotation).toBe(idiomaticSync);
   });
 });

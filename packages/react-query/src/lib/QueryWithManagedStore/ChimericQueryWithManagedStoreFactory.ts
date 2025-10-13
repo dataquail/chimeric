@@ -10,8 +10,8 @@ import { fuseChimericQuery } from '../Query/chimeric/fuseChimericQuery';
 
 // Required params (must come first - most specific)
 export function ChimericQueryWithManagedStoreFactory<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(config: {
@@ -25,8 +25,8 @@ export function ChimericQueryWithManagedStoreFactory<
 
 // Optional params (must come before no params)
 export function ChimericQueryWithManagedStoreFactory<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(config: {
@@ -40,7 +40,7 @@ export function ChimericQueryWithManagedStoreFactory<
 
 // No params (least specific - must come last)
 export function ChimericQueryWithManagedStoreFactory<
-  TResult,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(config: {

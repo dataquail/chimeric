@@ -10,8 +10,8 @@ import { validateMaxArgLength } from '../../utilities/validateMaxArgLength';
 
 // Required params (must come first - most specific)
 export function ReactiveQueryFactory<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(config: {
@@ -22,8 +22,8 @@ export function ReactiveQueryFactory<
 
 // Optional params (must come before no params)
 export function ReactiveQueryFactory<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(config: {
@@ -34,7 +34,7 @@ export function ReactiveQueryFactory<
 
 // No params (least specific - must come last)
 export function ReactiveQueryFactory<
-  TResult,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(config: {

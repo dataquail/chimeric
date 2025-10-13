@@ -6,33 +6,35 @@ export type ReactiveMutation<
   TNativeInvokeOptions = unknown,
   TNativeReturnType = unknown,
 > = {
-  use: (config?: {
+  use: (allOptions?: {
     options?: ReactiveMutationOptions;
     nativeOptions?: TNativeReactiveOptions;
   }) => {
-    invoke: TParams extends object
-      ? Omit<TParams, 'options' | 'nativeOptions'> extends
-          | undefined
-          | {
-              options?: ReactiveMutationInvokeOptions;
-              nativeOptions?: TNativeInvokeOptions;
-            }
-        ? (config?: {
-            options?: ReactiveMutationInvokeOptions;
-            nativeOptions?: TNativeInvokeOptions;
-          }) => Promise<TResult>
-        : (
-            paramsAndConfig: TParams & {
-              options?: ReactiveMutationInvokeOptions;
-              nativeOptions?: TNativeInvokeOptions;
-            },
-          ) => Promise<TResult>
-      : TParams extends void
-      ? (config?: {
+    invoke: [TParams] extends [void]
+      ? (allInvokeOptions?: {
           options?: ReactiveMutationInvokeOptions;
           nativeOptions?: TNativeInvokeOptions;
         }) => Promise<TResult>
-      : never;
+      : void extends TParams
+      ? (allInvokeOptions?: {
+          options?: ReactiveMutationInvokeOptions;
+          nativeOptions?: TNativeInvokeOptions;
+        }) => Promise<TResult>
+      : undefined extends TParams
+      ? (
+          params?: TParams,
+          allInvokeOptions?: {
+            options?: ReactiveMutationInvokeOptions;
+            nativeOptions?: TNativeInvokeOptions;
+          },
+        ) => Promise<TResult>
+      : (
+          params: TParams,
+          allInvokeOptions?: {
+            options?: ReactiveMutationInvokeOptions;
+            nativeOptions?: TNativeInvokeOptions;
+          },
+        ) => Promise<TResult>;
     isIdle: boolean;
     isPending: boolean;
     isSuccess: boolean;
@@ -64,11 +66,20 @@ export type DefineReactiveMutation<
   TNativeOptions = unknown,
   TNativeInvokeOptions = unknown,
   TNativeReturnType = unknown,
-> = ReactiveMutation<
-  Parameters<T>[0] extends void | object ? Parameters<T>[0] : never,
-  Awaited<ReturnType<T>>,
-  TError,
-  TNativeOptions,
-  TNativeInvokeOptions,
-  TNativeReturnType
->;
+> = Parameters<T> extends []
+  ? ReactiveMutation<
+      void,
+      Awaited<ReturnType<T>>,
+      TError,
+      TNativeOptions,
+      TNativeInvokeOptions,
+      TNativeReturnType
+    >
+  : ReactiveMutation<
+      Parameters<T>[0],
+      Awaited<ReturnType<T>>,
+      TError,
+      TNativeOptions,
+      TNativeInvokeOptions,
+      TNativeReturnType
+    >;

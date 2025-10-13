@@ -6,7 +6,7 @@ export const isReactiveMutation = <
   TResult = unknown,
   TError extends Error = Error,
 >(
-  maybeReactiveMutation: unknown,
+  maybeReactiveMutation: ReactiveMutation<TParams, TResult, TError>,
 ): maybeReactiveMutation is ReactiveMutation<TParams, TResult, TError> => {
   return coreIsReactiveMutation(maybeReactiveMutation);
 };
