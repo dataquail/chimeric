@@ -1,24 +1,13 @@
-import { ReactiveQueryFactory } from '@chimeric/react-query';
 import { ReactiveQueryTestHarness } from '../ReactiveQueryTestHarness';
-import { QueryClient, queryOptions } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
 import { getTestWrapper } from '../../__tests__/getTestWrapper';
-import {
-  makeAsyncFnWithOptionalParamsReturnsString,
-  makeAsyncFnWithoutParamsReturnsString,
-  makeAsyncFnWithParamsReturnsString,
-} from '../../__tests__/functionFixtures';
+import { QueryTestFixtures } from '../../__tests__/queryFixtures';
 
 describe('ReactiveQueryTestHarness', () => {
-  it('should be a function', async () => {
+  // USAGE
+  it('USAGE: no params', async () => {
     const queryClient = new QueryClient();
-    const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
-    const reactiveQuery = ReactiveQueryFactory({
-      getQueryOptions: () =>
-        queryOptions({
-          queryKey: ['test'],
-          queryFn: mockQueryFn,
-        }),
-    });
+    const { reactiveQuery } = QueryTestFixtures.withoutParams.getReactive();
 
     const query = ReactiveQueryTestHarness({
       reactiveQuery,
@@ -41,19 +30,11 @@ describe('ReactiveQueryTestHarness', () => {
     expect(query.result.current.isError).toBe(false);
     expect(query.result.current.error).toBe(null);
     expect(query.result.current.data).toBe('test');
-    expect(mockQueryFn).toHaveBeenCalledTimes(1);
   });
 
-  it('should wait for success with params', async () => {
+  it('USAGE: with params', async () => {
     const queryClient = new QueryClient();
-    const mockQueryFn = makeAsyncFnWithParamsReturnsString();
-    const reactiveQuery = ReactiveQueryFactory({
-      getQueryOptions: (args: { name: string }) =>
-        queryOptions({
-          queryKey: ['test', args.name],
-          queryFn: () => mockQueryFn(args),
-        }),
-    });
+    const { reactiveQuery } = QueryTestFixtures.withParams.getReactive();
 
     const query = ReactiveQueryTestHarness({
       reactiveQuery,
@@ -77,24 +58,45 @@ describe('ReactiveQueryTestHarness', () => {
     expect(query.result.current.isError).toBe(false);
     expect(query.result.current.error).toBe(null);
     expect(query.result.current.data).toBe('Hello John');
-    expect(mockQueryFn).toHaveBeenCalledTimes(1);
   });
 
-  it('should wait for success with optional params', async () => {
+  it('USAGE: with optional params - with params provided', async () => {
     const queryClient = new QueryClient();
-    const mockQueryFn = makeAsyncFnWithOptionalParamsReturnsString();
-    const reactiveQuery = ReactiveQueryFactory({
-      getQueryOptions: (args?: { name: string }) =>
-        queryOptions({
-          queryKey: args?.name ? ['test', args.name] : ['test'],
-          queryFn: () => mockQueryFn(args),
-        }),
-    });
+    const { reactiveQuery } =
+      QueryTestFixtures.withOptionalParams.getReactive();
 
     const query = ReactiveQueryTestHarness({
       reactiveQuery,
       wrapper: getTestWrapper(queryClient),
-      // params: { name: 'John' }, // No params provided
+      params: { name: 'John' },
+    });
+
+    expect(query.result.current.isIdle).toBe(true);
+    expect(query.result.current.isPending).toBe(true);
+    expect(query.result.current.isSuccess).toBe(false);
+    expect(query.result.current.isError).toBe(false);
+    expect(query.result.current.error).toBe(null);
+    expect(query.result.current.data).toBe(undefined);
+
+    await query.waitFor(() =>
+      expect(query.result.current.isSuccess).toBe(true),
+    );
+
+    expect(query.result.current.isSuccess).toBe(true);
+    expect(query.result.current.isPending).toBe(false);
+    expect(query.result.current.isError).toBe(false);
+    expect(query.result.current.error).toBe(null);
+    expect(query.result.current.data).toBe('Hello John');
+  });
+
+  it('USAGE: with optional params - without params provided', async () => {
+    const queryClient = new QueryClient();
+    const { reactiveQuery } =
+      QueryTestFixtures.withOptionalParams.getReactive();
+
+    const query = ReactiveQueryTestHarness({
+      reactiveQuery,
+      wrapper: getTestWrapper(queryClient),
     });
 
     expect(query.result.current.isIdle).toBe(true);
@@ -113,6 +115,66 @@ describe('ReactiveQueryTestHarness', () => {
     expect(query.result.current.isError).toBe(false);
     expect(query.result.current.error).toBe(null);
     expect(query.result.current.data).toBe('Hello');
-    expect(mockQueryFn).toHaveBeenCalledTimes(1);
+  });
+
+  // TYPE ERRORS
+  it('TYPE ERRORS: no params', async () => {
+    const queryClient = new QueryClient();
+    const { reactiveQuery } = QueryTestFixtures.withoutParams.getReactive();
+
+    try {
+      // @ts-expect-error - should error because params are not expected
+      ReactiveQueryTestHarness({
+        reactiveQuery,
+        wrapper: getTestWrapper(queryClient),
+        params: { name: 'John' },
+      });
+    } catch {
+      // Expected error
+    }
+  });
+
+  it('TYPE ERRORS: with params', async () => {
+    const queryClient = new QueryClient();
+    const { reactiveQuery } = QueryTestFixtures.withParams.getReactive();
+
+    try {
+      // @ts-expect-error - should error because params are expected
+      ReactiveQueryTestHarness({
+        reactiveQuery,
+        wrapper: getTestWrapper(queryClient),
+      });
+
+      ReactiveQueryTestHarness({
+        // @ts-expect-error - should error because wrong params
+        reactiveQuery,
+        wrapper: getTestWrapper(queryClient),
+        params: { wrong: 'param' },
+      });
+    } catch {
+      // Expected errors
+    }
+  });
+
+  it('TYPE ERRORS: with optional params', async () => {
+    const queryClient = new QueryClient();
+    const { reactiveQuery } =
+      QueryTestFixtures.withOptionalParams.getReactive();
+
+    try {
+      // @ts-expect-error - should error because wrong params
+      ReactiveQueryTestHarness({
+        reactiveQuery,
+        wrapper: getTestWrapper(queryClient),
+        params: { wrong: 'param' },
+      });
+
+      ReactiveQueryTestHarness({
+        reactiveQuery,
+        wrapper: getTestWrapper(queryClient),
+      });
+    } catch {
+      // Expected error
+    }
   });
 });

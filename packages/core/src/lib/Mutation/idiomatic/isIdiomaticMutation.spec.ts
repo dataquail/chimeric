@@ -1,18 +1,19 @@
-import { makeIdiomaticMutationWithoutParamsReturnsString } from '../__tests__/mutationFixtures';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { MutationTestFixtures } from '../__tests__/mutationFixtures';
 import { isIdiomaticMutation } from './isIdiomaticMutation';
 
 describe('isIdiomaticMutation', () => {
   it('should return true for a function', () => {
     const testIdiomaticMutation =
-      makeIdiomaticMutationWithoutParamsReturnsString();
+      MutationTestFixtures.withoutParams.getIdiomatic().idiomaticMutation;
     expect(isIdiomaticMutation(testIdiomaticMutation)).toBe(true);
   });
 
   it('should return false for non-function values', () => {
-    expect(isIdiomaticMutation('not a function')).toBe(false);
-    expect(isIdiomaticMutation(123)).toBe(false);
-    expect(isIdiomaticMutation({})).toBe(false);
-    expect(isIdiomaticMutation(null)).toBe(false);
-    expect(isIdiomaticMutation(undefined)).toBe(false);
+    expect(isIdiomaticMutation('not a function' as any)).toBe(false);
+    expect(isIdiomaticMutation(123 as any)).toBe(false);
+    expect(isIdiomaticMutation({} as any)).toBe(false);
+    expect(isIdiomaticMutation(null as any)).toBe(false);
+    expect(isIdiomaticMutation(undefined as any)).toBe(false);
   });
 });

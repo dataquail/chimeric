@@ -4,6 +4,44 @@ import { checkOnInterval } from '../checkOnInterval.js';
 import { BaseWaitForOptions } from 'src/types/WaitForOptions.js';
 import { IdiomaticMutationTestHarnessReturnType } from './types.js';
 
+// No params
+export function IdiomaticMutationTestHarness<
+  TResult = unknown,
+  E extends Error = Error,
+  TIdiomaticNativeOptions = unknown,
+>({
+  idiomaticMutation,
+}: {
+  idiomaticMutation: IdiomaticMutation<void, TResult, TIdiomaticNativeOptions>;
+}): IdiomaticMutationTestHarnessReturnType<
+  void,
+  TResult,
+  E,
+  TIdiomaticNativeOptions
+>;
+
+// Optional params
+export function IdiomaticMutationTestHarness<
+  TParams = void,
+  TResult = unknown,
+  E extends Error = Error,
+  TIdiomaticNativeOptions = unknown,
+>({
+  idiomaticMutation,
+}: {
+  idiomaticMutation: IdiomaticMutation<
+    TParams | undefined,
+    TResult,
+    TIdiomaticNativeOptions
+  >;
+}): IdiomaticMutationTestHarnessReturnType<
+  TParams | undefined,
+  TResult,
+  E,
+  TIdiomaticNativeOptions
+>;
+
+// Required params
 export function IdiomaticMutationTestHarness<
   TParams = void,
   TResult = unknown,
@@ -22,21 +60,45 @@ export function IdiomaticMutationTestHarness<
   TResult,
   E,
   TIdiomaticNativeOptions
+>;
+
+// Implementation
+export function IdiomaticMutationTestHarness<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+  TIdiomaticNativeOptions = unknown,
+>({
+  idiomaticMutation,
+}: {
+  idiomaticMutation: IdiomaticMutation<
+    TParams,
+    TResult,
+    TIdiomaticNativeOptions
+  >;
+}): IdiomaticMutationTestHarnessReturnType<
+  TParams,
+  TResult,
+  TError,
+  TIdiomaticNativeOptions
 > {
   const result = {
     current: {
       invoke: (
-        params: TParams & {
-          options?: IdiomaticMutationOptions;
-          nativeOptions?: TIdiomaticNativeOptions;
-        },
+        ...invokeArgs: [
+          TParams & undefined,
+          {
+            options?: IdiomaticMutationOptions;
+            nativeOptions?: TIdiomaticNativeOptions | undefined;
+          },
+        ]
       ) => {
         result.current.isIdle = false;
         result.current.isPending = true;
         result.current.isSuccess = false;
         result.current.isError = false;
         result.current.error = null;
-        const promise = idiomaticMutation(params);
+        const promise = idiomaticMutation(...invokeArgs);
         promise
           .then((data) => {
             result.current.data = data;
@@ -51,7 +113,7 @@ export function IdiomaticMutationTestHarness<
             result.current.isPending = false;
             result.current.isSuccess = false;
             result.current.isError = true;
-            result.current.error = error as E;
+            result.current.error = error as TError;
           });
 
         return promise;
@@ -61,7 +123,7 @@ export function IdiomaticMutationTestHarness<
       isSuccess: false,
       isPending: false,
       isError: false,
-      error: null as E | null,
+      error: null as TError | null,
     },
   };
   return {
@@ -80,7 +142,7 @@ export function IdiomaticMutationTestHarness<
   } as IdiomaticMutationTestHarnessReturnType<
     TParams,
     TResult,
-    E,
+    TError,
     TIdiomaticNativeOptions
   >;
 }

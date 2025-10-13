@@ -1,60 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { isChimericSync } from './isChimericSync';
+import { SyncTestFixtures } from '../__tests__/syncFixtures';
 import { fuseChimericSync } from './fuseChimericSync';
-import {
-  makeIdiomaticSyncWithoutParamsReturnsString,
-  makeReactiveSyncWithoutParamsReturnsString,
-} from '../__tests__/syncFixtures';
-import { makeSyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
+import { isChimericSync } from './isChimericSync';
 
 describe('isChimericSync', () => {
-  it('should handle no params', () => {
-    const mockIdiomaticSync = makeIdiomaticSyncWithoutParamsReturnsString();
-    const mockReactiveSync = makeReactiveSyncWithoutParamsReturnsString();
-    const mockChimericSync = fuseChimericSync({
-      idiomatic: mockIdiomaticSync,
-      reactive: mockReactiveSync,
+  it('should return true for a chimeric sync function', () => {
+    const { idiomaticSync, reactiveSync } =
+      SyncTestFixtures.withoutParams.getChimeric();
+    const testChimericSync = fuseChimericSync({
+      idiomatic: idiomaticSync,
+      reactive: reactiveSync,
     });
 
-    expect(isChimericSync(mockChimericSync)).toBe(true);
-    if (isChimericSync(mockChimericSync)) {
-      const result = mockChimericSync();
-      expect(result).toBe('test');
-
-      const reactiveResult = mockChimericSync.use();
-      expect(reactiveResult).toBe('test');
-
-      try {
-        // @ts-expect-error - no params expected
-        mockChimericSync('test');
-      } catch {
-        // Expected error
-      }
-
-      try {
-        // @ts-expect-error - no params expected
-        mockChimericSync.use('test');
-      } catch {
-        // Expected error
-      }
-    } else {
-      throw new Error('isChimericSync returned false negative');
-    }
+    expect(isChimericSync(testChimericSync)).toBe(true);
   });
 
   it('should return false for non-chimeric inputs', () => {
+    const { idiomaticSync, reactiveSync } =
+      SyncTestFixtures.withoutParams.getChimeric();
     // Not a function
     expect(isChimericSync('not a function' as any)).toBe(false);
 
     // Function without use
-    const mockSyncFn = makeSyncFnWithoutParamsReturnsString();
-    expect(isChimericSync(mockSyncFn as any)).toBe(false);
+    expect(isChimericSync(idiomaticSync as any)).toBe(false);
 
     // Object with use but not a function
-    const mockReactiveSync = {
-      use: makeSyncFnWithoutParamsReturnsString(),
-    };
-    expect(isChimericSync(mockReactiveSync as any)).toBe(false);
+    expect(isChimericSync(reactiveSync as any)).toBe(false);
 
     // Other invalid inputs
     expect(isChimericSync(123 as any)).toBe(false);

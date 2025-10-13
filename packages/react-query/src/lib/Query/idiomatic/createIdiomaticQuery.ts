@@ -8,7 +8,7 @@ import { TanstackIdiomaticNativeOptions } from 'src/lib/Mutation/idiomatic/types
 
 // Overload for no params (allOptions as first arg)
 export function createIdiomaticQuery<
-  TResult,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(
@@ -20,8 +20,8 @@ export function createIdiomaticQuery<
 
 // Overload for optional params (params as first arg, allOptions as second)
 export function createIdiomaticQuery<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(
@@ -36,8 +36,8 @@ export function createIdiomaticQuery<
 
 // Overload for required params (params as first arg, allOptions as second)
 export function createIdiomaticQuery<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(

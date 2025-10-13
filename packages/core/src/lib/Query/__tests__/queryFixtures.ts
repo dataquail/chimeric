@@ -1,144 +1,220 @@
-import {
-  makeAsyncFnWithOptionalParamsReturnsString,
-  makeAsyncFnWithoutParamsReturnsString,
-  makeAsyncFnWithParamsReturnsObj,
-  makeAsyncFnWithParamsReturnsString,
-} from '../../__tests__/functionFixtures';
 import { DefineChimericQuery } from '../chimeric/types';
 import { createIdiomaticQuery } from '../idiomatic/createIdiomaticQuery';
-import { DefineIdiomaticQuery } from '../idiomatic/types';
+import {
+  DefineIdiomaticQuery,
+  IdiomaticQueryOptions,
+} from '../idiomatic/types';
 import { createReactiveQuery } from '../reactive/createReactiveQuery';
-import { DefineReactiveQuery } from '../reactive/types';
+import {
+  DefineReactiveQuery,
+  ReactiveQueryOptions,
+} from '../reactive/types';
 
-// No params
-export const makeQueryFnWithoutParamsReturnsString = () =>
-  makeAsyncFnWithoutParamsReturnsString();
-
-export const makeIdiomaticQueryWithoutParamsReturnsString = () =>
-  createIdiomaticQuery(makeQueryFnWithoutParamsReturnsString());
-
-export const makeQueryHookWithoutParamsReturnsString = () =>
-  vi.fn(() => ({
-    isIdle: true,
-    isPending: false,
-    isSuccess: true,
-    isError: false,
-    error: null,
-    data: 'test',
-    refetch: vi.fn(() => Promise.resolve('test')),
-    native: 'test',
-  }));
-
-export const makeReactiveQueryWithoutParamsReturnsString = () =>
-  createReactiveQuery(makeQueryHookWithoutParamsReturnsString());
-
-// With params
-export const makeQueryFnWithParamsReturnsString = () =>
-  makeAsyncFnWithParamsReturnsString();
-
-export const makeIdiomaticQueryWithParamsReturnsString = () =>
-  createIdiomaticQuery(makeQueryFnWithParamsReturnsString());
-
-// With optional params
-export const makeQueryFnWithOptionalParamsReturnsString = () =>
-  makeAsyncFnWithOptionalParamsReturnsString();
-
-export const makeIdiomaticQueryWithOptionalParamsReturnsString = () =>
-  createIdiomaticQuery(makeQueryFnWithOptionalParamsReturnsString());
-
-export const makeQueryHookWithParamsReturnsString = () =>
-  vi.fn((args: { name: string }) => ({
-    isIdle: true,
-    isPending: false,
-    isSuccess: true,
-    isError: false,
-    error: null,
-    data: `Hello ${args.name}`,
-    refetch: vi.fn(() => Promise.resolve(`Hello ${args.name}`)),
-    native: 'test',
-  }));
-
-export const makeQueryHookWithOptionalParamsReturnsString = () =>
-  vi.fn((args?: { name: string }) => ({
-    isIdle: true,
-    isPending: false,
-    isSuccess: true,
-    isError: false,
-    error: null,
-    data: args?.name ? `Hello ${args.name}` : 'Hello',
-    refetch: vi.fn(() =>
-      Promise.resolve(args?.name ? `Hello ${args.name}` : 'Hello'),
-    ),
-    native: 'test',
-  }));
-
-export const makeReactiveQueryWithParamsReturnsString = () =>
-  createReactiveQuery(makeQueryHookWithParamsReturnsString());
-
-// With params and returns obj
-export const makeQueryFnWithParamsReturnsObj = () =>
-  makeAsyncFnWithParamsReturnsObj();
-
-export const makeIdiomaticQueryWithParamsReturnsObj = () =>
-  createIdiomaticQuery(makeQueryFnWithParamsReturnsObj());
-
-export const makeQueryHookWithParamsReturnsObj = () =>
-  vi.fn(() => ({
-    isIdle: true,
-    isPending: false,
-    isSuccess: true,
-    isError: false,
-    error: null,
-    data: { name: 'John' },
-    refetch: vi.fn(() => Promise.resolve({ name: 'John' })),
-    native: 'test',
-  }));
-
-export const makeReactiveQueryWithParamsReturnsObj = () =>
-  createReactiveQuery(makeQueryHookWithParamsReturnsObj());
-
-export const makeReactiveQueryWithOptionalParamsReturnsString = () =>
-  createReactiveQuery(makeQueryHookWithOptionalParamsReturnsString());
-
-export type ChimericQueryWithoutParamsReturnsString = DefineChimericQuery<
-  () => Promise<string>
->;
-
-export type ChimericQueryWithParamsReturnsString = DefineChimericQuery<
-  (args: { name: string }) => Promise<string>
->;
-
-export type ChimericQueryWithOptionalParamsReturnsString = DefineChimericQuery<
-  (args?: { name: string }) => Promise<string>
->;
-
-export type IdiomaticQueryWithoutParamsReturnsString = DefineIdiomaticQuery<
-  () => Promise<string>
->;
-
-export type IdiomaticQueryWithParamsReturnsString = DefineIdiomaticQuery<
-  (args: { name: string }) => Promise<string>
->;
-
-export type IdiomaticQueryWithOptionalParamsReturnsString =
-  DefineIdiomaticQuery<(args?: { name: string }) => Promise<string>>;
-
-export type ReactiveQueryWithoutParamsReturnsString = DefineReactiveQuery<
-  () => Promise<string>
->;
-
-export type ReactiveQueryWithParamsReturnsString = DefineReactiveQuery<
-  (args: { name: string }) => Promise<string>
->;
-
-export type ReactiveQueryWithOptionalParamsReturnsString = DefineReactiveQuery<
-  (args?: { name: string }) => Promise<string>
->;
-
-export type IdiomaticQueryWithParamsReturnsObj = DefineIdiomaticQuery<
-  (args: { name: string }) => Promise<{ name: string }>
->;
-
-export type ReactiveQueryWithParamsReturnsObj = DefineReactiveQuery<
-  (args: { name: string }) => Promise<{ name: string }>
->;
+export const QueryTestFixtures = {
+  withoutParams: {
+    getIdiomatic: () => {
+      const fn = vi.fn(
+        async (_allOptions?: {
+          options?: IdiomaticQueryOptions;
+          nativeOptions?: unknown;
+        }) => 'test',
+      );
+      return {
+        fn,
+        idiomaticQuery: createIdiomaticQuery(fn),
+        annotation: {} as DefineIdiomaticQuery<() => Promise<string>>,
+      };
+    },
+    getReactive: () => {
+      const refetchFn = vi.fn(async () => 'test');
+      const fn = vi.fn(
+        (_allOptions?: {
+          options?: ReactiveQueryOptions;
+          nativeOptions?: unknown;
+        }) => ({
+          isIdle: true,
+          isPending: false,
+          isSuccess: false,
+          isError: false,
+          error: null,
+          data: 'test' as string | undefined,
+          refetch: refetchFn,
+          native: undefined as unknown,
+        }),
+      );
+      return {
+        fn,
+        refetchFn,
+        reactiveQuery: createReactiveQuery(fn),
+        annotation: {} as DefineReactiveQuery<() => Promise<string>>,
+      };
+    },
+    getChimeric: () => {
+      const { idiomaticQuery, fn: idiomaticFn } =
+        QueryTestFixtures.withoutParams.getIdiomatic();
+      const {
+        reactiveQuery,
+        fn: reactiveFn,
+        refetchFn,
+      } = QueryTestFixtures.withoutParams.getReactive();
+      return {
+        idiomaticQuery,
+        idiomaticFn,
+        reactiveQuery,
+        reactiveFn,
+        refetchFn,
+        annotation: {} as DefineChimericQuery<() => Promise<string>>,
+      };
+    },
+  },
+  withParams: {
+    getIdiomatic: () => {
+      const fn = vi.fn(
+        async (
+          params: { name: string },
+          _allOptions?: {
+            options?: IdiomaticQueryOptions;
+            nativeOptions?: unknown;
+          },
+        ) => `Hello ${params.name}`,
+      );
+      return {
+        fn,
+        idiomaticQuery: createIdiomaticQuery(fn),
+        annotation: {} as DefineIdiomaticQuery<
+          (params: { name: string }) => Promise<string>
+        >,
+      };
+    },
+    getReactive: () => {
+      let _params: { name: string };
+      const refetchFn = vi.fn(async () => `Hello ${_params.name}`);
+      const fn = vi.fn(
+        (
+          params: { name: string },
+          _allOptions?: {
+            options?: ReactiveQueryOptions;
+            nativeOptions?: unknown;
+          },
+        ) => {
+          _params = params;
+          return {
+            isIdle: false,
+            isPending: false,
+            isSuccess: true,
+            isError: false,
+            error: null,
+            data: `Hello ${_params.name}` as string | undefined,
+            refetch: refetchFn,
+            native: undefined as unknown,
+          };
+        },
+      );
+      return {
+        fn,
+        refetchFn,
+        reactiveQuery: createReactiveQuery(fn),
+        annotation: {} as DefineReactiveQuery<
+          (params: { name: string }) => Promise<string>
+        >,
+      };
+    },
+    getChimeric: () => {
+      const { idiomaticQuery, fn: idiomaticFn } =
+        QueryTestFixtures.withParams.getIdiomatic();
+      const {
+        reactiveQuery,
+        fn: reactiveFn,
+        refetchFn,
+      } = QueryTestFixtures.withParams.getReactive();
+      return {
+        idiomaticQuery,
+        idiomaticFn,
+        reactiveQuery,
+        reactiveFn,
+        refetchFn,
+        annotation: {} as DefineChimericQuery<
+          (params: { name: string }) => Promise<string>
+        >,
+      };
+    },
+  },
+  withOptionalParams: {
+    getIdiomatic: () => {
+      const fn = vi.fn(
+        async (
+          params?: { name: string },
+          _allOptions?: {
+            options?: IdiomaticQueryOptions;
+            nativeOptions?: unknown;
+          },
+        ) => (params ? `Hello ${params.name}` : 'Hello'),
+      );
+      return {
+        fn,
+        idiomaticQuery: createIdiomaticQuery(fn),
+        annotation: {} as DefineIdiomaticQuery<
+          (params?: { name: string }) => Promise<string>
+        >,
+      };
+    },
+    getReactive: () => {
+      const fn = vi.fn(
+        (
+          params?: { name: string },
+          _allOptions?: {
+            options?: ReactiveQueryOptions;
+            nativeOptions?: unknown;
+          },
+        ) => {
+          // Capture params for this specific call
+          const capturedParams = params;
+          const refetchFn = vi.fn(async () =>
+            capturedParams ? `Hello ${capturedParams.name}` : 'Hello',
+          );
+          return {
+            isIdle: false,
+            isPending: false,
+            isSuccess: true,
+            isError: false,
+            error: null,
+            data: (capturedParams ? `Hello ${capturedParams.name}` : 'Hello') as
+              | string
+              | undefined,
+            refetch: refetchFn,
+            native: undefined as unknown,
+          };
+        },
+      );
+      // Create a shared mock refetch for testing call counts
+      const sharedRefetchFn = vi.fn(async () => 'test');
+      return {
+        fn,
+        refetchFn: sharedRefetchFn,
+        reactiveQuery: createReactiveQuery(fn),
+        annotation: {} as DefineReactiveQuery<
+          (params?: { name: string }) => Promise<string>
+        >,
+      };
+    },
+    getChimeric: () => {
+      const { idiomaticQuery, fn: idiomaticFn } =
+        QueryTestFixtures.withOptionalParams.getIdiomatic();
+      const {
+        reactiveQuery,
+        fn: reactiveFn,
+        refetchFn,
+      } = QueryTestFixtures.withOptionalParams.getReactive();
+      return {
+        idiomaticQuery,
+        idiomaticFn,
+        reactiveQuery,
+        reactiveFn,
+        refetchFn,
+        annotation: {} as DefineChimericQuery<
+          (params?: { name: string }) => Promise<string>
+        >,
+      };
+    },
+  },
+};

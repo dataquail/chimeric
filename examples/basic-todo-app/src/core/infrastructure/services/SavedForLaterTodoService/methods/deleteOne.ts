@@ -28,7 +28,8 @@ export const deleteSavedForLaterTodo: IDeleteSavedForLaterTodo = async (args: {
 };
 
 export const DeleteOneMethodImpl: ISavedForLaterTodoService['deleteOne'] =
-  ChimericMutationFactory(queryClient, {
+  ChimericMutationFactory({
+    queryClient,
     mutationFn: async (args: { id: string }) => {
       await deleteSavedForLaterTodo(args);
     },

@@ -11,7 +11,14 @@ export const isReactiveMutation = <
   TNativeInvokeOptions = unknown,
   TNativeReturnType = unknown,
 >(
-  maybeReactiveMutation: unknown,
+  maybeReactiveMutation: ReactiveMutation<
+    TParams,
+    TResult,
+    TError,
+    TNativeOptions,
+    TNativeInvokeOptions,
+    TNativeReturnType
+  >,
 ): maybeReactiveMutation is ReactiveMutation<
   TParams,
   TResult,

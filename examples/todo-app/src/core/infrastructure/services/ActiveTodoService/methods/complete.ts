@@ -30,7 +30,8 @@ export const CompleteOneMethodImpl = (
   appStore: AppStore,
   queryClient: QueryClient,
 ): IActiveTodoService['completeOne'] => {
-  return ChimericMutationFactory(queryClient, {
+  return ChimericMutationFactory({
+    queryClient,
     mutationFn: async (args: { id: string }) => {
       await completeActiveTodo(args);
     },

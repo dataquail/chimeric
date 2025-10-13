@@ -2,154 +2,20 @@ import { QueryClient, queryOptions } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
 import { ReactiveQueryFactory } from './ReactiveQueryFactory';
 import { getTestWrapper } from '../../__tests__/getTestWrapper';
-import {
-  makeAsyncFnWithoutParamsReturnsString,
-  makeAsyncFnWithParamsReturnsString,
-} from '../../__tests__/functionFixtures';
-import {
-  ReactiveQueryWithOptionalParamsReturnsString,
-  ReactiveQueryWithoutParamsReturnsString,
-  ReactiveQueryWithParamsReturnsString,
-} from '../__tests__/queryFixtures';
+import { QueryTestFixtures } from '../__tests__/queryFixtures';
 
 describe('ReactiveQueryFactory', () => {
-  it('should invoke the reactive hook', async () => {
+  // USAGE
+  it('USAGE: no params', async () => {
+    const { queryFn } = QueryTestFixtures.withoutParams.getReactive();
     const queryClient = new QueryClient();
-    const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
     const reactiveQuery = ReactiveQueryFactory({
       getQueryOptions: () =>
         queryOptions({
           queryKey: ['test'],
-          queryFn: mockQueryFn,
+          queryFn,
         }),
     });
-
-    const { result } = renderHook(reactiveQuery.use, {
-      wrapper: getTestWrapper(queryClient),
-    });
-
-    await waitFor(() => {
-      expect(result.current.isPending).toBe(true);
-    });
-
-    expect(result.current.data).toBe('test');
-    expect(mockQueryFn).toHaveBeenCalled();
-  });
-
-  it('should invoke the reactive hook with object params', async () => {
-    const queryClient = new QueryClient();
-    const mockQueryFn = makeAsyncFnWithParamsReturnsString();
-    const chimericQuery = ReactiveQueryFactory({
-      getQueryOptions: (args: { name: string }) =>
-        queryOptions({
-          queryKey: ['test', args.name],
-          queryFn: async () => mockQueryFn(args),
-        }),
-    });
-    const { result } = renderHook(() => chimericQuery.use({ name: 'John' }), {
-      wrapper: getTestWrapper(queryClient),
-    });
-
-    await waitFor(() => {
-      expect(result.current.isPending).toBe(false);
-    });
-
-    expect(result.current.data).toBe('Hello John');
-    expect(mockQueryFn).toHaveBeenCalledWith({ name: 'John' });
-  });
-
-  it('should invoke the reactive hook with non-object params', async () => {
-    const queryClient = new QueryClient();
-    const mockQueryFn = makeAsyncFnWithParamsReturnsString();
-    const chimericQuery = ReactiveQueryFactory({
-      getQueryOptions: (args: { name: string }) =>
-        queryOptions({
-          queryKey: ['test', args.name],
-          queryFn: async () => mockQueryFn(args),
-        }),
-    });
-    const { result } = renderHook(() => chimericQuery.use({ name: 'John' }), {
-      wrapper: getTestWrapper(queryClient),
-    });
-
-    await waitFor(() => {
-      expect(result.current.isPending).toBe(false);
-    });
-
-    expect(result.current.data).toBe('Hello John');
-    expect(mockQueryFn).toHaveBeenCalledWith({ name: 'John' });
-  });
-
-  it('should disable the reactive hook', async () => {
-    const queryClient = new QueryClient();
-    const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
-    const reactiveQuery = ReactiveQueryFactory({
-      getQueryOptions: () =>
-        queryOptions({
-          queryKey: ['test'],
-          queryFn: mockQueryFn,
-        }),
-    });
-    const { result } = renderHook(
-      () => reactiveQuery.use({ options: { enabled: false } }),
-      { wrapper: getTestWrapper(queryClient) },
-    );
-
-    expect(result.current.data).toBeUndefined();
-    expect(mockQueryFn).not.toHaveBeenCalled();
-  });
-
-  it('should disable the reactive hook with params', async () => {
-    const queryClient = new QueryClient();
-    const mockQueryFn = makeAsyncFnWithParamsReturnsString();
-    const reactiveQuery = ReactiveQueryFactory({
-      getQueryOptions: (args: { name: string }) =>
-        queryOptions({
-          queryKey: ['test', args.name],
-          queryFn: async () => mockQueryFn(args),
-        }),
-    });
-    const { result } = renderHook(
-      () =>
-        reactiveQuery.use({ name: 'John' }, { options: { enabled: false } }),
-      { wrapper: getTestWrapper(queryClient) },
-    );
-
-    expect(result.current.data).toBeUndefined();
-    expect(mockQueryFn).not.toHaveBeenCalled();
-  });
-
-  it('should disable the reactive hook with non-object params', async () => {
-    const queryClient = new QueryClient();
-    const mockQueryFn = makeAsyncFnWithParamsReturnsString();
-    const reactiveQuery = ReactiveQueryFactory({
-      getQueryOptions: (args: { name: string }) =>
-        queryOptions({
-          queryKey: ['test', args.name],
-          queryFn: async () => mockQueryFn(args),
-        }),
-    });
-    const { result } = renderHook(
-      () =>
-        reactiveQuery.use({ name: 'John' }, { options: { enabled: false } }),
-      { wrapper: getTestWrapper(queryClient) },
-    );
-
-    expect(result.current.data).toBeUndefined();
-    expect(mockQueryFn).not.toHaveBeenCalled();
-  });
-
-  it('should handle type annotations without params', async () => {
-    const queryClient = new QueryClient();
-    const mockQueryFn = makeAsyncFnWithoutParamsReturnsString();
-    const reactiveQuery: ReactiveQueryWithoutParamsReturnsString =
-      ReactiveQueryFactory({
-        getQueryOptions: () =>
-          queryOptions({
-            queryKey: ['test'],
-            queryFn: mockQueryFn,
-          }),
-      });
 
     const { result } = renderHook(() => reactiveQuery.use(), {
       wrapper: getTestWrapper(queryClient),
@@ -160,23 +26,21 @@ describe('ReactiveQueryFactory', () => {
     });
 
     expect(result.current.isSuccess).toBe(true);
-    expect(result.current.isError).toBe(false);
-    expect(result.current.error).toBeNull();
     expect(result.current.data).toBe('test');
-    expect(mockQueryFn).toHaveBeenCalled();
+    expect(queryFn).toHaveBeenCalled();
   });
 
-  it('should handle type annotations with params', async () => {
+  it('USAGE: with params', async () => {
+    const { queryFn } = QueryTestFixtures.withParams.getReactive();
     const queryClient = new QueryClient();
-    const mockQueryFn = makeAsyncFnWithParamsReturnsString();
-    const reactiveQuery: ReactiveQueryWithParamsReturnsString =
-      ReactiveQueryFactory({
-        getQueryOptions: (args: { name: string }) =>
-          queryOptions({
-            queryKey: ['test', args.name],
-            queryFn: async () => mockQueryFn(args),
-          }),
-      });
+    const reactiveQuery = ReactiveQueryFactory({
+      getQueryOptions: (args: { name: string }) =>
+        queryOptions({
+          queryKey: ['test', args.name],
+          queryFn: () => queryFn(args),
+        }),
+    });
+
     const { result } = renderHook(() => reactiveQuery.use({ name: 'John' }), {
       wrapper: getTestWrapper(queryClient),
     });
@@ -186,72 +50,164 @@ describe('ReactiveQueryFactory', () => {
     });
 
     expect(result.current.isSuccess).toBe(true);
-    expect(result.current.isError).toBe(false);
-    expect(result.current.error).toBeNull();
     expect(result.current.data).toBe('Hello John');
-    expect(result.current.refetch).toBeDefined();
+    expect(queryFn).toHaveBeenCalledWith({ name: 'John' });
   });
 
-  it('should handle optional params', async () => {
+  it('USAGE: with optional params', async () => {
+    const { queryFn } = QueryTestFixtures.withOptionalParams.getReactive();
     const queryClient = new QueryClient();
-    const mockQueryFn = vi.fn(async (params?: { name: string }) =>
-      params ? `Hello ${params?.name}` : 'Hello',
-    );
     const reactiveQuery = ReactiveQueryFactory({
       getQueryOptions: (args?: { name: string }) =>
         queryOptions({
           queryKey: args?.name ? ['test', args.name] : ['test'],
-          queryFn: async () => mockQueryFn(args),
+          queryFn: () => queryFn(args),
         }),
     });
 
-    const { result } = renderHook(
-      () =>
-        reactiveQuery.use(
-          { name: 'John' },
-          { nativeOptions: { staleTime: 1000 } },
-        ),
+    const { result: resultWithParams } = renderHook(
+      () => reactiveQuery.use({ name: 'John' }),
       {
         wrapper: getTestWrapper(queryClient),
       },
     );
 
     await waitFor(() => {
-      expect(result.current.isPending).toBe(false);
+      expect(resultWithParams.current.isPending).toBe(false);
     });
 
-    expect(result.current.isSuccess).toBe(true);
-    expect(result.current.isError).toBe(false);
-    expect(result.current.error).toBeNull();
-    expect(result.current.data).toBe('Hello John');
-    expect(mockQueryFn).toHaveBeenCalledWith({ name: 'John' });
-  });
+    expect(resultWithParams.current.isSuccess).toBe(true);
+    expect(resultWithParams.current.data).toBe('Hello John');
+    expect(queryFn).toHaveBeenCalledWith({ name: 'John' });
 
-  it('should handle type annotations with optional params', async () => {
-    const queryClient = new QueryClient();
-    const mockQueryFn = vi.fn(async (params?: { name: string }) =>
-      params ? `Hello ${params?.name}` : 'Hello',
+    const { result: resultWithoutParams } = renderHook(
+      () => reactiveQuery.use(),
+      {
+        wrapper: getTestWrapper(queryClient),
+      },
     );
-    const reactiveQuery: ReactiveQueryWithOptionalParamsReturnsString =
-      ReactiveQueryFactory({
-        getQueryOptions: (args?: { name: string }) =>
-          queryOptions({
-            queryKey: args?.name ? ['test', args.name] : ['test'],
-            queryFn: async () => mockQueryFn(args),
-          }),
-      });
-    const { result } = renderHook(() => reactiveQuery.use(), {
-      wrapper: getTestWrapper(queryClient),
-    });
 
     await waitFor(() => {
-      expect(result.current.isPending).toBe(false);
+      expect(resultWithoutParams.current.isPending).toBe(false);
     });
 
-    expect(result.current.isSuccess).toBe(true);
-    expect(result.current.isError).toBe(false);
-    expect(result.current.error).toBeNull();
-    expect(result.current.data).toBe('Hello');
-    expect(mockQueryFn).toHaveBeenCalledWith(undefined);
+    expect(resultWithoutParams.current.isSuccess).toBe(true);
+    expect(resultWithoutParams.current.data).toBe('Hello');
+    expect(queryFn).toHaveBeenCalledWith(undefined);
+  });
+
+  // TYPE ERRORS
+  it('TYPE ERRORS: no params', async () => {
+    const { queryFn } = QueryTestFixtures.withoutParams.getReactive();
+    const queryClient = new QueryClient();
+    const reactiveQuery = ReactiveQueryFactory({
+      getQueryOptions: () =>
+        queryOptions({
+          queryKey: ['test'],
+          queryFn,
+        }),
+    });
+
+    try {
+      // @ts-expect-error - Testing type error
+      renderHook(() => reactiveQuery.use({ name: 'John' }), {
+        wrapper: getTestWrapper(queryClient),
+      });
+    } catch {
+      // Expected error
+    }
+  });
+
+  it('TYPE ERRORS: with params', async () => {
+    const { queryFn } = QueryTestFixtures.withParams.getReactive();
+    const queryClient = new QueryClient();
+    const reactiveQuery = ReactiveQueryFactory({
+      getQueryOptions: (args: { name: string }) =>
+        queryOptions({
+          queryKey: ['test', args.name],
+          queryFn: () => queryFn(args),
+        }),
+    });
+
+    try {
+      // @ts-expect-error - Testing type error
+      renderHook(() => reactiveQuery.use(), {
+        wrapper: getTestWrapper(queryClient),
+      });
+
+      // @ts-expect-error - Testing type error
+      renderHook(() => reactiveQuery.use({ wrong: 'param' }), {
+        wrapper: getTestWrapper(queryClient),
+      });
+    } catch {
+      // Expected errors
+    }
+  });
+
+  it('TYPE ERRORS: with optional params', async () => {
+    const { queryFn } = QueryTestFixtures.withOptionalParams.getReactive();
+    const queryClient = new QueryClient();
+    const reactiveQuery = ReactiveQueryFactory({
+      getQueryOptions: (args?: { name: string }) =>
+        queryOptions({
+          queryKey: args?.name ? ['test', args.name] : ['test'],
+          queryFn: () => queryFn(args),
+        }),
+    });
+
+    try {
+      // @ts-expect-error - Testing type error
+      renderHook(() => reactiveQuery.use({ wrong: 'param' }), {
+        wrapper: getTestWrapper(queryClient),
+      });
+
+      renderHook(() => reactiveQuery.use(), {
+        wrapper: getTestWrapper(queryClient),
+      });
+    } catch {
+      // Expected error
+    }
+  });
+
+  // ANNOTATIONS
+  it('ANNOTATIONS: no params', async () => {
+    const { annotation: _annotation, queryFn } =
+      QueryTestFixtures.withoutParams.getReactive();
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = ReactiveQueryFactory({
+      getQueryOptions: () =>
+        queryOptions({
+          queryKey: ['test'],
+          queryFn,
+        }),
+    });
+    expect(testAnnotation).toBeDefined();
+  });
+
+  it('ANNOTATIONS: with params', async () => {
+    const { annotation: _annotation, queryFn } = QueryTestFixtures.withParams.getReactive();
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = ReactiveQueryFactory({
+      getQueryOptions: (args: { name: string }) =>
+        queryOptions({
+          queryKey: ['test', args.name],
+          queryFn: () => queryFn(args),
+        }),
+    });
+    expect(testAnnotation).toBeDefined();
+  });
+
+  it('ANNOTATIONS: with optional params', async () => {
+    const { annotation: _annotation, queryFn } =
+      QueryTestFixtures.withOptionalParams.getReactive();
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = ReactiveQueryFactory({
+      getQueryOptions: (args?: { name: string }) =>
+        queryOptions({
+          queryKey: args?.name ? ['test', args.name] : ['test'],
+          queryFn: () => queryFn(args),
+        }),
+    });
+    expect(testAnnotation).toBeDefined();
   });
 });

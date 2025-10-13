@@ -3,11 +3,63 @@ import { ReactiveMutation } from './types';
 import { TYPE_MARKERS } from '../../utilities/typeMarkers';
 import { markReactive } from '../../utilities/markReactive';
 
+// Overload for no params
+export function createReactiveMutation<
+  TResult = unknown,
+  TError extends Error = Error,
+  TNativeReactiveOptions = unknown,
+  TNativeInvokeOptions = unknown,
+  TNativeReturnType = unknown,
+>(
+  reactiveFn: ReactiveMutation<
+    void,
+    TResult,
+    TError,
+    TNativeReactiveOptions,
+    TNativeInvokeOptions,
+    TNativeReturnType
+  >['use'],
+): ReactiveMutation<
+  void,
+  TResult,
+  TError,
+  TNativeReactiveOptions,
+  TNativeInvokeOptions,
+  TNativeReturnType
+>;
+
+// Overload for optional params
 export function createReactiveMutation<
   TParams = void,
   TResult = unknown,
   TError extends Error = Error,
-  TNativeOptions = unknown,
+  TNativeReactiveOptions = unknown,
+  TNativeInvokeOptions = unknown,
+  TNativeReturnType = unknown,
+>(
+  reactiveFn: ReactiveMutation<
+    TParams | undefined,
+    TResult,
+    TError,
+    TNativeReactiveOptions,
+    TNativeInvokeOptions,
+    TNativeReturnType
+  >['use'],
+): ReactiveMutation<
+  TParams | undefined,
+  TResult,
+  TError,
+  TNativeReactiveOptions,
+  TNativeInvokeOptions,
+  TNativeReturnType
+>;
+
+// Overload for required params
+export function createReactiveMutation<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+  TNativeReactiveOptions = unknown,
   TNativeInvokeOptions = unknown,
   TNativeReturnType = unknown,
 >(
@@ -15,7 +67,7 @@ export function createReactiveMutation<
     TParams,
     TResult,
     TError,
-    TNativeOptions,
+    TNativeReactiveOptions,
     TNativeInvokeOptions,
     TNativeReturnType
   >['use'],
@@ -23,7 +75,33 @@ export function createReactiveMutation<
   TParams,
   TResult,
   TError,
-  TNativeOptions,
+  TNativeReactiveOptions,
+  TNativeInvokeOptions,
+  TNativeReturnType
+>;
+
+// Implementation
+export function createReactiveMutation<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+  TNativeReactiveOptions = unknown,
+  TNativeInvokeOptions = unknown,
+  TNativeReturnType = unknown,
+>(
+  reactiveFn: ReactiveMutation<
+    TParams,
+    TResult,
+    TError,
+    TNativeReactiveOptions,
+    TNativeInvokeOptions,
+    TNativeReturnType
+  >['use'],
+): ReactiveMutation<
+  TParams,
+  TResult,
+  TError,
+  TNativeReactiveOptions,
   TNativeInvokeOptions,
   TNativeReturnType
 > {
@@ -38,7 +116,7 @@ export function createReactiveMutation<
       TParams,
       TResult,
       TError,
-      TNativeOptions,
+      TNativeReactiveOptions,
       TNativeInvokeOptions,
       TNativeReturnType
     >;

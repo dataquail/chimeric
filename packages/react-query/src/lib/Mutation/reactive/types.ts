@@ -1,7 +1,4 @@
-import {
-  ReactiveMutation as CoreReactiveMutation,
-  DefineReactiveMutation as CoreDefineReactiveMutation,
-} from '@chimeric/core';
+import { ReactiveMutation as CoreReactiveMutation } from '@chimeric/core';
 import {
   UseMutationResult,
   UseMutationOptions,
@@ -23,28 +20,12 @@ export type ReactiveMutation<
 
 export type DefineReactiveMutation<
   T extends (
-    args: Parameters<T>[0],
+    params: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   TError extends Error = Error,
-> = CoreDefineReactiveMutation<
-  T,
-  TError,
-  TanstackMutationReactiveNativeOptions<
-    Parameters<T>[0] extends undefined ? void : Parameters<T>[0],
-    Awaited<ReturnType<T>>,
-    TError
-  >,
-  TanstackMutationReactiveInvokeOptions<
-    Parameters<T>[0] extends undefined ? void : Parameters<T>[0],
-    Awaited<ReturnType<T>>,
-    TError
-  >,
-  TanstackMutationReactiveReturnType<
-    Parameters<T>[0] extends undefined ? void : Parameters<T>[0],
-    Awaited<ReturnType<T>>,
-    TError
-  >
->;
+> = Parameters<T> extends []
+  ? ReactiveMutation<void, Awaited<ReturnType<T>>, TError>
+  : ReactiveMutation<Parameters<T>[0], Awaited<ReturnType<T>>, TError>;
 
 export type TanstackMutationReactiveNativeOptions<
   TParams = void,

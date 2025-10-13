@@ -6,7 +6,7 @@ export const isChimericMutation = <
   TResult = unknown,
   TError extends Error = Error,
 >(
-  maybeChimericMutation: unknown,
+  maybeChimericMutation: ChimericMutation<TParams, TResult, TError>,
 ): maybeChimericMutation is ChimericMutation<TParams, TResult, TError> => {
   return coreIsChimericMutation(maybeChimericMutation);
 };

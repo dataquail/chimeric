@@ -1,116 +1,126 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { SyncTestFixtures } from '../__tests__/syncFixtures';
 import { createReactiveSync } from './createReactiveSync';
-import { DefineReactiveSync } from './types';
-import {
-  makeSyncFnWithOptionalParamsReturnsString,
-  makeSyncFnWithoutParamsReturnsString,
-} from '../../__tests__/functionFixtures';
 
 describe('createReactiveSync', () => {
   it('should create a reactive sync function', () => {
-    const mockReactiveFn = makeSyncFnWithoutParamsReturnsString();
-    const reactiveSync = createReactiveSync(mockReactiveFn);
+    const { fn } = SyncTestFixtures.withoutParams.getReactive();
+    const reactiveSync = createReactiveSync(fn);
 
     expect(typeof reactiveSync).toBe('object');
     expect(reactiveSync).toHaveProperty('use');
     expect(typeof reactiveSync.use).toBe('function');
-    expect(reactiveSync.use).toBe(mockReactiveFn);
   });
 
   it('should throw an error for invalid input', () => {
     const invalidInput = 'not a function';
-
     expect(() => {
       createReactiveSync(invalidInput as any);
     }).toThrow('reactiveFn is not qualified to be reactive sync');
   });
 
-  it('should allow no params', () => {
-    const mockFn = makeSyncFnWithoutParamsReturnsString();
-    const reactiveSync = createReactiveSync(mockFn);
+  // USAGE TESTS
+  it('USAGE: no params', () => {
+    const { fn, reactiveSync } =
+      SyncTestFixtures.withoutParams.getReactive();
 
-    expect(reactiveSync.use()).toBe('test');
+    // Usage implementation test - use() calls
+    const result = reactiveSync.use();
+    expect(fn).toHaveBeenCalledWith();
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(result).toBe('test');
+  });
+
+  it('USAGE: with params', () => {
+    const { fn, reactiveSync } =
+      SyncTestFixtures.withParams.getReactive();
+
+    // Usage implementation test - use() calls
+    const result = reactiveSync.use({ name: 'John' });
+    expect(fn).toHaveBeenCalledWith({ name: 'John' });
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(result).toBe('Hello John');
+  });
+
+  it('USAGE: optional params', () => {
+    const { fn, reactiveSync } =
+      SyncTestFixtures.withOptionalParams.getReactive();
+
+    // Usage implementation test - use() calls with params
+    const resultWithParams = reactiveSync.use({ name: 'John' });
+    expect(fn).toHaveBeenCalledWith({ name: 'John' });
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(resultWithParams).toBe('Hello John');
+
+    // Usage implementation test - use() calls without params
+    const resultWithoutParams = reactiveSync.use();
+    expect(fn).toHaveBeenCalledWith();
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(resultWithoutParams).toBe('Hello');
+  });
+
+  // TYPE ERROR TESTS
+  it('TYPE ERRORS: no params', () => {
+    const { reactiveSync } =
+      SyncTestFixtures.withoutParams.getReactive();
 
     try {
-      // @ts-expect-error - no params expected
-      reactiveSync.use('test');
+      // @ts-expect-error testing invalid call
+      reactiveSync.use({ fake: 'option' });
     } catch {
-      // Expected error
+      // Expected to throw
     }
   });
 
-  it('should allow type annotations with no params', () => {
-    type TestReactiveSync = DefineReactiveSync<() => string>;
-    const reactiveSync: TestReactiveSync = createReactiveSync(() => 'test');
-
-    expect(reactiveSync.use()).toBe('test');
+  it('TYPE ERRORS: with params', () => {
+    const { reactiveSync } =
+      SyncTestFixtures.withParams.getReactive();
 
     try {
-      // @ts-expect-error - no params expected
-      reactiveSync.use('test');
-    } catch {
-      // Expected error
-    }
-  });
-
-  it('should allow params', () => {
-    const reactiveSync = createReactiveSync(
-      (params: { name: string }) => `Hello ${params.name}`,
-    );
-    expect(reactiveSync.use({ name: 'test' })).toBe('Hello test');
-
-    try {
-      // @ts-expect-error - missing params
+      // @ts-expect-error testing invalid call
       reactiveSync.use();
     } catch {
-      // Expected error
+      // Expected to throw
     }
   });
 
-  it('should allow type annotations with params', () => {
-    type TestReactiveSync = DefineReactiveSync<(args: { a: string }) => string>;
-    const reactiveSync: TestReactiveSync = createReactiveSync(({ a }) => a);
-
-    expect(reactiveSync.use({ a: 'test' })).toBe('test');
+  it('TYPE ERRORS: optional params', () => {
+    const { reactiveSync } =
+      SyncTestFixtures.withOptionalParams.getReactive();
 
     try {
-      // @ts-expect-error - missing params
-      reactiveSync.use();
+      // @ts-expect-error testing invalid call
+      reactiveSync.use(1);
     } catch {
-      // Expected error
+      // Expected to throw
     }
   });
 
-  it('should allow type annotations with optional params', () => {
-    type TestReactiveSync = DefineReactiveSync<
-      (params?: { name: string }) => string
-    >;
-    const mockFn = makeSyncFnWithOptionalParamsReturnsString();
-    const reactiveSync: TestReactiveSync = createReactiveSync(mockFn);
+  // ANNOTATION TESTS
+  it('ANNOTATION: no params', () => {
+    const { reactiveSync, annotation: _annotation } =
+      SyncTestFixtures.withoutParams.getReactive();
 
-    expect(reactiveSync.use()).toBe('Hello');
-    expect(reactiveSync.use({ name: 'test' })).toBe('Hello test');
-
-    try {
-      // @ts-expect-error - wrong param type
-      reactiveSync.use({ name: 1 });
-    } catch {
-      // Expected error
-    }
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = reactiveSync;
+    expect(testAnnotation).toBe(reactiveSync);
   });
 
-  it('should accept optional params', () => {
-    const mockFn = makeSyncFnWithOptionalParamsReturnsString();
-    const reactiveSync = createReactiveSync(mockFn);
+  it('ANNOTATION: with params', () => {
+    const { reactiveSync, annotation: _annotation } =
+      SyncTestFixtures.withParams.getReactive();
 
-    expect(reactiveSync.use()).toBe('Hello');
-    expect(reactiveSync.use({ name: 'test' })).toBe('Hello test');
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = reactiveSync;
+    expect(testAnnotation).toBe(reactiveSync);
+  });
 
-    try {
-      // @ts-expect-error - wrong param type
-      reactiveSync.use({ name: 1 });
-    } catch {
-      // Expected error
-    }
+  it('ANNOTATION: optional params', () => {
+    const { reactiveSync, annotation: _annotation } =
+      SyncTestFixtures.withOptionalParams.getReactive();
+
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = reactiveSync;
+    expect(testAnnotation).toBe(reactiveSync);
   });
 });

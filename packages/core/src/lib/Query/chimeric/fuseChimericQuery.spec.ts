@@ -1,170 +1,314 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  ChimericQueryWithOptionalParamsReturnsString,
-  ChimericQueryWithoutParamsReturnsString,
-  ChimericQueryWithParamsReturnsString,
-  makeIdiomaticQueryWithOptionalParamsReturnsString,
-  makeIdiomaticQueryWithoutParamsReturnsString,
-  makeIdiomaticQueryWithParamsReturnsString,
-  makeReactiveQueryWithOptionalParamsReturnsString,
-  makeReactiveQueryWithoutParamsReturnsString,
-  makeReactiveQueryWithParamsReturnsString,
-} from '../__tests__/queryFixtures';
-import { IdiomaticQuery } from '../idiomatic/types';
+import { QueryTestFixtures } from '../__tests__/queryFixtures';
 import { fuseChimericQuery } from './fuseChimericQuery';
 
 describe('fuseChimericQuery', () => {
-  it('should invoke the idiomatic async function', async () => {
-    const mockIdiomaticQuery = makeIdiomaticQueryWithoutParamsReturnsString();
-    const mockReactiveQuery = makeReactiveQueryWithoutParamsReturnsString();
-    const testChimericQuery = fuseChimericQuery({
-      idiomatic: mockIdiomaticQuery,
-      reactive: mockReactiveQuery,
-    });
-    const result = await testChimericQuery();
-    expect(result).toEqual('test');
-    expect(mockIdiomaticQuery).toHaveBeenCalled();
-    expect(mockReactiveQuery.use).not.toHaveBeenCalled();
-  });
-
-  it('should invoke the idiomatic function with params', async () => {
-    const mockIdiomaticQuery = makeIdiomaticQueryWithParamsReturnsString();
-    const mockReactiveQuery = makeReactiveQueryWithParamsReturnsString();
-    const testChimericQuery = fuseChimericQuery({
-      idiomatic: mockIdiomaticQuery,
-      reactive: mockReactiveQuery,
-    });
-    const result = await testChimericQuery({ name: 'John' });
-    expect(result).toEqual('Hello John');
-    expect(mockIdiomaticQuery).toHaveBeenCalledWith({ name: 'John' });
-    expect(mockReactiveQuery.use).not.toHaveBeenCalled();
-  });
-
-  it('should invoke the reactive function', async () => {
-    const mockIdiomaticQuery = makeIdiomaticQueryWithoutParamsReturnsString();
-    const mockReactiveQuery = makeReactiveQueryWithoutParamsReturnsString();
-    const testChimericQuery = fuseChimericQuery({
-      idiomatic: mockIdiomaticQuery,
-      reactive: mockReactiveQuery,
-    });
-    const result = testChimericQuery.use();
-    expect(result.data).toEqual('test');
-    expect(mockIdiomaticQuery).not.toHaveBeenCalled();
-    expect(mockReactiveQuery.use).toHaveBeenCalled();
-  });
-
-  it('should invoke the reactive function with params', async () => {
-    const mockIdiomaticQuery = makeIdiomaticQueryWithParamsReturnsString();
-    const mockReactiveQuery = makeReactiveQueryWithParamsReturnsString();
-    const testChimericQuery = fuseChimericQuery({
-      idiomatic: mockIdiomaticQuery,
-      reactive: mockReactiveQuery,
-    });
-    const result = testChimericQuery.use({ name: 'John' });
-    expect(result.data).toEqual('Hello John');
-    expect(mockIdiomaticQuery).not.toHaveBeenCalled();
-    expect(mockReactiveQuery.use).toHaveBeenCalled();
-  });
-
-  it('should invoke the reactive call function', async () => {
-    const mockIdiomaticQuery = makeIdiomaticQueryWithParamsReturnsString();
-    const mockReactiveQuery = makeReactiveQueryWithParamsReturnsString();
-    const testChimericQuery = fuseChimericQuery({
-      idiomatic: mockIdiomaticQuery,
-      reactive: mockReactiveQuery,
-    });
-    const result = testChimericQuery.use({ name: 'John' });
-    await result.refetch();
-    expect(mockIdiomaticQuery).not.toHaveBeenCalled();
-    expect(mockReactiveQuery.use).toHaveBeenCalled();
-    expect(result.refetch).toHaveBeenCalled();
-  });
-
-  it('should throw an error for invalid inputs', () => {
-    const mockIdiomaticQuery = vi.fn(async () => 'test') as IdiomaticQuery<
-      undefined,
-      string
-    >;
-    const invalidReactive = {
-      notUse: vi.fn(),
-    };
-
-    expect(() => {
-      fuseChimericQuery({
-        idiomatic: mockIdiomaticQuery,
-        reactive: invalidReactive as any,
-      });
-    });
-  });
-
-  it('should handle type annotations without params', async () => {
-    const mockIdiomaticQuery = makeIdiomaticQueryWithoutParamsReturnsString();
-    const mockReactiveQuery = makeReactiveQueryWithoutParamsReturnsString();
-    const testChimericQuery: ChimericQueryWithoutParamsReturnsString =
-      fuseChimericQuery({
-        idiomatic: mockIdiomaticQuery,
-        reactive: mockReactiveQuery,
-      });
-    const result = await testChimericQuery();
-    expect(result).toEqual('test');
-  });
-
-  it('should handle type annotations with params', async () => {
-    const mockIdiomaticQuery = makeIdiomaticQueryWithParamsReturnsString();
-    const mockReactiveQuery = makeReactiveQueryWithParamsReturnsString();
-    const testChimericQuery: ChimericQueryWithParamsReturnsString =
-      fuseChimericQuery({
-        idiomatic: mockIdiomaticQuery,
-        reactive: mockReactiveQuery,
-      });
-    const result = await testChimericQuery({ name: 'John' });
-    expect(result).toEqual('Hello John');
-  });
-
-  it('should handle optional Params', async () => {
-    const mockIdiomaticQuery =
-      makeIdiomaticQueryWithOptionalParamsReturnsString();
-    const mockReactiveQuery =
-      makeReactiveQueryWithOptionalParamsReturnsString();
-    const testChimericQuery = fuseChimericQuery({
-      idiomatic: mockIdiomaticQuery,
-      reactive: mockReactiveQuery,
+  // USAGE TESTS
+  it('USAGE: no params', async () => {
+    const {
+      idiomaticQuery,
+      idiomaticFn,
+      reactiveQuery,
+      reactiveFn,
+      refetchFn,
+    } = QueryTestFixtures.withoutParams.getChimeric();
+    const chimericQuery = fuseChimericQuery({
+      idiomatic: idiomaticQuery,
+      reactive: reactiveQuery,
     });
 
-    const result = await testChimericQuery();
-    expect(result).toEqual('Hello');
+    // Test idiomatic interface - call without options
+    await expect(chimericQuery()).resolves.toBe('test');
+    expect(idiomaticFn).toHaveBeenCalledWith();
+    expect(idiomaticFn).toHaveBeenCalledTimes(1);
 
-    const resultWithParams = await testChimericQuery({ name: 'John' });
-    expect(resultWithParams).toEqual('Hello John');
+    // Test idiomatic interface - call with options
+    await expect(
+      chimericQuery({
+        options: undefined,
+        nativeOptions: undefined,
+      }),
+    ).resolves.toBe('test');
+    expect(idiomaticFn).toHaveBeenCalledWith({
+      options: undefined,
+      nativeOptions: undefined,
+    });
+    expect(idiomaticFn).toHaveBeenCalledTimes(2);
 
-    const hookResult = testChimericQuery.use();
-    expect(hookResult.data).toEqual('Hello');
+    // Test reactive interface - use without options
+    const reactiveResultWithoutOptions = chimericQuery.use();
+    expect(reactiveFn).toHaveBeenCalledWith();
+    expect(reactiveFn).toHaveBeenCalledTimes(1);
 
-    const hookResultWithParams = testChimericQuery.use({ name: 'John' });
-    expect(hookResultWithParams.data).toEqual('Hello John');
+    // Test reactive interface - use with options
+    const resultWithOptions = chimericQuery.use({
+      options: undefined,
+      nativeOptions: undefined,
+    });
+    expect(reactiveFn).toHaveBeenCalledWith({
+      options: undefined,
+      nativeOptions: undefined,
+    });
+    expect(reactiveFn).toHaveBeenCalledTimes(2);
+
+    // Test reactive refetch - without options
+    await expect(resultWithOptions.refetch()).resolves.toBe('test');
+    expect(refetchFn).toHaveBeenCalledWith();
+    expect(refetchFn).toHaveBeenCalledTimes(1);
+
+    // Test reactive refetch - with options
+    await expect(reactiveResultWithoutOptions.refetch()).resolves.toBe('test');
+    expect(refetchFn).toHaveBeenCalledWith();
+    expect(refetchFn).toHaveBeenCalledTimes(2);
   });
 
-  it('should handle type annotations with optional params', async () => {
-    const mockIdiomaticQuery =
-      makeIdiomaticQueryWithOptionalParamsReturnsString();
-    const mockReactiveQuery =
-      makeReactiveQueryWithOptionalParamsReturnsString();
-    const testChimericQuery: ChimericQueryWithOptionalParamsReturnsString =
-      fuseChimericQuery({
-        idiomatic: mockIdiomaticQuery,
-        reactive: mockReactiveQuery,
-      });
+  it('USAGE: with params', async () => {
+    const {
+      idiomaticQuery,
+      idiomaticFn,
+      reactiveQuery,
+      reactiveFn,
+      refetchFn,
+    } = QueryTestFixtures.withParams.getChimeric();
+    const chimericQuery = fuseChimericQuery({
+      idiomatic: idiomaticQuery,
+      reactive: reactiveQuery,
+    });
 
-    const result = await testChimericQuery();
-    expect(result).toEqual('Hello');
+    // Test idiomatic interface - call without options
+    await expect(chimericQuery({ name: 'John' })).resolves.toBe('Hello John');
+    expect(idiomaticFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(idiomaticFn).toHaveBeenCalledTimes(1);
 
-    const resultWithParams = await testChimericQuery({ name: 'John' });
-    expect(resultWithParams).toEqual('Hello John');
+    // Test idiomatic interface - call with options
+    await expect(
+      chimericQuery(
+        { name: 'John' },
+        {
+          options: undefined,
+          nativeOptions: undefined,
+        },
+      ),
+    ).resolves.toBe('Hello John');
+    expect(idiomaticFn).toHaveBeenCalledWith(
+      { name: 'John' },
+      {
+        options: undefined,
+        nativeOptions: undefined,
+      },
+    );
+    expect(idiomaticFn).toHaveBeenCalledTimes(2);
 
-    const hookResult = testChimericQuery.use();
-    expect(hookResult.data).toEqual('Hello');
+    // Test reactive interface - use without options
+    const reactiveResultWithoutOptions = chimericQuery.use({ name: 'John' });
+    expect(reactiveFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(reactiveFn).toHaveBeenCalledTimes(1);
 
-    const hookResultWithParams = testChimericQuery.use({ name: 'John' });
-    expect(hookResultWithParams.data).toEqual('Hello John');
+    // Test reactive interface - use with options
+    const resultWithOptions = chimericQuery.use(
+      { name: 'John' },
+      {
+        options: undefined,
+        nativeOptions: undefined,
+      },
+    );
+    expect(reactiveFn).toHaveBeenCalledWith(
+      { name: 'John' },
+      {
+        options: undefined,
+        nativeOptions: undefined,
+      },
+    );
+    expect(reactiveFn).toHaveBeenCalledTimes(2);
+
+    // Test reactive refetch
+    await expect(resultWithOptions.refetch()).resolves.toBe('Hello John');
+    expect(refetchFn).toHaveBeenCalledWith();
+    expect(refetchFn).toHaveBeenCalledTimes(1);
+
+    await expect(reactiveResultWithoutOptions.refetch()).resolves.toBe(
+      'Hello John',
+    );
+    expect(refetchFn).toHaveBeenCalledWith();
+    expect(refetchFn).toHaveBeenCalledTimes(2);
+  });
+
+  it('USAGE: optional params', async () => {
+    const { idiomaticQuery, idiomaticFn, reactiveQuery, reactiveFn } =
+      QueryTestFixtures.withOptionalParams.getChimeric();
+    const chimericQuery = fuseChimericQuery({
+      idiomatic: idiomaticQuery,
+      reactive: reactiveQuery,
+    });
+
+    // Test idiomatic interface - call with params without options
+    await expect(chimericQuery({ name: 'John' })).resolves.toBe('Hello John');
+    expect(idiomaticFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(idiomaticFn).toHaveBeenCalledTimes(1);
+
+    // Test idiomatic interface - call with params with options
+    await expect(
+      chimericQuery(
+        { name: 'John' },
+        {
+          options: undefined,
+          nativeOptions: undefined,
+        },
+      ),
+    ).resolves.toBe('Hello John');
+    expect(idiomaticFn).toHaveBeenCalledWith(
+      { name: 'John' },
+      {
+        options: undefined,
+        nativeOptions: undefined,
+      },
+    );
+    expect(idiomaticFn).toHaveBeenCalledTimes(2);
+
+    // Test idiomatic interface - call without params without options
+    await expect(chimericQuery()).resolves.toBe('Hello');
+    expect(idiomaticFn).toHaveBeenCalledWith();
+    expect(idiomaticFn).toHaveBeenCalledTimes(3);
+
+    // Test idiomatic interface - call without params with options
+    await expect(
+      chimericQuery(undefined, {
+        options: undefined,
+        nativeOptions: undefined,
+      }),
+    ).resolves.toBe('Hello');
+    expect(idiomaticFn).toHaveBeenCalledWith(undefined, {
+      options: undefined,
+      nativeOptions: undefined,
+    });
+    expect(idiomaticFn).toHaveBeenCalledTimes(4);
+
+    // Test reactive interface - use without options
+    const reactiveResultWithoutOptions = chimericQuery.use();
+    expect(reactiveFn).toHaveBeenCalledWith();
+    expect(reactiveFn).toHaveBeenCalledTimes(1);
+
+    // Test reactive interface - use with options
+    chimericQuery.use(undefined, {
+      options: undefined,
+      nativeOptions: undefined,
+    });
+    expect(reactiveFn).toHaveBeenCalledWith(undefined, {
+      options: undefined,
+      nativeOptions: undefined,
+    });
+    expect(reactiveFn).toHaveBeenCalledTimes(2);
+
+    // Test reactive interface - use with params
+    const resultWithParams = chimericQuery.use({ name: 'John' });
+    expect(reactiveFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(reactiveFn).toHaveBeenCalledTimes(3);
+
+    // Test reactive refetch - with params (each result has its own refetch)
+    await expect(resultWithParams.refetch()).resolves.toBe('Hello John');
+    expect(resultWithParams.refetch).toHaveBeenCalledTimes(1);
+
+    // Test reactive refetch - without params
+    await expect(reactiveResultWithoutOptions.refetch()).resolves.toBe('Hello');
+    expect(reactiveResultWithoutOptions.refetch).toHaveBeenCalledTimes(1);
+  });
+
+  // TYPE ERROR TESTS
+  it('TYPE ERRORS: no params', async () => {
+    const { idiomaticQuery, reactiveQuery } =
+      QueryTestFixtures.withoutParams.getChimeric();
+    const chimericQuery = fuseChimericQuery({
+      idiomatic: idiomaticQuery,
+      reactive: reactiveQuery,
+    });
+
+    try {
+      // @ts-expect-error testing invalid call
+      await chimericQuery({ name: 'John' });
+
+      const result = chimericQuery.use();
+      // @ts-expect-error testing invalid call
+      result.data.nonExistent();
+    } catch {
+      // Expected to throw
+    }
+  });
+
+  it('TYPE ERRORS: with params', async () => {
+    const { idiomaticQuery, reactiveQuery } =
+      QueryTestFixtures.withParams.getChimeric();
+    const chimericQuery = fuseChimericQuery({
+      idiomatic: idiomaticQuery,
+      reactive: reactiveQuery,
+    });
+
+    try {
+      // @ts-expect-error testing invalid call
+      await chimericQuery();
+
+      // @ts-expect-error testing invalid call
+      chimericQuery.use();
+    } catch {
+      // Expected to throw
+    }
+  });
+
+  it('TYPE ERRORS: optional params', async () => {
+    const { idiomaticQuery, reactiveQuery } =
+      QueryTestFixtures.withOptionalParams.getChimeric();
+    const chimericQuery = fuseChimericQuery({
+      idiomatic: idiomaticQuery,
+      reactive: reactiveQuery,
+    });
+
+    try {
+      // @ts-expect-error testing invalid call
+      await chimericQuery(1);
+
+      // @ts-expect-error testing invalid call
+      chimericQuery.use(1);
+    } catch {
+      // Expected to throw
+    }
+  });
+
+  // ANNOTATION TESTS
+  it('ANNOTATION: no params', async () => {
+    const { idiomaticQuery, reactiveQuery, annotation: _annotation } =
+      QueryTestFixtures.withoutParams.getChimeric();
+    const chimericQuery = fuseChimericQuery({
+      idiomatic: idiomaticQuery,
+      reactive: reactiveQuery,
+    });
+
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = chimericQuery;
+    expect(testAnnotation).toBe(chimericQuery);
+  });
+
+  it('ANNOTATION: with params', async () => {
+    const { idiomaticQuery, reactiveQuery, annotation: _annotation } =
+      QueryTestFixtures.withParams.getChimeric();
+    const chimericQuery = fuseChimericQuery({
+      idiomatic: idiomaticQuery,
+      reactive: reactiveQuery,
+    });
+
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = chimericQuery;
+    expect(testAnnotation).toBe(chimericQuery);
+  });
+
+  it('ANNOTATION: optional params', async () => {
+    const { idiomaticQuery, reactiveQuery, annotation: _annotation } =
+      QueryTestFixtures.withOptionalParams.getChimeric();
+    const chimericQuery = fuseChimericQuery({
+      idiomatic: idiomaticQuery,
+      reactive: reactiveQuery,
+    });
+
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = chimericQuery;
+    expect(testAnnotation).toBe(chimericQuery);
   });
 });

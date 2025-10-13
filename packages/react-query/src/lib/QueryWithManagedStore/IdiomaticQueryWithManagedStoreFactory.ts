@@ -15,8 +15,8 @@ import { IdiomaticQueryOptions } from 'node_modules/@chimeric/core/src/lib/Query
 
 // Required params (must come first - most specific)
 export function IdiomaticQueryWithManagedStoreFactory<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(config: {
@@ -29,8 +29,8 @@ export function IdiomaticQueryWithManagedStoreFactory<
 
 // Optional params (must come before no params)
 export function IdiomaticQueryWithManagedStoreFactory<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(config: {
@@ -43,7 +43,7 @@ export function IdiomaticQueryWithManagedStoreFactory<
 
 // No params (least specific - must come last)
 export function IdiomaticQueryWithManagedStoreFactory<
-  TResult,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(config: {

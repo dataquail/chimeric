@@ -1,18 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createIdiomaticMutation } from './createIdiomaticMutation';
-import { makeAsyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
-import {
-  makeMutationFnWithoutParamsReturnsString,
-  makeMutationFnWithParamsReturnsObj,
-  makeMutationFnWithParamsReturnsString,
-} from '../__tests__/mutationFixtures';
+import { MutationTestFixtures } from '../__tests__/mutationFixtures';
 
 describe('createIdiomaticMutation', () => {
   it('should create an idiomatic mutation function', () => {
-    const asyncFn = makeAsyncFnWithoutParamsReturnsString();
-    const idiomaticMutation = createIdiomaticMutation(asyncFn);
+    const { fn } = MutationTestFixtures.withoutParams.getIdiomatic();
+    const idiomaticMutation = createIdiomaticMutation(fn);
     expect(typeof idiomaticMutation).toBe('function');
-    expect(idiomaticMutation).toBe(asyncFn);
+    expect(idiomaticMutation).toBe(fn);
   });
 
   it('should throw an error for invalid input', () => {
@@ -22,31 +17,145 @@ describe('createIdiomaticMutation', () => {
     }).toThrow('idiomaticFn is not qualified to be idiomatic mutation');
   });
 
-  it('should invoke the idiomatic mutation function without params', async () => {
-    const idiomaticMutation = createIdiomaticMutation(
-      makeMutationFnWithoutParamsReturnsString(),
-    );
-    const result = await idiomaticMutation();
-    expect(result).toBe('test');
-    expect(idiomaticMutation).toHaveBeenCalled();
+  // USAGE TESTS
+  it('USAGE: no params', async () => {
+    const { fn, idiomaticMutation } =
+      MutationTestFixtures.withoutParams.getIdiomatic();
+    // Usage implementation test
+    const resultWithoutOptions = await idiomaticMutation();
+    expect(idiomaticMutation).toHaveBeenCalledWith();
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(resultWithoutOptions).toBe('test');
+    const resultWithOptions = await idiomaticMutation({
+      options: undefined,
+      nativeOptions: undefined,
+    });
+    expect(idiomaticMutation).toHaveBeenCalledWith({
+      options: undefined,
+      nativeOptions: undefined,
+    });
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(resultWithOptions).toBe('test');
   });
 
-  it('should invoke the idiomatic mutation function with params', async () => {
-    const idiomaticMutation = createIdiomaticMutation(
-      makeMutationFnWithParamsReturnsString(),
+  it('USAGE: with params', async () => {
+    const { fn, idiomaticMutation } =
+      MutationTestFixtures.withParams.getIdiomatic();
+    // Usage implementation test
+    const resultWithoutOptions = await idiomaticMutation({ name: 'John' });
+    expect(idiomaticMutation).toHaveBeenCalledWith({ name: 'John' });
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(resultWithoutOptions).toBe('Hello John');
+    const resultWithOptions = await idiomaticMutation(
+      { name: 'John' },
+      { options: undefined, nativeOptions: undefined },
     );
-    const result = await idiomaticMutation({ name: 'John' });
-    expect(result).toBe('Hello John');
-    expect(idiomaticMutation).toHaveBeenCalledWith({
+    expect(idiomaticMutation).toHaveBeenCalledWith(
+      { name: 'John' },
+      { options: undefined, nativeOptions: undefined },
+    );
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(resultWithOptions).toBe('Hello John');
+  });
+
+  it('USAGE: optional params', async () => {
+    const { fn, idiomaticMutation } =
+      MutationTestFixtures.withOptionalParams.getIdiomatic();
+    // Usage implementation test
+    const resultWithParamsWithoutOptions = await idiomaticMutation({
       name: 'John',
     });
+    expect(idiomaticMutation).toHaveBeenCalledWith({ name: 'John' });
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(resultWithParamsWithoutOptions).toBe('Hello John');
+    const resultWithParamsWithOptions = await idiomaticMutation(
+      { name: 'John' },
+      { options: undefined, nativeOptions: undefined },
+    );
+    expect(idiomaticMutation).toHaveBeenCalledWith(
+      { name: 'John' },
+      { options: undefined, nativeOptions: undefined },
+    );
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(resultWithParamsWithOptions).toBe('Hello John');
+    const resultWithoutParamsWithoutOptions = await idiomaticMutation();
+    expect(idiomaticMutation).toHaveBeenCalledWith();
+    expect(fn).toHaveBeenCalledTimes(3);
+    expect(resultWithoutParamsWithoutOptions).toBe('Hello');
+    const resultWithoutParamsWithOptions = await idiomaticMutation(undefined, {
+      options: undefined,
+      nativeOptions: undefined,
+    });
+    expect(idiomaticMutation).toHaveBeenCalledWith(undefined, {
+      options: undefined,
+      nativeOptions: undefined,
+    });
+    expect(fn).toHaveBeenCalledTimes(4);
+    expect(resultWithoutParamsWithOptions).toBe('Hello');
   });
 
-  it('should should return the correct type', async () => {
-    const idiomaticMutation = createIdiomaticMutation(
-      makeMutationFnWithParamsReturnsObj(),
-    );
-    const result = await idiomaticMutation({ name: 'John' });
-    expect(result.name).toBe('John');
+  // TYPE ERROR TESTS
+  it('TYPE ERRORS: no params', async () => {
+    const { idiomaticMutation } =
+      MutationTestFixtures.withoutParams.getIdiomatic();
+
+    try {
+      // @ts-expect-error testing invalid call
+      await idiomaticMutation({ name: 'John' });
+    } catch {
+      // Expected to throw
+    }
+  });
+
+  it('TYPE ERRORS: with params', async () => {
+    const { idiomaticMutation } =
+      MutationTestFixtures.withParams.getIdiomatic();
+
+    try {
+      // @ts-expect-error testing invalid call
+      await idiomaticMutation();
+    } catch {
+      // Expected to throw
+    }
+  });
+
+  it('TYPE ERRORS: optional params', async () => {
+    const { idiomaticMutation } =
+      MutationTestFixtures.withOptionalParams.getIdiomatic();
+
+    try {
+      // @ts-expect-error testing invalid call
+      await idiomaticMutation(1);
+    } catch {
+      // Expected to throw
+    }
+  });
+
+  // ANNOTATION TESTS
+  it('ANNOTATION: no params', async () => {
+    const { idiomaticMutation, annotation: _annotation } =
+      MutationTestFixtures.withoutParams.getIdiomatic();
+
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = idiomaticMutation;
+    expect(testAnnotation).toBe(idiomaticMutation);
+  });
+
+  it('ANNOTATION: with params', async () => {
+    const { idiomaticMutation, annotation: _annotation } =
+      MutationTestFixtures.withParams.getIdiomatic();
+
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = idiomaticMutation;
+    expect(testAnnotation).toBe(idiomaticMutation);
+  });
+
+  it('ANNOTATION: optional params', async () => {
+    const { idiomaticMutation, annotation: _annotation } =
+      MutationTestFixtures.withOptionalParams.getIdiomatic();
+
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = idiomaticMutation;
+    expect(testAnnotation).toBe(idiomaticMutation);
   });
 });

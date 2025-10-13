@@ -26,7 +26,8 @@ export const CreateOneMethodImpl = (
   appStore: AppStore,
   queryClient: QueryClient,
 ): IActiveTodoService['createOne'] => {
-  return ChimericMutationFactory(queryClient, {
+  return ChimericMutationFactory({
+    queryClient,
     mutationFn: createActiveTodo,
     onSuccess: async () => {
       await queryClient.invalidateQueries({

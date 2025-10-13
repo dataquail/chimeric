@@ -26,7 +26,8 @@ export const uncompleteActiveTodo: IUncompleteActiveTodo = async (args: {
 };
 
 export const UncompleteOneMethodImpl: IActiveTodoService['uncompleteOne'] =
-  ChimericMutationFactory(queryClient, {
+  ChimericMutationFactory({
+    queryClient,
     mutationFn: async (args: { id: string }) => {
       await uncompleteActiveTodo(args);
       return args;

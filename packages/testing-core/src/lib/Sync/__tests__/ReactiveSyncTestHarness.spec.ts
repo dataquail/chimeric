@@ -1,70 +1,112 @@
-import { createReactiveSync } from '@chimeric/core';
-import {
-  makeSyncFnWithOptionalParamsReturnsString,
-  makeSyncFnWithoutParamsReturnsString,
-  makeSyncFnWithParamsReturnsString,
-} from '../../__tests__/functionFixtures';
+import { SyncTestFixtures } from '../../__tests__/syncFixtures';
 import { ReactiveSyncTestHarness } from '../ReactiveSyncTestHarness';
 
 describe('ReactiveSyncTestHarness', () => {
-  it('should handle no params', async () => {
-    const mockReactiveSync = createReactiveSync(
-      makeSyncFnWithoutParamsReturnsString(),
-    );
-    ReactiveSyncTestHarness({
-      reactiveSync: mockReactiveSync,
+  // USAGE
+  it('USAGE: no params', () => {
+    const { reactiveSync } = SyncTestFixtures.withoutParams.getReactive();
+    const testHarness = ReactiveSyncTestHarness({
+      reactiveSync,
     });
 
-    expect(mockReactiveSync.use).toHaveBeenCalledTimes(1);
+    expect(testHarness.result.current).toBe('test');
+    expect(reactiveSync.use).toHaveBeenCalledTimes(1);
   });
 
-  it('should handle params', async () => {
-    const mockReactiveSync = createReactiveSync(
-      makeSyncFnWithParamsReturnsString(),
-    );
+  it('USAGE: with params', () => {
+    const { reactiveSync } = SyncTestFixtures.withParams.getReactive();
     const testHarness = ReactiveSyncTestHarness({
-      reactiveSync: mockReactiveSync,
+      reactiveSync,
       params: { name: 'John' },
     });
 
     expect(testHarness.result.current).toBe('Hello John');
-    expect(mockReactiveSync.use).toHaveBeenCalledTimes(1);
-    expect(mockReactiveSync.use).toHaveBeenCalledWith({
-      name: 'John',
-    });
+    expect(reactiveSync.use).toHaveBeenCalledTimes(1);
+    expect(reactiveSync.use).toHaveBeenCalledWith({ name: 'John' });
   });
 
-  it('should handle optional params', async () => {
-    const mockReactiveSync = createReactiveSync(
-      makeSyncFnWithOptionalParamsReturnsString(),
-    );
-    const testHarness = ReactiveSyncTestHarness({
-      reactiveSync: mockReactiveSync,
+  it('USAGE: with optional params', () => {
+    const { reactiveSync } = SyncTestFixtures.withOptionalParams.getReactive();
+
+    const testHarnessWithParams = ReactiveSyncTestHarness({
+      reactiveSync,
       params: { name: 'John' },
     });
 
-    expect(testHarness.result.current).toBe('Hello John');
-    expect(mockReactiveSync.use).toHaveBeenCalledTimes(1);
-    expect(mockReactiveSync.use).toHaveBeenCalledWith({
-      name: 'John',
-    });
+    expect(testHarnessWithParams.result.current).toBe('Hello John');
+    expect(reactiveSync.use).toHaveBeenCalledTimes(1);
+    expect(reactiveSync.use).toHaveBeenCalledWith({ name: 'John' });
 
     const testHarnessNoParams = ReactiveSyncTestHarness({
-      reactiveSync: mockReactiveSync,
+      reactiveSync,
     });
 
     expect(testHarnessNoParams.result.current).toBe('Hello');
-    expect(mockReactiveSync.use).toHaveBeenCalledTimes(2);
-    expect(mockReactiveSync.use).toHaveBeenCalledWith(undefined);
+    expect(reactiveSync.use).toHaveBeenCalledTimes(2);
+    expect(reactiveSync.use).toHaveBeenCalledWith(undefined);
+  });
+
+  // TYPE ERRORS
+  it('TYPE ERRORS: no params', () => {
+    const { reactiveSync } = SyncTestFixtures.withoutParams.getReactive();
 
     try {
-      // @ts-expect-error Testing invalid usage
       ReactiveSyncTestHarness({
-        reactiveSync: mockReactiveSync,
-        params: 1,
+        reactiveSync,
+        // @ts-expect-error - Testing type error: params should not be provided for sync without params
+        params: { name: 'John' },
       });
     } catch {
       // Expected error
+    }
+  });
+
+  it('TYPE ERRORS: with params', () => {
+    const { reactiveSync } = SyncTestFixtures.withParams.getReactive();
+
+    try {
+      // @ts-expect-error - Testing type error: params are required for sync with params
+      ReactiveSyncTestHarness({
+        reactiveSync,
+      });
+
+      ReactiveSyncTestHarness({
+        // @ts-expect-error - Testing type error: wrong param shape provided
+        reactiveSync,
+        params: { wrong: 'param' },
+      });
+
+      ReactiveSyncTestHarness({
+        // @ts-expect-error - Testing type error: params must be an object not a number
+        reactiveSync,
+        params: 1,
+      });
+    } catch {
+      // Expected errors
+    }
+  });
+
+  it('TYPE ERRORS: with optional params', () => {
+    const { reactiveSync } = SyncTestFixtures.withOptionalParams.getReactive();
+
+    try {
+      // @ts-expect-error - Testing type error: wrong param shape provided
+      ReactiveSyncTestHarness({
+        reactiveSync,
+        params: { wrong: 'param' },
+      });
+
+      // @ts-expect-error - Testing type error: params must be an object not a number
+      ReactiveSyncTestHarness({
+        reactiveSync,
+        params: 1,
+      });
+
+      ReactiveSyncTestHarness({
+        reactiveSync,
+      });
+    } catch {
+      // Expected errors
     }
   });
 });

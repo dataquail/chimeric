@@ -26,7 +26,8 @@ export const completeActiveTodo: ICompleteActiveTodo = async (args: {
 };
 
 export const CompleteOneMethodImpl: IActiveTodoService['completeOne'] =
-  ChimericMutationFactory(queryClient, {
+  ChimericMutationFactory({
+    queryClient,
     mutationFn: async (args: { id: string }) => {
       await completeActiveTodo(args);
     },

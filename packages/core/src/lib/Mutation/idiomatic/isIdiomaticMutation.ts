@@ -8,7 +8,7 @@ export const isIdiomaticMutation = <
   TResult = unknown,
   TNativeOptions = unknown,
 >(
-  maybeIdiomaticMutation: unknown,
+  maybeIdiomaticMutation: IdiomaticMutation<TParams, TResult, TNativeOptions>,
 ): maybeIdiomaticMutation is IdiomaticMutation<
   TParams,
   TResult,
@@ -16,9 +16,6 @@ export const isIdiomaticMutation = <
 > => {
   return (
     isEligibleIdiomatic(maybeIdiomaticMutation) &&
-    hasIdiomaticMarker(
-      maybeIdiomaticMutation,
-      TYPE_MARKERS.IDIOMATIC_MUTATION,
-    )
+    hasIdiomaticMarker(maybeIdiomaticMutation, TYPE_MARKERS.IDIOMATIC_MUTATION)
   );
 };

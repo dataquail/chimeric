@@ -12,7 +12,7 @@ import {
   ChimericQueryTestHarness as CoreChimericQueryTestHarness,
 } from '@chimeric/testing-core';
 
-// Required params (must come first - most specific)
+// Required params
 export function ChimericQueryTestHarness<
   TParams = void,
   TResult = unknown,
@@ -38,8 +38,7 @@ export function ChimericQueryTestHarness<
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
 }): ChimericQueryTestHarnessReturnType<TResult, TError, TMethod>;
 
-// Optional params (must come before no params)
-
+// Optional params
 export function ChimericQueryTestHarness<
   TParams = void,
   TResult = unknown,
@@ -65,7 +64,7 @@ export function ChimericQueryTestHarness<
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
 }): ChimericQueryTestHarnessReturnType<TResult, TError, TMethod>;
 
-// No params (least specific - must come last)
+// No params
 export function ChimericQueryTestHarness<
   TResult = unknown,
   TError extends Error = Error,

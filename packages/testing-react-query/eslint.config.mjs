@@ -12,7 +12,7 @@ export default [
             '{projectRoot}/eslint.config.{js,cjs,mjs}',
             '{projectRoot}/vite.config.{js,ts,mjs,mts}',
             '{projectRoot}/setupTests.ts',
-            '{projectRoot}/src/lib/__tests__/*.tsx',
+            '{projectRoot}/src/lib/__tests__/*.{ts,tsx}',
             '{projectRoot}/**/*.spec.{ts,tsx}',
             '{projectRoot}/**/*.test.{ts,tsx}',
           ],

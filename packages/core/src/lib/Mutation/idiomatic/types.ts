@@ -2,33 +2,31 @@ export type IdiomaticMutation<
   TParams = void,
   TResult = unknown,
   TIdiomaticNativeOptions = unknown,
-> = TParams extends object
-  ? Omit<TParams, 'options' | 'nativeOptions'> extends
-      | undefined
-      | {
-          options?: IdiomaticMutationOptions;
-          nativeOptions?: TIdiomaticNativeOptions;
-        }
-    ? (config?: {
+> = [TParams] extends [void]
+  ? (allOptions?: {
+      options?: IdiomaticMutationOptions;
+      nativeOptions?: TIdiomaticNativeOptions;
+    }) => Promise<TResult>
+  : void extends TParams
+  ? (allOptions?: {
+      options?: IdiomaticMutationOptions;
+      nativeOptions?: TIdiomaticNativeOptions;
+    }) => Promise<TResult>
+  : undefined extends TParams
+  ? (
+      params?: TParams,
+      allOptions?: {
         options?: IdiomaticMutationOptions;
         nativeOptions?: TIdiomaticNativeOptions;
-      }) => Promise<TResult>
-    : (
-        paramsAndConfig: TParams & {
-          options?: IdiomaticMutationOptions;
-          nativeOptions?: TIdiomaticNativeOptions;
-        },
-      ) => Promise<TResult>
-  : TParams extends void
-  ? (
-      config?:
-        | {
-            options?: IdiomaticMutationOptions;
-            nativeOptions?: TIdiomaticNativeOptions;
-          }
-        | TParams,
+      },
     ) => Promise<TResult>
-  : never;
+  : (
+      params: TParams,
+      allOptions?: {
+        options?: IdiomaticMutationOptions;
+        nativeOptions?: TIdiomaticNativeOptions;
+      },
+    ) => Promise<TResult>;
 
 export type IdiomaticMutationOptions = {
   [key: string]: never;
@@ -41,8 +39,6 @@ export type DefineIdiomaticMutation<
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   TNativeOptions = unknown,
-> = IdiomaticMutation<
-  Parameters<T>[0] extends void | object ? Parameters<T>[0] : never,
-  Awaited<ReturnType<T>>,
-  TNativeOptions
->;
+> = Parameters<T> extends []
+  ? IdiomaticMutation<void, Awaited<ReturnType<T>>, TNativeOptions>
+  : IdiomaticMutation<Parameters<T>[0], Awaited<ReturnType<T>>, TNativeOptions>;

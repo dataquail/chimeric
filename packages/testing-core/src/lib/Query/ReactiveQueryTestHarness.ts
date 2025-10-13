@@ -7,10 +7,10 @@ import { JSX, ReactNode } from 'react';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
 import { ReactiveQueryTestHarnessReturnType } from './types.js';
 
-// Required params (must come first - most specific)
+// Required params
 export function ReactiveQueryTestHarness<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
@@ -28,10 +28,10 @@ export function ReactiveQueryTestHarness<
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
 }): ReactiveQueryTestHarnessReturnType<TResult, TError>;
 
-// Optional params (must come before no params)
+// Optional params
 export function ReactiveQueryTestHarness<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
@@ -49,9 +49,9 @@ export function ReactiveQueryTestHarness<
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
 }): ReactiveQueryTestHarnessReturnType<TResult, TError>;
 
-// No params (least specific - must come last)
+// No params
 export function ReactiveQueryTestHarness<
-  TResult,
+  TResult = unknown,
   TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
