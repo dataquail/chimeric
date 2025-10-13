@@ -4,19 +4,19 @@ export type ReactiveAsync<
   TError extends Error = Error,
 > = {
   use: (config?: ReactiveAsyncOptions) => {
-    invoke: TParams extends object
-      ? Omit<TParams, 'options'> extends
-          | undefined
-          | { options?: ReactiveAsyncInvokeOptions }
-        ? (config?: {
-            options?: ReactiveAsyncInvokeOptions;
-          }) => Promise<TResult>
-        : (
-            paramsAndConfig: TParams & { options?: ReactiveAsyncInvokeOptions },
-          ) => Promise<TResult>
-      : TParams extends void
-      ? (config?: { options?: ReactiveAsyncInvokeOptions }) => Promise<TResult>
-      : never;
+    invoke: [TParams] extends [void]
+      ? (options?: ReactiveAsyncInvokeOptions) => Promise<TResult>
+      : void extends TParams
+      ? (options?: ReactiveAsyncInvokeOptions) => Promise<TResult>
+      : undefined extends TParams
+      ? (
+          params?: TParams,
+          options?: ReactiveAsyncInvokeOptions,
+        ) => Promise<TResult>
+      : (
+          params: TParams,
+          options?: ReactiveAsyncInvokeOptions,
+        ) => Promise<TResult>;
     isIdle: boolean;
     isPending: boolean;
     isSuccess: boolean;
@@ -39,8 +39,6 @@ export type DefineReactiveAsync<
     args: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   TError extends Error = Error,
-> = ReactiveAsync<
-  Parameters<T>[0] extends void | object ? Parameters<T>[0] : never,
-  Awaited<ReturnType<T>>,
-  TError
->;
+> = Parameters<T> extends []
+  ? ReactiveAsync<void, Awaited<ReturnType<T>>, TError>
+  : ReactiveAsync<Parameters<T>[0], Awaited<ReturnType<T>>, TError>;

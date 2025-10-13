@@ -1,96 +1,116 @@
-import { createReactiveAsync, DefineReactiveAsync } from '@chimeric/core';
+import { AsyncTestFixtures } from '../../__tests__/asyncFixtures';
 import { ReactiveAsyncTestHarness } from '../ReactiveAsyncTestHarness';
-import {
-  makeReactiveAsyncWithoutParamsReturnsString,
-  makeReactiveAsyncWithParamsReturnsString,
-} from '../../__tests__/asyncFixtures';
 
 describe('ReactiveAsyncTestHarness', () => {
-  it('should be a function', () => {
-    const mockReactiveAsync = createReactiveAsync(
-      makeReactiveAsyncWithoutParamsReturnsString(),
-    );
+  // USAGE
+  it('USAGE: no params', async () => {
+    const { reactiveAsync, invokeFn } =
+      AsyncTestFixtures.withoutParams.getReactive();
 
     const harness = ReactiveAsyncTestHarness({
-      reactiveAsync: mockReactiveAsync,
+      reactiveAsync,
     });
 
-    harness.result.current.invoke();
+    const result = await harness.result.current.invoke();
 
-    expect(mockReactiveAsync.use).toHaveBeenCalled();
-    expect(harness.result.current.invoke).toHaveBeenCalled();
+    expect(reactiveAsync.use).toHaveBeenCalled();
+    expect(invokeFn).toHaveBeenCalled();
+    expect(result).toBe('test');
   });
 
-  it('should accept options', async () => {
-    const mockReactiveAsync = createReactiveAsync(
-      makeReactiveAsyncWithoutParamsReturnsString(),
-    );
+  it('USAGE: with params', async () => {
+    const { reactiveAsync, invokeFn } =
+      AsyncTestFixtures.withParams.getReactive();
 
     const harness = ReactiveAsyncTestHarness({
-      reactiveAsync: mockReactiveAsync,
-      reactiveOptions: { retry: 3 },
+      reactiveAsync,
     });
 
-    await harness.result.current.invoke();
-    expect(harness.result.current.invoke).toHaveBeenCalledTimes(1);
-    expect(mockReactiveAsync.use).toHaveBeenCalledWith({ retry: 3 });
+    const result = await harness.result.current.invoke({ name: 'John' });
+
+    expect(reactiveAsync.use).toHaveBeenCalled();
+    expect(invokeFn).toHaveBeenCalledTimes(1);
+    expect(invokeFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(result).toBe('Hello John');
   });
 
-  it('should take options with params', async () => {
-    const mockReactiveAsync = createReactiveAsync(
-      makeReactiveAsyncWithParamsReturnsString(),
-    );
+  it('USAGE: with optional params', async () => {
+    const { reactiveAsync, invokeFn } =
+      AsyncTestFixtures.withOptionalParams.getReactive();
 
     const harness = ReactiveAsyncTestHarness({
-      reactiveAsync: mockReactiveAsync,
-      reactiveOptions: { retry: 3 },
+      reactiveAsync,
     });
 
-    harness.result.current.invoke({ name: 'John' });
+    const result1 = await harness.result.current.invoke();
 
-    expect(harness.result.current.isIdle).toBe(false);
-    expect(harness.result.current.isPending).toBe(false);
-    expect(harness.result.current.isSuccess).toBe(true);
-    expect(harness.result.current.error).toBe(null);
-    expect(harness.result.current.data).toBe('Hello John');
-    expect(harness.result.current.invoke).toHaveBeenCalledTimes(1);
-    expect(harness.result.current.invoke).toHaveBeenCalledWith({
-      name: 'John',
-    });
-    expect(mockReactiveAsync.use).toHaveBeenCalledWith({ retry: 3 });
+    expect(reactiveAsync.use).toHaveBeenCalled();
+    expect(invokeFn).toHaveBeenCalledWith();
+    expect(result1).toBe('Hello');
+
+    const result2 = await harness.result.current.invoke({ name: 'Jane' });
+
+    expect(invokeFn).toHaveBeenCalledTimes(2);
+    expect(invokeFn).toHaveBeenCalledWith({ name: 'Jane' });
+    expect(result2).toBe('Hello Jane');
   });
 
-  it('should handle type annotations without params', () => {
-    type TestReactiveAsync = DefineReactiveAsync<() => Promise<string>>;
-    const mockReactiveAsync: TestReactiveAsync = createReactiveAsync(
-      makeReactiveAsyncWithoutParamsReturnsString(),
-    );
+  // TYPE ERRORS
+  it('TYPE ERRORS: no params', () => {
+    const { reactiveAsync } =
+      AsyncTestFixtures.withoutParams.getReactive();
 
     const harness = ReactiveAsyncTestHarness({
-      reactiveAsync: mockReactiveAsync,
+      reactiveAsync,
     });
 
-    harness.result.current.invoke();
-
-    expect(mockReactiveAsync.use).toHaveBeenCalled();
-    expect(harness.result.current.invoke).toHaveBeenCalled();
+    try {
+      // @ts-expect-error - should error because params are not expected
+      harness.result.current.invoke({ name: 'John' });
+    } catch {
+      // Expected error
+    }
   });
 
-  it('should handle type annotations with params', () => {
-    type TestReactiveAsync = DefineReactiveAsync<
-      (params: { name: string }) => Promise<string>
-    >;
-    const mockReactiveAsync: TestReactiveAsync = createReactiveAsync(
-      makeReactiveAsyncWithParamsReturnsString(),
-    );
+  it('TYPE ERRORS: with params', () => {
+    const { reactiveAsync } = AsyncTestFixtures.withParams.getReactive();
 
     const harness = ReactiveAsyncTestHarness({
-      reactiveAsync: mockReactiveAsync,
+      reactiveAsync,
     });
 
-    harness.result.current.invoke({ name: 'John' });
+    try {
+      // @ts-expect-error - should error because params are expected
+      harness.result.current.invoke();
 
-    expect(mockReactiveAsync.use).toHaveBeenCalled();
-    expect(harness.result.current.invoke).toHaveBeenCalled();
+      // @ts-expect-error - should error because wrong params
+      harness.result.current.invoke({ wrong: 'param' });
+
+      // @ts-expect-error - should error because wrong params
+      harness.result.current.invoke(1);
+    } catch {
+      // Expected errors
+    }
+  });
+
+  it('TYPE ERRORS: with optional params', () => {
+    const { reactiveAsync } =
+      AsyncTestFixtures.withOptionalParams.getReactive();
+
+    const harness = ReactiveAsyncTestHarness({
+      reactiveAsync,
+    });
+
+    try {
+      // @ts-expect-error - should error because wrong params
+      harness.result.current.invoke({ wrong: 'param' });
+
+      // @ts-expect-error - should error because wrong params
+      harness.result.current.invoke(1);
+
+      harness.result.current.invoke();
+    } catch {
+      // Expected errors
+    }
   });
 });

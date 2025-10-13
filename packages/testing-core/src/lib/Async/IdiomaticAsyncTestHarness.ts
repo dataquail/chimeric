@@ -1,9 +1,52 @@
 /* eslint-disable no-async-promise-executor */
-import { IdiomaticAsync, IdiomaticAsyncOptions } from '@chimeric/core';
+import {
+  IdiomaticAsync,
+  IdiomaticAsyncOptions,
+  ReactiveAsyncInvokeOptions,
+} from '@chimeric/core';
 import { checkOnInterval } from '../checkOnInterval';
 import { BaseWaitForOptions } from 'src/types/WaitForOptions';
 import { AsyncTestHarnessReturnType } from './types';
 
+// No params
+export function IdiomaticAsyncTestHarness<
+  TResult = unknown,
+  E extends Error = Error,
+>({
+  idiomaticAsync,
+  idiomaticOptions,
+}: {
+  idiomaticAsync: IdiomaticAsync<void, TResult>;
+  idiomaticOptions?: IdiomaticAsyncOptions;
+}): AsyncTestHarnessReturnType<void, TResult, E>;
+
+// Optional params
+export function IdiomaticAsyncTestHarness<
+  TParams = void,
+  TResult = unknown,
+  E extends Error = Error,
+>({
+  idiomaticAsync,
+  idiomaticOptions,
+}: {
+  idiomaticAsync: IdiomaticAsync<TParams | undefined, TResult>;
+  idiomaticOptions?: IdiomaticAsyncOptions;
+}): AsyncTestHarnessReturnType<TParams | undefined, TResult, E>;
+
+// Required params
+export function IdiomaticAsyncTestHarness<
+  TParams = void,
+  TResult = unknown,
+  E extends Error = Error,
+>({
+  idiomaticAsync,
+  idiomaticOptions,
+}: {
+  idiomaticAsync: IdiomaticAsync<TParams, TResult>;
+  idiomaticOptions?: IdiomaticAsyncOptions;
+}): AsyncTestHarnessReturnType<TParams, TResult, E>;
+
+// Implementation
 export function IdiomaticAsyncTestHarness<
   TParams = void,
   TResult = unknown,
@@ -12,10 +55,11 @@ export function IdiomaticAsyncTestHarness<
   idiomaticAsync: IdiomaticAsync<TParams, TResult>;
   idiomaticOptions?: IdiomaticAsyncOptions;
 }): AsyncTestHarnessReturnType<TParams, TResult, E> {
-  type CallFn = (params: TParams) => Promise<TResult>;
   const result: AsyncTestHarnessReturnType<TParams, TResult, E>['result'] = {
     current: {
-      invoke: (async (params: TParams) => {
+      invoke: async (
+        params: TParams | undefined | ReactiveAsyncInvokeOptions,
+      ) => {
         result.current.isIdle = false;
         result.current.isPending = true;
         result.current.isSuccess = false;
@@ -49,7 +93,7 @@ export function IdiomaticAsyncTestHarness<
             result.current.error = error as E;
             throw error;
           });
-      }) as CallFn,
+      },
       data: undefined as TResult | undefined,
       isIdle: true,
       isSuccess: false,
