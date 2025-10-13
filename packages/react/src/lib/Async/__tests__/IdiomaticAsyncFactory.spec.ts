@@ -1,37 +1,45 @@
-import {
-  IdiomaticAsyncWithoutParamsReturnsString,
-  IdiomaticAsyncWithParamsReturnsString,
-} from '../../__tests__/asyncFixtures';
-import {
-  makeAsyncFnWithoutParamsReturnsString,
-  makeAsyncFnWithParamsReturnsString,
-} from '../../__tests__/functionFixtures';
 import { IdiomaticAsyncFactory } from '../IdiomaticAsyncFactory';
+import { AsyncTestFixtures } from '../../__tests__/asyncFixtures';
 
 describe('IdiomaticAsyncFactory', () => {
-  it('should invoke the idiomatic fn', async () => {
-    const mockPromise = makeAsyncFnWithoutParamsReturnsString();
-    const idiomaticPromise = IdiomaticAsyncFactory(mockPromise);
-    const result = await idiomaticPromise();
+  // USAGE
+  it('USAGE: no params', async () => {
+    const { fn } = AsyncTestFixtures.withoutParams.getIdiomatic();
+    const idiomaticAsync = IdiomaticAsyncFactory(fn);
+    const result = await idiomaticAsync();
 
     expect(result).toBe('test');
-    expect(mockPromise).toHaveBeenCalled();
+    expect(fn).toHaveBeenCalled();
   });
 
-  it('should invoke the idiomatic fn with params', async () => {
-    const mockPromise = makeAsyncFnWithParamsReturnsString();
-    const idiomaticPromise = IdiomaticAsyncFactory(mockPromise);
-    const result = await idiomaticPromise({ name: 'John' });
+  it('USAGE: with params', async () => {
+    const { fn } = AsyncTestFixtures.withParams.getIdiomatic();
+    const idiomaticAsync = IdiomaticAsyncFactory(fn);
+    const result = await idiomaticAsync({ name: 'John' });
 
     expect(result).toBe('Hello John');
-    expect(mockPromise).toHaveBeenCalledWith({ name: 'John' });
+    expect(fn).toHaveBeenCalledWith({ name: 'John' });
   });
 
-  it('should retry the fn', async () => {
+  it('USAGE: with optional params', async () => {
+    const { fn } = AsyncTestFixtures.withOptionalParams.getIdiomatic();
+    const idiomaticAsync = IdiomaticAsyncFactory(fn);
+
+    const result1 = await idiomaticAsync();
+    expect(result1).toBe('Hello');
+    expect(fn).toHaveBeenCalledWith(undefined);
+
+    const result2 = await idiomaticAsync({ name: 'Jane' });
+    expect(result2).toBe('Hello Jane');
+    expect(fn).toHaveBeenCalledWith({ name: 'Jane' });
+  });
+
+  it('USAGE: retry option', async () => {
     const mockPromise = vi.fn(() => Promise.reject(new Error('test')));
-    const idiomaticPromise = IdiomaticAsyncFactory(mockPromise);
+    const idiomaticAsync = IdiomaticAsyncFactory(mockPromise);
+
     try {
-      await idiomaticPromise({ options: { retry: 3 } });
+      await idiomaticAsync({ retry: 3 });
     } catch (error) {
       expect(error).toBeInstanceOf(Error);
       expect((error as Error).message).toBe('test');
@@ -39,19 +47,70 @@ describe('IdiomaticAsyncFactory', () => {
     expect(mockPromise).toHaveBeenCalledTimes(3);
   });
 
-  it('should handle type annotations with no params', async () => {
-    const idiomaticPromise: IdiomaticAsyncWithoutParamsReturnsString =
-      IdiomaticAsyncFactory(makeAsyncFnWithoutParamsReturnsString());
-    const result = await idiomaticPromise();
+  // TYPE ERRORS
+  it('TYPE ERRORS: no params', async () => {
+    const { fn } = AsyncTestFixtures.withoutParams.getIdiomatic();
+    const idiomaticAsync = IdiomaticAsyncFactory(fn);
 
-    expect(result).toBe('test');
+    try {
+      // @ts-expect-error - Testing type error
+      await idiomaticAsync({ name: 'John' });
+    } catch {
+      // Expected error
+    }
   });
 
-  it('should handle type annotations with params', async () => {
-    const idiomaticPromise: IdiomaticAsyncWithParamsReturnsString =
-      IdiomaticAsyncFactory(makeAsyncFnWithParamsReturnsString());
-    const result = await idiomaticPromise({ name: 'John' });
+  it('TYPE ERRORS: with params', async () => {
+    const { fn } = AsyncTestFixtures.withParams.getIdiomatic();
+    const idiomaticAsync = IdiomaticAsyncFactory(fn);
 
-    expect(result).toBe('Hello John');
+    try {
+      // @ts-expect-error - Testing type error
+      await idiomaticAsync();
+
+      // @ts-expect-error - Testing type error
+      await idiomaticAsync({ wrong: 'param' });
+    } catch {
+      // Expected errors
+    }
+  });
+
+  it('TYPE ERRORS: with optional params', async () => {
+    const { fn } = AsyncTestFixtures.withOptionalParams.getIdiomatic();
+    const idiomaticAsync = IdiomaticAsyncFactory(fn);
+
+    try {
+      // @ts-expect-error - Testing type error
+      await idiomaticAsync({ wrong: 'param' });
+
+      await idiomaticAsync();
+    } catch {
+      // Expected error
+    }
+  });
+
+  // ANNOTATIONS
+  it('ANNOTATIONS: no params', async () => {
+    const { annotation: _annotation, fn } =
+      AsyncTestFixtures.withoutParams.getIdiomatic();
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = IdiomaticAsyncFactory(fn);
+    expect(testAnnotation).toBeDefined();
+  });
+
+  it('ANNOTATIONS: with params', async () => {
+    const { annotation: _annotation, fn } =
+      AsyncTestFixtures.withParams.getIdiomatic();
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = IdiomaticAsyncFactory(fn);
+    expect(testAnnotation).toBeDefined();
+  });
+
+  it('ANNOTATIONS: with optional params', async () => {
+    const { annotation: _annotation, fn } =
+      AsyncTestFixtures.withOptionalParams.getIdiomatic();
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = IdiomaticAsyncFactory(fn);
+    expect(testAnnotation).toBeDefined();
   });
 });

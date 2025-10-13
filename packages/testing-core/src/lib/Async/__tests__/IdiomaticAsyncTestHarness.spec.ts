@@ -1,99 +1,172 @@
+import { AsyncTestFixtures } from '../../__tests__/asyncFixtures';
 import { IdiomaticAsyncTestHarness } from '../IdiomaticAsyncTestHarness';
-import { createIdiomaticAsync } from '@chimeric/core';
-import {
-  makeAsyncFnWithoutParamsReturnsString,
-  makeAsyncFnWithParamsReturnsString,
-} from '../../__tests__/functionFixtures';
 
 describe('IdiomaticAsyncTestHarness', () => {
-  it('should wait for success', async () => {
-    const mockPromise = makeAsyncFnWithoutParamsReturnsString();
-    const promise = IdiomaticAsyncTestHarness({
-      idiomaticAsync: createIdiomaticAsync(mockPromise),
+  // USAGE
+  it('USAGE: no params', async () => {
+    const { idiomaticAsync } =
+      AsyncTestFixtures.withoutParams.getIdiomatic();
+    const harness = IdiomaticAsyncTestHarness({
+      idiomaticAsync,
     });
 
-    expect(promise.result.current.isIdle).toBe(true);
-    expect(promise.result.current.isPending).toBe(false);
-    expect(promise.result.current.isSuccess).toBe(false);
-    expect(promise.result.current.isError).toBe(false);
-    expect(promise.result.current.error).toBe(null);
-    expect(promise.result.current.data).toBe(undefined);
+    expect(harness.result.current.isIdle).toBe(true);
+    expect(harness.result.current.isPending).toBe(false);
+    expect(harness.result.current.isSuccess).toBe(false);
+    expect(harness.result.current.isError).toBe(false);
+    expect(harness.result.current.error).toBe(null);
+    expect(harness.result.current.data).toBe(undefined);
 
-    promise.result.current.invoke();
+    harness.result.current.invoke();
 
-    expect(promise.result.current.isIdle).toBe(false);
-    expect(promise.result.current.isPending).toBe(true);
-    expect(promise.result.current.isSuccess).toBe(false);
-    expect(promise.result.current.isError).toBe(false);
-    expect(promise.result.current.error).toBe(null);
-    expect(promise.result.current.data).toBe(undefined);
+    expect(harness.result.current.isIdle).toBe(false);
+    expect(harness.result.current.isPending).toBe(true);
+    expect(harness.result.current.isSuccess).toBe(false);
+    expect(harness.result.current.isError).toBe(false);
+    expect(harness.result.current.error).toBe(null);
+    expect(harness.result.current.data).toBe(undefined);
 
-    await promise.waitFor(() =>
-      expect(promise.result.current.isSuccess).toBe(true),
+    await harness.waitFor(() =>
+      expect(harness.result.current.isSuccess).toBe(true),
     );
 
-    expect(promise.result.current.isSuccess).toBe(true);
-    expect(promise.result.current.isPending).toBe(false);
-    expect(promise.result.current.isError).toBe(false);
-    expect(promise.result.current.error).toBe(null);
-    expect(promise.result.current.data).toBe('test');
-    expect(mockPromise).toHaveBeenCalledTimes(1);
+    expect(harness.result.current.isSuccess).toBe(true);
+    expect(harness.result.current.isPending).toBe(false);
+    expect(harness.result.current.isError).toBe(false);
+    expect(harness.result.current.error).toBe(null);
+    expect(harness.result.current.data).toBe('test');
+    expect(idiomaticAsync).toHaveBeenCalledTimes(1);
   });
 
-  it('should take options', async () => {
-    const mockPromise = makeAsyncFnWithoutParamsReturnsString();
-    const promise = IdiomaticAsyncTestHarness({
-      idiomaticAsync: createIdiomaticAsync(mockPromise),
-      idiomaticOptions: { retry: 3 },
+  it('USAGE: with params', async () => {
+    const { idiomaticAsync } =
+      AsyncTestFixtures.withParams.getIdiomatic();
+    const harness = IdiomaticAsyncTestHarness({
+      idiomaticAsync,
     });
 
-    expect(promise.result.current.isIdle).toBe(true);
-    expect(promise.result.current.isPending).toBe(false);
-    expect(promise.result.current.isSuccess).toBe(false);
-    expect(promise.result.current.isError).toBe(false);
-    expect(promise.result.current.error).toBe(null);
-    expect(promise.result.current.data).toBe(undefined);
+    expect(harness.result.current.isIdle).toBe(true);
+    expect(harness.result.current.isPending).toBe(false);
+    expect(harness.result.current.isSuccess).toBe(false);
+    expect(harness.result.current.isError).toBe(false);
+    expect(harness.result.current.error).toBe(null);
+    expect(harness.result.current.data).toBe(undefined);
 
-    promise.result.current.invoke();
+    harness.result.current.invoke({ name: 'John' });
 
-    expect(promise.result.current.isIdle).toBe(false);
-    expect(promise.result.current.isPending).toBe(true);
-    expect(promise.result.current.isSuccess).toBe(false);
-    expect(promise.result.current.isError).toBe(false);
-    expect(promise.result.current.error).toBe(null);
-    expect(promise.result.current.data).toBe(undefined);
+    expect(harness.result.current.isIdle).toBe(false);
+    expect(harness.result.current.isPending).toBe(true);
+    expect(harness.result.current.isSuccess).toBe(false);
+    expect(harness.result.current.isError).toBe(false);
+    expect(harness.result.current.error).toBe(null);
+    expect(harness.result.current.data).toBe(undefined);
 
-    await promise.waitFor(() =>
-      expect(promise.result.current.isSuccess).toBe(true),
+    await harness.waitFor(() =>
+      expect(harness.result.current.isSuccess).toBe(true),
     );
 
-    expect(promise.result.current.isSuccess).toBe(true);
-    expect(promise.result.current.isPending).toBe(false);
-    expect(promise.result.current.isError).toBe(false);
-    expect(promise.result.current.error).toBe(null);
-    expect(promise.result.current.data).toBe('test');
-    expect(mockPromise).toHaveBeenCalledTimes(1);
-    expect(mockPromise).toHaveBeenCalledWith({ options: { retry: 3 } });
+    expect(harness.result.current.isSuccess).toBe(true);
+    expect(harness.result.current.isPending).toBe(false);
+    expect(harness.result.current.isError).toBe(false);
+    expect(harness.result.current.error).toBe(null);
+    expect(harness.result.current.data).toBe('Hello John');
+    expect(idiomaticAsync).toHaveBeenCalledTimes(1);
   });
 
-  it('should take options with params', async () => {
-    const mockPromise = makeAsyncFnWithParamsReturnsString();
-    const promise = IdiomaticAsyncTestHarness({
-      idiomaticAsync: createIdiomaticAsync(mockPromise),
-      idiomaticOptions: { retry: 3 },
+  it('USAGE: with optional params', async () => {
+    const { idiomaticAsync } =
+      AsyncTestFixtures.withOptionalParams.getIdiomatic();
+    const harness = IdiomaticAsyncTestHarness({
+      idiomaticAsync,
     });
 
-    promise.result.current.invoke({ name: 'John' });
+    expect(harness.result.current.isIdle).toBe(true);
+    expect(harness.result.current.isPending).toBe(false);
+    expect(harness.result.current.isSuccess).toBe(false);
+    expect(harness.result.current.isError).toBe(false);
+    expect(harness.result.current.error).toBe(null);
+    expect(harness.result.current.data).toBe(undefined);
 
-    expect(promise.result.current.isIdle).toBe(false);
-    expect(promise.result.current.isPending).toBe(true);
-    expect(promise.result.current.isSuccess).toBe(false);
-    expect(promise.result.current.error).toBe(null);
-    expect(promise.result.current.data).toBe(undefined);
-    expect(mockPromise).toHaveBeenCalledTimes(1);
-    expect(mockPromise).toHaveBeenCalledWith({
-      name: 'John',
-      options: { retry: 3 },
+    harness.result.current.invoke();
+
+    expect(harness.result.current.isIdle).toBe(false);
+    expect(harness.result.current.isPending).toBe(true);
+
+    await harness.waitFor(() =>
+      expect(harness.result.current.isSuccess).toBe(true),
+    );
+
+    expect(harness.result.current.isSuccess).toBe(true);
+    expect(harness.result.current.isPending).toBe(false);
+    expect(harness.result.current.data).toBe('Hello');
+    expect(idiomaticAsync).toHaveBeenCalledTimes(1);
+
+    harness.result.current.invoke({ name: 'Jane' });
+
+    expect(harness.result.current.isPending).toBe(true);
+
+    await harness.waitFor(() =>
+      expect(harness.result.current.isSuccess).toBe(true),
+    );
+
+    expect(harness.result.current.data).toBe('Hello Jane');
+    expect(idiomaticAsync).toHaveBeenCalledTimes(2);
+  });
+
+  // TYPE ERRORS
+  it('TYPE ERRORS: no params', () => {
+    const { idiomaticAsync } =
+      AsyncTestFixtures.withoutParams.getIdiomatic();
+    const harness = IdiomaticAsyncTestHarness({
+      idiomaticAsync,
     });
+
+    try {
+      // @ts-expect-error - should error because params are not expected
+      harness.result.current.invoke({ name: 'John' });
+    } catch {
+      // Expected error
+    }
+  });
+
+  it('TYPE ERRORS: with params', () => {
+    const { idiomaticAsync } =
+      AsyncTestFixtures.withParams.getIdiomatic();
+    const harness = IdiomaticAsyncTestHarness({
+      idiomaticAsync,
+    });
+
+    try {
+      // @ts-expect-error - should error because params are expected
+      harness.result.current.invoke();
+
+      // @ts-expect-error - should error because wrong params
+      harness.result.current.invoke({ wrong: 'param' });
+
+      // @ts-expect-error - should error because wrong params
+      harness.result.current.invoke(1);
+    } catch {
+      // Expected errors
+    }
+  });
+
+  it('TYPE ERRORS: with optional params', () => {
+    const { idiomaticAsync } =
+      AsyncTestFixtures.withOptionalParams.getIdiomatic();
+    const harness = IdiomaticAsyncTestHarness({
+      idiomaticAsync,
+    });
+
+    try {
+      // @ts-expect-error - should error because wrong params
+      harness.result.current.invoke({ wrong: 'param' });
+
+      // @ts-expect-error - should error because wrong params
+      harness.result.current.invoke(1);
+
+      harness.result.current.invoke();
+    } catch {
+      // Expected errors
+    }
   });
 });

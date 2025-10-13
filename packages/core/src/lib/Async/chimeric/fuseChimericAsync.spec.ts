@@ -1,142 +1,209 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { fuseChimericAsync } from './fuseChimericAsync';
-import {
-  ChimericAsyncWithoutParamsReturnsString,
-  ChimericAsyncWithParamsReturnsString,
-  makeIdiomaticAsyncWithoutParamsReturnsString,
-  makeIdiomaticAsyncWithParamsReturnsString,
-  makeReactiveAsyncWithoutParamsReturnsString,
-  makeReactiveAsyncWithParamsReturnsString,
-} from '../__tests__/asyncFixtures';
+import { AsyncTestFixtures } from '../__tests__/asyncFixtures';
 
 describe('fuseChimericAsync', () => {
-  it('should invoke the idiomatic async function', async () => {
-    const mockIdiomaticAsync = makeIdiomaticAsyncWithoutParamsReturnsString();
-    const mockReactiveAsync = makeReactiveAsyncWithoutParamsReturnsString();
-    const testChimericAsync = fuseChimericAsync({
-      idiomatic: mockIdiomaticAsync,
-      reactive: mockReactiveAsync,
+  // USAGE TESTS
+  it('USAGE: no params', async () => {
+    const {
+      idiomaticAsync,
+      idiomaticFn,
+      reactiveAsync,
+      reactiveFn,
+      invokeFn,
+    } = AsyncTestFixtures.withoutParams.getChimeric();
+    const chimericAsync = fuseChimericAsync({
+      idiomatic: idiomaticAsync,
+      reactive: reactiveAsync,
     });
-    const result = await testChimericAsync();
-    expect(result).toEqual('test');
-    expect(mockIdiomaticAsync).toHaveBeenCalled();
-    expect(mockReactiveAsync.use).not.toHaveBeenCalled();
+
+    // Test idiomatic interface
+    await expect(chimericAsync()).resolves.toBe('test');
+    expect(idiomaticFn).toHaveBeenCalledWith();
+    expect(idiomaticFn).toHaveBeenCalledTimes(1);
+
+    // Test reactive interface - use()
+    const reactiveResult = chimericAsync.use();
+    expect(reactiveFn).toHaveBeenCalledWith();
+    expect(reactiveFn).toHaveBeenCalledTimes(1);
+    expect(reactiveResult.data).toBe('test');
+
+    // Test reactive interface - invoke()
+    await expect(reactiveResult.invoke()).resolves.toBe('test');
+    expect(invokeFn).toHaveBeenCalledWith();
+    expect(invokeFn).toHaveBeenCalledTimes(1);
   });
 
-  it('should invoke the idiomatic function with params', async () => {
-    const mockIdiomaticAsync = makeIdiomaticAsyncWithParamsReturnsString();
-    const mockReactiveAsync = makeReactiveAsyncWithParamsReturnsString();
-    const testChimericAsync = fuseChimericAsync({
-      idiomatic: mockIdiomaticAsync,
-      reactive: mockReactiveAsync,
+  it('USAGE: with params', async () => {
+    const {
+      idiomaticAsync,
+      idiomaticFn,
+      reactiveAsync,
+      reactiveFn,
+      invokeFn,
+    } = AsyncTestFixtures.withParams.getChimeric();
+    const chimericAsync = fuseChimericAsync({
+      idiomatic: idiomaticAsync,
+      reactive: reactiveAsync,
     });
-    const result = await testChimericAsync({ name: 'John' });
-    expect(result).toEqual('Hello John');
-    expect(mockIdiomaticAsync).toHaveBeenCalledWith({ name: 'John' });
-    expect(mockReactiveAsync.use).not.toHaveBeenCalled();
+
+    // Test idiomatic interface
+    await expect(chimericAsync({ name: 'John' })).resolves.toBe('Hello John');
+    expect(idiomaticFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(idiomaticFn).toHaveBeenCalledTimes(1);
+
+    // Test reactive interface - use()
+    const reactiveResult = chimericAsync.use();
+    expect(reactiveFn).toHaveBeenCalledWith();
+    expect(reactiveFn).toHaveBeenCalledTimes(1);
+
+    // Test reactive interface - invoke()
+    await expect(reactiveResult.invoke({ name: 'John' })).resolves.toBe(
+      'Hello John',
+    );
+    expect(invokeFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(invokeFn).toHaveBeenCalledTimes(1);
   });
 
-  it('should invoke the reactive function', async () => {
-    const mockIdiomaticAsync = makeIdiomaticAsyncWithoutParamsReturnsString();
-    const mockReactiveAsync = makeReactiveAsyncWithoutParamsReturnsString();
-    const testChimericAsync = fuseChimericAsync({
-      idiomatic: mockIdiomaticAsync,
-      reactive: mockReactiveAsync,
+  it('USAGE: optional params', async () => {
+    const {
+      idiomaticAsync,
+      idiomaticFn,
+      reactiveAsync,
+      reactiveFn,
+      invokeFn,
+    } = AsyncTestFixtures.withOptionalParams.getChimeric();
+    const chimericAsync = fuseChimericAsync({
+      idiomatic: idiomaticAsync,
+      reactive: reactiveAsync,
     });
-    const result = testChimericAsync.use();
-    expect(result.data).toEqual('test');
-    expect(mockIdiomaticAsync).not.toHaveBeenCalled();
-    expect(mockReactiveAsync.use).toHaveBeenCalled();
+
+    // Test idiomatic interface - with params
+    await expect(chimericAsync({ name: 'John' })).resolves.toBe('Hello John');
+    expect(idiomaticFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(idiomaticFn).toHaveBeenCalledTimes(1);
+
+    // Test idiomatic interface - without params
+    await expect(chimericAsync()).resolves.toBe('Hello');
+    expect(idiomaticFn).toHaveBeenCalledWith();
+    expect(idiomaticFn).toHaveBeenCalledTimes(2);
+
+    // Test reactive interface - use()
+    const reactiveResult = chimericAsync.use();
+    expect(reactiveFn).toHaveBeenCalledWith();
+    expect(reactiveFn).toHaveBeenCalledTimes(1);
+
+    // Test reactive interface - invoke() with params
+    await expect(reactiveResult.invoke({ name: 'John' })).resolves.toBe(
+      'Hello John',
+    );
+    expect(invokeFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(invokeFn).toHaveBeenCalledTimes(1);
+
+    // Test reactive interface - invoke() without params
+    await expect(reactiveResult.invoke()).resolves.toBe('Hello');
+    expect(invokeFn).toHaveBeenCalledWith();
+    expect(invokeFn).toHaveBeenCalledTimes(2);
   });
 
-  it('should invoke the reactive function with params', async () => {
-    const mockIdiomaticAsync = makeIdiomaticAsyncWithParamsReturnsString();
-    const mockReactiveAsync = makeReactiveAsyncWithParamsReturnsString();
-    const testChimericAsync = fuseChimericAsync({
-      idiomatic: mockIdiomaticAsync,
-      reactive: mockReactiveAsync,
+  // TYPE ERROR TESTS
+  it('TYPE ERRORS: no params', async () => {
+    const { idiomaticAsync, reactiveAsync } =
+      AsyncTestFixtures.withoutParams.getChimeric();
+    const chimericAsync = fuseChimericAsync({
+      idiomatic: idiomaticAsync,
+      reactive: reactiveAsync,
     });
-    const result = await testChimericAsync.use().invoke({ name: 'John' });
-    expect(result).toEqual('Hello John');
-    expect(mockIdiomaticAsync).not.toHaveBeenCalled();
-    expect(mockReactiveAsync.use).toHaveBeenCalled();
+
+    try {
+      // @ts-expect-error testing invalid call
+      await chimericAsync({ name: 'John' });
+
+      const result = chimericAsync.use();
+      // @ts-expect-error testing invalid call
+      await result.invoke({ name: 'John' });
+    } catch {
+      // Expected to throw
+    }
   });
 
-  it('should invoke the reactive call function', async () => {
-    const mockIdiomaticAsync = makeIdiomaticAsyncWithParamsReturnsString();
-    const mockReactiveAsync = makeReactiveAsyncWithParamsReturnsString();
-    const testChimericAsync = fuseChimericAsync({
-      idiomatic: mockIdiomaticAsync,
-      reactive: mockReactiveAsync,
+  it('TYPE ERRORS: with params', async () => {
+    const { idiomaticAsync, reactiveAsync } =
+      AsyncTestFixtures.withParams.getChimeric();
+    const chimericAsync = fuseChimericAsync({
+      idiomatic: idiomaticAsync,
+      reactive: reactiveAsync,
     });
-    const result = testChimericAsync.use();
-    const callResult = await result.invoke({ name: 'John' });
-    expect(callResult).toEqual('Hello John');
-    expect(mockIdiomaticAsync).not.toHaveBeenCalled();
-    expect(mockReactiveAsync.use).toHaveBeenCalled();
-    expect(result.invoke).toHaveBeenCalledWith({ name: 'John' });
+
+    try {
+      // @ts-expect-error testing invalid call
+      await chimericAsync();
+
+      const result = chimericAsync.use();
+      // @ts-expect-error testing invalid call
+      await result.invoke();
+    } catch {
+      // Expected to throw
+    }
   });
 
-  it('should invoke reactive with params and options', async () => {
-    const mockIdiomaticAsync = makeIdiomaticAsyncWithParamsReturnsString();
-    const mockReactiveAsync = makeReactiveAsyncWithParamsReturnsString();
-    const testChimericAsync = fuseChimericAsync({
-      idiomatic: mockIdiomaticAsync,
-      reactive: mockReactiveAsync,
+  it('TYPE ERRORS: optional params', async () => {
+    const { idiomaticAsync, reactiveAsync } =
+      AsyncTestFixtures.withOptionalParams.getChimeric();
+    const chimericAsync = fuseChimericAsync({
+      idiomatic: idiomaticAsync,
+      reactive: reactiveAsync,
     });
-    const result = await testChimericAsync.use({ retry: 0 }).invoke({
-      name: 'John',
-    });
-    expect(result).toEqual('Hello John');
-    expect(mockIdiomaticAsync).not.toHaveBeenCalled();
-    expect(mockReactiveAsync.use).toHaveBeenCalledWith({ retry: 0 });
+
+    try {
+      // @ts-expect-error testing invalid call
+      await chimericAsync(1);
+
+      const result = chimericAsync.use();
+      // @ts-expect-error testing invalid call
+      await result.invoke(1);
+    } catch {
+      // Expected to throw
+    }
   });
 
-  it('should invoke reactive without params but with options', async () => {
-    const mockIdiomaticAsync = makeIdiomaticAsyncWithoutParamsReturnsString();
-    const mockReactiveAsync = makeReactiveAsyncWithoutParamsReturnsString();
-    const testChimericAsync = fuseChimericAsync({
-      idiomatic: mockIdiomaticAsync,
-      reactive: mockReactiveAsync,
+  // ANNOTATION TESTS
+  it('ANNOTATION: no params', async () => {
+    const { idiomaticAsync, reactiveAsync, annotation: _annotation } =
+      AsyncTestFixtures.withoutParams.getChimeric();
+    const chimericAsync = fuseChimericAsync({
+      idiomatic: idiomaticAsync,
+      reactive: reactiveAsync,
     });
-    const result = await testChimericAsync.use({ retry: 0 }).invoke();
-    expect(result).toEqual('test');
-    expect(mockIdiomaticAsync).not.toHaveBeenCalled();
-    expect(mockReactiveAsync.use).toHaveBeenCalledWith({ retry: 0 });
+
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = chimericAsync;
+    expect(testAnnotation).toBe(chimericAsync);
   });
 
-  it('should handle type annotations without params', async () => {
-    const mockIdiomaticAsyncWithoutParams =
-      makeIdiomaticAsyncWithoutParamsReturnsString();
-    const mockReactiveAsyncWithoutParams =
-      makeReactiveAsyncWithoutParamsReturnsString();
-    const testChimericAsyncWithoutParams: ChimericAsyncWithoutParamsReturnsString =
-      fuseChimericAsync({
-        idiomatic: mockIdiomaticAsyncWithoutParams,
-        reactive: mockReactiveAsyncWithoutParams,
-      });
-    const idiomaticResult = await testChimericAsyncWithoutParams();
-    const reactiveResult = testChimericAsyncWithoutParams.use();
-    expect(idiomaticResult).toEqual('test');
-    expect(mockIdiomaticAsyncWithoutParams).toHaveBeenCalled();
-    expect(reactiveResult.data).toEqual('test');
-    expect(mockReactiveAsyncWithoutParams.use).toHaveBeenCalled();
+  it('ANNOTATION: with params', async () => {
+    const { idiomaticAsync, reactiveAsync, annotation: _annotation } =
+      AsyncTestFixtures.withParams.getChimeric();
+    const chimericAsync = fuseChimericAsync({
+      idiomatic: idiomaticAsync,
+      reactive: reactiveAsync,
+    });
+
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = chimericAsync;
+    expect(testAnnotation).toBe(chimericAsync);
   });
 
-  it('should handle type annotations with params', async () => {
-    const mockIdiomaticAsyncWithParams =
-      makeIdiomaticAsyncWithParamsReturnsString();
-    const mockReactiveAsyncWithParams =
-      makeReactiveAsyncWithParamsReturnsString();
-    const testChimericAsyncWithParams: ChimericAsyncWithParamsReturnsString =
-      fuseChimericAsync({
-        idiomatic: mockIdiomaticAsyncWithParams,
-        reactive: mockReactiveAsyncWithParams,
-      });
-    const idiomaticResult = await testChimericAsyncWithParams({ name: 'John' });
-    const reactiveResult = testChimericAsyncWithParams.use();
-    expect(idiomaticResult).toEqual('Hello John');
-    expect(mockIdiomaticAsyncWithParams).toHaveBeenCalledWith({ name: 'John' });
-    expect(mockReactiveAsyncWithParams.use).toHaveBeenCalled();
-    expect(reactiveResult.data).toEqual('Hello John');
+  it('ANNOTATION: optional params', async () => {
+    const { idiomaticAsync, reactiveAsync, annotation: _annotation } =
+      AsyncTestFixtures.withOptionalParams.getChimeric();
+    const chimericAsync = fuseChimericAsync({
+      idiomatic: idiomaticAsync,
+      reactive: reactiveAsync,
+    });
+
+    type TestAnnotation = typeof _annotation;
+    const testAnnotation: TestAnnotation = chimericAsync;
+    expect(testAnnotation).toBe(chimericAsync);
   });
 });

@@ -8,13 +8,38 @@ import {
 } from '@chimeric/core';
 import { executeWithRetry } from './utils';
 
+// Optional params
+export function ReactiveAsyncFactory<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+>(
+  asyncFn: (params?: TParams) => Promise<TResult>,
+): ReactiveAsync<TParams | undefined, TResult, TError>;
+
+// No params
+export function ReactiveAsyncFactory<
+  TResult = unknown,
+  TError extends Error = Error,
+>(asyncFn: () => Promise<TResult>): ReactiveAsync<void, TResult, TError>;
+
+// Required params
+export function ReactiveAsyncFactory<
+  TParams,
+  TResult = unknown,
+  TError extends Error = Error,
+>(
+  asyncFn: (params: TParams) => Promise<TResult>,
+): ReactiveAsync<TParams, TResult, TError>;
+
+// Implementation
 export function ReactiveAsyncFactory<
   TParams = void,
   TResult = unknown,
   TError extends Error = Error,
 >(
   asyncFn: (params: TParams) => Promise<TResult>,
-): ReactiveAsync<TParams extends undefined ? void : TParams, TResult, TError> {
+): ReactiveAsync<TParams, TResult, TError> {
   const reactiveAsync = (hookOptions?: ReactiveAsyncOptions) => {
     const [meta, setMeta] = useState<{
       isIdle: boolean;
@@ -34,11 +59,17 @@ export function ReactiveAsyncFactory<
 
     return {
       invoke: async (
-        paramsAndConfig: TParams & {
-          options?: ReactiveAsyncInvokeOptions;
-        } = {} as TParams & { options?: ReactiveAsyncInvokeOptions },
+        paramsOrOptions?: TParams | ReactiveAsyncInvokeOptions,
+        maybeOptions?: ReactiveAsyncInvokeOptions,
       ) => {
-        const { options: invokeOptions, ...params } = paramsAndConfig;
+        const params =
+          asyncFn.length === 0
+            ? (undefined as TParams)
+            : (paramsOrOptions as TParams);
+        const options =
+          asyncFn.length === 0
+            ? (paramsOrOptions as ReactiveAsyncInvokeOptions)
+            : maybeOptions;
         setMeta({
           isIdle: false,
           isPending: true,
@@ -51,7 +82,7 @@ export function ReactiveAsyncFactory<
         try {
           const result = await executeWithRetry<TResult>(
             () => asyncFn(params as TParams),
-            invokeOptions?.retry || hookOptions?.retry || 0,
+            options?.retry || hookOptions?.retry || 0,
           );
           flushSync(() => {
             setMeta({
@@ -89,10 +120,6 @@ export function ReactiveAsyncFactory<
   };
 
   return createReactiveAsync(
-    reactiveAsync as ReactiveAsync<
-      TParams extends undefined ? void : TParams,
-      TResult,
-      TError
-    >['use'],
+    reactiveAsync as ReactiveAsync<TParams, TResult, TError>['use'],
   );
 }

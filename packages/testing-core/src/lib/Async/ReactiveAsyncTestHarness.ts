@@ -7,6 +7,51 @@ import { JSX, ReactNode } from 'react';
 import { BaseWaitForOptions } from 'src/types/WaitForOptions.js';
 import { AsyncTestHarnessReturnType } from './types';
 
+// Optional params
+export function ReactiveAsyncTestHarness<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+>({
+  reactiveAsync,
+  reactiveOptions,
+  wrapper,
+}: {
+  reactiveAsync: ReactiveAsync<TParams | undefined, TResult, TError>;
+  reactiveOptions?: ReactiveAsyncOptions;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): AsyncTestHarnessReturnType<TParams | undefined, TResult, TError>;
+
+// Required params
+export function ReactiveAsyncTestHarness<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+>({
+  reactiveAsync,
+  reactiveOptions,
+  wrapper,
+}: {
+  reactiveAsync: ReactiveAsync<TParams, TResult, TError>;
+  reactiveOptions?: ReactiveAsyncOptions;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): AsyncTestHarnessReturnType<TParams, TResult, TError>;
+
+// No params
+export function ReactiveAsyncTestHarness<
+  TResult = unknown,
+  TError extends Error = Error,
+>({
+  reactiveAsync,
+  reactiveOptions,
+  wrapper,
+}: {
+  reactiveAsync: ReactiveAsync<void, TResult, TError>;
+  reactiveOptions?: ReactiveAsyncOptions;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): AsyncTestHarnessReturnType<void, TResult, TError>;
+
+// Implementation
 export function ReactiveAsyncTestHarness<
   TParams = void,
   TResult = unknown,

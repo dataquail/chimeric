@@ -7,9 +7,10 @@ export const isChimericAsync = <
   TResult = unknown,
   TError extends Error = Error,
 >(
-  maybeChimericAsync: unknown,
+  maybeChimericAsync: ChimericAsync<TParams, TResult, TError>,
 ): maybeChimericAsync is ChimericAsync<TParams, TResult, TError> => {
   return (
-    isIdiomaticAsync(maybeChimericAsync) && isReactiveAsync(maybeChimericAsync)
+    isIdiomaticAsync<TParams, TResult>(maybeChimericAsync) &&
+    isReactiveAsync(maybeChimericAsync)
   );
 };
