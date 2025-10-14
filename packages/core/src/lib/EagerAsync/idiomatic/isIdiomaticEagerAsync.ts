@@ -4,7 +4,7 @@ import { isEligibleIdiomatic } from '../../utilities/isEligibleIdiomatic';
 import { hasIdiomaticMarker } from '../../utilities/hasIdiomaticMarker';
 
 export const isIdiomaticEagerAsync = <TParams = void, TResult = unknown>(
-  maybeIdiomaticEagerAsync: unknown,
+  maybeIdiomaticEagerAsync: IdiomaticEagerAsync<TParams, TResult>,
 ): maybeIdiomaticEagerAsync is IdiomaticEagerAsync<TParams, TResult> => {
   return (
     isEligibleIdiomatic(maybeIdiomaticEagerAsync) &&

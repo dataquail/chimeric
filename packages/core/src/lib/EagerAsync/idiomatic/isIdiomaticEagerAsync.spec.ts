@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { makeAsyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
 import { createIdiomaticEagerAsync } from './createIdiomaticEagerAsync';
 import { isIdiomaticEagerAsync } from './isIdiomaticEagerAsync';
@@ -17,10 +18,10 @@ describe('isIdiomaticEagerAsync', () => {
   });
 
   it('should return false for non-function values', () => {
-    expect(isIdiomaticEagerAsync('not a function')).toBe(false);
-    expect(isIdiomaticEagerAsync(123)).toBe(false);
-    expect(isIdiomaticEagerAsync({})).toBe(false);
-    expect(isIdiomaticEagerAsync(null)).toBe(false);
-    expect(isIdiomaticEagerAsync(undefined)).toBe(false);
+    expect(isIdiomaticEagerAsync('not a function' as any)).toBe(false);
+    expect(isIdiomaticEagerAsync(123 as any)).toBe(false);
+    expect(isIdiomaticEagerAsync({} as any)).toBe(false);
+    expect(isIdiomaticEagerAsync(null as any)).toBe(false);
+    expect(isIdiomaticEagerAsync(undefined as any)).toBe(false);
   });
 });

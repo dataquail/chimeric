@@ -8,7 +8,7 @@ export const isReactiveEagerAsync = <
   TResult = unknown,
   E extends Error = Error,
 >(
-  maybeReactiveAsync: unknown,
+  maybeReactiveAsync: ReactiveEagerAsync<TParams, TResult, E>,
 ): maybeReactiveAsync is ReactiveEagerAsync<TParams, TResult, E> => {
   return (
     isEligibleReactive(maybeReactiveAsync) &&

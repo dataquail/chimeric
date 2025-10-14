@@ -7,6 +7,36 @@ import { markReactive } from '../../utilities/markReactive';
 import { isIdiomaticEagerAsync } from '../idiomatic/isIdiomaticEagerAsync';
 import { isReactiveEagerAsync } from '../reactive/isReactiveEagerAsync';
 
+// No Params
+export function fuseChimericEagerAsync<
+  TResult = unknown,
+  TError extends Error = Error,
+>(args: {
+  idiomatic: IdiomaticEagerAsync<void, TResult>;
+  reactive: ReactiveEagerAsync<void, TResult, TError>;
+}): ChimericEagerAsync<void, TResult, TError>;
+
+// Optional Params
+export function fuseChimericEagerAsync<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+>(args: {
+  idiomatic: IdiomaticEagerAsync<TParams | undefined, TResult>;
+  reactive: ReactiveEagerAsync<TParams | undefined, TResult, TError>;
+}): ChimericEagerAsync<TParams | undefined, TResult, TError>;
+
+// Required Params
+export function fuseChimericEagerAsync<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+>(args: {
+  idiomatic: IdiomaticEagerAsync<TParams, TResult>;
+  reactive: ReactiveEagerAsync<TParams, TResult, TError>;
+}): ChimericEagerAsync<TParams, TResult, TError>;
+
+// Implementation
 export function fuseChimericEagerAsync<
   TParams = void,
   TResult = unknown,

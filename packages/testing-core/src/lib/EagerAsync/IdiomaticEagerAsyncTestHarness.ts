@@ -1,24 +1,68 @@
 /* eslint-disable no-async-promise-executor */
-import { IdiomaticEagerAsync } from '@chimeric/core';
+import {
+  IdiomaticEagerAsync,
+  IdiomaticEagerAsyncOptions,
+} from '@chimeric/core';
 import { checkOnInterval } from '../checkOnInterval.js';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
 import { EagerAsyncTestHarnessReturnType } from './types.js';
 
+// No params
+export function IdiomaticEagerAsyncTestHarness<
+  TResult = unknown,
+  TError extends Error = Error,
+>({
+  idiomaticEagerAsync,
+  idiomaticOptions,
+}: {
+  idiomaticEagerAsync: IdiomaticEagerAsync<void, TResult>;
+  idiomaticOptions?: IdiomaticEagerAsyncOptions;
+}): EagerAsyncTestHarnessReturnType<TResult, TError>;
+
+// Optional params
 export function IdiomaticEagerAsyncTestHarness<
   TParams = void,
   TResult = unknown,
   TError extends Error = Error,
->(
-  args: TParams extends void
-    ? {
-        idiomaticEagerAsync: IdiomaticEagerAsync<TParams, TResult>;
-      }
-    : {
-        idiomaticEagerAsync: IdiomaticEagerAsync<TParams, TResult>;
-        params: TParams;
-      },
-): EagerAsyncTestHarnessReturnType<TResult, TError> {
-  const { idiomaticEagerAsync } = args;
+>({
+  idiomaticEagerAsync,
+  params,
+  idiomaticOptions,
+}: {
+  idiomaticEagerAsync: IdiomaticEagerAsync<TParams | undefined, TResult>;
+  params?: TParams;
+  idiomaticOptions?: IdiomaticEagerAsyncOptions;
+}): EagerAsyncTestHarnessReturnType<TResult, TError>;
+
+// Required params
+export function IdiomaticEagerAsyncTestHarness<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+>({
+  idiomaticEagerAsync,
+  params,
+  idiomaticOptions,
+}: {
+  idiomaticEagerAsync: IdiomaticEagerAsync<TParams, TResult>;
+  params: TParams;
+  idiomaticOptions?: IdiomaticEagerAsyncOptions;
+}): EagerAsyncTestHarnessReturnType<TResult, TError>;
+
+// Implementation
+export function IdiomaticEagerAsyncTestHarness<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+>({
+  idiomaticEagerAsync,
+  params,
+  idiomaticOptions,
+}: {
+  idiomaticEagerAsync: IdiomaticEagerAsync<TParams, TResult>;
+  params?: TParams;
+  idiomaticOptions?: IdiomaticEagerAsyncOptions;
+}): EagerAsyncTestHarnessReturnType<TResult, TError> {
   const result = {
     current: {
       data: undefined as TResult | undefined,
@@ -36,9 +80,16 @@ export function IdiomaticEagerAsyncTestHarness<
     | 'rejected';
   result.current.isIdle = false;
   result.current.isPending = true;
-  let promise = idiomaticEagerAsync(
-    (args as { params?: TParams })?.params as TParams,
-  );
+
+  const callFunction = () => {
+    if (params !== undefined) {
+      return (idiomaticEagerAsync as (p: TParams, o?: IdiomaticEagerAsyncOptions) => Promise<TResult>)(params, idiomaticOptions);
+    } else {
+      return (idiomaticEagerAsync as (o?: IdiomaticEagerAsyncOptions) => Promise<TResult>)(idiomaticOptions);
+    }
+  };
+
+  let promise = callFunction();
   promiseStatus = 'pending';
   promise
     .then((data) => {
@@ -64,9 +115,7 @@ export function IdiomaticEagerAsyncTestHarness<
       return new Promise<void>(async (resolve, reject) => {
         try {
           if (options?.reinvokeIdiomaticFn && promiseStatus === 'resolved') {
-            promise = idiomaticEagerAsync(
-              (args as { params?: TParams })?.params as TParams,
-            );
+            promise = callFunction();
             promiseStatus = 'pending';
             promise
               .then((data) => {

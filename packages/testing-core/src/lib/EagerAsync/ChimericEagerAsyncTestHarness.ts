@@ -2,42 +2,116 @@ import {
   ChimericEagerAsync,
   IdiomaticEagerAsync,
   ReactiveEagerAsync,
+  IdiomaticEagerAsyncOptions,
+  ReactiveEagerAsyncOptions,
 } from '@chimeric/core';
 import { JSX, ReactNode } from 'react';
-import { chimericMethods } from '../methods.js';
 import { IdiomaticEagerAsyncTestHarness } from './IdiomaticEagerAsyncTestHarness.js';
 import { ReactiveEagerAsyncTestHarness } from './ReactiveEagerAsyncTestHarness.js';
 import { EagerAsyncTestHarnessReturnType } from './types.js';
 
+// No params
+export function ChimericEagerAsyncTestHarness<
+  TResult = unknown,
+  TError extends Error = Error,
+>({
+  chimericEagerAsync,
+  method,
+  reactiveOptions,
+  idiomaticOptions,
+  wrapper,
+}: {
+  chimericEagerAsync: ChimericEagerAsync<void, TResult, TError>;
+  method: 'idiomatic' | 'reactive';
+  reactiveOptions?: ReactiveEagerAsyncOptions;
+  idiomaticOptions?: IdiomaticEagerAsyncOptions;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): EagerAsyncTestHarnessReturnType<TResult, TError>;
+
+// Optional params
 export function ChimericEagerAsyncTestHarness<
   TParams = void,
   TResult = unknown,
   TError extends Error = Error,
->(
-  args: TParams extends void
-    ? {
-        chimericEagerAsync: ChimericEagerAsync<TParams, TResult, TError>;
-        method: (typeof chimericMethods)[number];
-        wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-      }
-    : {
-        chimericEagerAsync: ChimericEagerAsync<TParams, TResult, TError>;
-        method: (typeof chimericMethods)[number];
-        params: TParams;
-        wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
-      },
-): EagerAsyncTestHarnessReturnType<TResult, TError> {
-  const { chimericEagerAsync, method, wrapper } = args;
+>({
+  chimericEagerAsync,
+  method,
+  params,
+  reactiveOptions,
+  idiomaticOptions,
+  wrapper,
+}: {
+  chimericEagerAsync: ChimericEagerAsync<TParams | undefined, TResult, TError>;
+  method: 'idiomatic' | 'reactive';
+  params?: TParams;
+  reactiveOptions?: ReactiveEagerAsyncOptions;
+  idiomaticOptions?: IdiomaticEagerAsyncOptions;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): EagerAsyncTestHarnessReturnType<TResult, TError>;
+
+// Required params
+export function ChimericEagerAsyncTestHarness<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+>({
+  chimericEagerAsync,
+  method,
+  params,
+  reactiveOptions,
+  idiomaticOptions,
+  wrapper,
+}: {
+  chimericEagerAsync: ChimericEagerAsync<TParams, TResult, TError>;
+  method: 'idiomatic' | 'reactive';
+  params: TParams;
+  reactiveOptions?: ReactiveEagerAsyncOptions;
+  idiomaticOptions?: IdiomaticEagerAsyncOptions;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): EagerAsyncTestHarnessReturnType<TResult, TError>;
+
+// Implementation
+export function ChimericEagerAsyncTestHarness<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+>({
+  chimericEagerAsync,
+  method,
+  params,
+  reactiveOptions,
+  idiomaticOptions,
+  wrapper,
+}: {
+  chimericEagerAsync: ChimericEagerAsync<TParams, TResult, TError>;
+  method: 'idiomatic' | 'reactive';
+  params?: TParams;
+  reactiveOptions?: ReactiveEagerAsyncOptions;
+  idiomaticOptions?: IdiomaticEagerAsyncOptions;
+  wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+}): EagerAsyncTestHarnessReturnType<TResult, TError> {
   if (method === 'idiomatic') {
     return IdiomaticEagerAsyncTestHarness({
-      idiomaticEagerAsync: chimericEagerAsync,
-      params: (args as { params: object }).params,
-    } as unknown as TParams extends void ? { idiomaticEagerAsync: IdiomaticEagerAsync<TParams, TResult> } : { idiomaticEagerAsync: IdiomaticEagerAsync<TParams, TResult>; params: TParams });
-  } else {
+      idiomaticEagerAsync: chimericEagerAsync as IdiomaticEagerAsync<
+        TParams,
+        TResult
+      >,
+      params,
+      idiomaticOptions,
+    } as Parameters<typeof IdiomaticEagerAsyncTestHarness<TParams, TResult, TError>>[0]);
+  }
+  if (method === 'reactive') {
     return ReactiveEagerAsyncTestHarness({
-      reactiveEagerAsync: chimericEagerAsync,
-      params: (args as { params: object }).params,
+      reactiveEagerAsync: chimericEagerAsync as ReactiveEagerAsync<
+        TParams,
+        TResult,
+        TError
+      >,
+      params,
+      reactiveOptions,
       wrapper,
-    } as unknown as TParams extends void ? { reactiveEagerAsync: ReactiveEagerAsync<TParams, TResult, TError> } : { reactiveEagerAsync: ReactiveEagerAsync<TParams, TResult, TError>; params: TParams });
+    } as Parameters<typeof ReactiveEagerAsyncTestHarness<TParams, TResult, TError>>[0]);
+  } else {
+    throw new Error('Invalid method');
   }
 }
