@@ -3,6 +3,14 @@ import { ReactiveEagerAsync } from './types';
 import { TYPE_MARKERS } from '../../utilities/typeMarkers';
 import { markReactive } from '../../utilities/markReactive';
 
+// No params
+export function createReactiveEagerAsync<
+  TResult = unknown,
+  TError extends Error = Error,
+>(
+  reactiveFn: ReactiveEagerAsync<void, TResult, TError>['use'],
+): ReactiveEagerAsync<void, TResult, TError>;
+
 // Optional params
 export function createReactiveEagerAsync<
   TParams = void,
@@ -20,14 +28,6 @@ export function createReactiveEagerAsync<
 >(
   reactiveFn: ReactiveEagerAsync<TParams, TResult, TError>['use'],
 ): ReactiveEagerAsync<TParams, TResult, TError>;
-
-// No params
-export function createReactiveEagerAsync<
-  TResult = unknown,
-  TError extends Error = Error,
->(
-  reactiveFn: ReactiveEagerAsync<void, TResult, TError>['use'],
-): ReactiveEagerAsync<void, TResult, TError>;
 
 // Implementation
 export function createReactiveEagerAsync<

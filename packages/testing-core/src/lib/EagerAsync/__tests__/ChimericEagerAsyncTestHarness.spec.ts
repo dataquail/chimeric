@@ -139,10 +139,10 @@ describe('ChimericEagerAsyncTestHarness', () => {
     });
 
     try {
-      // @ts-expect-error - should error because params are not expected
       ChimericEagerAsyncTestHarness({
         chimericEagerAsync,
         method: 'reactive',
+        // @ts-expect-error - should error because params are not expected
         params: { name: 'John' },
       });
     } catch {
@@ -228,10 +228,10 @@ describe('ChimericEagerAsyncTestHarness', () => {
     });
 
     try {
-      // @ts-expect-error - should error because params are not expected
       ChimericEagerAsyncTestHarness({
         chimericEagerAsync,
         method: 'idiomatic',
+        // @ts-expect-error - should error because params are not expected
         params: { name: 'John' },
       });
     } catch {

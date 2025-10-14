@@ -64,9 +64,9 @@ describe('ReactiveEagerAsyncTestHarness', () => {
       EagerAsyncTestFixtures.withoutParams.getReactive();
 
     try {
-      // @ts-expect-error - should error because params are not expected
       ReactiveEagerAsyncTestHarness({
         reactiveEagerAsync,
+        // @ts-expect-error - should error because params are not expected
         params: { name: 'John' },
       });
     } catch {

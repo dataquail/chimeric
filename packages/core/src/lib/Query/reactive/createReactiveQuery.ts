@@ -7,7 +7,7 @@ import {
 import { TYPE_MARKERS } from '../../utilities/typeMarkers';
 import { markReactive } from '../../utilities/markReactive';
 
-// Overload for no params (allOptions as first arg)
+// No params
 export function createReactiveQuery<
   TResult,
   TError extends Error = Error,
@@ -20,7 +20,7 @@ export function createReactiveQuery<
   }) => ReactiveQueryReturn<TResult, TError, TNativeReturnType>,
 ): ReactiveQuery<void, TResult, TError, TNativeOptions, TNativeReturnType>;
 
-// Overload for optional params (params as first arg, allOptions as second)
+// Optional params
 export function createReactiveQuery<
   TParams,
   TResult,
@@ -43,7 +43,7 @@ export function createReactiveQuery<
   TNativeReturnType
 >;
 
-// Overload for required params (params as first arg, allOptions as second)
+// Required params
 export function createReactiveQuery<
   TParams,
   TResult,

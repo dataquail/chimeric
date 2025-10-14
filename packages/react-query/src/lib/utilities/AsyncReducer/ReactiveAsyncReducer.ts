@@ -320,30 +320,17 @@ type AnyServiceConfig = {
   getParams?: (params: any) => any;
 };
 
-type NoParamsEagerAsyncServiceConfig = {
-  service: ReactiveEagerAsync<void, any, any>;
-};
-type WithParamsEagerAsyncServiceConfig = {
-  service: ReactiveEagerAsync<any, any, any>;
-  getParams: (params: any) => any;
-};
-
-type NoParamsQueryServiceConfig = {
-  service: ReactiveQuery<void, any, any, any>;
-};
-type WithParamsQueryServiceConfig = {
-  service: ReactiveQuery<any, any, any, any>;
-  getParams: (params: any) => any;
-};
-
 type InferService<TConfig, TServiceParams> =
-  TConfig extends NoParamsQueryServiceConfig
-    ? TConfig['service'] extends ReactiveQuery<
-        void,
-        infer TResult,
-        infer TError,
-        infer TQueryKey
-      >
+  // QUERY
+  TConfig extends {
+    service: ReactiveQuery<
+      infer TParams,
+      infer TResult,
+      infer TError,
+      infer TQueryKey
+    >;
+  }
+    ? [TParams] extends [void]
       ? {
           service: ReactiveQuery<void, TResult, TError, TQueryKey>;
           getParams?: never;
@@ -356,18 +343,11 @@ type InferService<TConfig, TServiceParams> =
             >;
           };
         }
-      : never
-    : TConfig extends WithParamsQueryServiceConfig
-    ? TConfig['service'] extends ReactiveQuery<
-        infer TParams,
-        infer TResult,
-        infer TError,
-        infer TQueryKey
-      >
+      : void extends TParams
       ? {
-          service: ReactiveQuery<TParams, TResult, TError, TQueryKey>;
-          getParams: (params: TServiceParams) => TParams;
-          getOptions?: (params: TServiceParams) => {
+          service: ReactiveQuery<void, TResult, TError, TQueryKey>;
+          getParams?: never;
+          getOptions?: () => {
             options?: ReactiveQueryOptions;
             nativeOptions?: TanstackQueryReactiveNativeOptions<
               TResult,
@@ -376,32 +356,78 @@ type InferService<TConfig, TServiceParams> =
             >;
           };
         }
-      : never
-    : TConfig extends NoParamsEagerAsyncServiceConfig
-    ? TConfig['service'] extends ReactiveEagerAsync<
-        void,
-        infer TResult,
-        infer TError
-      >
+      : undefined extends TParams
+      ? {
+          service: ReactiveQuery<TParams, TResult, TError, TQueryKey>;
+          getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+          getOptions?:
+            | ((params: TServiceParams) => {
+                options?: ReactiveQueryOptions;
+                nativeOptions?: TanstackQueryReactiveNativeOptions<
+                  TResult,
+                  TError,
+                  TQueryKey
+                >;
+              })
+            | (() => {
+                options?: ReactiveQueryOptions;
+                nativeOptions?: TanstackQueryReactiveNativeOptions<
+                  TResult,
+                  TError,
+                  TQueryKey
+                >;
+              });
+        }
+      : {
+          service: ReactiveQuery<TParams, TResult, TError, TQueryKey>;
+          getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+          getOptions?:
+            | ((params: TServiceParams) => {
+                options?: ReactiveQueryOptions;
+                nativeOptions?: TanstackQueryReactiveNativeOptions<
+                  TResult,
+                  TError,
+                  TQueryKey
+                >;
+              })
+            | (() => {
+                options?: ReactiveQueryOptions;
+                nativeOptions?: TanstackQueryReactiveNativeOptions<
+                  TResult,
+                  TError,
+                  TQueryKey
+                >;
+              });
+        }
+    : // EAGER ASYNC
+    TConfig extends {
+        service: ReactiveEagerAsync<infer TParams, infer TResult, infer TError>;
+      }
+    ? [TParams] extends [void]
       ? {
           service: ReactiveEagerAsync<void, TResult, TError>;
           getParams?: never;
           getOptions?: never;
         }
-      : never
-    : TConfig extends WithParamsEagerAsyncServiceConfig
-    ? TConfig['service'] extends ReactiveEagerAsync<
-        infer TParams,
-        infer TResult,
-        infer TError
-      >
+      : void extends TParams
       ? {
-          service: ReactiveEagerAsync<TParams, TResult, TError>;
-          getParams: (params: TServiceParams) => TParams;
+          service: ReactiveEagerAsync<void, TResult, TError>;
+          getParams?: never;
           getOptions?: never;
         }
-      : never
-    : TConfig extends {
+      : undefined extends TParams
+      ? {
+          service: ReactiveEagerAsync<TParams, TResult, TError>;
+          getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+          getOptions?: never;
+        }
+      : {
+          service: ReactiveEagerAsync<TParams, TResult, TError>;
+          getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+          getOptions?: never;
+        }
+    : // SYNC
+    TConfig extends {
         service: ReactiveSync<infer TParams, infer TResult>;
       }
     ? [TParams] extends [void]
@@ -534,28 +560,57 @@ export const ReactiveAsyncReducer = <TServiceParams = void>() => ({
 
     const useEagerAsync = (params: TServiceParams | void) => {
       // Memoize arguments
-      const args0 = useMemo(() => getArgs(serviceList[0], params), [params]);
-      const args1 = useMemo(() => getArgs(serviceList[1], params), [params]);
-      const args2 = useMemo(() => getArgs(serviceList[2], params), [params]);
-      const args3 = useMemo(() => getArgs(serviceList[3], params), [params]);
-      const args4 = useMemo(() => getArgs(serviceList[4], params), [params]);
-      const args5 = useMemo(() => getArgs(serviceList[5], params), [params]);
-      const args6 = useMemo(() => getArgs(serviceList[6], params), [params]);
-      const args7 = useMemo(() => getArgs(serviceList[7], params), [params]);
-      const args8 = useMemo(() => getArgs(serviceList[8], params), [params]);
-      const args9 = useMemo(() => getArgs(serviceList[9], params), [params]);
-
+      const [params0, options0] = useMemo(
+        () => getArgs(serviceList[0], params),
+        [params],
+      );
+      const [paramsOrMaybeOptions1, maybeOptions1] = useMemo(
+        () => getArgs(serviceList[1], params),
+        [params],
+      );
+      const [paramsOrMaybeOptions2, maybeOptions2] = useMemo(
+        () => getArgs(serviceList[2], params),
+        [params],
+      );
+      const [paramsOrMaybeOptions3, maybeOptions3] = useMemo(
+        () => getArgs(serviceList[3], params),
+        [params],
+      );
+      const [paramsOrMaybeOptions4, maybeOptions4] = useMemo(
+        () => getArgs(serviceList[4], params),
+        [params],
+      );
+      const [paramsOrMaybeOptions5, maybeOptions5] = useMemo(
+        () => getArgs(serviceList[5], params),
+        [params],
+      );
+      const [paramsOrMaybeOptions6, maybeOptions6] = useMemo(
+        () => getArgs(serviceList[6], params),
+        [params],
+      );
+      const [paramsOrMaybeOptions7, maybeOptions7] = useMemo(
+        () => getArgs(serviceList[7], params),
+        [params],
+      );
+      const [paramsOrMaybeOptions8, maybeOptions8] = useMemo(
+        () => getArgs(serviceList[8], params),
+        [params],
+      );
+      const [paramsOrMaybeOptions9, maybeOptions9] = useMemo(
+        () => getArgs(serviceList[9], params),
+        [params],
+      );
       // Call hooks with memoized arguments
-      const result0 = useService0(args0);
-      const result1 = useService1(args1);
-      const result2 = useService2(args2);
-      const result3 = useService3(args3);
-      const result4 = useService4(args4);
-      const result5 = useService5(args5);
-      const result6 = useService6(args6);
-      const result7 = useService7(args7);
-      const result8 = useService8(args8);
-      const result9 = useService9(args9);
+      const result0 = useService0(params0, options0);
+      const result1 = useService1(paramsOrMaybeOptions1, maybeOptions1);
+      const result2 = useService2(paramsOrMaybeOptions2, maybeOptions2);
+      const result3 = useService3(paramsOrMaybeOptions3, maybeOptions3);
+      const result4 = useService4(paramsOrMaybeOptions4, maybeOptions4);
+      const result5 = useService5(paramsOrMaybeOptions5, maybeOptions5);
+      const result6 = useService6(paramsOrMaybeOptions6, maybeOptions6);
+      const result7 = useService7(paramsOrMaybeOptions7, maybeOptions7);
+      const result8 = useService8(paramsOrMaybeOptions8, maybeOptions8);
+      const result9 = useService9(paramsOrMaybeOptions9, maybeOptions9);
 
       // Use deep memoization for each result to prevent unnecessary re-renders
       const memoizedResult0 = useDeepMemo(
@@ -637,7 +692,9 @@ export const ReactiveAsyncReducer = <TServiceParams = void>() => ({
   },
 });
 
-const getService = (service: AnyServiceConfig | undefined) => {
+const getService = (
+  service: AnyServiceConfig | undefined,
+): ((paramsOrMaybeOptions?: any, maybeOptions?: any) => any) => {
   if (!service) {
     return () => undefined;
   } else {
@@ -683,10 +740,7 @@ export const extractMemoKey = (
     return result;
   }
 
-  if (isReactiveSync(serviceConfig.service)) {
-    // For sync services, the result is the data directly - safe to memoize as-is
-    return result;
-  } else if (isReactiveEagerAsync(serviceConfig.service)) {
+  if (isReactiveEagerAsync(serviceConfig.service)) {
     // For eager async services, extract only the relevant state properties
     return {
       isIdle: result.isIdle,
@@ -696,6 +750,9 @@ export const extractMemoKey = (
       data: result.data,
       error: result.error,
     };
+  } else if (isReactiveSync(serviceConfig.service)) {
+    // For sync services, the result is the data directly - safe to memoize as-is
+    return result;
   } else if (isReactiveQuery(serviceConfig.service)) {
     // For query services, extract only the relevant state properties
     return {
@@ -712,31 +769,37 @@ export const extractMemoKey = (
 };
 
 const getArgs = <TServiceParams>(
-  service: AnyServiceConfig | undefined,
+  serviceConfig: AnyServiceConfig | undefined,
   serviceParams: TServiceParams | void,
-) => {
-  if (!service) {
-    return undefined;
+):
+  | []
+  | [paramsOrMaybeOptions: any]
+  | [paramsOrMaybeOptions: any, maybeOptions: any] => {
+  if (!serviceConfig) {
+    return [];
   }
 
   // Get params either from getParams function or undefined for void services
-  const params = service?.getParams
-    ? service.getParams(serviceParams)
-    : undefined;
-
-  if (isReactiveSync(service.service)) {
-    return params;
-  } else if (isReactiveEagerAsync(service.service)) {
-    return params;
-  } else if (isReactiveQuery(service.service)) {
+  if (isReactiveEagerAsync(serviceConfig.service)) {
+    const params = serviceConfig?.getParams
+      ? serviceConfig.getParams(serviceParams)
+      : undefined;
+    return [params];
+  } else if (isReactiveSync(serviceConfig.service)) {
+    const params = serviceConfig?.getParams
+      ? serviceConfig.getParams(serviceParams)
+      : undefined;
+    return [params];
+  } else if (isReactiveQuery(serviceConfig.service)) {
+    const params = serviceConfig?.getParams
+      ? serviceConfig.getParams(serviceParams)
+      : undefined;
     const options =
-      (service as { getOptions?: (serviceParams: any) => void })?.getOptions?.(
-        params,
-      ) ?? {};
-    return {
-      ...params,
-      ...options,
-    };
+      (
+        serviceConfig as { getOptions?: (serviceParams: any) => void }
+      )?.getOptions?.(params) ?? {};
+
+    return serviceConfig.service.use.length > 1 ? [params, options] : [options];
   } else {
     throw new Error('Invalid service type');
   }

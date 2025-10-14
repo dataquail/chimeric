@@ -5,6 +5,8 @@ import {
   createReactiveSync,
   fuseChimericEagerAsync,
   fuseChimericSync,
+  IdiomaticEagerAsyncOptions,
+  ReactiveEagerAsyncOptions,
 } from '@chimeric/core';
 import { ChimericAsyncReducer } from './ChimericAsyncReducer';
 import { renderHook, waitFor } from '@testing-library/react';
@@ -92,15 +94,19 @@ describe('ChimericAsyncReducer', () => {
 
   const createNoParamsEagerAsync = () => {
     return fuseChimericEagerAsync({
-      idiomatic: createIdiomaticEagerAsync(async () => ({ age: 42 as const })),
-      reactive: createReactiveEagerAsync(() => ({
-        isIdle: false,
-        isPending: false,
-        isSuccess: true,
-        isError: false,
-        error: null,
-        data: { age: 42 as const },
-      })),
+      idiomatic: createIdiomaticEagerAsync(
+        async (_options?: IdiomaticEagerAsyncOptions) => ({ age: 42 as const }),
+      ),
+      reactive: createReactiveEagerAsync(
+        (_options?: ReactiveEagerAsyncOptions) => ({
+          isIdle: false,
+          isPending: false,
+          isSuccess: true,
+          isError: false,
+          error: null,
+          data: { age: 42 as const },
+        }),
+      ),
     });
   };
 
@@ -123,23 +129,27 @@ describe('ChimericAsyncReducer', () => {
           service: getTodoById,
           getParams: ({ index }: Args) => index,
         },
-        {
-          service: getAllTodos,
-        },
+        { service: getAllTodos },
         {
           service: createParamsQuery(),
           getParams: ({ name }: Args) => ({ name }),
+          getIdiomaticOptions: (params: Args) => ({
+            options: {
+              forceRefetch: params.name.length > 0,
+            },
+          }),
+          getReactiveOptions: (params: Args) => ({
+            options: {
+              enabled: params.name.length > 0,
+            },
+          }),
         },
-        {
-          service: createNoParamsQuery(),
-        },
+        { service: createNoParamsQuery() },
         {
           service: createParamsEagerAsync(),
           getParams: ({ age }: Args) => ({ age }),
         },
-        {
-          service: createNoParamsEagerAsync(),
-        },
+        { service: createNoParamsEagerAsync() },
       ],
       reducer: (
         [todo, todos, name, bob, ageResultWithParams, ageResultWithoutParams],
