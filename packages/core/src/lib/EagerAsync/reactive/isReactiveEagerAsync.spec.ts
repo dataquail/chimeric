@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { makeEagerAsyncHookWithoutParamsReturnsString } from '../../__tests__/eagerAsyncFixtures';
 import { createReactiveEagerAsync } from './createReactiveEagerAsync';
 import { isReactiveEagerAsync } from './isReactiveEagerAsync';
@@ -20,12 +21,12 @@ describe('isReactiveEagerAsync', () => {
   });
 
   it('should return false for invalid inputs', () => {
-    expect(isReactiveEagerAsync('not an object')).toBe(false);
-    expect(isReactiveEagerAsync(123)).toBe(false);
-    expect(isReactiveEagerAsync(null)).toBe(false);
-    expect(isReactiveEagerAsync(undefined)).toBe(false);
-    expect(isReactiveEagerAsync({})).toBe(false);
-    expect(isReactiveEagerAsync({ notUse: 'something' })).toBe(false);
-    expect(isReactiveEagerAsync({ use: 'not a function' })).toBe(false);
+    expect(isReactiveEagerAsync('not an object' as any)).toBe(false);
+    expect(isReactiveEagerAsync(123 as any)).toBe(false);
+    expect(isReactiveEagerAsync(null as any)).toBe(false);
+    expect(isReactiveEagerAsync(undefined as any)).toBe(false);
+    expect(isReactiveEagerAsync({} as any)).toBe(false);
+    expect(isReactiveEagerAsync({ notUse: 'something' } as any)).toBe(false);
+    expect(isReactiveEagerAsync({ use: 'not a function' } as any)).toBe(false);
   });
 });
