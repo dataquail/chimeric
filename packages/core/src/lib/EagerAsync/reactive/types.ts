@@ -17,20 +17,20 @@ export type ReactiveEagerAsync<
 > = {
   use: [TParams] extends [void]
     ? (
-        config?: ReactiveEagerAsyncOptions,
+        options?: ReactiveEagerAsyncOptions,
       ) => ReactiveEagerAsyncReturnType<TResult, TError>
     : void extends TParams
     ? (
-        config?: ReactiveEagerAsyncOptions,
+        options?: ReactiveEagerAsyncOptions,
       ) => ReactiveEagerAsyncReturnType<TResult, TError>
     : undefined extends TParams
     ? (
         params?: TParams,
-        config?: ReactiveEagerAsyncOptions,
+        options?: ReactiveEagerAsyncOptions,
       ) => ReactiveEagerAsyncReturnType<TResult, TError>
     : (
         params: TParams,
-        config?: ReactiveEagerAsyncOptions,
+        options?: ReactiveEagerAsyncOptions,
       ) => ReactiveEagerAsyncReturnType<TResult, TError>;
 };
 
@@ -38,7 +38,7 @@ export type ReactiveEagerAsyncOptions = Record<string, never>;
 
 export type DefineReactiveEagerAsync<
   T extends (
-    args: Parameters<T>[0],
+    params: Parameters<T>[0],
   ) => ReturnType<T> extends Promise<infer R> ? Promise<R> : never,
   TError extends Error = Error,
 > = Parameters<T> extends []

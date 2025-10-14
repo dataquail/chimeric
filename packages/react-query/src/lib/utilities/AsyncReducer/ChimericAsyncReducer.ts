@@ -8,7 +8,7 @@ import {
   ReactiveEagerAsync,
   ReactiveQueryOptions,
 } from '@chimeric/core';
-import { UseQueryResult } from '@tanstack/react-query';
+import { QueryKey, UseQueryResult } from '@tanstack/react-query';
 import { IdiomaticAsyncReducer } from './IdiomaticAsyncReducer';
 import { ReactiveAsyncReducer } from './ReactiveAsyncReducer';
 import { TanstackQueryIdiomaticNativeOptions } from 'src/lib/Query/idiomatic/types';
@@ -26,7 +26,7 @@ type ExtractServiceResult<TConfig> = TConfig extends {
 }
   ? UseQueryResult<TResult, TError>['data']
   : TConfig extends {
-      service: ChimericEagerAsync<any, infer TResult, infer _TError>;
+      service: ChimericEagerAsync<infer _TParams, infer TResult, infer _TError>;
     }
   ? TResult
   : TConfig extends {
@@ -45,7 +45,7 @@ type ExtractServiceResultWithUndefined<TConfig> = TConfig extends {
 }
   ? UseQueryResult<TResult, TError>['data'] | undefined
   : TConfig extends {
-      service: ChimericEagerAsync<any, infer TResult, infer _TError>;
+      service: ChimericEagerAsync<infer _TParams, infer TResult, infer _TError>;
     }
   ? TResult | undefined
   : TConfig extends {
@@ -323,124 +323,154 @@ type AnyServiceConfig = {
   getReactiveOptions?: (params: any) => any;
 };
 
-type NoParamsEagerAsyncServiceConfig = {
-  service: ChimericEagerAsync<void, any, any>;
-};
-type WithParamsEagerAsyncServiceConfig = {
-  service: ChimericEagerAsync<any, any, any>;
-  getParams: (params: any) => any;
+type AllIdiomaticQueryOptions<
+  TResult = unknown,
+  TError extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
+> = {
+  options?: IdiomaticQueryOptions;
+  nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+    TResult,
+    TError,
+    TQueryKey
+  >;
 };
 
-type NoParamsQueryServiceConfig = {
-  service: ChimericQuery<void, any, any, any>;
-};
-type WithParamsQueryServiceConfig = {
-  service: ChimericQuery<any, any, any, any>;
-  getParams: (params: any) => any;
+type AllReactiveQueryOptions<
+  TResult = unknown,
+  TError extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
+> = {
+  options?: ReactiveQueryOptions;
+  nativeOptions?: TanstackQueryReactiveNativeOptions<
+    TResult,
+    TError,
+    TQueryKey
+  >;
 };
 
 type InferService<TConfig, TServiceParams> =
-  TConfig extends NoParamsQueryServiceConfig
-    ? TConfig['service'] extends ChimericQuery<
-        void,
-        infer TResult,
-        infer TError,
-        infer TQueryKey
-      >
+  // QUERY
+  TConfig extends {
+    service: ChimericQuery<
+      infer TParams,
+      infer TResult,
+      infer TError,
+      infer TQueryKey
+    >;
+  }
+    ? [TParams] extends [void]
       ? {
           service: ChimericQuery<void, TResult, TError, TQueryKey>;
           getParams?: never;
-          getIdiomaticOptions?: () => {
-            options?: IdiomaticQueryOptions;
-            nativeOptions?: TanstackQueryIdiomaticNativeOptions<
-              TResult,
-              TError,
-              TQueryKey
-            >;
-          };
-          getReactiveOptions?: () => {
-            options?: ReactiveQueryOptions;
-            nativeOptions?: TanstackQueryReactiveNativeOptions<
-              TResult,
-              TError,
-              TQueryKey
-            >;
-          };
+          getIdiomaticOptions?: () => AllIdiomaticQueryOptions<
+            TResult,
+            TError,
+            TQueryKey
+          >;
+          getReactiveOptions?: () => AllReactiveQueryOptions<
+            TResult,
+            TError,
+            TQueryKey
+          >;
         }
-      : never
-    : TConfig extends WithParamsQueryServiceConfig
-    ? TConfig['service'] extends ChimericQuery<
-        infer TParams,
-        infer TResult,
-        infer TError,
-        infer TQueryKey
-      >
+      : void extends TParams
+      ? {
+          service: ChimericQuery<void, TResult, TError, TQueryKey>;
+          getParams?: never;
+          getIdiomaticOptions?: () => AllIdiomaticQueryOptions<
+            TResult,
+            TError,
+            TQueryKey
+          >;
+          getReactiveOptions?: () => AllReactiveQueryOptions<
+            TResult,
+            TError,
+            TQueryKey
+          >;
+        }
+      : undefined extends TParams
       ? {
           service: ChimericQuery<TParams, TResult, TError, TQueryKey>;
-          getParams: (params: TServiceParams) => TParams;
-          getIdiomaticOptions?: (params: TServiceParams) => {
-            options?: IdiomaticQueryOptions;
-            nativeOptions?: TanstackQueryIdiomaticNativeOptions<
-              TResult,
-              TError,
-              TQueryKey
-            >;
-          };
-          getReactiveOptions?: (params: TServiceParams) => {
-            options?: ReactiveQueryOptions;
-            nativeOptions?: TanstackQueryReactiveNativeOptions<
-              TResult,
-              TError,
-              TQueryKey
-            >;
-          };
+          getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+          getIdiomaticOptions?:
+            | ((
+                params: TServiceParams,
+              ) => AllIdiomaticQueryOptions<TResult, TError, TQueryKey>)
+            | (() => AllIdiomaticQueryOptions<TResult, TError, TQueryKey>);
+          getReactiveOptions?:
+            | ((
+                params: TServiceParams,
+              ) => AllReactiveQueryOptions<TResult, TError, TQueryKey>)
+            | (() => AllReactiveQueryOptions<TResult, TError, TQueryKey>);
         }
-      : never
-    : TConfig extends NoParamsEagerAsyncServiceConfig
-    ? TConfig['service'] extends ChimericEagerAsync<
-        void,
-        infer TResult,
-        infer TError
-      >
+      : {
+          service: ChimericQuery<TParams, TResult, TError, TQueryKey>;
+          getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+          getIdiomaticOptions?:
+            | ((
+                params: TServiceParams,
+              ) => AllIdiomaticQueryOptions<TResult, TError, TQueryKey>)
+            | (() => AllIdiomaticQueryOptions<TResult, TError, TQueryKey>);
+          getReactiveOptions?:
+            | ((
+                params: TServiceParams,
+              ) => AllReactiveQueryOptions<TResult, TError, TQueryKey>)
+            | (() => AllReactiveQueryOptions<TResult, TError, TQueryKey>);
+        }
+    : // EAGER ASYNC
+    TConfig extends {
+        service: ChimericEagerAsync<infer TParams, infer TResult, infer TError>;
+      }
+    ? [TParams] extends [void]
       ? {
           service: ChimericEagerAsync<void, TResult, TError>;
           getParams?: never;
           getOptions?: never;
         }
-      : never
-    : TConfig extends WithParamsEagerAsyncServiceConfig
-    ? TConfig['service'] extends ChimericEagerAsync<
-        infer TParams,
-        infer TResult,
-        infer TError
-      >
+      : void extends TParams
       ? {
-          service: ChimericEagerAsync<TParams, TResult, TError>;
-          getParams: (params: TServiceParams) => TParams;
+          service: ChimericEagerAsync<void, TResult, TError>;
+          getParams?: never;
           getOptions?: never;
         }
-      : never
-    : TConfig extends {
+      : undefined extends TParams
+      ? {
+          service: ChimericEagerAsync<TParams, TResult, TError>;
+          getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+          getOptions?: never;
+        }
+      : {
+          service: ChimericEagerAsync<TParams, TResult, TError>;
+          getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+          getOptions?: never;
+        }
+    : // SYNC
+    TConfig extends {
         service: ChimericSync<infer TParams, infer TResult>;
       }
     ? [TParams] extends [void]
       ? {
           service: ChimericSync<void, TResult>;
           getParams?: never;
+          getOptions?: never;
         }
       : void extends TParams
       ? {
           service: ChimericSync<void, TResult>;
           getParams?: never;
+          getOptions?: never;
         }
       : undefined extends TParams
       ? {
           service: ChimericSync<TParams, TResult>;
           getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+          getOptions?: never;
         }
       : {
           service: ChimericSync<TParams, TResult>;
           getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+          getOptions?: never;
         }
     : never;
 

@@ -274,41 +274,44 @@ describe('fuseChimericQuery', () => {
 
   // ANNOTATION TESTS
   it('ANNOTATION: no params', async () => {
-    const { idiomaticQuery, reactiveQuery, annotation: _annotation } =
-      QueryTestFixtures.withoutParams.getChimeric();
-    const chimericQuery = fuseChimericQuery({
+    const {
+      idiomaticQuery,
+      reactiveQuery,
+      annotation: _annotation,
+    } = QueryTestFixtures.withoutParams.getChimeric();
+    type TestAnnotation = typeof _annotation;
+    const chimericQuery: TestAnnotation = fuseChimericQuery({
       idiomatic: idiomaticQuery,
       reactive: reactiveQuery,
     });
-
-    type TestAnnotation = typeof _annotation;
-    const testAnnotation: TestAnnotation = chimericQuery;
-    expect(testAnnotation).toBe(chimericQuery);
+    expect(chimericQuery).toBeDefined();
   });
 
   it('ANNOTATION: with params', async () => {
-    const { idiomaticQuery, reactiveQuery, annotation: _annotation } =
-      QueryTestFixtures.withParams.getChimeric();
-    const chimericQuery = fuseChimericQuery({
+    const {
+      idiomaticQuery,
+      reactiveQuery,
+      annotation: _annotation,
+    } = QueryTestFixtures.withParams.getChimeric();
+    type TestAnnotation = typeof _annotation;
+    const chimericQuery: TestAnnotation = fuseChimericQuery({
       idiomatic: idiomaticQuery,
       reactive: reactiveQuery,
     });
-
-    type TestAnnotation = typeof _annotation;
-    const testAnnotation: TestAnnotation = chimericQuery;
-    expect(testAnnotation).toBe(chimericQuery);
+    expect(chimericQuery).toBeDefined();
   });
 
   it('ANNOTATION: optional params', async () => {
-    const { idiomaticQuery, reactiveQuery, annotation: _annotation } =
-      QueryTestFixtures.withOptionalParams.getChimeric();
-    const chimericQuery = fuseChimericQuery({
+    const {
+      idiomaticQuery,
+      reactiveQuery,
+      annotation: _annotation,
+    } = QueryTestFixtures.withOptionalParams.getChimeric();
+    type TestAnnotation = typeof _annotation;
+    const chimericQuery: TestAnnotation = fuseChimericQuery({
       idiomatic: idiomaticQuery,
       reactive: reactiveQuery,
     });
-
-    type TestAnnotation = typeof _annotation;
-    const testAnnotation: TestAnnotation = chimericQuery;
-    expect(testAnnotation).toBe(chimericQuery);
+    expect(chimericQuery).toBeDefined();
   });
 });

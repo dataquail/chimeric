@@ -1,12 +1,18 @@
 import { DefineChimericEagerAsync } from '../chimeric/types';
 import { createIdiomaticEagerAsync } from '../idiomatic/createIdiomaticEagerAsync';
-import { DefineIdiomaticEagerAsync } from '../idiomatic/types';
+import {
+  DefineIdiomaticEagerAsync,
+  IdiomaticEagerAsyncOptions,
+} from '../idiomatic/types';
 import { createReactiveEagerAsync } from '../reactive/createReactiveEagerAsync';
-import { DefineReactiveEagerAsync } from '../reactive/types';
+import {
+  DefineReactiveEagerAsync,
+  ReactiveEagerAsyncOptions,
+} from '../reactive/types';
 
 export const EagerAsyncTestFixtures = {
   withoutParams: {
-    getIdiomatic: () => {
+    getIdiomatic: (_options?: IdiomaticEagerAsyncOptions) => {
       const fn = vi.fn(async () => 'test');
       return {
         fn,
@@ -15,7 +21,7 @@ export const EagerAsyncTestFixtures = {
       };
     },
     getReactive: () => {
-      const fn = vi.fn(() => ({
+      const fn = vi.fn((_options?: ReactiveEagerAsyncOptions) => ({
         isIdle: true,
         isPending: false,
         isSuccess: false,

@@ -5,9 +5,9 @@ import {
   IdiomaticQueryOptions,
   IdiomaticSync,
   isIdiomaticEagerAsync,
-  isIdiomaticQuery,
   isIdiomaticSync,
 } from '@chimeric/core';
+import { isIdiomaticQuery } from '../../Query/idiomatic/isIdiomaticQuery';
 import {
   IdiomaticQuery,
   TanstackQueryIdiomaticNativeOptions,
@@ -164,33 +164,20 @@ type AnyServiceConfig = {
   getParams?: (params: any) => any;
 };
 
-type NoParamsEagerAsyncServiceConfig = {
-  service: IdiomaticEagerAsync<void, any>;
-};
-type WithParamsEagerAsyncServiceConfig = {
-  service: IdiomaticEagerAsync<any, any>;
-  getParams: (params: any) => any;
-};
-
-type NoParamsQueryServiceConfig = {
-  service: IdiomaticQuery<void, any, any, any>;
-};
-type WithParamsQueryServiceConfig = {
-  service: IdiomaticQuery<any, any, any, any>;
-  getParams: (params: any) => any;
-};
-
 type InferIdiomaticSync<T extends (args: Parameters<T>[0]) => ReturnType<T>> =
   T;
 
 type InferService<TConfig, TServiceParams> =
-  TConfig extends NoParamsQueryServiceConfig
-    ? TConfig['service'] extends IdiomaticQuery<
-        void,
-        infer TResult,
-        infer TError,
-        infer TQueryKey
-      >
+  // QUERY
+  TConfig extends {
+    service: IdiomaticQuery<
+      infer TParams,
+      infer TResult,
+      infer TError,
+      infer TQueryKey
+    >;
+  }
+    ? [TParams] extends [void]
       ? {
           service: IdiomaticQuery<void, TResult, TError, TQueryKey>;
           getParams?: never;
@@ -203,17 +190,10 @@ type InferService<TConfig, TServiceParams> =
             >;
           };
         }
-      : never
-    : TConfig extends WithParamsQueryServiceConfig
-    ? TConfig['service'] extends IdiomaticQuery<
-        infer TParams,
-        infer TResult,
-        infer TError,
-        infer TQueryKey
-      >
+      : void extends TParams
       ? {
-          service: IdiomaticQuery<TParams, TResult, TError, TQueryKey>;
-          getParams: (params: TServiceParams) => TParams;
+          service: IdiomaticQuery<void, TResult, TError, TQueryKey>;
+          getParams?: never;
           getOptions?: () => {
             options?: IdiomaticQueryOptions;
             nativeOptions?: TanstackQueryIdiomaticNativeOptions<
@@ -223,27 +203,78 @@ type InferService<TConfig, TServiceParams> =
             >;
           };
         }
-      : never
-    : TConfig extends NoParamsEagerAsyncServiceConfig
-    ? TConfig['service'] extends IdiomaticEagerAsync<void, infer TResult>
+      : undefined extends TParams
+      ? {
+          service: IdiomaticQuery<TParams, TResult, TError, TQueryKey>;
+          getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+          getOptions?:
+            | ((params: TServiceParams) => {
+                options?: IdiomaticQueryOptions;
+                nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+                  TResult,
+                  TError,
+                  TQueryKey
+                >;
+              })
+            | (() => {
+                options?: IdiomaticQueryOptions;
+                nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+                  TResult,
+                  TError,
+                  TQueryKey
+                >;
+              });
+        }
+      : {
+          service: IdiomaticQuery<TParams, TResult, TError, TQueryKey>;
+          getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+          getOptions?:
+            | ((params: TServiceParams) => {
+                options?: IdiomaticQueryOptions;
+                nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+                  TResult,
+                  TError,
+                  TQueryKey
+                >;
+              })
+            | (() => {
+                options?: IdiomaticQueryOptions;
+                nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+                  TResult,
+                  TError,
+                  TQueryKey
+                >;
+              });
+        }
+    : // EAGER ASYNC
+    TConfig extends {
+        service: IdiomaticEagerAsync<infer TParams, infer TResult>;
+      }
+    ? [TParams] extends [void]
       ? {
           service: IdiomaticEagerAsync<void, TResult>;
           getParams?: never;
           getOptions?: never;
         }
-      : never
-    : TConfig extends WithParamsEagerAsyncServiceConfig
-    ? TConfig['service'] extends IdiomaticEagerAsync<
-        infer TParams,
-        infer TResult
-      >
+      : void extends TParams
       ? {
-          service: IdiomaticEagerAsync<TParams, TResult>;
-          getParams: (params: TServiceParams) => TParams;
+          service: IdiomaticEagerAsync<void, TResult>;
+          getParams?: never;
           getOptions?: never;
         }
-      : never
-    : TConfig extends {
+      : undefined extends TParams
+      ? {
+          service: IdiomaticEagerAsync<TParams, TResult>;
+          getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+          getOptions?: never;
+        }
+      : {
+          service: IdiomaticEagerAsync<TParams, TResult>;
+          getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+          getOptions?: never;
+        }
+    : // SYNC
+    TConfig extends {
         service: InferIdiomaticSync<infer T>;
       }
     ? Parameters<T> extends []
@@ -369,17 +400,57 @@ export const IdiomaticAsyncReducer = <TServiceParams = void>() => ({
 
     return createIdiomaticEagerAsync<TServiceParams, TServiceResult>(
       async (params) => {
+        const [paramsOrMaybeOptions0, maybeOptions0] = getArgs(
+          serviceList[0],
+          params,
+        );
+        const [paramsOrMaybeOptions1, maybeOptions1] = getArgs(
+          serviceList[1],
+          params,
+        );
+        const [paramsOrMaybeOptions2, maybeOptions2] = getArgs(
+          serviceList[2],
+          params,
+        );
+        const [paramsOrMaybeOptions3, maybeOptions3] = getArgs(
+          serviceList[3],
+          params,
+        );
+        const [paramsOrMaybeOptions4, maybeOptions4] = getArgs(
+          serviceList[4],
+          params,
+        );
+        const [paramsOrMaybeOptions5, maybeOptions5] = getArgs(
+          serviceList[5],
+          params,
+        );
+        const [paramsOrMaybeOptions6, maybeOptions6] = getArgs(
+          serviceList[6],
+          params,
+        );
+        const [paramsOrMaybeOptions7, maybeOptions7] = getArgs(
+          serviceList[7],
+          params,
+        );
+        const [paramsOrMaybeOptions8, maybeOptions8] = getArgs(
+          serviceList[8],
+          params,
+        );
+        const [paramsOrMaybeOptions9, maybeOptions9] = getArgs(
+          serviceList[9],
+          params,
+        );
         const results = [
-          await service0(getArgs(serviceList[0], params)),
-          await service1(getArgs(serviceList[1], params)),
-          await service2(getArgs(serviceList[2], params)),
-          await service3(getArgs(serviceList[3], params)),
-          await service4(getArgs(serviceList[4], params)),
-          await service5(getArgs(serviceList[5], params)),
-          await service6(getArgs(serviceList[6], params)),
-          await service7(getArgs(serviceList[7], params)),
-          await service8(getArgs(serviceList[8], params)),
-          await service9(getArgs(serviceList[9], params)),
+          await service0(paramsOrMaybeOptions0, maybeOptions0),
+          await service1(paramsOrMaybeOptions1, maybeOptions1),
+          await service2(paramsOrMaybeOptions2, maybeOptions2),
+          await service3(paramsOrMaybeOptions3, maybeOptions3),
+          await service4(paramsOrMaybeOptions4, maybeOptions4),
+          await service5(paramsOrMaybeOptions5, maybeOptions5),
+          await service6(paramsOrMaybeOptions6, maybeOptions6),
+          await service7(paramsOrMaybeOptions7, maybeOptions7),
+          await service8(paramsOrMaybeOptions8, maybeOptions8),
+          await service9(paramsOrMaybeOptions9, maybeOptions9),
         ].slice(0, serviceList.length) as ExtractResults<TConfigList>;
 
         return reducer(results, params);
@@ -388,7 +459,9 @@ export const IdiomaticAsyncReducer = <TServiceParams = void>() => ({
   },
 });
 
-const getService = (service: AnyServiceConfig | undefined) => {
+const getService = (
+  service: AnyServiceConfig | undefined,
+): ((paramsOrMaybeOptions?: any, maybeOptions?: any) => any) => {
   if (!service) {
     return () => undefined;
   } else {
@@ -397,31 +470,37 @@ const getService = (service: AnyServiceConfig | undefined) => {
 };
 
 const getArgs = <TServiceParams>(
-  service: AnyServiceConfig | undefined,
+  serviceConfig: AnyServiceConfig | undefined,
   serviceParams: TServiceParams | void,
-) => {
-  if (!service) {
-    return undefined;
+):
+  | []
+  | [paramsOrMaybeOptions: any]
+  | [paramsOrMaybeOptions: any, maybeOptions: any] => {
+  if (!serviceConfig) {
+    return [];
   }
 
   // Get params either from getParams function or undefined for void services
-  const params = (service as { getParams: (params: any) => any })?.getParams
-    ? (service as { getParams: (params: any) => any }).getParams(serviceParams)
-    : undefined;
-
-  if (isIdiomaticSync(service.service)) {
-    return params;
-  } else if (isIdiomaticEagerAsync(service.service)) {
-    return params;
-  } else if (isIdiomaticQuery(service.service)) {
+  if (isIdiomaticSync(serviceConfig.service)) {
+    const params = serviceConfig?.getParams
+      ? serviceConfig.getParams(serviceParams)
+      : undefined;
+    return [params];
+  } else if (isIdiomaticQuery(serviceConfig.service)) {
+    const params = serviceConfig?.getParams
+      ? serviceConfig.getParams(serviceParams)
+      : undefined;
     const options =
-      (service as { getOptions?: (serviceParams: any) => void })?.getOptions?.(
-        params,
-      ) ?? {};
-    return {
-      ...params,
-      ...options,
-    };
+      (
+        serviceConfig as { getOptions?: (serviceParams: any) => void }
+      )?.getOptions?.(params) ?? {};
+
+    return serviceConfig.service.length > 1 ? [params, options] : [options];
+  } else if (isIdiomaticEagerAsync(serviceConfig.service)) {
+    const params = serviceConfig?.getParams
+      ? serviceConfig.getParams(serviceParams)
+      : undefined;
+    return [params];
   } else {
     throw new Error('Invalid service type');
   }
