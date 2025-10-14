@@ -1,3 +1,25 @@
+# 1.0.0 (2025-10-14)
+
+### 🚀 Features
+
+- queries handle arbitrary arguments ([ce18829](https://github.com/dataquail/chimeric/commit/ce18829))
+- sync core and reducer arg refactor ([e483451](https://github.com/dataquail/chimeric/commit/e483451))
+- revise sync and async reducers for sync ([5817035](https://github.com/dataquail/chimeric/commit/5817035))
+- sync test harness refactor ([8677b61](https://github.com/dataquail/chimeric/commit/8677b61))
+- cleanup lint errors ([c97e75a](https://github.com/dataquail/chimeric/commit/c97e75a))
+- mutation ([6a8b099](https://github.com/dataquail/chimeric/commit/6a8b099))
+- async refactor ([f69299d](https://github.com/dataquail/chimeric/commit/f69299d))
+- eager async refactor ([73e41ab](https://github.com/dataquail/chimeric/commit/73e41ab))
+- ⚠️  async reducer cleanup - arg refactor ([3c4f3db](https://github.com/dataquail/chimeric/commit/3c4f3db))
+
+### ⚠️  Breaking Changes
+
+- ⚠️  async reducer cleanup - arg refactor ([3c4f3db](https://github.com/dataquail/chimeric/commit/3c4f3db))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 0.4.0 (2025-09-25)
 
 ### 🚀 Features
