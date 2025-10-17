@@ -1,4 +1,8 @@
-import { IdiomaticQueryOptions, ReactiveQueryOptions } from '@chimeric/core';
+import {
+  IdiomaticQueryOptions,
+  ReactiveQueryOptions,
+  ChimericQuery as CoreChimericQuery,
+} from '@chimeric/core';
 import { JSX, ReactNode } from 'react';
 import { ChimericQueryTestHarnessReturnType } from './types.js';
 import {
@@ -6,6 +10,7 @@ import {
   ChimericQuery,
   TanstackQueryIdiomaticNativeOptions,
   TanstackQueryReactiveNativeOptions,
+  TanstackQueryReactiveReturnType,
 } from '@chimeric/react-query';
 import {
   chimericMethods,
@@ -114,6 +119,30 @@ export function ChimericQueryTestHarness<
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
 }): ChimericQueryTestHarnessReturnType<TResult, TError, TMethod> {
   return CoreChimericQueryTestHarness(
-    args as any,
+    args as {
+      chimericQuery: CoreChimericQuery<
+        TParams,
+        TResult,
+        TError,
+        TanstackQueryIdiomaticNativeOptions<TResult, TError, TQueryKey>,
+        TanstackQueryReactiveNativeOptions<TResult, TError, TQueryKey>,
+        TanstackQueryReactiveReturnType<TResult, TError>
+      >;
+      method: (typeof chimericMethods)[number];
+      params: TParams;
+      reactiveOptions?: ReactiveQueryOptions;
+      reactiveNativeOptions?: TanstackQueryReactiveNativeOptions<
+        TResult,
+        TError,
+        TQueryKey
+      >;
+      idiomaticOptions?: IdiomaticQueryOptions;
+      idiomaticNativeOptions?: TanstackQueryIdiomaticNativeOptions<
+        TResult,
+        TError,
+        TQueryKey
+      >;
+      wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+    },
   ) as ChimericQueryTestHarnessReturnType<TResult, TError, TMethod>;
 }

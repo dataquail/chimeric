@@ -1,17 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { makeAsyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
+import { EagerAsyncTestFixtures } from '../__tests__/eagerAsyncFixtures';
 import { createIdiomaticEagerAsync } from './createIdiomaticEagerAsync';
 import { isIdiomaticEagerAsync } from './isIdiomaticEagerAsync';
 
 describe('isIdiomaticEagerAsync', () => {
   it('should return false for unmarked function', () => {
-    const mockAsyncFn = makeAsyncFnWithoutParamsReturnsString();
-
-    expect(isIdiomaticEagerAsync(mockAsyncFn)).toBe(false);
+    expect(isIdiomaticEagerAsync(vi.fn(async () => 'test'))).toBe(false);
   });
 
   it('should return true for marked function', () => {
-    const mockAsyncFn = makeAsyncFnWithoutParamsReturnsString();
+    const mockAsyncFn = EagerAsyncTestFixtures.withoutParams.getIdiomatic().fn;
     expect(isIdiomaticEagerAsync(createIdiomaticEagerAsync(mockAsyncFn))).toBe(
       true,
     );

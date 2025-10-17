@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { makeEagerAsyncHookWithoutParamsReturnsString } from '../../__tests__/eagerAsyncFixtures';
-import { makeAsyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
+import { EagerAsyncTestFixtures } from '../__tests__/eagerAsyncFixtures';
 import { isChimericEagerAsync } from './isChimericEagerAsync';
 import { fuseChimericEagerAsync } from './fuseChimericEagerAsync';
-import { EagerAsyncTestFixtures } from '../__tests__/eagerAsyncFixtures';
 
 describe('isChimericEagerAsync', () => {
   it('should return true for a chimeric eager async function', () => {
@@ -23,12 +21,12 @@ describe('isChimericEagerAsync', () => {
     expect(isChimericEagerAsync('not a function' as any)).toBe(false);
 
     // Function without use
-    const mockAsyncFn = makeAsyncFnWithoutParamsReturnsString();
+    const mockAsyncFn = () => Promise.resolve('test');
     expect(isChimericEagerAsync(mockAsyncFn as any)).toBe(false);
 
     // Object with use but not a function
     const mockReactiveEagerAsync = {
-      use: makeEagerAsyncHookWithoutParamsReturnsString(),
+      use: 'not a function',
     };
     expect(isChimericEagerAsync(mockReactiveEagerAsync as any)).toBe(false);
 

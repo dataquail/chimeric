@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { makeAsyncFnWithoutParamsReturnsString } from '../../__tests__/functionFixtures';
 import { AsyncTestFixtures } from '../__tests__/asyncFixtures';
 import { fuseChimericAsync } from './fuseChimericAsync';
 import { isChimericAsync } from './isChimericAsync';
@@ -23,7 +22,7 @@ describe('isChimericAsync', () => {
     expect(isChimericAsync('not a function' as any)).toBe(false);
 
     // Function without use
-    const mockAsyncFn = makeAsyncFnWithoutParamsReturnsString();
+    const mockAsyncFn = () => Promise.resolve('test');
     expect(isChimericAsync(mockAsyncFn as any)).toBe(false);
 
     // Object with use but not a function

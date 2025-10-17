@@ -12,6 +12,9 @@ export type * from './lib/Mutation/reactive/types';
 export type * from './lib/Query/chimeric/types';
 export type * from './lib/Query/idiomatic/types';
 export type * from './lib/Query/reactive/types';
+export type * from './lib/InfiniteQuery/chimeric/types';
+export type * from './lib/InfiniteQuery/idiomatic/types';
+export type * from './lib/InfiniteQuery/reactive/types';
 export type * from './lib/Sync/chimeric/types';
 export type * from './lib/Sync/idiomatic/types';
 export type * from './lib/Sync/reactive/types';
@@ -44,6 +47,13 @@ export * from './lib/Query/idiomatic/createIdiomaticQuery';
 export * from './lib/Query/idiomatic/isIdiomaticQuery';
 export * from './lib/Query/reactive/createReactiveQuery';
 export * from './lib/Query/reactive/isReactiveQuery';
+// InfiniteQuery
+export * from './lib/InfiniteQuery/chimeric/fuseChimericInfiniteQuery';
+export * from './lib/InfiniteQuery/chimeric/isChimericInfiniteQuery';
+export * from './lib/InfiniteQuery/idiomatic/createIdiomaticInfiniteQuery';
+export * from './lib/InfiniteQuery/idiomatic/isIdiomaticInfiniteQuery';
+export * from './lib/InfiniteQuery/reactive/createReactiveInfiniteQuery';
+export * from './lib/InfiniteQuery/reactive/isReactiveInfiniteQuery';
 // Sync
 export * from './lib/Sync/chimeric/fuseChimericSync';
 export * from './lib/Sync/chimeric/isChimericSync';

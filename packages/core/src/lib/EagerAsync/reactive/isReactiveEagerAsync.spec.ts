@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { makeEagerAsyncHookWithoutParamsReturnsString } from '../../__tests__/eagerAsyncFixtures';
+import { EagerAsyncTestFixtures } from '../__tests__/eagerAsyncFixtures';
 import { createReactiveEagerAsync } from './createReactiveEagerAsync';
 import { isReactiveEagerAsync } from './isReactiveEagerAsync';
 
 describe('isReactiveEagerAsync', () => {
   it('should return false for unmarked function', () => {
     const mockReactiveEagerAsync = {
-      use: makeEagerAsyncHookWithoutParamsReturnsString(),
+      use: EagerAsyncTestFixtures.withoutParams.getReactive().fn,
     };
 
     expect(isReactiveEagerAsync(mockReactiveEagerAsync)).toBe(false);
@@ -14,7 +14,7 @@ describe('isReactiveEagerAsync', () => {
 
   it('should return true for marked function', () => {
     const mockReactiveEagerAsync = createReactiveEagerAsync(
-      makeEagerAsyncHookWithoutParamsReturnsString(),
+      EagerAsyncTestFixtures.withoutParams.getReactive().fn,
     );
 
     expect(isReactiveEagerAsync(mockReactiveEagerAsync)).toBe(true);

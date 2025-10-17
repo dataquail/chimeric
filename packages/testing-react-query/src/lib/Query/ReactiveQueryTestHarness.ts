@@ -102,6 +102,22 @@ export function ReactiveQueryTestHarness<
   >;
 }): ReactiveQueryTestHarnessReturnType<TResult, TError> {
   return CoreReactiveQueryTestHarness(
-    args as any,
+    args as {
+      reactiveQuery: ReactiveQuery<
+        TParams,
+        TResult,
+        TError,
+        TanstackQueryReactiveNativeOptions<TResult, TError, TQueryKey>,
+        TanstackQueryReactiveReturnType<TResult, TError>
+      >;
+      params: TParams;
+      options?: ReactiveQueryOptions;
+      nativeOptions?: TanstackQueryReactiveNativeOptions<
+        TResult,
+        TError,
+        TQueryKey
+      >;
+      wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
+    },
   ) as ReactiveQueryTestHarnessReturnType<TResult, TError>;
 }
