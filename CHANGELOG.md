@@ -1,3 +1,13 @@
+## 1.1.0 (2025-10-17)
+
+### 🚀 Features
+
+- implement infinite queries ([e0694a2](https://github.com/dataquail/chimeric/commit/e0694a2))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 # 1.0.0 (2025-10-14)
 
 ### 🚀 Features

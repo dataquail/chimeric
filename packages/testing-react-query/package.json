@@ -1,6 +1,6 @@
 {
   "name": "@chimeric/testing-react-query",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "React Query testing utilities for chimeric interfaces",
   "author": "zacharyweidenbach",
   "license": "MIT",
