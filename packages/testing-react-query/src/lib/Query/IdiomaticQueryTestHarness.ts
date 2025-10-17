@@ -8,8 +8,8 @@ import { IdiomaticQueryTestHarnessReturnType } from './types.js';
 
 // Required params
 export function IdiomaticQueryTestHarness<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(args: {
@@ -29,8 +29,8 @@ export function IdiomaticQueryTestHarness<
 
 // Optional params
 export function IdiomaticQueryTestHarness<
-  TParams,
-  TResult,
+  TParams = void,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(args: {
@@ -39,7 +39,7 @@ export function IdiomaticQueryTestHarness<
     TResult,
     TanstackQueryIdiomaticNativeOptions<TResult, TError, TQueryKey>
   >;
-  params?: NonNullable<TParams>;
+  params?: TParams | undefined;
   options?: IdiomaticQueryOptions;
   nativeOptions?: TanstackQueryIdiomaticNativeOptions<
     TResult,
@@ -50,7 +50,7 @@ export function IdiomaticQueryTestHarness<
 
 // No params
 export function IdiomaticQueryTestHarness<
-  TResult,
+  TResult = unknown,
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(args: {
@@ -87,5 +87,20 @@ export function IdiomaticQueryTestHarness<
     TQueryKey
   >;
 }): IdiomaticQueryTestHarnessReturnType<TResult, TError> {
-  return CoreIdiomaticQueryTestHarness(args as any);
+  return CoreIdiomaticQueryTestHarness(
+    args as {
+      idiomaticQuery: IdiomaticQuery<
+        TParams,
+        TResult,
+        TanstackQueryIdiomaticNativeOptions<TResult, TError, TQueryKey>
+      >;
+      params: TParams;
+      options?: IdiomaticQueryOptions;
+      nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+        TResult,
+        TError,
+        TQueryKey
+      >;
+    },
+  );
 }
