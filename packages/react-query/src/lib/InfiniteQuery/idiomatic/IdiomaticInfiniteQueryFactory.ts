@@ -10,8 +10,10 @@ import {
   IdiomaticInfiniteQuery,
   TanstackInfiniteQueryIdiomaticNativeOptions,
 } from './types';
-import { validateMaxArgLength } from '../../utilities/validateMaxArgLength';
-import { IdiomaticInfiniteQueryOptions } from '@chimeric/core';
+import {
+  IdiomaticInfiniteQueryOptions,
+  validateMaxArgLength,
+} from '@chimeric/core';
 
 // Required params
 export function IdiomaticInfiniteQueryFactory<

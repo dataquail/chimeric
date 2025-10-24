@@ -6,8 +6,7 @@ import {
 } from '@tanstack/react-query';
 import { createIdiomaticQuery } from './createIdiomaticQuery';
 import { IdiomaticQuery, TanstackQueryIdiomaticNativeOptions } from './types';
-import { IdiomaticQueryOptions } from '@chimeric/core';
-import { validateMaxArgLength } from '../../utilities/validateMaxArgLength';
+import { IdiomaticQueryOptions, validateMaxArgLength } from '@chimeric/core';
 
 // Required params (must come first - most specific)
 export function IdiomaticQueryFactory<

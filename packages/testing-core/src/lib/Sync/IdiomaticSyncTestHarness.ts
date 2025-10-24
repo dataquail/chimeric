@@ -13,7 +13,7 @@ export function IdiomaticSyncTestHarness<TParams, TResult>(args: {
 // Optional params (must come before no params)
 export function IdiomaticSyncTestHarness<TParams, TResult>(args: {
   idiomaticSync: IdiomaticSync<TParams | undefined, TResult>;
-  params?: TParams | undefined;
+  params?: NonNullable<TParams>;
 }): SyncTestHarnessReturnType<TResult>;
 
 // No params (least specific - must come last)
@@ -27,10 +27,10 @@ export function IdiomaticSyncTestHarness<
   TResult = unknown,
 >(args: {
   idiomaticSync: IdiomaticSync<TParams, TResult>;
-  params?: TParams;
+  params?: NonNullable<TParams>;
 }): SyncTestHarnessReturnType<TResult> {
   const { idiomaticSync } = args;
-  const params = (args as { params?: TParams })?.params as TParams;
+  const params = (args as { params?: TParams })?.params as NonNullable<TParams>;
   const result = {
     current: undefined as TResult | undefined,
   };
@@ -40,7 +40,7 @@ export function IdiomaticSyncTestHarness<
         await checkOnInterval(
           () => {
             if (options?.reinvokeIdiomaticFn) {
-              result.current = idiomaticSync(params as TParams);
+              result.current = idiomaticSync(params);
             }
             cb();
           },
@@ -53,6 +53,6 @@ export function IdiomaticSyncTestHarness<
     },
     result,
   };
-  result.current = idiomaticSync(params as TParams);
+  result.current = idiomaticSync(params);
   return returnValue;
 }

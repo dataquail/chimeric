@@ -10,8 +10,7 @@ import {
   TanstackQueryReactiveNativeOptions,
 } from '../Query/reactive/types';
 import { createReactiveQuery } from '../Query/reactive/createReactiveQuery';
-import { validateMaxArgLength } from '../utilities/validateMaxArgLength';
-import { ReactiveQueryOptions } from '@chimeric/core';
+import { ReactiveQueryOptions, validateMaxArgLength } from '@chimeric/core';
 
 // Required params (must come first - most specific)
 export function ReactiveQueryWithManagedStoreFactory<

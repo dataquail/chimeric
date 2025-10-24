@@ -9,8 +9,10 @@ import {
   type ReactiveInfiniteQuery,
 } from './types';
 import { createReactiveInfiniteQuery } from './createReactiveInfiniteQuery';
-import { validateMaxArgLength } from '../../utilities/validateMaxArgLength';
-import { ReactiveInfiniteQueryOptions } from '@chimeric/core';
+import {
+  ReactiveInfiniteQueryOptions,
+  validateMaxArgLength,
+} from '@chimeric/core';
 
 // Required params
 export function ReactiveInfiniteQueryFactory<

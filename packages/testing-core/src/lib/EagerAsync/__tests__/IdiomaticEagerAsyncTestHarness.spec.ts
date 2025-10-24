@@ -172,9 +172,9 @@ describe('IdiomaticEagerAsyncTestHarness', () => {
         params: { wrong: 'param' },
       });
 
+      // @ts-expect-error - should error because wrong params
       IdiomaticEagerAsyncTestHarness({
         idiomaticEagerAsync,
-        // @ts-expect-error - should error because wrong params
         params: 1,
       });
 

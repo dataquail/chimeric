@@ -5,7 +5,7 @@ export type IdiomaticSync<TParams = void, TResult = unknown> = [
   : void extends TParams
   ? () => TResult
   : undefined extends TParams
-  ? (params?: TParams) => TResult
+  ? (params?: NonNullable<TParams>) => TResult
   : (params: TParams) => TResult;
 
 export type DefineIdiomaticSync<

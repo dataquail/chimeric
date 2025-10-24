@@ -41,7 +41,10 @@ export {
   createIdiomaticSync,
 } from '@chimeric/core';
 
-export * from './lib/ChimericEagerAsync/MetaAggregatorFactory.js';
-export * from './lib/Async/ChimericAsyncFactory.js';
-export * from './lib/Async/IdiomaticAsyncFactory.js';
-export * from './lib/Async/ReactiveAsyncFactory.js';
+export * from './lib/ChimericEagerAsync/MetaAggregatorFactory';
+export * from './lib/Async/ChimericAsyncFactory';
+export * from './lib/Async/IdiomaticAsyncFactory';
+export * from './lib/Async/ReactiveAsyncFactory';
+export * from './lib/EagerAsync/ChimericEagerAsyncFactory';
+export * from './lib/EagerAsync/IdiomaticEagerAsyncFactory';
+export * from './lib/EagerAsync/ReactiveEagerAsyncFactory';

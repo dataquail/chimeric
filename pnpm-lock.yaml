@@ -452,6 +452,9 @@ importers:
         specifier: workspace:*
         version: link:../core
     devDependencies:
+      '@chimeric/react':
+        specifier: workspace:*
+        version: link:../react
       '@tanstack/react-query':
         specifier: ^5.69.0
         version: 5.69.0(react@19.0.0)

@@ -5,10 +5,13 @@ export type IdiomaticEagerAsync<TParams = void, TResult = unknown> = [
   : void extends TParams
   ? (options?: IdiomaticEagerAsyncOptions) => Promise<TResult>
   : undefined extends TParams
-  ? (params?: TParams, options?: IdiomaticEagerAsyncOptions) => Promise<TResult>
+  ? (
+      params?: NonNullable<TParams>,
+      options?: IdiomaticEagerAsyncOptions,
+    ) => Promise<TResult>
   : (params: TParams, options?: IdiomaticEagerAsyncOptions) => Promise<TResult>;
 
-export type IdiomaticEagerAsyncOptions = Record<string, never>;
+export type IdiomaticEagerAsyncOptions = { retry?: number };
 
 export type DefineIdiomaticEagerAsync<
   T extends (

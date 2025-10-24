@@ -42,6 +42,7 @@
     "react": "^18 || ^19"
   },
   "devDependencies": {
+    "@chimeric/react": "workspace:*",
     "@tanstack/react-query": "^5.69.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.4.5",

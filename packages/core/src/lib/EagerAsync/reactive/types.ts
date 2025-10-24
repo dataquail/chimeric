@@ -34,7 +34,9 @@ export type ReactiveEagerAsync<
       ) => ReactiveEagerAsyncReturnType<TResult, TError>;
 };
 
-export type ReactiveEagerAsyncOptions = Record<string, never>;
+export type ReactiveEagerAsyncOptions = {
+  enabled?: boolean;
+};
 
 export type DefineReactiveEagerAsync<
   T extends (

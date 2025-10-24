@@ -5,8 +5,7 @@ import {
   type ReactiveQuery,
 } from './types';
 import { createReactiveQuery } from './createReactiveQuery';
-import { ReactiveQueryOptions } from '@chimeric/core';
-import { validateMaxArgLength } from '../../utilities/validateMaxArgLength';
+import { ReactiveQueryOptions, validateMaxArgLength } from '@chimeric/core';
 
 // Required params (must come first - most specific)
 export function ReactiveQueryFactory<
