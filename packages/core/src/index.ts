@@ -61,3 +61,5 @@ export * from './lib/Sync/idiomatic/createIdiomaticSync';
 export * from './lib/Sync/idiomatic/isIdiomaticSync';
 export * from './lib/Sync/reactive/createReactiveSync';
 export * from './lib/Sync/reactive/isReactiveSync';
+// Utilities
+export * from './lib/utilities/validateMaxArgLength';

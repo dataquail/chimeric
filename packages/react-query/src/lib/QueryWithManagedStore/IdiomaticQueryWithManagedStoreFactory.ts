@@ -10,8 +10,7 @@ import {
   IdiomaticQuery,
   TanstackQueryIdiomaticNativeOptions,
 } from '../Query/idiomatic/types';
-import { validateMaxArgLength } from '../utilities/validateMaxArgLength';
-import { IdiomaticQueryOptions } from 'node_modules/@chimeric/core/src/lib/Query/idiomatic/types';
+import { IdiomaticQueryOptions, validateMaxArgLength } from '@chimeric/core';
 
 // Required params (must come first - most specific)
 export function IdiomaticQueryWithManagedStoreFactory<

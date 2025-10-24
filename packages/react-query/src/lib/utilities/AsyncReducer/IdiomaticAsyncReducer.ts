@@ -481,12 +481,12 @@ const getArgs = <TServiceParams>(
   }
 
   // Get params either from getParams function or undefined for void services
-  if (isIdiomaticSync(serviceConfig.service)) {
+  if (isIdiomaticSync(serviceConfig.service as any)) {
     const params = serviceConfig?.getParams
       ? serviceConfig.getParams(serviceParams)
       : undefined;
     return [params];
-  } else if (isIdiomaticQuery(serviceConfig.service)) {
+  } else if (isIdiomaticQuery(serviceConfig.service as any)) {
     const params = serviceConfig?.getParams
       ? serviceConfig.getParams(serviceParams)
       : undefined;
@@ -494,9 +494,8 @@ const getArgs = <TServiceParams>(
       (
         serviceConfig as { getOptions?: (serviceParams: any) => void }
       )?.getOptions?.(params) ?? {};
-
     return serviceConfig.service.length > 1 ? [params, options] : [options];
-  } else if (isIdiomaticEagerAsync(serviceConfig.service)) {
+  } else if (isIdiomaticEagerAsync(serviceConfig.service as any)) {
     const params = serviceConfig?.getParams
       ? serviceConfig.getParams(serviceParams)
       : undefined;

@@ -14,6 +14,7 @@ export default [
             '{projectRoot}/**/*.spec.{ts,tsx}',
             '{projectRoot}/**/*.test.{ts,tsx}',
             '{projectRoot}/setupTests.ts',
+            '{projectRoot}/src/lib/utilities/__tests__/*.{ts,tsx}',
           ],
         },
       ],

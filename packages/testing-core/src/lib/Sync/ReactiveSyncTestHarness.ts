@@ -14,7 +14,7 @@ export function ReactiveSyncTestHarness<TParams, TResult>(args: {
 // Optional params (must come before no params)
 export function ReactiveSyncTestHarness<TParams, TResult>(args: {
   reactiveSync: ReactiveSync<TParams | undefined, TResult>;
-  params?: TParams | undefined;
+  params?: NonNullable<TParams>;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
 }): SyncTestHarnessReturnType<TResult>;
 
@@ -30,12 +30,15 @@ export function ReactiveSyncTestHarness<
   TResult = unknown,
 >(args: {
   reactiveSync: ReactiveSync<TParams, TResult>;
-  params?: TParams;
+  params?: NonNullable<TParams>;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
 }): SyncTestHarnessReturnType<TResult> {
   const { reactiveSync, wrapper } = args;
   const hook = renderHook(
-    () => reactiveSync.use((args as { params?: TParams })?.params as TParams),
+    () =>
+      reactiveSync.use(
+        (args as { params?: TParams })?.params as NonNullable<TParams>,
+      ),
     { wrapper },
   );
   return {

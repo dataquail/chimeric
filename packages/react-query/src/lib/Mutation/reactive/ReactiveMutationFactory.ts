@@ -9,8 +9,10 @@ import {
   TanstackMutationReactiveNativeOptions,
 } from './types';
 import { createReactiveMutation } from './createReactiveMutation';
-import { validateMaxArgLength } from '../../utilities/validateMaxArgLength';
-import { ReactiveMutationInvokeOptions } from '@chimeric/core';
+import {
+  ReactiveMutationInvokeOptions,
+  validateMaxArgLength,
+} from '@chimeric/core';
 
 // Required params
 export function ReactiveMutationFactory<
