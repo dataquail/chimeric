@@ -5,12 +5,8 @@ import { fuseChimericSync } from './fuseChimericSync';
 describe('fuseChimericSync', () => {
   // USAGE TESTS
   it('USAGE: no params', () => {
-    const {
-      idiomaticSync,
-      idiomaticFn,
-      reactiveSync,
-      reactiveFn,
-    } = SyncTestFixtures.withoutParams.getChimeric();
+    const { idiomaticSync, idiomaticFn, reactiveSync, reactiveFn } =
+      SyncTestFixtures.withoutParams.getChimeric();
     const chimericSync = fuseChimericSync({
       idiomatic: idiomaticSync,
       reactive: reactiveSync,
@@ -22,19 +18,15 @@ describe('fuseChimericSync', () => {
     expect(idiomaticFn).toHaveBeenCalledTimes(1);
 
     // Test reactive interface - use
-    const reactiveResult = chimericSync.use();
+    const reactiveResult = chimericSync.useHook();
     expect(reactiveFn).toHaveBeenCalledWith();
     expect(reactiveFn).toHaveBeenCalledTimes(1);
     expect(reactiveResult).toBe('test');
   });
 
   it('USAGE: with params', () => {
-    const {
-      idiomaticSync,
-      idiomaticFn,
-      reactiveSync,
-      reactiveFn,
-    } = SyncTestFixtures.withParams.getChimeric();
+    const { idiomaticSync, idiomaticFn, reactiveSync, reactiveFn } =
+      SyncTestFixtures.withParams.getChimeric();
     const chimericSync = fuseChimericSync({
       idiomatic: idiomaticSync,
       reactive: reactiveSync,
@@ -46,19 +38,15 @@ describe('fuseChimericSync', () => {
     expect(idiomaticFn).toHaveBeenCalledTimes(1);
 
     // Test reactive interface - use
-    const reactiveResult = chimericSync.use({ name: 'John' });
+    const reactiveResult = chimericSync.useHook({ name: 'John' });
     expect(reactiveFn).toHaveBeenCalledWith({ name: 'John' });
     expect(reactiveFn).toHaveBeenCalledTimes(1);
     expect(reactiveResult).toBe('Hello John');
   });
 
   it('USAGE: optional params', () => {
-    const {
-      idiomaticSync,
-      idiomaticFn,
-      reactiveSync,
-      reactiveFn,
-    } = SyncTestFixtures.withOptionalParams.getChimeric();
+    const { idiomaticSync, idiomaticFn, reactiveSync, reactiveFn } =
+      SyncTestFixtures.withOptionalParams.getChimeric();
     const chimericSync = fuseChimericSync({
       idiomatic: idiomaticSync,
       reactive: reactiveSync,
@@ -75,13 +63,13 @@ describe('fuseChimericSync', () => {
     expect(idiomaticFn).toHaveBeenCalledTimes(2);
 
     // Test reactive interface - use with params
-    const reactiveResultWithParams = chimericSync.use({ name: 'John' });
+    const reactiveResultWithParams = chimericSync.useHook({ name: 'John' });
     expect(reactiveFn).toHaveBeenCalledWith({ name: 'John' });
     expect(reactiveFn).toHaveBeenCalledTimes(1);
     expect(reactiveResultWithParams).toBe('Hello John');
 
     // Test reactive interface - use without params
-    const reactiveResultWithoutParams = chimericSync.use();
+    const reactiveResultWithoutParams = chimericSync.useHook();
     expect(reactiveFn).toHaveBeenCalledWith();
     expect(reactiveFn).toHaveBeenCalledTimes(2);
     expect(reactiveResultWithoutParams).toBe('Hello');
@@ -101,7 +89,7 @@ describe('fuseChimericSync', () => {
       chimericSync({ name: 'John' });
 
       // @ts-expect-error testing invalid call
-      chimericSync.use({ name: 'John' });
+      chimericSync.useHook({ name: 'John' });
     } catch {
       // Expected to throw
     }
@@ -120,7 +108,7 @@ describe('fuseChimericSync', () => {
       chimericSync();
 
       // @ts-expect-error testing invalid call
-      chimericSync.use();
+      chimericSync.useHook();
     } catch {
       // Expected to throw
     }
@@ -139,7 +127,7 @@ describe('fuseChimericSync', () => {
       chimericSync(1);
 
       // @ts-expect-error testing invalid call
-      chimericSync.use(1);
+      chimericSync.useHook(1);
     } catch {
       // Expected to throw
     }
@@ -147,8 +135,11 @@ describe('fuseChimericSync', () => {
 
   // ANNOTATION TESTS
   it('ANNOTATION: no params', () => {
-    const { idiomaticSync, reactiveSync, annotation: _annotation } =
-      SyncTestFixtures.withoutParams.getChimeric();
+    const {
+      idiomaticSync,
+      reactiveSync,
+      annotation: _annotation,
+    } = SyncTestFixtures.withoutParams.getChimeric();
     const chimericSync = fuseChimericSync({
       idiomatic: idiomaticSync,
       reactive: reactiveSync,
@@ -160,8 +151,11 @@ describe('fuseChimericSync', () => {
   });
 
   it('ANNOTATION: with params', () => {
-    const { idiomaticSync, reactiveSync, annotation: _annotation } =
-      SyncTestFixtures.withParams.getChimeric();
+    const {
+      idiomaticSync,
+      reactiveSync,
+      annotation: _annotation,
+    } = SyncTestFixtures.withParams.getChimeric();
     const chimericSync = fuseChimericSync({
       idiomatic: idiomaticSync,
       reactive: reactiveSync,
@@ -173,8 +167,11 @@ describe('fuseChimericSync', () => {
   });
 
   it('ANNOTATION: optional params', () => {
-    const { idiomaticSync, reactiveSync, annotation: _annotation } =
-      SyncTestFixtures.withOptionalParams.getChimeric();
+    const {
+      idiomaticSync,
+      reactiveSync,
+      annotation: _annotation,
+    } = SyncTestFixtures.withOptionalParams.getChimeric();
     const chimericSync = fuseChimericSync({
       idiomatic: idiomaticSync,
       reactive: reactiveSync,

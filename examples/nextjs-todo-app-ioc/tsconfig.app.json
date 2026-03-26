@@ -1,0 +1,65 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "noEmit": true,
+    "emitDeclarationOnly": false,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "outDir": "dist",
+    "rootDir": "src",
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
+    "experimentalDecorators": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "../../examples/nextjs-todo-app-ioc/.next/types/**/*.ts",
+    "../../dist/examples/nextjs-todo-app-ioc/.next/types/**/*.ts",
+    "next-env.d.ts"
+  ],
+  "exclude": [
+    "out-tsc",
+    "dist",
+    "node_modules",
+    "jest.config.ts",
+    "jest.config.cts",
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts",
+    ".next",
+    "eslint.config.js",
+    "eslint.config.cjs",
+    "eslint.config.mjs"
+  ],
+  "references": [
+    {
+      "path": "../../packages/react-query"
+    },
+    {
+      "path": "../../packages/react"
+    },
+    {
+      "path": "../../packages/testing-react-query"
+    },
+    {
+      "path": "../../packages/testing-react"
+    }
+  ]
+}

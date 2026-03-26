@@ -7,7 +7,7 @@ describe('ChimericEagerAsyncFactory', () => {
   it('USAGE: REACTIVE: no params', async () => {
     const { fn } = EagerAsyncTestFixtures.withoutParams.getChimeric();
     const chimericEagerAsync = ChimericEagerAsyncFactory({ eagerAsyncFn: fn });
-    const { result } = renderHook(chimericEagerAsync.use);
+    const { result } = renderHook(chimericEagerAsync.useHook);
 
     await waitFor(() => {
       expect(result.current.isSuccess).toBe(true);
@@ -20,7 +20,9 @@ describe('ChimericEagerAsyncFactory', () => {
   it('USAGE: REACTIVE: with params', async () => {
     const { fn } = EagerAsyncTestFixtures.withParams.getChimeric();
     const chimericEagerAsync = ChimericEagerAsyncFactory({ eagerAsyncFn: fn });
-    const { result } = renderHook(() => chimericEagerAsync.use({ name: 'John' }));
+    const { result } = renderHook(() =>
+      chimericEagerAsync.useHook({ name: 'John' }),
+    );
 
     await waitFor(() => {
       expect(result.current.isSuccess).toBe(true);
@@ -33,7 +35,7 @@ describe('ChimericEagerAsyncFactory', () => {
   it('USAGE: REACTIVE: with optional params', async () => {
     const { fn } = EagerAsyncTestFixtures.withOptionalParams.getChimeric();
     const chimericEagerAsync = ChimericEagerAsyncFactory({ eagerAsyncFn: fn });
-    const { result } = renderHook(() => chimericEagerAsync.use());
+    const { result } = renderHook(() => chimericEagerAsync.useHook());
 
     await waitFor(() => {
       expect(result.current.isSuccess).toBe(true);
@@ -43,7 +45,7 @@ describe('ChimericEagerAsyncFactory', () => {
     expect(fn).toHaveBeenCalled();
 
     const { result: result2 } = renderHook(() =>
-      chimericEagerAsync.use({ name: 'Jane' }, undefined),
+      chimericEagerAsync.useHook({ name: 'Jane' }, undefined),
     );
 
     await waitFor(() => {
@@ -88,7 +90,9 @@ describe('ChimericEagerAsyncFactory', () => {
 
   it('USAGE: IDIOMATIC: retry option', async () => {
     const mockPromise = vi.fn(() => Promise.reject(new Error('test')));
-    const chimericEagerAsync = ChimericEagerAsyncFactory({ eagerAsyncFn: mockPromise });
+    const chimericEagerAsync = ChimericEagerAsyncFactory({
+      eagerAsyncFn: mockPromise,
+    });
 
     try {
       await chimericEagerAsync({ retry: 3 });
@@ -106,7 +110,7 @@ describe('ChimericEagerAsyncFactory', () => {
 
     try {
       // @ts-expect-error - Testing type error
-      renderHook(() => chimericEagerAsync.use({ name: 'John' }));
+      renderHook(() => chimericEagerAsync.useHook({ name: 'John' }));
     } catch {
       // Expected error
     }
@@ -118,10 +122,10 @@ describe('ChimericEagerAsyncFactory', () => {
 
     try {
       // @ts-expect-error - Testing type error
-      renderHook(() => chimericEagerAsync.use());
+      renderHook(() => chimericEagerAsync.useHook());
 
       // @ts-expect-error - Testing type error
-      renderHook(() => chimericEagerAsync.use({ wrong: 'param' }));
+      renderHook(() => chimericEagerAsync.useHook({ wrong: 'param' }));
     } catch {
       // Expected errors
     }
@@ -133,9 +137,9 @@ describe('ChimericEagerAsyncFactory', () => {
 
     try {
       // @ts-expect-error - Testing type error
-      renderHook(() => chimericEagerAsync.use({ wrong: 'param' }));
+      renderHook(() => chimericEagerAsync.useHook({ wrong: 'param' }));
 
-      renderHook(() => chimericEagerAsync.use());
+      renderHook(() => chimericEagerAsync.useHook());
     } catch {
       // Expected error
     }
@@ -188,7 +192,9 @@ describe('ChimericEagerAsyncFactory', () => {
     const { annotation: _annotation, fn } =
       EagerAsyncTestFixtures.withoutParams.getChimeric();
     type TestAnnotation = typeof _annotation;
-    const testAnnotation: TestAnnotation = ChimericEagerAsyncFactory({ eagerAsyncFn: fn });
+    const testAnnotation: TestAnnotation = ChimericEagerAsyncFactory({
+      eagerAsyncFn: fn,
+    });
     expect(testAnnotation).toBeDefined();
   });
 
@@ -196,7 +202,9 @@ describe('ChimericEagerAsyncFactory', () => {
     const { annotation: _annotation, fn } =
       EagerAsyncTestFixtures.withParams.getChimeric();
     type TestAnnotation = typeof _annotation;
-    const testAnnotation: TestAnnotation = ChimericEagerAsyncFactory({ eagerAsyncFn: fn });
+    const testAnnotation: TestAnnotation = ChimericEagerAsyncFactory({
+      eagerAsyncFn: fn,
+    });
     expect(testAnnotation).toBeDefined();
   });
 
@@ -204,7 +212,9 @@ describe('ChimericEagerAsyncFactory', () => {
     const { annotation: _annotation, fn } =
       EagerAsyncTestFixtures.withOptionalParams.getChimeric();
     type TestAnnotation = typeof _annotation;
-    const testAnnotation: TestAnnotation = ChimericEagerAsyncFactory({ eagerAsyncFn: fn });
+    const testAnnotation: TestAnnotation = ChimericEagerAsyncFactory({
+      eagerAsyncFn: fn,
+    });
     expect(testAnnotation).toBeDefined();
   });
 });

@@ -1,13 +1,8 @@
 import { Review } from 'src/core/domain/review/entities/Review';
 import { saveReview, deleteReview, ReviewRecord } from './reviewStore';
-import { useAppSelector } from 'src/lib/store';
-import {
-  createIdiomaticSync,
-  createReactiveSync,
-  fuseChimericSync,
-} from '@chimeric/react';
 import { appStore } from 'src/core/global/appStore';
 import { IReviewRepository } from 'src/core/domain/review/ports/IReviewRepository';
+import { ChimericSyncFactory } from 'src/utils/domain/ChimericSyncFactory';
 
 export const reviewRepository: IReviewRepository = {
   save: (review: Review) => {
@@ -16,15 +11,9 @@ export const reviewRepository: IReviewRepository = {
   delete: () => {
     appStore.dispatch(deleteReview());
   },
-  get: fuseChimericSync({
-    idiomatic: createIdiomaticSync(() => {
-      const record = appStore.getState().todo.review.record;
-      return record ? toDomain(record) : undefined;
-    }),
-    reactive: createReactiveSync(() => {
-      const record = useAppSelector((state) => state.todo.review.record);
-      return record ? toDomain(record) : undefined;
-    }),
+  get: ChimericSyncFactory({
+    selector: () => (state) => state.todo.review.record,
+    reducer: (record) => (record ? toDomain(record) : undefined),
   }),
 };
 

@@ -20,7 +20,7 @@ describe('ReactiveInfiniteQueryFactory', () => {
         }),
     });
 
-    const { result } = renderHook(() => reactiveInfiniteQuery.use(), {
+    const { result } = renderHook(() => reactiveInfiniteQuery.useHook(), {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -50,7 +50,7 @@ describe('ReactiveInfiniteQueryFactory', () => {
     });
 
     const { result } = renderHook(
-      () => reactiveInfiniteQuery.use({ search: 'test' }),
+      () => reactiveInfiniteQuery.useHook({ search: 'test' }),
       {
         wrapper: getTestWrapper(queryClient),
       },
@@ -68,7 +68,8 @@ describe('ReactiveInfiniteQueryFactory', () => {
   });
 
   it('USAGE: with optional params', async () => {
-    const { queryFn } = InfiniteQueryTestFixtures.withOptionalParams.getReactive();
+    const { queryFn } =
+      InfiniteQueryTestFixtures.withOptionalParams.getReactive();
     const queryClient = new QueryClient();
     const reactiveInfiniteQuery = ReactiveInfiniteQueryFactory({
       getInfiniteQueryOptions: (args?: { search: string }) =>
@@ -82,7 +83,7 @@ describe('ReactiveInfiniteQueryFactory', () => {
     });
 
     const { result: resultWithParams } = renderHook(
-      () => reactiveInfiniteQuery.use({ search: 'test' }),
+      () => reactiveInfiniteQuery.useHook({ search: 'test' }),
       {
         wrapper: getTestWrapper(queryClient),
       },
@@ -99,7 +100,7 @@ describe('ReactiveInfiniteQueryFactory', () => {
     expect(queryFn).toHaveBeenCalledWith({ search: 'test' });
 
     const { result: resultWithoutParams } = renderHook(
-      () => reactiveInfiniteQuery.use(),
+      () => reactiveInfiniteQuery.useHook(),
       {
         wrapper: getTestWrapper(queryClient),
       },
@@ -137,7 +138,7 @@ describe('ReactiveInfiniteQueryFactory', () => {
         }),
     });
 
-    const { result } = renderHook(() => reactiveInfiniteQuery.use(), {
+    const { result } = renderHook(() => reactiveInfiniteQuery.useHook(), {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -179,7 +180,7 @@ describe('ReactiveInfiniteQueryFactory', () => {
         }),
     });
 
-    const { result } = renderHook(() => reactiveInfiniteQuery.use(), {
+    const { result } = renderHook(() => reactiveInfiniteQuery.useHook(), {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -214,7 +215,7 @@ describe('ReactiveInfiniteQueryFactory', () => {
 
     try {
       // @ts-expect-error - Testing type error
-      renderHook(() => reactiveInfiniteQuery.use({ search: 'test' }), {
+      renderHook(() => reactiveInfiniteQuery.useHook({ search: 'test' }), {
         wrapper: getTestWrapper(queryClient),
       });
     } catch {
@@ -238,12 +239,12 @@ describe('ReactiveInfiniteQueryFactory', () => {
 
     try {
       // @ts-expect-error - Testing type error
-      renderHook(() => reactiveInfiniteQuery.use(), {
+      renderHook(() => reactiveInfiniteQuery.useHook(), {
         wrapper: getTestWrapper(queryClient),
       });
 
       // @ts-expect-error - Testing type error
-      renderHook(() => reactiveInfiniteQuery.use({ wrong: 'param' }), {
+      renderHook(() => reactiveInfiniteQuery.useHook({ wrong: 'param' }), {
         wrapper: getTestWrapper(queryClient),
       });
     } catch {
@@ -252,7 +253,8 @@ describe('ReactiveInfiniteQueryFactory', () => {
   });
 
   it('TYPE ERRORS: with optional params', async () => {
-    const { queryFn } = InfiniteQueryTestFixtures.withOptionalParams.getReactive();
+    const { queryFn } =
+      InfiniteQueryTestFixtures.withOptionalParams.getReactive();
     const queryClient = new QueryClient();
     const reactiveInfiniteQuery = ReactiveInfiniteQueryFactory({
       getInfiniteQueryOptions: (args?: { search: string }) =>
@@ -267,11 +269,11 @@ describe('ReactiveInfiniteQueryFactory', () => {
 
     try {
       // @ts-expect-error - Testing type error
-      renderHook(() => reactiveInfiniteQuery.use({ wrong: 'param' }), {
+      renderHook(() => reactiveInfiniteQuery.useHook({ wrong: 'param' }), {
         wrapper: getTestWrapper(queryClient),
       });
 
-      renderHook(() => reactiveInfiniteQuery.use(), {
+      renderHook(() => reactiveInfiniteQuery.useHook(), {
         wrapper: getTestWrapper(queryClient),
       });
     } catch {

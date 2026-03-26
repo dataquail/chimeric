@@ -13,7 +13,7 @@ describe('ReactiveAsyncTestHarness', () => {
 
     const result = await harness.result.current.invoke();
 
-    expect(reactiveAsync.use).toHaveBeenCalled();
+    expect(reactiveAsync.useHook).toHaveBeenCalled();
     expect(invokeFn).toHaveBeenCalled();
     expect(result).toBe('test');
   });
@@ -28,7 +28,7 @@ describe('ReactiveAsyncTestHarness', () => {
 
     const result = await harness.result.current.invoke({ name: 'John' });
 
-    expect(reactiveAsync.use).toHaveBeenCalled();
+    expect(reactiveAsync.useHook).toHaveBeenCalled();
     expect(invokeFn).toHaveBeenCalledTimes(1);
     expect(invokeFn).toHaveBeenCalledWith({ name: 'John' });
     expect(result).toBe('Hello John');
@@ -44,7 +44,7 @@ describe('ReactiveAsyncTestHarness', () => {
 
     const result1 = await harness.result.current.invoke();
 
-    expect(reactiveAsync.use).toHaveBeenCalled();
+    expect(reactiveAsync.useHook).toHaveBeenCalled();
     expect(invokeFn).toHaveBeenCalledWith();
     expect(result1).toBe('Hello');
 
@@ -57,8 +57,7 @@ describe('ReactiveAsyncTestHarness', () => {
 
   // TYPE ERRORS
   it('TYPE ERRORS: no params', () => {
-    const { reactiveAsync } =
-      AsyncTestFixtures.withoutParams.getReactive();
+    const { reactiveAsync } = AsyncTestFixtures.withoutParams.getReactive();
 
     const harness = ReactiveAsyncTestHarness({
       reactiveAsync,

@@ -138,7 +138,7 @@ export function fuseChimericMutation<
       TNativeInvokeOptions,
       TNativeReactiveReturnType
     >;
-    chimericFn.use = args.reactive.use;
+    chimericFn.useHook = args.reactive.useHook;
     markReactive(chimericFn, TYPE_MARKERS.REACTIVE_MUTATION);
     markIdiomatic(chimericFn, TYPE_MARKERS.IDIOMATIC_MUTATION);
 

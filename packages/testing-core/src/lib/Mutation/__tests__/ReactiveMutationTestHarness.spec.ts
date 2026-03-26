@@ -13,7 +13,7 @@ describe('ReactiveMutationTestHarness', () => {
 
     const result = await harness.result.current.invoke();
 
-    expect(reactiveMutation.use).toHaveBeenCalled();
+    expect(reactiveMutation.useHook).toHaveBeenCalled();
     expect(invokeFn).toHaveBeenCalled();
     expect(result).toBe('test');
   });
@@ -28,7 +28,7 @@ describe('ReactiveMutationTestHarness', () => {
 
     const result = await harness.result.current.invoke({ name: 'John' });
 
-    expect(reactiveMutation.use).toHaveBeenCalled();
+    expect(reactiveMutation.useHook).toHaveBeenCalled();
     expect(invokeFn).toHaveBeenCalledTimes(1);
     expect(invokeFn).toHaveBeenCalledWith({ name: 'John' });
     expect(result).toBe('Hello John');
@@ -44,7 +44,7 @@ describe('ReactiveMutationTestHarness', () => {
 
     const result1 = await harness.result.current.invoke();
 
-    expect(reactiveMutation.use).toHaveBeenCalled();
+    expect(reactiveMutation.useHook).toHaveBeenCalled();
     expect(invokeFn).toHaveBeenCalledWith();
     expect(result1).toBe('Hello');
 

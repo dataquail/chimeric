@@ -28,7 +28,7 @@ export function createReactiveInfiniteQuery<
       TQueryKey
     >,
     TanstackInfiniteQueryReactiveReturnType<TPageData, TError, TPageParam>
-  >['use'],
+  >['useHook'],
 ): ReactiveInfiniteQuery<void, TPageData, TPageParam, TError, TQueryKey>;
 
 // Optional params
@@ -51,7 +51,7 @@ export function createReactiveInfiniteQuery<
       TQueryKey
     >,
     TanstackInfiniteQueryReactiveReturnType<TPageData, TError, TPageParam>
-  >['use'],
+  >['useHook'],
 ): ReactiveInfiniteQuery<
   TParams | undefined,
   TPageData,
@@ -80,7 +80,7 @@ export function createReactiveInfiniteQuery<
       TQueryKey
     >,
     TanstackInfiniteQueryReactiveReturnType<TPageData, TError, TPageParam>
-  >['use'],
+  >['useHook'],
 ): ReactiveInfiniteQuery<TParams, TPageData, TPageParam, TError, TQueryKey>;
 
 // Implementation
@@ -103,7 +103,7 @@ export function createReactiveInfiniteQuery<
       TQueryKey
     >,
     TanstackInfiniteQueryReactiveReturnType<TPageData, TError, TPageParam>
-  >['use'],
+  >['useHook'],
 ): ReactiveInfiniteQuery<TParams, TPageData, TPageParam, TError, TQueryKey> {
   return coreCreateReactiveInfiniteQuery(reactiveFn) as ReactiveInfiniteQuery<
     TParams,

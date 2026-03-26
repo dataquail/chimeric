@@ -21,21 +21,21 @@ export type ReactiveQuery<
   TNativeReturnType = unknown,
 > = [TParams] extends [void]
   ? {
-      use: (allOptions?: {
+      useHook: (allOptions?: {
         options?: ReactiveQueryOptions;
         nativeOptions?: TNativeOptions;
       }) => ReactiveQueryReturn<TResult, TError, TNativeReturnType>;
     }
   : [TParams] extends [undefined]
   ? {
-      use: (allOptions?: {
+      useHook: (allOptions?: {
         options?: ReactiveQueryOptions;
         nativeOptions?: TNativeOptions;
       }) => ReactiveQueryReturn<TResult, TError, TNativeReturnType>;
     }
   : undefined extends TParams
   ? {
-      use: (
+      useHook: (
         params?: NonNullable<TParams>,
         allOptions?: {
           options?: ReactiveQueryOptions;
@@ -44,7 +44,7 @@ export type ReactiveQuery<
       ) => ReactiveQueryReturn<TResult, TError, TNativeReturnType>;
     }
   : {
-      use: (
+      useHook: (
         params: TParams,
         allOptions?: {
           options?: ReactiveQueryOptions;

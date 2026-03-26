@@ -65,7 +65,7 @@ export function ReactiveAsyncTestHarness<
   reactiveOptions?: ReactiveAsyncOptions;
   wrapper?: ({ children }: { children: ReactNode }) => JSX.Element;
 }): AsyncTestHarnessReturnType<TParams, TResult, TError> {
-  const hook = renderHook(() => reactiveAsync.use(reactiveOptions ?? {}), {
+  const hook = renderHook(() => reactiveAsync.useHook(reactiveOptions ?? {}), {
     wrapper,
   });
 

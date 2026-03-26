@@ -19,8 +19,8 @@ type OwnProps = {
 };
 
 export const SavedForLaterTodoCard = ({ savedForLaterTodo }: OwnProps) => {
-  const activateOne = savedForLaterTodoService.activate.use();
-  const deleteOne = savedForLaterTodoService.deleteOne.use();
+  const activateOne = savedForLaterTodoService.activate.useHook();
+  const deleteOne = savedForLaterTodoService.deleteOne.useHook();
 
   return (
     <Box key={savedForLaterTodo.id} p="xs" pr="lg">

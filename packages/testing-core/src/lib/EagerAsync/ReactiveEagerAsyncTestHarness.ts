@@ -1,8 +1,5 @@
 import { waitFor, renderHook } from '@testing-library/react';
-import {
-  ReactiveEagerAsync,
-  ReactiveEagerAsyncOptions,
-} from '@chimeric/core';
+import { ReactiveEagerAsync, ReactiveEagerAsyncOptions } from '@chimeric/core';
 import { JSX, ReactNode } from 'react';
 import { WaitForReadOptions } from 'src/types/WaitForOptions.js';
 import { EagerAsyncTestHarnessReturnType } from './types.js';
@@ -74,23 +71,30 @@ export function ReactiveEagerAsyncTestHarness<
   const hook = renderHook(
     () => {
       if (params !== undefined) {
-        return (reactiveEagerAsync.use as (p: TParams, o?: ReactiveEagerAsyncOptions) => {
-          isIdle: boolean;
-          isPending: boolean;
-          isSuccess: boolean;
-          isError: boolean;
-          error: TError | null;
-          data: TResult | undefined;
-        })(params, reactiveOptions);
+        return (
+          reactiveEagerAsync.useHook as (
+            p: TParams,
+            o?: ReactiveEagerAsyncOptions,
+          ) => {
+            isIdle: boolean;
+            isPending: boolean;
+            isSuccess: boolean;
+            isError: boolean;
+            error: TError | null;
+            data: TResult | undefined;
+          }
+        )(params, reactiveOptions);
       } else {
-        return (reactiveEagerAsync.use as (o?: ReactiveEagerAsyncOptions) => {
-          isIdle: boolean;
-          isPending: boolean;
-          isSuccess: boolean;
-          isError: boolean;
-          error: TError | null;
-          data: TResult | undefined;
-        })(reactiveOptions);
+        return (
+          reactiveEagerAsync.useHook as (o?: ReactiveEagerAsyncOptions) => {
+            isIdle: boolean;
+            isPending: boolean;
+            isSuccess: boolean;
+            isError: boolean;
+            error: TError | null;
+            data: TResult | undefined;
+          }
+        )(reactiveOptions);
       }
     },
     {

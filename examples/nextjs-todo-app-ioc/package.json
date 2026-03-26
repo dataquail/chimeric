@@ -1,0 +1,38 @@
+{
+  "name": "@chimeric/nextjs-todo-app-ioc",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@chimeric/react": "workspace:^",
+    "@chimeric/react-query": "workspace:^",
+    "@mantine/core": "^7.10.0",
+    "@mantine/form": "^7.10.0",
+    "@mantine/hooks": "^7.10.0",
+    "@reduxjs/toolkit": "^2.6.1",
+    "@tabler/icons-react": "^3.5.0",
+    "@tanstack/react-query": "^5.69.0",
+    "date-fns": "^3.6.0",
+    "inversify": "^6.0.3",
+    "next": "~16.0.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-redux": "^9.2.0",
+    "redux": "^5.0.1",
+    "reflect-metadata": "^0.2.2",
+    "sass": "^1.77.2",
+    "sort-by": "^1.2.0",
+    "uuid": "^9.0.1",
+    "zustand": "^5.0.9"
+  },
+  "devDependencies": {
+    "@chimeric/testing-react": "workspace:^",
+    "@chimeric/testing-react-query": "workspace:^",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.4.5",
+    "@testing-library/react": "^14.3.1",
+    "@types/uuid": "^9.0.8",
+    "immer": "^10.1.1",
+    "postcss-preset-mantine": "^1.15.0",
+    "postcss-simple-vars": "^7.0.1"
+  }
+}

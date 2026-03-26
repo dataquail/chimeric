@@ -18,7 +18,7 @@ export function createReactiveInfiniteQuery<
     TError,
     TNativeOptions,
     TNativeReturnType
-  >['use'],
+  >['useHook'],
 ): ReactiveInfiniteQuery<
   void,
   TPageData,
@@ -44,7 +44,7 @@ export function createReactiveInfiniteQuery<
     TError,
     TNativeOptions,
     TNativeReturnType
-  >['use'],
+  >['useHook'],
 ): ReactiveInfiniteQuery<
   TParams | undefined,
   TPageData,
@@ -70,7 +70,7 @@ export function createReactiveInfiniteQuery<
     TError,
     TNativeOptions,
     TNativeReturnType
-  >['use'],
+  >['useHook'],
 ): ReactiveInfiniteQuery<
   TParams,
   TPageData,
@@ -96,7 +96,7 @@ export function createReactiveInfiniteQuery<
     TError,
     TNativeOptions,
     TNativeReturnType
-  >['use'],
+  >['useHook'],
 ): ReactiveInfiniteQuery<
   TParams,
   TPageData,
@@ -106,7 +106,7 @@ export function createReactiveInfiniteQuery<
   TNativeReturnType
 > {
   const reactiveInfiniteQuery = {
-    use: reactiveFn,
+    useHook: reactiveFn,
   };
   if (isEligibleReactive(reactiveInfiniteQuery)) {
     return markReactive(

@@ -41,7 +41,7 @@ describe('ReactiveSyncReducer', () => {
   it('should aggregate from one reactive sync interface', () => {
     const { todoStore, getAllTodos } = createTodoHookAndStore();
 
-    const { result } = renderHook(getAllTodos.use);
+    const { result } = renderHook(getAllTodos.useHook);
 
     expect(result.current.length).toBe(0);
 
@@ -61,7 +61,7 @@ describe('ReactiveSyncReducer', () => {
       reducer: ([todos], params) => todos[params].id,
     });
 
-    const { result: result2 } = renderHook(TestReactiveSyncReducer.use, {
+    const { result: result2 } = renderHook(TestReactiveSyncReducer.useHook, {
       initialProps: 0,
     });
 
@@ -95,7 +95,7 @@ describe('ReactiveSyncReducer', () => {
       },
     });
 
-    const { result } = renderHook(TestReactiveSyncReducer.use, {
+    const { result } = renderHook(TestReactiveSyncReducer.useHook, {
       initialProps: 0,
     });
 
@@ -130,7 +130,7 @@ describe('ReactiveSyncReducer', () => {
       },
     });
 
-    const { result } = renderHook(TestReactiveSyncReducer.use, {
+    const { result } = renderHook(TestReactiveSyncReducer.useHook, {
       initialProps: 0,
     });
 
@@ -217,7 +217,7 @@ describe('ReactiveSyncReducer', () => {
 
       // Render each implementation multiple times
       const { rerender: rerenderOrig, result } = renderHook(
-        (index: number) => useOriginal.use(index),
+        (index: number) => useOriginal.useHook(index),
         { initialProps: 0 },
       );
       // Initial render

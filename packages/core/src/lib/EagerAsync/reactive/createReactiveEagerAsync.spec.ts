@@ -8,8 +8,8 @@ describe('createReactiveEagerAsync', () => {
     const reactiveEagerAsync = createReactiveEagerAsync(fn);
 
     expect(typeof reactiveEagerAsync).toBe('object');
-    expect(reactiveEagerAsync).toHaveProperty('use');
-    expect(typeof reactiveEagerAsync.use).toBe('function');
+    expect(reactiveEagerAsync).toHaveProperty('useHook');
+    expect(typeof reactiveEagerAsync.useHook).toBe('function');
   });
 
   it('should throw an error for invalid input', () => {
@@ -25,7 +25,7 @@ describe('createReactiveEagerAsync', () => {
       EagerAsyncTestFixtures.withoutParams.getReactive();
 
     // Usage implementation test - use() calls
-    const result = reactiveEagerAsync.use();
+    const result = reactiveEagerAsync.useHook();
     expect(fn).toHaveBeenCalledWith();
     expect(fn).toHaveBeenCalledTimes(1);
     expect(result.data).toBe('test');
@@ -36,7 +36,7 @@ describe('createReactiveEagerAsync', () => {
       EagerAsyncTestFixtures.withParams.getReactive();
 
     // Usage implementation test - use() calls
-    const result = reactiveEagerAsync.use({ name: 'John' });
+    const result = reactiveEagerAsync.useHook({ name: 'John' });
     expect(fn).toHaveBeenCalledWith({ name: 'John' });
     expect(fn).toHaveBeenCalledTimes(1);
     expect(result.data).toBe('Hello John');
@@ -47,13 +47,13 @@ describe('createReactiveEagerAsync', () => {
       EagerAsyncTestFixtures.withOptionalParams.getReactive();
 
     // Usage implementation test - use() with params
-    const resultWithParams = reactiveEagerAsync.use({ name: 'John' });
+    const resultWithParams = reactiveEagerAsync.useHook({ name: 'John' });
     expect(fn).toHaveBeenCalledWith({ name: 'John' });
     expect(fn).toHaveBeenCalledTimes(1);
     expect(resultWithParams.data).toBe('Hello John');
 
     // Usage implementation test - use() without params
-    const resultWithoutParams = reactiveEagerAsync.use();
+    const resultWithoutParams = reactiveEagerAsync.useHook();
     expect(fn).toHaveBeenCalledWith();
     expect(fn).toHaveBeenCalledTimes(2);
     expect(resultWithoutParams.data).toBe('Hello');
@@ -66,7 +66,7 @@ describe('createReactiveEagerAsync', () => {
 
     try {
       // @ts-expect-error testing invalid call
-      reactiveEagerAsync.use({ name: 'John' });
+      reactiveEagerAsync.useHook({ name: 'John' });
     } catch {
       // Expected to throw
     }
@@ -78,7 +78,7 @@ describe('createReactiveEagerAsync', () => {
 
     try {
       // @ts-expect-error testing invalid call
-      reactiveEagerAsync.use();
+      reactiveEagerAsync.useHook();
     } catch {
       // Expected to throw
     }
@@ -90,7 +90,7 @@ describe('createReactiveEagerAsync', () => {
 
     try {
       // @ts-expect-error testing invalid call
-      reactiveEagerAsync.use(1);
+      reactiveEagerAsync.useHook(1);
     } catch {
       // Expected to throw
     }

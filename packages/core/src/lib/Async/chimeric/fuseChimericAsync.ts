@@ -51,7 +51,7 @@ export function fuseChimericAsync<
       TResult,
       TError
     >;
-    chimericFn.use = args.reactive.use;
+    chimericFn.useHook = args.reactive.useHook;
     markReactive(chimericFn, TYPE_MARKERS.REACTIVE_ASYNC);
     markIdiomatic(chimericFn, TYPE_MARKERS.IDIOMATIC_ASYNC);
 

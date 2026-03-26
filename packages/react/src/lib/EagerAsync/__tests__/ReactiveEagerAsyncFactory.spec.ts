@@ -7,7 +7,7 @@ describe('ReactiveEagerAsyncFactory', () => {
   it('USAGE: no params', async () => {
     const { fn } = EagerAsyncTestFixtures.withoutParams.getReactive();
     const reactiveEagerAsync = ReactiveEagerAsyncFactory({ eagerAsyncFn: fn });
-    const { result } = renderHook(reactiveEagerAsync.use);
+    const { result } = renderHook(reactiveEagerAsync.useHook);
 
     await waitFor(() => {
       expect(result.current.isSuccess).toBe(true);
@@ -20,7 +20,9 @@ describe('ReactiveEagerAsyncFactory', () => {
   it('USAGE: with params', async () => {
     const { fn } = EagerAsyncTestFixtures.withParams.getReactive();
     const reactiveEagerAsync = ReactiveEagerAsyncFactory({ eagerAsyncFn: fn });
-    const { result } = renderHook(() => reactiveEagerAsync.use({ name: 'John' }));
+    const { result } = renderHook(() =>
+      reactiveEagerAsync.useHook({ name: 'John' }),
+    );
 
     await waitFor(() => {
       expect(result.current.isSuccess).toBe(true);
@@ -33,7 +35,7 @@ describe('ReactiveEagerAsyncFactory', () => {
   it('USAGE: with optional params', async () => {
     const { fn } = EagerAsyncTestFixtures.withOptionalParams.getReactive();
     const reactiveEagerAsync = ReactiveEagerAsyncFactory({ eagerAsyncFn: fn });
-    const { result } = renderHook(() => reactiveEagerAsync.use());
+    const { result } = renderHook(() => reactiveEagerAsync.useHook());
 
     await waitFor(() => {
       expect(result.current.isSuccess).toBe(true);
@@ -43,7 +45,7 @@ describe('ReactiveEagerAsyncFactory', () => {
     expect(fn).toHaveBeenCalled();
 
     const { result: result2 } = renderHook(() =>
-      reactiveEagerAsync.use({ name: 'Jane' }),
+      reactiveEagerAsync.useHook({ name: 'Jane' }),
     );
 
     await waitFor(() => {
@@ -55,8 +57,10 @@ describe('ReactiveEagerAsyncFactory', () => {
 
   it('USAGE: error handling', async () => {
     const mockPromise = vi.fn(() => Promise.reject(new Error('test')));
-    const reactiveEagerAsync = ReactiveEagerAsyncFactory({ eagerAsyncFn: mockPromise });
-    const { result } = renderHook(() => reactiveEagerAsync.use());
+    const reactiveEagerAsync = ReactiveEagerAsyncFactory({
+      eagerAsyncFn: mockPromise,
+    });
+    const { result } = renderHook(() => reactiveEagerAsync.useHook());
 
     await waitFor(() => {
       expect(result.current.isError).toBe(true);
@@ -75,7 +79,7 @@ describe('ReactiveEagerAsyncFactory', () => {
 
     try {
       // @ts-expect-error - Testing type error
-      renderHook(() => reactiveEagerAsync.use({ name: 'John' }));
+      renderHook(() => reactiveEagerAsync.useHook({ name: 'John' }));
     } catch {
       // Expected error
     }
@@ -87,10 +91,10 @@ describe('ReactiveEagerAsyncFactory', () => {
 
     try {
       // @ts-expect-error - Testing type error
-      renderHook(() => reactiveEagerAsync.use());
+      renderHook(() => reactiveEagerAsync.useHook());
 
       // @ts-expect-error - Testing type error
-      renderHook(() => reactiveEagerAsync.use({ wrong: 'param' }));
+      renderHook(() => reactiveEagerAsync.useHook({ wrong: 'param' }));
     } catch {
       // Expected errors
     }
@@ -102,9 +106,9 @@ describe('ReactiveEagerAsyncFactory', () => {
 
     try {
       // @ts-expect-error - Testing type error
-      renderHook(() => reactiveEagerAsync.use({ wrong: 'param' }));
+      renderHook(() => reactiveEagerAsync.useHook({ wrong: 'param' }));
 
-      renderHook(() => reactiveEagerAsync.use());
+      renderHook(() => reactiveEagerAsync.useHook());
     } catch {
       // Expected error
     }
@@ -115,7 +119,9 @@ describe('ReactiveEagerAsyncFactory', () => {
     const { annotation: _annotation, fn } =
       EagerAsyncTestFixtures.withoutParams.getReactive();
     type TestAnnotation = typeof _annotation;
-    const testAnnotation: TestAnnotation = ReactiveEagerAsyncFactory({ eagerAsyncFn: fn });
+    const testAnnotation: TestAnnotation = ReactiveEagerAsyncFactory({
+      eagerAsyncFn: fn,
+    });
     expect(testAnnotation).toBeDefined();
   });
 
@@ -123,7 +129,9 @@ describe('ReactiveEagerAsyncFactory', () => {
     const { annotation: _annotation, fn } =
       EagerAsyncTestFixtures.withParams.getReactive();
     type TestAnnotation = typeof _annotation;
-    const testAnnotation: TestAnnotation = ReactiveEagerAsyncFactory({ eagerAsyncFn: fn });
+    const testAnnotation: TestAnnotation = ReactiveEagerAsyncFactory({
+      eagerAsyncFn: fn,
+    });
     expect(testAnnotation).toBeDefined();
   });
 
@@ -131,7 +139,9 @@ describe('ReactiveEagerAsyncFactory', () => {
     const { annotation: _annotation, fn } =
       EagerAsyncTestFixtures.withOptionalParams.getReactive();
     type TestAnnotation = typeof _annotation;
-    const testAnnotation: TestAnnotation = ReactiveEagerAsyncFactory({ eagerAsyncFn: fn });
+    const testAnnotation: TestAnnotation = ReactiveEagerAsyncFactory({
+      eagerAsyncFn: fn,
+    });
     expect(testAnnotation).toBeDefined();
   });
 });

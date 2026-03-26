@@ -15,7 +15,7 @@ export type ReactiveEagerAsync<
   TResult = unknown,
   TError extends Error = Error,
 > = {
-  use: [TParams] extends [void]
+  useHook: [TParams] extends [void]
     ? (
         options?: ReactiveEagerAsyncOptions,
       ) => ReactiveEagerAsyncReturnType<TResult, TError>

@@ -61,6 +61,28 @@
         "buildDepsTargetName": "build-deps",
         "typecheckTargetName": "typecheck"
       }
+    },
+    {
+      "plugin": "@nx/next/plugin",
+      "options": {
+        "startTargetName": "start",
+        "buildTargetName": "build",
+        "devTargetName": "dev",
+        "serveStaticTargetName": "serve-static",
+        "buildDepsTargetName": "build-deps",
+        "watchDepsTargetName": "watch-deps"
+      }
+    },
+    {
+      "plugin": "@nx/webpack/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "serveTargetName": "serve",
+        "previewTargetName": "preview",
+        "buildDepsTargetName": "build-deps",
+        "watchDepsTargetName": "watch-deps",
+        "serveStaticTargetName": "serve-static"
+      }
     }
   ],
   "targetDefaults": {
@@ -108,6 +130,12 @@
       },
       "library": {
         "style": "css",
+        "linter": "eslint"
+      }
+    },
+    "@nx/next": {
+      "application": {
+        "style": "tailwind",
         "linter": "eslint"
       }
     }

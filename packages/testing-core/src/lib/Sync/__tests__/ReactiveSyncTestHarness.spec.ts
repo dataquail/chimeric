@@ -10,7 +10,7 @@ describe('ReactiveSyncTestHarness', () => {
     });
 
     expect(testHarness.result.current).toBe('test');
-    expect(reactiveSync.use).toHaveBeenCalledTimes(1);
+    expect(reactiveSync.useHook).toHaveBeenCalledTimes(1);
   });
 
   it('USAGE: with params', () => {
@@ -21,8 +21,8 @@ describe('ReactiveSyncTestHarness', () => {
     });
 
     expect(testHarness.result.current).toBe('Hello John');
-    expect(reactiveSync.use).toHaveBeenCalledTimes(1);
-    expect(reactiveSync.use).toHaveBeenCalledWith({ name: 'John' });
+    expect(reactiveSync.useHook).toHaveBeenCalledTimes(1);
+    expect(reactiveSync.useHook).toHaveBeenCalledWith({ name: 'John' });
   });
 
   it('USAGE: with optional params', () => {
@@ -34,16 +34,16 @@ describe('ReactiveSyncTestHarness', () => {
     });
 
     expect(testHarnessWithParams.result.current).toBe('Hello John');
-    expect(reactiveSync.use).toHaveBeenCalledTimes(1);
-    expect(reactiveSync.use).toHaveBeenCalledWith({ name: 'John' });
+    expect(reactiveSync.useHook).toHaveBeenCalledTimes(1);
+    expect(reactiveSync.useHook).toHaveBeenCalledWith({ name: 'John' });
 
     const testHarnessNoParams = ReactiveSyncTestHarness({
       reactiveSync,
     });
 
     expect(testHarnessNoParams.result.current).toBe('Hello');
-    expect(reactiveSync.use).toHaveBeenCalledTimes(2);
-    expect(reactiveSync.use).toHaveBeenCalledWith(undefined);
+    expect(reactiveSync.useHook).toHaveBeenCalledTimes(2);
+    expect(reactiveSync.useHook).toHaveBeenCalledWith(undefined);
   });
 
   // TYPE ERRORS

@@ -135,7 +135,7 @@ export function ReactiveMutationTestHarness<
   TNativeReturnType
 > {
   const hook = renderHook(
-    () => reactiveMutation.use({ options, nativeOptions }),
+    () => reactiveMutation.useHook({ options, nativeOptions }),
     {
       wrapper,
     },

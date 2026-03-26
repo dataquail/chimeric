@@ -4,7 +4,7 @@ import { SavedForLaterTodoCard } from './SavedForLaterTodoCard';
 import { savedForLaterTodoService } from 'src/core/infrastructure/services/SavedForLaterTodoService';
 
 export const SaveForLaterTodoList = () => {
-  const { data, isPending } = savedForLaterTodoService.getAll.use();
+  const { data, isPending } = savedForLaterTodoService.getAll.useHook();
   const { height } = useViewportSize();
 
   if (isPending || !data) {

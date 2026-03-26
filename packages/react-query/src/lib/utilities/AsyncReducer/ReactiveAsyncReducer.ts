@@ -5,10 +5,11 @@ import {
   isReactiveQuery,
   isReactiveSync,
   ReactiveEagerAsync,
+  ReactiveEagerAsyncOptions,
   ReactiveQueryOptions,
   ReactiveSync,
 } from '@chimeric/core';
-import { UseQueryResult } from '@tanstack/react-query';
+import { QueryKey, UseQueryResult } from '@tanstack/react-query';
 import { useMemo, useRef } from 'react';
 import {
   ReactiveQuery,
@@ -330,130 +331,151 @@ type InferService<TConfig, TServiceParams> =
       infer TQueryKey
     >;
   }
-    ? [TParams] extends [void]
-      ? {
-          service: ReactiveQuery<void, TResult, TError, TQueryKey>;
-          getParams?: never;
-          getOptions?: () => {
-            options?: ReactiveQueryOptions;
-            nativeOptions?: TanstackQueryReactiveNativeOptions<
-              TResult,
-              TError,
-              TQueryKey
-            >;
-          };
-        }
-      : void extends TParams
-      ? {
-          service: ReactiveQuery<void, TResult, TError, TQueryKey>;
-          getParams?: never;
-          getOptions?: () => {
-            options?: ReactiveQueryOptions;
-            nativeOptions?: TanstackQueryReactiveNativeOptions<
-              TResult,
-              TError,
-              TQueryKey
-            >;
-          };
-        }
-      : undefined extends TParams
-      ? {
-          service: ReactiveQuery<TParams, TResult, TError, TQueryKey>;
-          getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
-          getOptions?:
-            | ((params: TServiceParams) => {
-                options?: ReactiveQueryOptions;
-                nativeOptions?: TanstackQueryReactiveNativeOptions<
-                  TResult,
-                  TError,
-                  TQueryKey
-                >;
-              })
-            | (() => {
-                options?: ReactiveQueryOptions;
-                nativeOptions?: TanstackQueryReactiveNativeOptions<
-                  TResult,
-                  TError,
-                  TQueryKey
-                >;
-              });
-        }
-      : {
-          service: ReactiveQuery<TParams, TResult, TError, TQueryKey>;
-          getParams: ((params: TServiceParams) => TParams) | (() => TParams);
-          getOptions?:
-            | ((params: TServiceParams) => {
-                options?: ReactiveQueryOptions;
-                nativeOptions?: TanstackQueryReactiveNativeOptions<
-                  TResult,
-                  TError,
-                  TQueryKey
-                >;
-              })
-            | (() => {
-                options?: ReactiveQueryOptions;
-                nativeOptions?: TanstackQueryReactiveNativeOptions<
-                  TResult,
-                  TError,
-                  TQueryKey
-                >;
-              });
-        }
+    ? QueryConfig<TServiceParams, TParams, TResult, TError, TQueryKey>
     : // EAGER ASYNC
     TConfig extends {
         service: ReactiveEagerAsync<infer TParams, infer TResult, infer TError>;
       }
-    ? [TParams] extends [void]
-      ? {
-          service: ReactiveEagerAsync<void, TResult, TError>;
-          getParams?: never;
-          getOptions?: never;
-        }
-      : void extends TParams
-      ? {
-          service: ReactiveEagerAsync<void, TResult, TError>;
-          getParams?: never;
-          getOptions?: never;
-        }
-      : undefined extends TParams
-      ? {
-          service: ReactiveEagerAsync<TParams, TResult, TError>;
-          getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
-          getOptions?: never;
-        }
-      : {
-          service: ReactiveEagerAsync<TParams, TResult, TError>;
-          getParams: ((params: TServiceParams) => TParams) | (() => TParams);
-          getOptions?: never;
-        }
+    ? EagerAsyncConfig<TServiceParams, TParams, TResult, TError>
     : // SYNC
     TConfig extends {
         service: ReactiveSync<infer TParams, infer TResult>;
       }
-    ? [TParams] extends [void]
-      ? {
-          service: ReactiveSync<void, TResult>;
-          getParams?: never;
-          getOptions?: never;
-        }
-      : void extends TParams
-      ? {
-          service: ReactiveSync<void, TResult>;
-          getParams?: never;
-          getOptions?: never;
-        }
-      : undefined extends TParams
-      ? {
-          service: ReactiveSync<TParams, TResult>;
-          getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
-          getOptions?: never;
-        }
-      : {
-          service: ReactiveSync<TParams, TResult>;
-          getParams: ((params: TServiceParams) => TParams) | (() => TParams);
-          getOptions?: never;
-        }
+    ? SyncConfig<TServiceParams, TParams, TResult>
     : never;
+
+type QueryConfig<
+  TServiceParams,
+  TParams,
+  TResult,
+  TError extends Error,
+  TQueryKey extends QueryKey,
+> = [TParams] extends [void]
+  ? {
+      service: ReactiveQuery<void, TResult, TError, TQueryKey>;
+      getParams?: never;
+      getOptions?: () => {
+        options?: ReactiveQueryOptions;
+        nativeOptions?: TanstackQueryReactiveNativeOptions<
+          TResult,
+          TError,
+          TQueryKey
+        >;
+      };
+    }
+  : void extends TParams
+  ? {
+      service: ReactiveQuery<void, TResult, TError, TQueryKey>;
+      getParams?: never;
+      getOptions?: () => {
+        options?: ReactiveQueryOptions;
+        nativeOptions?: TanstackQueryReactiveNativeOptions<
+          TResult,
+          TError,
+          TQueryKey
+        >;
+      };
+    }
+  : undefined extends TParams
+  ? {
+      service: ReactiveQuery<TParams, TResult, TError, TQueryKey>;
+      getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+      getOptions?:
+        | ((params: TServiceParams) => {
+            options?: ReactiveQueryOptions;
+            nativeOptions?: TanstackQueryReactiveNativeOptions<
+              TResult,
+              TError,
+              TQueryKey
+            >;
+          })
+        | (() => {
+            options?: ReactiveQueryOptions;
+            nativeOptions?: TanstackQueryReactiveNativeOptions<
+              TResult,
+              TError,
+              TQueryKey
+            >;
+          });
+    }
+  : {
+      service: ReactiveQuery<TParams, TResult, TError, TQueryKey>;
+      getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+      getOptions?:
+        | ((params: TServiceParams) => {
+            options?: ReactiveQueryOptions;
+            nativeOptions?: TanstackQueryReactiveNativeOptions<
+              TResult,
+              TError,
+              TQueryKey
+            >;
+          })
+        | (() => {
+            options?: ReactiveQueryOptions;
+            nativeOptions?: TanstackQueryReactiveNativeOptions<
+              TResult,
+              TError,
+              TQueryKey
+            >;
+          });
+    };
+
+type EagerAsyncConfig<
+  TServiceParams,
+  TParams,
+  TResult,
+  TError extends Error,
+> = [TParams] extends [void]
+  ? {
+      service: ReactiveEagerAsync<void, TResult, TError>;
+      getParams?: never;
+      getOptions?: () => ReactiveEagerAsyncOptions;
+    }
+  : void extends TParams
+  ? {
+      service: ReactiveEagerAsync<void, TResult, TError>;
+      getParams?: never;
+      getOptions?: () => ReactiveEagerAsyncOptions;
+    }
+  : undefined extends TParams
+  ? {
+      service: ReactiveEagerAsync<TParams, TResult, TError>;
+      getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+      getOptions?:
+        | ((params: TServiceParams) => ReactiveEagerAsyncOptions)
+        | (() => ReactiveEagerAsyncOptions);
+    }
+  : {
+      service: ReactiveEagerAsync<TParams, TResult, TError>;
+      getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+      getOptions?:
+        | ((params: TServiceParams) => ReactiveEagerAsyncOptions)
+        | (() => ReactiveEagerAsyncOptions);
+    };
+
+type SyncConfig<TServiceParams, TParams, TResult> = [TParams] extends [void]
+  ? {
+      service: ReactiveSync<void, TResult>;
+      getParams?: never;
+      getOptions?: never;
+    }
+  : void extends TParams
+  ? {
+      service: ReactiveSync<void, TResult>;
+      getParams?: never;
+      getOptions?: never;
+    }
+  : undefined extends TParams
+  ? {
+      service: ReactiveSync<TParams, TResult>;
+      getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+      getOptions?: never;
+    }
+  : {
+      service: ReactiveSync<TParams, TResult>;
+      getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+      getOptions?: never;
+    };
 
 export const ReactiveAsyncReducer = <TServiceParams = void>() => ({
   build: <
@@ -687,7 +709,7 @@ export const ReactiveAsyncReducer = <TServiceParams = void>() => ({
       useEagerAsync as ReactiveEagerAsync<
         TServiceParams,
         TServiceResult
-      >['use'],
+      >['useHook'],
     );
   },
 });
@@ -698,7 +720,7 @@ const getService = (
   if (!service) {
     return () => undefined;
   } else {
-    return service.service.use || (() => undefined);
+    return service.service.useHook || (() => undefined);
   }
 };
 
@@ -799,7 +821,9 @@ const getArgs = <TServiceParams>(
         serviceConfig as { getOptions?: (serviceParams: any) => void }
       )?.getOptions?.(params) ?? {};
 
-    return serviceConfig.service.use.length > 1 ? [params, options] : [options];
+    return serviceConfig.service.useHook.length > 1
+      ? [params, options]
+      : [options];
   } else {
     throw new Error('Invalid service type');
   }

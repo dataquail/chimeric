@@ -6,7 +6,7 @@ import { isReactiveEagerAsync } from './isReactiveEagerAsync';
 describe('isReactiveEagerAsync', () => {
   it('should return false for unmarked function', () => {
     const mockReactiveEagerAsync = {
-      use: EagerAsyncTestFixtures.withoutParams.getReactive().fn,
+      useHook: EagerAsyncTestFixtures.withoutParams.getReactive().fn,
     };
 
     expect(isReactiveEagerAsync(mockReactiveEagerAsync)).toBe(false);

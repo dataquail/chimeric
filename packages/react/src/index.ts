@@ -48,3 +48,5 @@ export * from './lib/Async/ReactiveAsyncFactory';
 export * from './lib/EagerAsync/ChimericEagerAsyncFactory';
 export * from './lib/EagerAsync/IdiomaticEagerAsyncFactory';
 export * from './lib/EagerAsync/ReactiveEagerAsyncFactory';
+export * from './Sync/CreateChimericSyncFactory';
+export * from './Sync/createChimericSync';

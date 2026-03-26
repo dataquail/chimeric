@@ -21,7 +21,7 @@ describe('ReactiveQueryWithManagedStoreFactory', () => {
       useFromStore: () => storeValue,
     });
 
-    const { result } = renderHook(() => reactiveQuery.use(), {
+    const { result } = renderHook(() => reactiveQuery.useHook(), {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -49,9 +49,12 @@ describe('ReactiveQueryWithManagedStoreFactory', () => {
       useFromStore: () => storeValue,
     });
 
-    const { result } = renderHook(() => reactiveQuery.use({ name: 'John' }), {
-      wrapper: getTestWrapper(queryClient),
-    });
+    const { result } = renderHook(
+      () => reactiveQuery.useHook({ name: 'John' }),
+      {
+        wrapper: getTestWrapper(queryClient),
+      },
+    );
 
     await waitFor(() => {
       expect(result.current.isPending).toBe(false);
@@ -78,7 +81,7 @@ describe('ReactiveQueryWithManagedStoreFactory', () => {
     });
 
     const { result: resultWithParams } = renderHook(
-      () => reactiveQuery.use({ name: 'John' }),
+      () => reactiveQuery.useHook({ name: 'John' }),
       {
         wrapper: getTestWrapper(queryClient),
       },
@@ -93,7 +96,7 @@ describe('ReactiveQueryWithManagedStoreFactory', () => {
     expect(queryFn).toHaveBeenCalledWith({ name: 'John' });
 
     const { result: resultWithoutParams } = renderHook(
-      () => reactiveQuery.use(),
+      () => reactiveQuery.useHook(),
       {
         wrapper: getTestWrapper(queryClient),
       },
@@ -125,7 +128,7 @@ describe('ReactiveQueryWithManagedStoreFactory', () => {
 
     try {
       // @ts-expect-error - no params expected
-      renderHook(() => reactiveQuery.use({ name: 'John' }), {
+      renderHook(() => reactiveQuery.useHook({ name: 'John' }), {
         wrapper: getTestWrapper(queryClient),
       });
     } catch {
@@ -149,12 +152,12 @@ describe('ReactiveQueryWithManagedStoreFactory', () => {
 
     try {
       // @ts-expect-error - no params expected
-      renderHook(() => reactiveQuery.use(), {
+      renderHook(() => reactiveQuery.useHook(), {
         wrapper: getTestWrapper(queryClient),
       });
 
       // @ts-expect-error - should error because wrong params
-      renderHook(() => reactiveQuery.use({ wrong: 'param' }), {
+      renderHook(() => reactiveQuery.useHook({ wrong: 'param' }), {
         wrapper: getTestWrapper(queryClient),
       });
     } catch {
@@ -178,11 +181,11 @@ describe('ReactiveQueryWithManagedStoreFactory', () => {
 
     try {
       // @ts-expect-error - should error because wrong params
-      renderHook(() => reactiveQuery.use({ wrong: 'param' }), {
+      renderHook(() => reactiveQuery.useHook({ wrong: 'param' }), {
         wrapper: getTestWrapper(queryClient),
       });
 
-      renderHook(() => reactiveQuery.use(), {
+      renderHook(() => reactiveQuery.useHook(), {
         wrapper: getTestWrapper(queryClient),
       });
     } catch {

@@ -11,12 +11,9 @@ export const fuseChimericSync = <TParams = void, TResult = unknown>(args: {
   idiomatic: IdiomaticSync<TParams, TResult>;
   reactive: ReactiveSync<TParams, TResult>;
 }): ChimericSync<TParams, TResult> => {
-  if (
-    isIdiomaticSync(args.idiomatic) &&
-    isReactiveSync(args.reactive)
-  ) {
+  if (isIdiomaticSync(args.idiomatic) && isReactiveSync(args.reactive)) {
     const chimericFn = args.idiomatic as ChimericSync<TParams, TResult>;
-    chimericFn.use = args.reactive.use;
+    chimericFn.useHook = args.reactive.useHook;
     markReactive(chimericFn, TYPE_MARKERS.REACTIVE_SYNC);
     markIdiomatic(chimericFn, TYPE_MARKERS.IDIOMATIC_SYNC);
 

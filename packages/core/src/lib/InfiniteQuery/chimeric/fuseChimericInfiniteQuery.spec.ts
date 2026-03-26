@@ -40,7 +40,7 @@ describe('fuseChimericInfiniteQuery', () => {
     expect(idiomaticResultWithOptions).toHaveProperty('pageParams');
 
     // Test reactive interface - use without options
-    const reactiveResultWithoutOptions = chimericInfiniteQuery.use();
+    const reactiveResultWithoutOptions = chimericInfiniteQuery.useHook();
     expect(reactiveFn).toHaveBeenCalledWith();
     expect(reactiveFn).toHaveBeenCalledTimes(1);
     expect(reactiveResultWithoutOptions.data).toHaveProperty('pages');
@@ -50,7 +50,7 @@ describe('fuseChimericInfiniteQuery', () => {
     expect(reactiveResultWithoutOptions).toHaveProperty('refetch');
 
     // Test reactive interface - use with options
-    const resultWithOptions = chimericInfiniteQuery.use({
+    const resultWithOptions = chimericInfiniteQuery.useHook({
       options: undefined,
       nativeOptions: undefined,
     });
@@ -67,15 +67,15 @@ describe('fuseChimericInfiniteQuery', () => {
     expect(fetchNextPageFn).toHaveBeenCalledWith();
     expect(fetchNextPageFn).toHaveBeenCalledTimes(1);
 
-    await expect(
-      resultWithOptions.fetchPreviousPage(),
-    ).resolves.toHaveProperty('pages');
+    await expect(resultWithOptions.fetchPreviousPage()).resolves.toHaveProperty(
+      'pages',
+    );
     expect(fetchPreviousPageFn).toHaveBeenCalledWith();
     expect(fetchPreviousPageFn).toHaveBeenCalledTimes(1);
 
-    await expect(reactiveResultWithoutOptions.refetch()).resolves.toHaveProperty(
-      'pages',
-    );
+    await expect(
+      reactiveResultWithoutOptions.refetch(),
+    ).resolves.toHaveProperty('pages');
     expect(refetchFn).toHaveBeenCalledWith();
     expect(refetchFn).toHaveBeenCalledTimes(1);
   });
@@ -124,14 +124,14 @@ describe('fuseChimericInfiniteQuery', () => {
     expect(idiomaticResultWithOptions).toHaveProperty('pageParams');
 
     // Test reactive interface - use without options
-    const reactiveResultWithoutOptions = chimericInfiniteQuery.use({
+    const reactiveResultWithoutOptions = chimericInfiniteQuery.useHook({
       search: '1',
     });
     expect(reactiveFn).toHaveBeenCalledWith({ search: '1' });
     expect(reactiveFn).toHaveBeenCalledTimes(1);
 
     // Test reactive interface - use with options
-    const resultWithOptions = chimericInfiniteQuery.use(
+    const resultWithOptions = chimericInfiniteQuery.useHook(
       { search: '1' },
       {
         options: undefined,
@@ -154,15 +154,15 @@ describe('fuseChimericInfiniteQuery', () => {
     expect(fetchNextPageFn).toHaveBeenCalledWith();
     expect(fetchNextPageFn).toHaveBeenCalledTimes(1);
 
-    await expect(
-      resultWithOptions.fetchPreviousPage(),
-    ).resolves.toHaveProperty('pages');
+    await expect(resultWithOptions.fetchPreviousPage()).resolves.toHaveProperty(
+      'pages',
+    );
     expect(fetchPreviousPageFn).toHaveBeenCalledWith();
     expect(fetchPreviousPageFn).toHaveBeenCalledTimes(1);
 
-    await expect(reactiveResultWithoutOptions.refetch()).resolves.toHaveProperty(
-      'pages',
-    );
+    await expect(
+      reactiveResultWithoutOptions.refetch(),
+    ).resolves.toHaveProperty('pages');
     expect(refetchFn).toHaveBeenCalledWith();
     expect(refetchFn).toHaveBeenCalledTimes(1);
   });
@@ -180,13 +180,17 @@ describe('fuseChimericInfiniteQuery', () => {
     });
 
     // Test idiomatic interface - call with params without options
-    const idiomaticResultWithParamsWithoutOptions = await chimericInfiniteQuery({
-      search: '1',
-    });
+    const idiomaticResultWithParamsWithoutOptions = await chimericInfiniteQuery(
+      {
+        search: '1',
+      },
+    );
     expect(idiomaticFn).toHaveBeenCalledWith({ search: '1' });
     expect(idiomaticFn).toHaveBeenCalledTimes(1);
     expect(idiomaticResultWithParamsWithoutOptions).toHaveProperty('pages');
-    expect(idiomaticResultWithParamsWithoutOptions).toHaveProperty('pageParams');
+    expect(idiomaticResultWithParamsWithoutOptions).toHaveProperty(
+      'pageParams',
+    );
 
     // Test idiomatic interface - call with params with options
     const idiomaticResultWithParamsWithOptions = await chimericInfiniteQuery(
@@ -208,11 +212,14 @@ describe('fuseChimericInfiniteQuery', () => {
     expect(idiomaticResultWithParamsWithOptions).toHaveProperty('pageParams');
 
     // Test idiomatic interface - call without params without options
-    const idiomaticResultWithoutParamsWithoutOptions = await chimericInfiniteQuery();
+    const idiomaticResultWithoutParamsWithoutOptions =
+      await chimericInfiniteQuery();
     expect(idiomaticFn).toHaveBeenCalledWith();
     expect(idiomaticFn).toHaveBeenCalledTimes(3);
     expect(idiomaticResultWithoutParamsWithoutOptions).toHaveProperty('pages');
-    expect(idiomaticResultWithoutParamsWithoutOptions).toHaveProperty('pageParams');
+    expect(idiomaticResultWithoutParamsWithoutOptions).toHaveProperty(
+      'pageParams',
+    );
 
     // Test idiomatic interface - call without params with options
     const idiomaticResultWithoutParamsWithOptions = await chimericInfiniteQuery(
@@ -228,15 +235,18 @@ describe('fuseChimericInfiniteQuery', () => {
     });
     expect(idiomaticFn).toHaveBeenCalledTimes(4);
     expect(idiomaticResultWithoutParamsWithOptions).toHaveProperty('pages');
-    expect(idiomaticResultWithoutParamsWithOptions).toHaveProperty('pageParams');
+    expect(idiomaticResultWithoutParamsWithOptions).toHaveProperty(
+      'pageParams',
+    );
 
     // Test reactive interface - use without params without options
-    const reactiveResultWithoutParamsWithoutOptions = chimericInfiniteQuery.use();
+    const reactiveResultWithoutParamsWithoutOptions =
+      chimericInfiniteQuery.useHook();
     expect(reactiveFn).toHaveBeenCalledWith();
     expect(reactiveFn).toHaveBeenCalledTimes(1);
 
     // Test reactive interface - use without params with options
-    chimericInfiniteQuery.use(undefined, {
+    chimericInfiniteQuery.useHook(undefined, {
       options: undefined,
       nativeOptions: undefined,
     });
@@ -247,12 +257,12 @@ describe('fuseChimericInfiniteQuery', () => {
     expect(reactiveFn).toHaveBeenCalledTimes(2);
 
     // Test reactive interface - use with params without options
-    const resultWithParams = chimericInfiniteQuery.use({ search: '1' });
+    const resultWithParams = chimericInfiniteQuery.useHook({ search: '1' });
     expect(reactiveFn).toHaveBeenCalledWith({ search: '1' });
     expect(reactiveFn).toHaveBeenCalledTimes(3);
 
     // Test reactive interface - use with params with options
-    chimericInfiniteQuery.use(
+    chimericInfiniteQuery.useHook(
       { search: '1' },
       {
         options: undefined,
@@ -288,9 +298,9 @@ describe('fuseChimericInfiniteQuery', () => {
     await expect(
       reactiveResultWithoutParamsWithoutOptions.refetch(),
     ).resolves.toHaveProperty('pages');
-    expect(reactiveResultWithoutParamsWithoutOptions.refetch).toHaveBeenCalledTimes(
-      1,
-    );
+    expect(
+      reactiveResultWithoutParamsWithoutOptions.refetch,
+    ).toHaveBeenCalledTimes(1);
   });
 
   // TYPE ERROR TESTS
@@ -306,7 +316,7 @@ describe('fuseChimericInfiniteQuery', () => {
       // @ts-expect-error testing invalid call
       await chimericInfiniteQuery({ search: '1' });
 
-      const result = chimericInfiniteQuery.use();
+      const result = chimericInfiniteQuery.useHook();
       // @ts-expect-error testing invalid call
       result.data.nonExistent();
     } catch {
@@ -327,7 +337,7 @@ describe('fuseChimericInfiniteQuery', () => {
       await chimericInfiniteQuery();
 
       // @ts-expect-error testing invalid call
-      chimericInfiniteQuery.use();
+      chimericInfiniteQuery.useHook();
     } catch {
       // Expected to throw
     }
@@ -346,7 +356,7 @@ describe('fuseChimericInfiniteQuery', () => {
       await chimericInfiniteQuery(1);
 
       // @ts-expect-error testing invalid call
-      chimericInfiniteQuery.use(1);
+      chimericInfiniteQuery.useHook(1);
     } catch {
       // Expected to throw
     }

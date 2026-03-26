@@ -50,10 +50,10 @@ export function ReactiveEagerAsyncFactory<
 
   const eagerAsyncCandidate = (
     paramsOrOptions?: Parameters<
-      ReactiveEagerAsync<TParams, TResult, TError>['use']
+      ReactiveEagerAsync<TParams, TResult, TError>['useHook']
     >[0],
     maybeOptions?: Parameters<
-      ReactiveEagerAsync<TParams, TResult, TError>['use']
+      ReactiveEagerAsync<TParams, TResult, TError>['useHook']
     >[1],
   ) => {
     const params =
@@ -141,6 +141,10 @@ export function ReactiveEagerAsyncFactory<
   };
 
   return createReactiveEagerAsync(
-    eagerAsyncCandidate as ReactiveEagerAsync<TParams, TResult, TError>['use'],
+    eagerAsyncCandidate as ReactiveEagerAsync<
+      TParams,
+      TResult,
+      TError
+    >['useHook'],
   ) as ReactiveEagerAsync<TParams, TResult, TError>;
 }

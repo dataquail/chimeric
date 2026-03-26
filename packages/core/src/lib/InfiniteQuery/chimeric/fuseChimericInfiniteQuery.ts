@@ -154,7 +154,7 @@ export function fuseChimericInfiniteQuery<
       TNativeReactiveOptions,
       TNativeReactiveResult
     >;
-    chimericFn.use = args.reactive.use;
+    chimericFn.useHook = args.reactive.useHook;
     markReactive(chimericFn, TYPE_MARKERS.REACTIVE_INFINITE_QUERY);
     markIdiomatic(chimericFn, TYPE_MARKERS.IDIOMATIC_INFINITE_QUERY);
 

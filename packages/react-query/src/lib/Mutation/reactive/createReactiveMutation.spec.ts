@@ -8,8 +8,8 @@ describe('createReactiveMutation', () => {
     const reactiveMutation = createReactiveMutation(fn);
 
     expect(typeof reactiveMutation).toBe('object');
-    expect(reactiveMutation).toHaveProperty('use');
-    expect(typeof reactiveMutation.use).toBe('function');
+    expect(reactiveMutation).toHaveProperty('useHook');
+    expect(typeof reactiveMutation.useHook).toBe('function');
   });
 
   it('should throw an error for invalid input', () => {
@@ -25,7 +25,7 @@ describe('createReactiveMutation', () => {
       MutationTestFixtures.withoutParams.getReactive();
 
     // Usage implementation test - use() calls
-    const resultWithoutOptions = reactiveMutation.use();
+    const resultWithoutOptions = reactiveMutation.useHook();
     expect(fn).toHaveBeenCalledWith();
     expect(fn).toHaveBeenCalledTimes(1);
 
@@ -33,7 +33,7 @@ describe('createReactiveMutation', () => {
       options: undefined,
       nativeOptions: { onSuccess: () => 'success' },
     };
-    const resultWithOptions = reactiveMutation.use(allOptions);
+    const resultWithOptions = reactiveMutation.useHook(allOptions);
     expect(fn).toHaveBeenCalledWith(allOptions);
     expect(fn).toHaveBeenCalledTimes(2);
 
@@ -60,7 +60,7 @@ describe('createReactiveMutation', () => {
       MutationTestFixtures.withParams.getReactive();
 
     // Usage implementation test - use() calls
-    const resultWithoutOptions = reactiveMutation.use();
+    const resultWithoutOptions = reactiveMutation.useHook();
     expect(fn).toHaveBeenCalledWith();
     expect(fn).toHaveBeenCalledTimes(1);
 
@@ -68,7 +68,7 @@ describe('createReactiveMutation', () => {
       options: undefined,
       nativeOptions: { onSuccess: () => 'success' },
     };
-    const resultWithOptions = reactiveMutation.use(allOptions);
+    const resultWithOptions = reactiveMutation.useHook(allOptions);
     expect(fn).toHaveBeenCalledWith(allOptions);
     expect(fn).toHaveBeenCalledTimes(2);
 
@@ -91,7 +91,7 @@ describe('createReactiveMutation', () => {
       MutationTestFixtures.withOptionalParams.getReactive();
 
     // Usage implementation test - use() calls
-    const resultWithoutOptions = reactiveMutation.use();
+    const resultWithoutOptions = reactiveMutation.useHook();
     expect(fn).toHaveBeenCalledWith();
     expect(fn).toHaveBeenCalledTimes(1);
 
@@ -99,7 +99,7 @@ describe('createReactiveMutation', () => {
       options: undefined,
       nativeOptions: { onSuccess: () => 'success' },
     };
-    const resultWithOptions = reactiveMutation.use(allOptions);
+    const resultWithOptions = reactiveMutation.useHook(allOptions);
     expect(fn).toHaveBeenCalledWith(allOptions);
     expect(fn).toHaveBeenCalledTimes(2);
 
@@ -135,12 +135,12 @@ describe('createReactiveMutation', () => {
 
     try {
       // @ts-expect-error testing invalid call
-      reactiveMutation.use({ fake: 'option' });
+      reactiveMutation.useHook({ fake: 'option' });
     } catch {
       // Expected to throw
     }
 
-    const result = reactiveMutation.use();
+    const result = reactiveMutation.useHook();
     try {
       // @ts-expect-error testing invalid call
       await result.invoke({ name: 'John' });
@@ -154,12 +154,12 @@ describe('createReactiveMutation', () => {
 
     try {
       // @ts-expect-error testing invalid call
-      reactiveMutation.use({ fake: 'option' });
+      reactiveMutation.useHook({ fake: 'option' });
     } catch {
       // Expected to throw
     }
 
-    const result = reactiveMutation.use();
+    const result = reactiveMutation.useHook();
     try {
       // @ts-expect-error testing invalid call
       await result.invoke();
@@ -174,12 +174,12 @@ describe('createReactiveMutation', () => {
 
     try {
       // @ts-expect-error testing invalid call
-      reactiveMutation.use({ fake: 'option' });
+      reactiveMutation.useHook({ fake: 'option' });
     } catch {
       // Expected to throw
     }
 
-    const result = reactiveMutation.use();
+    const result = reactiveMutation.useHook();
     try {
       // @ts-expect-error testing invalid call
       await result.invoke(1);

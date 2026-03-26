@@ -4,15 +4,6 @@
   "include": [],
   "references": [
     {
-      "path": "../testing-core"
-    },
-    {
-      "path": "../react-query"
-    },
-    {
-      "path": "../core"
-    },
-    {
       "path": "./tsconfig.lib.json"
     },
     {

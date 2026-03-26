@@ -36,7 +36,7 @@ export function ReactiveSyncTestHarness<
   const { reactiveSync, wrapper } = args;
   const hook = renderHook(
     () =>
-      reactiveSync.use(
+      reactiveSync.useHook(
         (args as { params?: TParams })?.params as NonNullable<TParams>,
       ),
     { wrapper },

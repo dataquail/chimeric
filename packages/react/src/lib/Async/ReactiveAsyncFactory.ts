@@ -120,6 +120,6 @@ export function ReactiveAsyncFactory<
   };
 
   return createReactiveAsync(
-    reactiveAsync as ReactiveAsync<TParams, TResult, TError>['use'],
+    reactiveAsync as ReactiveAsync<TParams, TResult, TError>['useHook'],
   );
 }

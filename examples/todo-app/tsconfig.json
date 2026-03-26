@@ -7,18 +7,6 @@
   "include": [],
   "references": [
     {
-      "path": "../../packages/react"
-    },
-    {
-      "path": "../../packages/react-query"
-    },
-    {
-      "path": "../../packages/testing-react"
-    },
-    {
-      "path": "../../packages/testing-react-query"
-    },
-    {
       "path": "./tsconfig.spec.json"
     },
     {

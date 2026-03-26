@@ -15,7 +15,7 @@ describe('isReactiveSync', () => {
     expect(isReactiveSync(null as any)).toBe(false);
     expect(isReactiveSync(undefined as any)).toBe(false);
     expect(isReactiveSync({} as any)).toBe(false);
-    expect(isReactiveSync({ notUse: 'something' } as any)).toBe(false);
-    expect(isReactiveSync({ use: 'not a function' } as any)).toBe(false);
+    expect(isReactiveSync({ notUseHook: 'something' } as any)).toBe(false);
+    expect(isReactiveSync({ useHook: 'not a function' } as any)).toBe(false);
   });
 });

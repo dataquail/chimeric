@@ -8,7 +8,7 @@ export function createReactiveEagerAsync<
   TResult = unknown,
   TError extends Error = Error,
 >(
-  reactiveFn: ReactiveEagerAsync<void, TResult, TError>['use'],
+  reactiveFn: ReactiveEagerAsync<void, TResult, TError>['useHook'],
 ): ReactiveEagerAsync<void, TResult, TError>;
 
 // Optional params
@@ -17,7 +17,11 @@ export function createReactiveEagerAsync<
   TResult = unknown,
   TError extends Error = Error,
 >(
-  reactiveFn: ReactiveEagerAsync<TParams | undefined, TResult, TError>['use'],
+  reactiveFn: ReactiveEagerAsync<
+    TParams | undefined,
+    TResult,
+    TError
+  >['useHook'],
 ): ReactiveEagerAsync<TParams | undefined, TResult, TError>;
 
 // Required params
@@ -26,7 +30,7 @@ export function createReactiveEagerAsync<
   TResult = unknown,
   TError extends Error = Error,
 >(
-  reactiveFn: ReactiveEagerAsync<TParams, TResult, TError>['use'],
+  reactiveFn: ReactiveEagerAsync<TParams, TResult, TError>['useHook'],
 ): ReactiveEagerAsync<TParams, TResult, TError>;
 
 // Implementation
@@ -35,10 +39,10 @@ export function createReactiveEagerAsync<
   TResult = unknown,
   TError extends Error = Error,
 >(
-  reactiveFn: ReactiveEagerAsync<TParams, TResult, TError>['use'],
+  reactiveFn: ReactiveEagerAsync<TParams, TResult, TError>['useHook'],
 ): ReactiveEagerAsync<TParams, TResult, TError> {
   const reactiveEagerAsync = {
-    use: reactiveFn,
+    useHook: reactiveFn,
   };
   if (isEligibleReactive(reactiveEagerAsync)) {
     return markReactive(

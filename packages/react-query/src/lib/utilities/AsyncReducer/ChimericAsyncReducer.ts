@@ -603,6 +603,6 @@ export const getService = (service: AnyServiceConfig | undefined) => {
   if (!service) {
     return () => undefined;
   } else {
-    return service.service.use || (() => undefined);
+    return service.service.useHook || (() => undefined);
   }
 };

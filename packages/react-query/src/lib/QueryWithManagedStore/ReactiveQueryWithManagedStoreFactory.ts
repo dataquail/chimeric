@@ -76,10 +76,10 @@ export function ReactiveQueryWithManagedStoreFactory<
   return createReactiveQuery(
     (
       paramsOrOptions?: Parameters<
-        ReactiveQuery<TParams, TResult, TError, TQueryKey>['use']
+        ReactiveQuery<TParams, TResult, TError, TQueryKey>['useHook']
       >[0],
       maybeOptions?: Parameters<
-        ReactiveQuery<TParams, TResult, TError, TQueryKey>['use']
+        ReactiveQuery<TParams, TResult, TError, TQueryKey>['useHook']
       >[1],
     ) => {
       const params =

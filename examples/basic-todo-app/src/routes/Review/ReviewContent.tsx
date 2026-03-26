@@ -16,10 +16,10 @@ import { getTodosUnderReviewUseCase } from 'src/core/useCases/review/application
 import { finishReviewUseCase } from 'src/core/useCases/review/application/finishReviewUseCase';
 
 export const ReviewContent = () => {
-  const review = reviewRepository.get.use();
+  const review = reviewRepository.get.useHook();
   const hasStartedReview = Boolean(review);
-  const startReview = startReviewUseCase.use();
-  const todosUnderReview = getTodosUnderReviewUseCase.use();
+  const startReview = startReviewUseCase.useHook();
+  const todosUnderReview = getTodosUnderReviewUseCase.useHook();
   const { height } = useViewportSize();
 
   return (

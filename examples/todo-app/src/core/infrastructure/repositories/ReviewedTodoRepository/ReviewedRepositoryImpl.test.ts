@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import {
   ChimericSyncTestHarness,
   chimericMethods,
@@ -8,8 +8,13 @@ import { appContainer } from 'src/core/global/appContainer';
 import { getTestWrapper } from 'src/__test__/getTestWrapper';
 import { act } from 'react';
 import { createReviewedTodo } from 'src/core/domain/review/entities/ReviewedTodo';
+import { useReviewedTodoStore } from './reviewedTodoStore';
 
 describe('ReviewedTodoRepositoryImpl', () => {
+  beforeEach(() => {
+    useReviewedTodoStore.getState().deleteAllTodos();
+  });
+
   const getReviewedTodoRepository = () => {
     return appContainer.get<InjectionType<'IReviewedTodoRepository'>>(
       InjectionSymbol('IReviewedTodoRepository'),

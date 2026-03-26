@@ -116,7 +116,7 @@ export function fuseChimericQuery<
       TNativeReactiveOptions,
       TNativeReactiveResult
     >;
-    (chimericFn.use as any) = args.reactive.use;
+    (chimericFn.useHook as any) = args.reactive.useHook;
     markReactive(chimericFn, TYPE_MARKERS.REACTIVE_QUERY);
     markIdiomatic(chimericFn, TYPE_MARKERS.IDIOMATIC_QUERY);
 
