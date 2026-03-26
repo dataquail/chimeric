@@ -5,13 +5,8 @@ import { AsyncTestFixtures } from '../__tests__/asyncFixtures';
 describe('fuseChimericAsync', () => {
   // USAGE TESTS
   it('USAGE: no params', async () => {
-    const {
-      idiomaticAsync,
-      idiomaticFn,
-      reactiveAsync,
-      reactiveFn,
-      invokeFn,
-    } = AsyncTestFixtures.withoutParams.getChimeric();
+    const { idiomaticAsync, idiomaticFn, reactiveAsync, reactiveFn, invokeFn } =
+      AsyncTestFixtures.withoutParams.getChimeric();
     const chimericAsync = fuseChimericAsync({
       idiomatic: idiomaticAsync,
       reactive: reactiveAsync,
@@ -23,7 +18,7 @@ describe('fuseChimericAsync', () => {
     expect(idiomaticFn).toHaveBeenCalledTimes(1);
 
     // Test reactive interface - use()
-    const reactiveResult = chimericAsync.use();
+    const reactiveResult = chimericAsync.useHook();
     expect(reactiveFn).toHaveBeenCalledWith();
     expect(reactiveFn).toHaveBeenCalledTimes(1);
     expect(reactiveResult.data).toBe('test');
@@ -35,13 +30,8 @@ describe('fuseChimericAsync', () => {
   });
 
   it('USAGE: with params', async () => {
-    const {
-      idiomaticAsync,
-      idiomaticFn,
-      reactiveAsync,
-      reactiveFn,
-      invokeFn,
-    } = AsyncTestFixtures.withParams.getChimeric();
+    const { idiomaticAsync, idiomaticFn, reactiveAsync, reactiveFn, invokeFn } =
+      AsyncTestFixtures.withParams.getChimeric();
     const chimericAsync = fuseChimericAsync({
       idiomatic: idiomaticAsync,
       reactive: reactiveAsync,
@@ -53,7 +43,7 @@ describe('fuseChimericAsync', () => {
     expect(idiomaticFn).toHaveBeenCalledTimes(1);
 
     // Test reactive interface - use()
-    const reactiveResult = chimericAsync.use();
+    const reactiveResult = chimericAsync.useHook();
     expect(reactiveFn).toHaveBeenCalledWith();
     expect(reactiveFn).toHaveBeenCalledTimes(1);
 
@@ -66,13 +56,8 @@ describe('fuseChimericAsync', () => {
   });
 
   it('USAGE: optional params', async () => {
-    const {
-      idiomaticAsync,
-      idiomaticFn,
-      reactiveAsync,
-      reactiveFn,
-      invokeFn,
-    } = AsyncTestFixtures.withOptionalParams.getChimeric();
+    const { idiomaticAsync, idiomaticFn, reactiveAsync, reactiveFn, invokeFn } =
+      AsyncTestFixtures.withOptionalParams.getChimeric();
     const chimericAsync = fuseChimericAsync({
       idiomatic: idiomaticAsync,
       reactive: reactiveAsync,
@@ -89,7 +74,7 @@ describe('fuseChimericAsync', () => {
     expect(idiomaticFn).toHaveBeenCalledTimes(2);
 
     // Test reactive interface - use()
-    const reactiveResult = chimericAsync.use();
+    const reactiveResult = chimericAsync.useHook();
     expect(reactiveFn).toHaveBeenCalledWith();
     expect(reactiveFn).toHaveBeenCalledTimes(1);
 
@@ -119,7 +104,7 @@ describe('fuseChimericAsync', () => {
       // @ts-expect-error testing invalid call
       await chimericAsync({ name: 'John' });
 
-      const result = chimericAsync.use();
+      const result = chimericAsync.useHook();
       // @ts-expect-error testing invalid call
       await result.invoke({ name: 'John' });
     } catch {
@@ -139,7 +124,7 @@ describe('fuseChimericAsync', () => {
       // @ts-expect-error testing invalid call
       await chimericAsync();
 
-      const result = chimericAsync.use();
+      const result = chimericAsync.useHook();
       // @ts-expect-error testing invalid call
       await result.invoke();
     } catch {
@@ -159,7 +144,7 @@ describe('fuseChimericAsync', () => {
       // @ts-expect-error testing invalid call
       await chimericAsync(1);
 
-      const result = chimericAsync.use();
+      const result = chimericAsync.useHook();
       // @ts-expect-error testing invalid call
       await result.invoke(1);
     } catch {
@@ -169,8 +154,11 @@ describe('fuseChimericAsync', () => {
 
   // ANNOTATION TESTS
   it('ANNOTATION: no params', async () => {
-    const { idiomaticAsync, reactiveAsync, annotation: _annotation } =
-      AsyncTestFixtures.withoutParams.getChimeric();
+    const {
+      idiomaticAsync,
+      reactiveAsync,
+      annotation: _annotation,
+    } = AsyncTestFixtures.withoutParams.getChimeric();
     const chimericAsync = fuseChimericAsync({
       idiomatic: idiomaticAsync,
       reactive: reactiveAsync,
@@ -182,8 +170,11 @@ describe('fuseChimericAsync', () => {
   });
 
   it('ANNOTATION: with params', async () => {
-    const { idiomaticAsync, reactiveAsync, annotation: _annotation } =
-      AsyncTestFixtures.withParams.getChimeric();
+    const {
+      idiomaticAsync,
+      reactiveAsync,
+      annotation: _annotation,
+    } = AsyncTestFixtures.withParams.getChimeric();
     const chimericAsync = fuseChimericAsync({
       idiomatic: idiomaticAsync,
       reactive: reactiveAsync,
@@ -195,8 +186,11 @@ describe('fuseChimericAsync', () => {
   });
 
   it('ANNOTATION: optional params', async () => {
-    const { idiomaticAsync, reactiveAsync, annotation: _annotation } =
-      AsyncTestFixtures.withOptionalParams.getChimeric();
+    const {
+      idiomaticAsync,
+      reactiveAsync,
+      annotation: _annotation,
+    } = AsyncTestFixtures.withOptionalParams.getChimeric();
     const chimericAsync = fuseChimericAsync({
       idiomatic: idiomaticAsync,
       reactive: reactiveAsync,

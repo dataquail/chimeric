@@ -2,6 +2,7 @@
 import {
   createIdiomaticEagerAsync,
   IdiomaticEagerAsync,
+  IdiomaticEagerAsyncOptions,
   IdiomaticQueryOptions,
   IdiomaticSync,
   isIdiomaticEagerAsync,
@@ -12,6 +13,7 @@ import {
   IdiomaticQuery,
   TanstackQueryIdiomaticNativeOptions,
 } from 'src/lib/Query/idiomatic/types';
+import { QueryKey } from '@tanstack/react-query';
 
 // Helper type to extract the result type from a service configuration
 type ExtractServiceResult<TConfig> = TConfig extends {
@@ -177,128 +179,149 @@ type InferService<TConfig, TServiceParams> =
       infer TQueryKey
     >;
   }
-    ? [TParams] extends [void]
-      ? {
-          service: IdiomaticQuery<void, TResult, TError, TQueryKey>;
-          getParams?: never;
-          getOptions?: () => {
-            options?: IdiomaticQueryOptions;
-            nativeOptions?: TanstackQueryIdiomaticNativeOptions<
-              TResult,
-              TError,
-              TQueryKey
-            >;
-          };
-        }
-      : void extends TParams
-      ? {
-          service: IdiomaticQuery<void, TResult, TError, TQueryKey>;
-          getParams?: never;
-          getOptions?: () => {
-            options?: IdiomaticQueryOptions;
-            nativeOptions?: TanstackQueryIdiomaticNativeOptions<
-              TResult,
-              TError,
-              TQueryKey
-            >;
-          };
-        }
-      : undefined extends TParams
-      ? {
-          service: IdiomaticQuery<TParams, TResult, TError, TQueryKey>;
-          getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
-          getOptions?:
-            | ((params: TServiceParams) => {
-                options?: IdiomaticQueryOptions;
-                nativeOptions?: TanstackQueryIdiomaticNativeOptions<
-                  TResult,
-                  TError,
-                  TQueryKey
-                >;
-              })
-            | (() => {
-                options?: IdiomaticQueryOptions;
-                nativeOptions?: TanstackQueryIdiomaticNativeOptions<
-                  TResult,
-                  TError,
-                  TQueryKey
-                >;
-              });
-        }
-      : {
-          service: IdiomaticQuery<TParams, TResult, TError, TQueryKey>;
-          getParams: ((params: TServiceParams) => TParams) | (() => TParams);
-          getOptions?:
-            | ((params: TServiceParams) => {
-                options?: IdiomaticQueryOptions;
-                nativeOptions?: TanstackQueryIdiomaticNativeOptions<
-                  TResult,
-                  TError,
-                  TQueryKey
-                >;
-              })
-            | (() => {
-                options?: IdiomaticQueryOptions;
-                nativeOptions?: TanstackQueryIdiomaticNativeOptions<
-                  TResult,
-                  TError,
-                  TQueryKey
-                >;
-              });
-        }
+    ? QueryConfig<TServiceParams, TParams, TResult, TError, TQueryKey>
     : // EAGER ASYNC
     TConfig extends {
         service: IdiomaticEagerAsync<infer TParams, infer TResult>;
       }
-    ? [TParams] extends [void]
-      ? {
-          service: IdiomaticEagerAsync<void, TResult>;
-          getParams?: never;
-          getOptions?: never;
-        }
-      : void extends TParams
-      ? {
-          service: IdiomaticEagerAsync<void, TResult>;
-          getParams?: never;
-          getOptions?: never;
-        }
-      : undefined extends TParams
-      ? {
-          service: IdiomaticEagerAsync<TParams, TResult>;
-          getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
-          getOptions?: never;
-        }
-      : {
-          service: IdiomaticEagerAsync<TParams, TResult>;
-          getParams: ((params: TServiceParams) => TParams) | (() => TParams);
-          getOptions?: never;
-        }
+    ? EagerAsyncConfig<TServiceParams, TParams, TResult>
     : // SYNC
     TConfig extends {
         service: InferIdiomaticSync<infer T>;
       }
-    ? Parameters<T> extends []
-      ? {
-          service: IdiomaticSync<void, ReturnType<T>>;
-          getParams?: never;
-          getOptions?: never;
-        }
-      : undefined extends Parameters<T>[0]
-      ? {
-          service: IdiomaticSync<Parameters<T>[0], ReturnType<T>>;
-          getParams?:
-            | ((params: TServiceParams) => Parameters<T>[0])
-            | (() => Parameters<T>[0]);
-          getOptions?: never;
-        }
-      : {
-          service: IdiomaticSync<Parameters<T>[0], ReturnType<T>>;
-          getParams:
-            | ((params: TServiceParams) => Parameters<T>[0])
-            | (() => Parameters<T>[0]);
-          getOptions?: never;
-        }
+    ? SyncConfig<TServiceParams, T>
     : never;
+
+type QueryConfig<
+  TServiceParams,
+  TParams,
+  TResult,
+  TError extends Error,
+  TQueryKey extends QueryKey,
+> = [TParams] extends [void]
+  ? {
+      service: IdiomaticQuery<void, TResult, TError, TQueryKey>;
+      getParams?: never;
+      getOptions?: () => {
+        options?: IdiomaticQueryOptions;
+        nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+          TResult,
+          TError,
+          TQueryKey
+        >;
+      };
+    }
+  : void extends TParams
+  ? {
+      service: IdiomaticQuery<void, TResult, TError, TQueryKey>;
+      getParams?: never;
+      getOptions?: () => {
+        options?: IdiomaticQueryOptions;
+        nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+          TResult,
+          TError,
+          TQueryKey
+        >;
+      };
+    }
+  : undefined extends TParams
+  ? {
+      service: IdiomaticQuery<TParams, TResult, TError, TQueryKey>;
+      getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+      getOptions?:
+        | ((params: TServiceParams) => {
+            options?: IdiomaticQueryOptions;
+            nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+              TResult,
+              TError,
+              TQueryKey
+            >;
+          })
+        | (() => {
+            options?: IdiomaticQueryOptions;
+            nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+              TResult,
+              TError,
+              TQueryKey
+            >;
+          });
+    }
+  : {
+      service: IdiomaticQuery<TParams, TResult, TError, TQueryKey>;
+      getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+      getOptions?:
+        | ((params: TServiceParams) => {
+            options?: IdiomaticQueryOptions;
+            nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+              TResult,
+              TError,
+              TQueryKey
+            >;
+          })
+        | (() => {
+            options?: IdiomaticQueryOptions;
+            nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+              TResult,
+              TError,
+              TQueryKey
+            >;
+          });
+    };
+
+type EagerAsyncConfig<TServiceParams, TParams, TResult> = [TParams] extends [
+  void,
+]
+  ? {
+      service: IdiomaticEagerAsync<void, TResult>;
+      getParams?: never;
+      getOptions?: () => IdiomaticEagerAsyncOptions;
+    }
+  : void extends TParams
+  ? {
+      service: IdiomaticEagerAsync<void, TResult>;
+      getParams?: never;
+      getOptions?: () => IdiomaticEagerAsyncOptions;
+    }
+  : undefined extends TParams
+  ? {
+      service: IdiomaticEagerAsync<TParams, TResult>;
+      getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+      getOptions?:
+        | ((params: TServiceParams) => IdiomaticEagerAsyncOptions)
+        | (() => IdiomaticEagerAsyncOptions);
+    }
+  : {
+      service: IdiomaticEagerAsync<TParams, TResult>;
+      getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+      getOptions?:
+        | ((params: TServiceParams) => IdiomaticEagerAsyncOptions)
+        | (() => IdiomaticEagerAsyncOptions);
+    };
+
+type SyncConfig<
+  TServiceParams,
+  T extends (args: Parameters<T>[0]) => ReturnType<T>,
+> = Parameters<T> extends []
+  ? {
+      service: IdiomaticSync<void, ReturnType<T>>;
+      getParams?: never;
+      getOptions?: never;
+    }
+  : undefined extends Parameters<T>[0]
+  ? {
+      service: IdiomaticSync<Parameters<T>[0], ReturnType<T>>;
+      getParams?:
+        | ((params: TServiceParams) => Parameters<T>[0])
+        | (() => Parameters<T>[0]);
+      getOptions?: never;
+    }
+  : {
+      service: IdiomaticSync<Parameters<T>[0], ReturnType<T>>;
+      getParams:
+        | ((params: TServiceParams) => Parameters<T>[0])
+        | (() => Parameters<T>[0]);
+      getOptions?: never;
+    };
 
 export const IdiomaticAsyncReducer = <TServiceParams = void>() => ({
   build: <

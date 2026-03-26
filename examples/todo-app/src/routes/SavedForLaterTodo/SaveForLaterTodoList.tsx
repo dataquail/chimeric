@@ -11,7 +11,7 @@ type InjectedProps = {
 export const SaveForLaterTodoList = injectComponent<InjectedProps>(
   { savedForLaterTodoService: InjectionSymbol('ISavedForLaterTodoService') },
   ({ savedForLaterTodoService }) => {
-    const { data, isPending } = savedForLaterTodoService.getAll.use();
+    const { data, isPending } = savedForLaterTodoService.getAll.useHook();
     const { height } = useViewportSize();
 
     if (isPending || !data) {

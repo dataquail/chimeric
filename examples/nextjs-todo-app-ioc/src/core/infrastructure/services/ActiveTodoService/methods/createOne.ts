@@ -1,0 +1,38 @@
+import { QueryClient } from '@tanstack/react-query';
+import { IActiveTodoService } from '@/core/domain/activeTodo/ports/IActiveTodoService';
+import { ChimericMutationFactory } from '@chimeric/react-query';
+import { getConfig } from '@/utils/getConfig';
+import { wrappedFetch } from '@/utils/network/wrappedFetch';
+import { CreateTodoBody } from '@/core/domain/activeTodo/dtos/in/CreateTodoBody';
+import { getQueryOptionsGetAll } from './getAll';
+import { AppStore } from '@/lib/store';
+
+export type ICreateActiveTodo = (
+  createTodoBody: CreateTodoBody,
+) => Promise<{ id: string }>;
+
+export const createActiveTodo: ICreateActiveTodo = async (createTodoBody) => {
+  return wrappedFetch<{ id: string }>(`${getConfig().API_URL}/active-todo`, {
+    method: 'post',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(createTodoBody),
+  });
+};
+
+export const CreateOneMethodImpl = (
+  appStore: AppStore,
+  queryClient: QueryClient,
+): IActiveTodoService['createOne'] => {
+  return ChimericMutationFactory({
+    queryClient,
+    mutationFn: createActiveTodo,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: getQueryOptionsGetAll(appStore)().queryKey,
+      });
+    },
+  });
+};

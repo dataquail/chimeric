@@ -7,7 +7,7 @@ export function createReactiveSync<TParams = void, TResult = unknown>(
   reactiveFn: (params: TParams) => TResult,
 ): ReactiveSync<TParams, TResult> {
   const reactiveSync = {
-    use: reactiveFn,
+    useHook: reactiveFn,
   };
   if (isEligibleReactive(reactiveSync)) {
     return markReactive(

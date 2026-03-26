@@ -148,7 +148,7 @@ describe('ReactiveAsyncReducer', () => {
       },
     });
 
-    const { result } = renderHook(TestReactiveAsyncReducer.use, {
+    const { result } = renderHook(TestReactiveAsyncReducer.useHook, {
       initialProps: { index: 0, name: 'John', age: 20 },
       wrapper: ({ children }) => (
         <QueryClientProvider client={queryClient}>
@@ -211,14 +211,17 @@ describe('ReactiveAsyncReducer', () => {
 
       const initialProps = { index: 0, name: 'John', age: 20 };
 
-      const { result, rerender } = renderHook(TestReactiveAsyncReducer.use, {
-        initialProps,
-        wrapper: ({ children }) => (
-          <QueryClientProvider client={queryClient}>
-            {children}
-          </QueryClientProvider>
-        ),
-      });
+      const { result, rerender } = renderHook(
+        TestReactiveAsyncReducer.useHook,
+        {
+          initialProps,
+          wrapper: ({ children }) => (
+            <QueryClientProvider client={queryClient}>
+              {children}
+            </QueryClientProvider>
+          ),
+        },
+      );
 
       // Initial render
       expect(renders).toBe(1);
@@ -302,7 +305,7 @@ describe('ReactiveAsyncReducer', () => {
 
     const initialProps = { index: 0, name: 'John', age: 20 };
 
-    const { result, rerender } = renderHook(TestReactiveAsyncReducer.use, {
+    const { result, rerender } = renderHook(TestReactiveAsyncReducer.useHook, {
       initialProps,
       wrapper: ({ children }) => (
         <QueryClientProvider client={queryClient}>
@@ -394,7 +397,7 @@ describe('ReactiveAsyncReducer', () => {
 
     const initialProps = { index: 0, name: 'John' };
 
-    const { result, rerender } = renderHook(TestReactiveAsyncReducer.use, {
+    const { result, rerender } = renderHook(TestReactiveAsyncReducer.useHook, {
       initialProps,
       wrapper: ({ children }) => (
         <QueryClientProvider client={queryClient}>

@@ -10,7 +10,7 @@ describe('ReactiveQueryTestHarness', () => {
       reactiveQuery,
     });
 
-    expect(reactiveQuery.use).toHaveBeenCalled();
+    expect(reactiveQuery.useHook).toHaveBeenCalled();
 
     ReactiveQueryTestHarness({
       reactiveQuery,
@@ -18,8 +18,8 @@ describe('ReactiveQueryTestHarness', () => {
       nativeOptions: { staleTime: 1000 },
     });
 
-    expect(reactiveQuery.use).toHaveBeenCalledTimes(2);
-    expect(reactiveQuery.use).toHaveBeenCalledWith({
+    expect(reactiveQuery.useHook).toHaveBeenCalledTimes(2);
+    expect(reactiveQuery.useHook).toHaveBeenCalledWith({
       options: { enabled: false },
       nativeOptions: { staleTime: 1000 },
     });
@@ -33,8 +33,8 @@ describe('ReactiveQueryTestHarness', () => {
       params: { name: 'John' },
     });
 
-    expect(reactiveQuery.use).toHaveBeenCalledWith({ name: 'John' });
-    expect(reactiveQuery.use).toHaveBeenCalledTimes(1);
+    expect(reactiveQuery.useHook).toHaveBeenCalledWith({ name: 'John' });
+    expect(reactiveQuery.useHook).toHaveBeenCalledTimes(1);
 
     ReactiveQueryTestHarness({
       reactiveQuery,
@@ -43,14 +43,14 @@ describe('ReactiveQueryTestHarness', () => {
       nativeOptions: undefined,
     });
 
-    expect(reactiveQuery.use).toHaveBeenCalledWith(
+    expect(reactiveQuery.useHook).toHaveBeenCalledWith(
       { name: 'John' },
       {
         options: { enabled: false },
         nativeOptions: undefined,
       },
     );
-    expect(reactiveQuery.use).toHaveBeenCalledTimes(2);
+    expect(reactiveQuery.useHook).toHaveBeenCalledTimes(2);
   });
 
   it('USAGE: with optional params', () => {
@@ -62,15 +62,15 @@ describe('ReactiveQueryTestHarness', () => {
       params: { name: 'Jane' },
     });
 
-    expect(reactiveQuery.use).toHaveBeenCalledWith({ name: 'Jane' });
-    expect(reactiveQuery.use).toHaveBeenCalledTimes(1);
+    expect(reactiveQuery.useHook).toHaveBeenCalledWith({ name: 'Jane' });
+    expect(reactiveQuery.useHook).toHaveBeenCalledTimes(1);
 
     ReactiveQueryTestHarness({
       reactiveQuery,
     });
 
-    expect(reactiveQuery.use).toHaveBeenCalledWith(undefined);
-    expect(reactiveQuery.use).toHaveBeenCalledTimes(2);
+    expect(reactiveQuery.useHook).toHaveBeenCalledWith(undefined);
+    expect(reactiveQuery.useHook).toHaveBeenCalledTimes(2);
 
     ReactiveQueryTestHarness({
       reactiveQuery,
@@ -78,11 +78,11 @@ describe('ReactiveQueryTestHarness', () => {
       nativeOptions: undefined,
     });
 
-    expect(reactiveQuery.use).toHaveBeenCalledWith(undefined, {
+    expect(reactiveQuery.useHook).toHaveBeenCalledWith(undefined, {
       options: { enabled: false },
       nativeOptions: undefined,
     });
-    expect(reactiveQuery.use).toHaveBeenCalledTimes(3);
+    expect(reactiveQuery.useHook).toHaveBeenCalledTimes(3);
 
     ReactiveQueryTestHarness({
       reactiveQuery,
@@ -91,14 +91,14 @@ describe('ReactiveQueryTestHarness', () => {
       nativeOptions: undefined,
     });
 
-    expect(reactiveQuery.use).toHaveBeenCalledWith(
+    expect(reactiveQuery.useHook).toHaveBeenCalledWith(
       { name: 'Jane' },
       {
         options: { enabled: false },
         nativeOptions: undefined,
       },
     );
-    expect(reactiveQuery.use).toHaveBeenCalledTimes(4);
+    expect(reactiveQuery.useHook).toHaveBeenCalledTimes(4);
   });
 
   // TYPE ERRORS

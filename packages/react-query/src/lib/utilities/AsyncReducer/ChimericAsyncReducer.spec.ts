@@ -29,7 +29,7 @@ describe('ChimericAsyncReducer', () => {
           reducer: ([sync, eager, query]) => `${sync}:${eager}:${query}`,
         });
 
-        const { result } = renderHook(() => asyncReducer.use(), {
+        const { result } = renderHook(() => asyncReducer.useHook(), {
           wrapper: getTestWrapper(queryClient),
         });
 
@@ -70,7 +70,7 @@ describe('ChimericAsyncReducer', () => {
         });
 
         const { result } = renderHook(
-          () => asyncReducer.use({ value: 'test' }),
+          () => asyncReducer.useHook({ value: 'test' }),
           {
             wrapper: getTestWrapper(queryClient),
           },
@@ -108,7 +108,7 @@ describe('ChimericAsyncReducer', () => {
         });
 
         const { result } = renderHook(
-          () => asyncReducer.use({ value: 'test' }),
+          () => asyncReducer.useHook({ value: 'test' }),
           {
             wrapper: getTestWrapper(queryClient),
           },
@@ -229,7 +229,7 @@ describe('ChimericAsyncReducer', () => {
         });
 
         // @ts-expect-error - Cannot provide params to no-param service
-        renderHook(() => asyncReducer.use({ value: 'test' }));
+        renderHook(() => asyncReducer.useHook({ value: 'test' }));
       });
     });
 
@@ -250,7 +250,7 @@ describe('ChimericAsyncReducer', () => {
         });
 
         // @ts-expect-error - Required params must be provided
-        renderHook(() => asyncReducer.use());
+        renderHook(() => asyncReducer.useHook());
       });
 
       it('should error when providing wrong param shape', () => {
@@ -269,7 +269,7 @@ describe('ChimericAsyncReducer', () => {
         });
 
         // @ts-expect-error - Wrong param shape
-        renderHook(() => asyncReducer.use({ wrongKey: 'test' }));
+        renderHook(() => asyncReducer.useHook({ wrongKey: 'test' }));
       });
     });
   });

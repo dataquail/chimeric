@@ -5,21 +5,21 @@ import { markReactive } from './markReactive';
 
 describe('hasReactiveMarker', () => {
   it('should return true for objects marked with the specified reactive marker', () => {
-    const obj = { use: () => 'test' };
+    const obj = { useHook: () => 'test' };
     markReactive(obj, TYPE_MARKERS.REACTIVE_QUERY);
 
     expect(hasReactiveMarker(obj, TYPE_MARKERS.REACTIVE_QUERY)).toBe(true);
   });
 
   it('should return false for objects marked with a different reactive marker', () => {
-    const obj = { use: () => 'test' };
+    const obj = { useHook: () => 'test' };
     markReactive(obj, TYPE_MARKERS.REACTIVE_QUERY);
 
     expect(hasReactiveMarker(obj, TYPE_MARKERS.REACTIVE_MUTATION)).toBe(false);
   });
 
   it('should return false for unmarked objects', () => {
-    const obj = { use: () => 'test' };
+    const obj = { useHook: () => 'test' };
 
     expect(hasReactiveMarker(obj, TYPE_MARKERS.REACTIVE_QUERY)).toBe(false);
   });
@@ -42,9 +42,9 @@ describe('hasReactiveMarker', () => {
     expect(hasReactiveMarker(true, TYPE_MARKERS.REACTIVE_QUERY)).toBe(false);
   });
 
-  it('should work with functions that have use property', () => {
+  it('should work with functions that have useHook property', () => {
     const fn = () => undefined;
-    (fn as any).use = () => 'test';
+    (fn as any).useHook = () => 'test';
     markReactive(fn as any, TYPE_MARKERS.REACTIVE_SYNC);
 
     expect(hasReactiveMarker(fn, TYPE_MARKERS.REACTIVE_SYNC)).toBe(true);

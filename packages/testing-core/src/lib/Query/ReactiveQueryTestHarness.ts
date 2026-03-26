@@ -98,14 +98,14 @@ export function ReactiveQueryTestHarness<
       nativeOptions;
   }
   const hookArgs =
-    reactiveQuery.use.length === 1
+    reactiveQuery.useHook.length === 1
       ? Object.keys(allOptions).length
         ? ([allOptions] as const)
         : []
       : Object.keys(allOptions).length
       ? ([params, allOptions] as const)
       : ([params] as const);
-  const hook = renderHook(() => reactiveQuery.use(...(hookArgs as [any])), {
+  const hook = renderHook(() => reactiveQuery.useHook(...(hookArgs as [any])), {
     wrapper,
   });
   return {

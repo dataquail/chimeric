@@ -71,10 +71,10 @@ export function createReactiveQuery<
   reactiveFn: any,
 ): ReactiveQuery<TParams, TResult, TError, TNativeOptions, TNativeReturnType> {
   const reactiveQuery = {
-    use: reactiveFn,
+    useHook: reactiveFn,
   };
   if (isEligibleReactive(reactiveQuery)) {
-    return markReactive(reactiveQuery, TYPE_MARKERS.REACTIVE_QUERY) as any;
+    return markReactive(reactiveQuery, TYPE_MARKERS.REACTIVE_QUERY);
   } else {
     throw new Error('reactiveFn is not qualified to be reactive query');
   }

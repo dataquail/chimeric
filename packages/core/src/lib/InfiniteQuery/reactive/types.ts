@@ -7,7 +7,7 @@ export type ReactiveInfiniteQuery<
   TNativeReturnType = unknown,
 > = [TParams] extends [void]
   ? {
-      use: (allOptions?: {
+      useHook: (allOptions?: {
         options?: ReactiveInfiniteQueryOptions;
         nativeOptions?: TNativeOptions;
       }) => ReactiveInfiniteQueryResult<
@@ -19,7 +19,7 @@ export type ReactiveInfiniteQuery<
     }
   : [TParams] extends [undefined]
   ? {
-      use: (allOptions?: {
+      useHook: (allOptions?: {
         options?: ReactiveInfiniteQueryOptions;
         nativeOptions?: TNativeOptions;
       }) => ReactiveInfiniteQueryResult<
@@ -31,7 +31,7 @@ export type ReactiveInfiniteQuery<
     }
   : undefined extends TParams
   ? {
-      use: (
+      useHook: (
         params?: NonNullable<TParams>,
         allOptions?: {
           options?: ReactiveInfiniteQueryOptions;
@@ -45,7 +45,7 @@ export type ReactiveInfiniteQuery<
       >;
     }
   : {
-      use: (
+      useHook: (
         params: TParams,
         allOptions?: {
           options?: ReactiveInfiniteQueryOptions;

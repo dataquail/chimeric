@@ -8,7 +8,7 @@ describe('ChimericAsyncFactory', () => {
   it('USAGE: REACTIVE: no params', async () => {
     const { fn } = AsyncTestFixtures.withoutParams.getChimeric();
     const chimericAsync = ChimericAsyncFactory(fn);
-    const { result } = renderHook(chimericAsync.use);
+    const { result } = renderHook(chimericAsync.useHook);
 
     expect(result.current.isIdle).toBe(true);
     expect(result.current.isSuccess).toBe(false);
@@ -26,7 +26,7 @@ describe('ChimericAsyncFactory', () => {
   it('USAGE: REACTIVE: with params', async () => {
     const { fn } = AsyncTestFixtures.withParams.getChimeric();
     const chimericAsync = ChimericAsyncFactory(fn);
-    const { result } = renderHook(chimericAsync.use);
+    const { result } = renderHook(chimericAsync.useHook);
 
     expect(result.current.isIdle).toBe(true);
     expect(result.current.isSuccess).toBe(false);
@@ -44,7 +44,7 @@ describe('ChimericAsyncFactory', () => {
   it('USAGE: REACTIVE: with optional params', async () => {
     const { fn } = AsyncTestFixtures.withOptionalParams.getChimeric();
     const chimericAsync = ChimericAsyncFactory(fn);
-    const { result } = renderHook(chimericAsync.use);
+    const { result } = renderHook(chimericAsync.useHook);
 
     expect(result.current.isIdle).toBe(true);
     expect(result.current.isSuccess).toBe(false);
@@ -117,7 +117,7 @@ describe('ChimericAsyncFactory', () => {
   it('TYPE ERRORS: REACTIVE: no params', async () => {
     const { fn } = AsyncTestFixtures.withoutParams.getChimeric();
     const chimericAsync = ChimericAsyncFactory(fn);
-    const { result } = renderHook(chimericAsync.use);
+    const { result } = renderHook(chimericAsync.useHook);
 
     try {
       // @ts-expect-error - Testing type error
@@ -130,7 +130,7 @@ describe('ChimericAsyncFactory', () => {
   it('TYPE ERRORS: REACTIVE: with params', async () => {
     const { fn } = AsyncTestFixtures.withParams.getChimeric();
     const chimericAsync = ChimericAsyncFactory(fn);
-    const { result } = renderHook(chimericAsync.use);
+    const { result } = renderHook(chimericAsync.useHook);
 
     try {
       // @ts-expect-error - Testing type error
@@ -146,7 +146,7 @@ describe('ChimericAsyncFactory', () => {
   it('TYPE ERRORS: REACTIVE: with optional params', async () => {
     const { fn } = AsyncTestFixtures.withOptionalParams.getChimeric();
     const chimericAsync = ChimericAsyncFactory(fn);
-    const { result } = renderHook(chimericAsync.use);
+    const { result } = renderHook(chimericAsync.useHook);
 
     try {
       // @ts-expect-error - Testing type error

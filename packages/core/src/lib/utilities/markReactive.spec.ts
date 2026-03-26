@@ -4,7 +4,7 @@ import { TYPE_MARKERS } from './typeMarkers';
 
 describe('markReactive', () => {
   it('should mark an object with a reactive marker', () => {
-    const obj = { use: () => 'test' };
+    const obj = { useHook: () => 'test' };
     const marked = markReactive(obj, TYPE_MARKERS.REACTIVE_QUERY);
 
     expect(marked).toBe(obj); // Should return the same object
@@ -14,7 +14,7 @@ describe('markReactive', () => {
 
   it('should mark a function with a reactive marker', () => {
     const fn = () => undefined;
-    (fn as any).use = () => 'test';
+    (fn as any).useHook = () => 'test';
     const marked = markReactive(fn as any, TYPE_MARKERS.REACTIVE_SYNC);
 
     expect(marked).toBe(fn); // Should return the same object
@@ -23,11 +23,11 @@ describe('markReactive', () => {
   });
 
   it('should make the reactive property non-enumerable', () => {
-    const obj = { use: () => 'test', data: 'value' };
+    const obj = { useHook: () => 'test', data: 'value' };
     const marked = markReactive(obj, TYPE_MARKERS.REACTIVE_QUERY);
 
     const keys = Object.keys(marked);
-    expect(keys).toContain('use');
+    expect(keys).toContain('useHook');
     expect(keys).toContain('data');
     expect(keys).not.toContain('reactive');
 
@@ -36,7 +36,7 @@ describe('markReactive', () => {
   });
 
   it('should make the reactive property non-writable', () => {
-    const obj = { use: () => 'test' };
+    const obj = { useHook: () => 'test' };
     const marked = markReactive(obj, TYPE_MARKERS.REACTIVE_QUERY);
 
     // Try to modify the property
@@ -52,7 +52,7 @@ describe('markReactive', () => {
   });
 
   it('should make the reactive property non-configurable', () => {
-    const obj = { use: () => 'test' };
+    const obj = { useHook: () => 'test' };
     const marked = markReactive(obj, TYPE_MARKERS.REACTIVE_QUERY);
 
     // Verify the property descriptor
@@ -64,9 +64,9 @@ describe('markReactive', () => {
   });
 
   it('should work with different marker types', () => {
-    const obj1 = { use: () => 'test1' };
-    const obj2 = { use: () => 'test2' };
-    const obj3 = { use: () => 'test3' };
+    const obj1 = { useHook: () => 'test1' };
+    const obj2 = { useHook: () => 'test2' };
+    const obj3 = { useHook: () => 'test3' };
 
     markReactive(obj1, TYPE_MARKERS.REACTIVE_QUERY);
     markReactive(obj2, TYPE_MARKERS.REACTIVE_MUTATION);

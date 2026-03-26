@@ -15,7 +15,9 @@ describe('isReactiveMutation', () => {
     expect(isReactiveMutation(null as any)).toBe(false);
     expect(isReactiveMutation(undefined as any)).toBe(false);
     expect(isReactiveMutation({} as any)).toBe(false);
-    expect(isReactiveMutation({ notUse: 'something' } as any)).toBe(false);
-    expect(isReactiveMutation({ use: 'not a function' } as any)).toBe(false);
+    expect(isReactiveMutation({ notUseHook: 'something' } as any)).toBe(false);
+    expect(isReactiveMutation({ useHook: 'not a function' } as any)).toBe(
+      false,
+    );
   });
 });

@@ -3,7 +3,7 @@ export const isEligibleReactive = (maybeReactive: unknown) => {
     (typeof maybeReactive === 'function' ||
       typeof maybeReactive === 'object') &&
     maybeReactive !== null &&
-    'use' in maybeReactive &&
-    typeof (maybeReactive as { use: unknown }).use === 'function'
+    'useHook' in maybeReactive &&
+    typeof (maybeReactive as { useHook: unknown }).useHook === 'function'
   );
 };

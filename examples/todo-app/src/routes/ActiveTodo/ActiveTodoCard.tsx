@@ -36,10 +36,10 @@ export const ActiveTodoCard = injectComponent<InjectedProps, OwnProps>(
     savedForLaterTodoService: InjectionSymbol('ISavedForLaterTodoService'),
   },
   ({ todo, activeTodoService, savedForLaterTodoService }) => {
-    const saveForLater = savedForLaterTodoService.saveForLater.use();
-    const completeOne = activeTodoService.completeOne.use();
-    const uncompleteOne = activeTodoService.uncompleteOne.use();
-    const deleteOne = activeTodoService.deleteOne.use();
+    const saveForLater = savedForLaterTodoService.saveForLater.useHook();
+    const completeOne = activeTodoService.completeOne.useHook();
+    const uncompleteOne = activeTodoService.uncompleteOne.useHook();
+    const deleteOne = activeTodoService.deleteOne.useHook();
     const prioritize = activeTodoService.prioritize;
     const deprioritize = activeTodoService.deprioritize;
 

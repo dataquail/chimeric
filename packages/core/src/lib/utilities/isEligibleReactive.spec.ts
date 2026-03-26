@@ -3,29 +3,29 @@ import { isEligibleReactive } from './isEligibleReactive';
 
 describe('isEligibleReactive', () => {
   it('should return true for objects with a use function', () => {
-    expect(isEligibleReactive({ use: () => undefined })).toBe(true);
+    expect(isEligibleReactive({ useHook: () => undefined })).toBe(true);
     expect(
       isEligibleReactive({
-        use: function () {
+        useHook: function () {
           return undefined;
         },
       }),
     ).toBe(true);
-    expect(isEligibleReactive({ use: async () => undefined })).toBe(true);
+    expect(isEligibleReactive({ useHook: async () => undefined })).toBe(true);
   });
 
   it('should return true for functions with a use property', () => {
     const fn = () => undefined;
-    (fn as any).use = () => undefined;
+    (fn as any).useHook = () => undefined;
     expect(isEligibleReactive(fn)).toBe(true);
   });
 
   it('should return false for objects without a use function', () => {
     expect(isEligibleReactive({})).toBe(false);
-    expect(isEligibleReactive({ notUse: () => undefined })).toBe(false);
-    expect(isEligibleReactive({ use: 'not a function' })).toBe(false);
-    expect(isEligibleReactive({ use: 42 })).toBe(false);
-    expect(isEligibleReactive({ use: null })).toBe(false);
+    expect(isEligibleReactive({ notUseHook: () => undefined })).toBe(false);
+    expect(isEligibleReactive({ useHook: 'not a function' })).toBe(false);
+    expect(isEligibleReactive({ useHook: 42 })).toBe(false);
+    expect(isEligibleReactive({ useHook: null })).toBe(false);
   });
 
   it('should return false for null and undefined', () => {
@@ -51,7 +51,7 @@ describe('isEligibleReactive', () => {
   it('should return false for arrays', () => {
     expect(isEligibleReactive([])).toBe(false);
     const arr: any = [];
-    arr.use = () => undefined;
+    arr.useHook = () => undefined;
     expect(isEligibleReactive(arr)).toBe(true); // Arrays are objects, so this should work
   });
 });

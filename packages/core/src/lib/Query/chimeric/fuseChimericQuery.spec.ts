@@ -36,12 +36,12 @@ describe('fuseChimericQuery', () => {
     expect(idiomaticFn).toHaveBeenCalledTimes(2);
 
     // Test reactive interface - use without options
-    const reactiveResultWithoutOptions = chimericQuery.use();
+    const reactiveResultWithoutOptions = chimericQuery.useHook();
     expect(reactiveFn).toHaveBeenCalledWith();
     expect(reactiveFn).toHaveBeenCalledTimes(1);
 
     // Test reactive interface - use with options
-    const resultWithOptions = chimericQuery.use({
+    const resultWithOptions = chimericQuery.useHook({
       options: undefined,
       nativeOptions: undefined,
     });
@@ -100,12 +100,14 @@ describe('fuseChimericQuery', () => {
     expect(idiomaticFn).toHaveBeenCalledTimes(2);
 
     // Test reactive interface - use without options
-    const reactiveResultWithoutOptions = chimericQuery.use({ name: 'John' });
+    const reactiveResultWithoutOptions = chimericQuery.useHook({
+      name: 'John',
+    });
     expect(reactiveFn).toHaveBeenCalledWith({ name: 'John' });
     expect(reactiveFn).toHaveBeenCalledTimes(1);
 
     // Test reactive interface - use with options
-    const resultWithOptions = chimericQuery.use(
+    const resultWithOptions = chimericQuery.useHook(
       { name: 'John' },
       {
         options: undefined,
@@ -184,12 +186,12 @@ describe('fuseChimericQuery', () => {
     expect(idiomaticFn).toHaveBeenCalledTimes(4);
 
     // Test reactive interface - use without options
-    const reactiveResultWithoutOptions = chimericQuery.use();
+    const reactiveResultWithoutOptions = chimericQuery.useHook();
     expect(reactiveFn).toHaveBeenCalledWith();
     expect(reactiveFn).toHaveBeenCalledTimes(1);
 
     // Test reactive interface - use with options
-    chimericQuery.use(undefined, {
+    chimericQuery.useHook(undefined, {
       options: undefined,
       nativeOptions: undefined,
     });
@@ -200,7 +202,7 @@ describe('fuseChimericQuery', () => {
     expect(reactiveFn).toHaveBeenCalledTimes(2);
 
     // Test reactive interface - use with params
-    const resultWithParams = chimericQuery.use({ name: 'John' });
+    const resultWithParams = chimericQuery.useHook({ name: 'John' });
     expect(reactiveFn).toHaveBeenCalledWith({ name: 'John' });
     expect(reactiveFn).toHaveBeenCalledTimes(3);
 
@@ -226,7 +228,7 @@ describe('fuseChimericQuery', () => {
       // @ts-expect-error testing invalid call
       await chimericQuery({ name: 'John' });
 
-      const result = chimericQuery.use();
+      const result = chimericQuery.useHook();
       // @ts-expect-error testing invalid call
       result.data.nonExistent();
     } catch {
@@ -247,7 +249,7 @@ describe('fuseChimericQuery', () => {
       await chimericQuery();
 
       // @ts-expect-error testing invalid call
-      chimericQuery.use();
+      chimericQuery.useHook();
     } catch {
       // Expected to throw
     }
@@ -266,7 +268,7 @@ describe('fuseChimericQuery', () => {
       await chimericQuery(1);
 
       // @ts-expect-error testing invalid call
-      chimericQuery.use(1);
+      chimericQuery.useHook(1);
     } catch {
       // Expected to throw
     }

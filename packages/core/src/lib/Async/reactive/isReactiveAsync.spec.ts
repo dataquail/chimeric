@@ -4,13 +4,15 @@ import { isReactiveAsync } from './isReactiveAsync';
 
 describe('isReactiveAsync', () => {
   it('should return true for an object with use function', () => {
-    const { reactiveAsync: mockReactiveAsync } = AsyncTestFixtures.withoutParams.getReactive();
+    const { reactiveAsync: mockReactiveAsync } =
+      AsyncTestFixtures.withoutParams.getReactive();
 
     expect(isReactiveAsync(mockReactiveAsync)).toBe(true);
   });
 
   it('should return true for a function with use property', () => {
-    const { reactiveAsync: mockReactiveAsync } = AsyncTestFixtures.withoutParams.getReactive();
+    const { reactiveAsync: mockReactiveAsync } =
+      AsyncTestFixtures.withoutParams.getReactive();
 
     expect(isReactiveAsync(mockReactiveAsync)).toBe(true);
   });
@@ -21,7 +23,7 @@ describe('isReactiveAsync', () => {
     expect(isReactiveAsync(null as any)).toBe(false);
     expect(isReactiveAsync(undefined as any)).toBe(false);
     expect(isReactiveAsync({} as any)).toBe(false);
-    expect(isReactiveAsync({ notUse: 'something' } as any)).toBe(false);
-    expect(isReactiveAsync({ use: 'not a function' } as any)).toBe(false);
+    expect(isReactiveAsync({ notUseHook: 'something' } as any)).toBe(false);
+    expect(isReactiveAsync({ useHook: 'not a function' } as any)).toBe(false);
   });
 });

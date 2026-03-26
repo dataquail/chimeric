@@ -18,7 +18,7 @@ describe('ChimericQueryTestHarness', () => {
       method: 'reactive',
     });
 
-    expect(reactiveQuery.use).toHaveBeenCalled();
+    expect(reactiveQuery.useHook).toHaveBeenCalled();
   });
 
   it('USAGE: REACTIVE: with params', () => {
@@ -34,8 +34,8 @@ describe('ChimericQueryTestHarness', () => {
       params: { name: 'John' },
     });
 
-    expect(reactiveQuery.use).toHaveBeenCalledWith({ name: 'John' });
-    expect(reactiveQuery.use).toHaveBeenCalledTimes(1);
+    expect(reactiveQuery.useHook).toHaveBeenCalledWith({ name: 'John' });
+    expect(reactiveQuery.useHook).toHaveBeenCalledTimes(1);
   });
 
   it('USAGE: REACTIVE: with optional params', () => {
@@ -50,8 +50,8 @@ describe('ChimericQueryTestHarness', () => {
       method: 'reactive',
     });
 
-    expect(reactiveQuery.use).toHaveBeenCalledWith(undefined);
-    expect(reactiveQuery.use).toHaveBeenCalledTimes(1);
+    expect(reactiveQuery.useHook).toHaveBeenCalledWith(undefined);
+    expect(reactiveQuery.useHook).toHaveBeenCalledTimes(1);
 
     ChimericQueryTestHarness({
       chimericQuery: fuseChimericQuery({
@@ -62,8 +62,8 @@ describe('ChimericQueryTestHarness', () => {
       params: { name: 'John' },
     });
 
-    expect(reactiveQuery.use).toHaveBeenCalledWith({ name: 'John' });
-    expect(reactiveQuery.use).toHaveBeenCalledTimes(2);
+    expect(reactiveQuery.useHook).toHaveBeenCalledWith({ name: 'John' });
+    expect(reactiveQuery.useHook).toHaveBeenCalledTimes(2);
   });
 
   // USAGE: IDIOMATIC

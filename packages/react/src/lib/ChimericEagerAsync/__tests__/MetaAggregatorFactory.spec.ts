@@ -132,7 +132,7 @@ describe('MetaAggregatorFactory', () => {
           },
         ),
         reactive: createReactiveEagerAsync((args: { number: number }) => {
-          const chimericAsyncResult = chimericAsync.use();
+          const chimericAsyncResult = chimericAsync.useHook();
           const { isSuccess, isPending, invoke } = chimericAsyncResult;
 
           useEffect(() => {
@@ -151,7 +151,7 @@ describe('MetaAggregatorFactory', () => {
       });
 
       const { result } = renderHook(() =>
-        chimericEagerAsync.use({ number: 1 }),
+        chimericEagerAsync.useHook({ number: 1 }),
       );
 
       expect(result.current.isIdle).toEqual(false);

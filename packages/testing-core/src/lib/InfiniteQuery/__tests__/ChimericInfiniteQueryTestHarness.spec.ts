@@ -18,7 +18,7 @@ describe('ChimericInfiniteQueryTestHarness', () => {
       method: 'reactive',
     });
 
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalled();
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalled();
   });
 
   it('USAGE: REACTIVE: with params', () => {
@@ -34,10 +34,10 @@ describe('ChimericInfiniteQueryTestHarness', () => {
       params: { filter: 'active' },
     });
 
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledWith({
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledWith({
       filter: 'active',
     });
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledTimes(1);
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledTimes(1);
   });
 
   it('USAGE: REACTIVE: with optional params', () => {
@@ -52,8 +52,8 @@ describe('ChimericInfiniteQueryTestHarness', () => {
       method: 'reactive',
     });
 
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledWith(undefined);
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledTimes(1);
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledWith(undefined);
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledTimes(1);
 
     ChimericInfiniteQueryTestHarness({
       chimericInfiniteQuery: fuseChimericInfiniteQuery({
@@ -64,10 +64,10 @@ describe('ChimericInfiniteQueryTestHarness', () => {
       params: { filter: 'active' },
     });
 
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledWith({
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledWith({
       filter: 'active',
     });
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledTimes(2);
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledTimes(2);
   });
 
   // USAGE: IDIOMATIC

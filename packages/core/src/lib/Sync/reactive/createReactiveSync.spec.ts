@@ -8,8 +8,8 @@ describe('createReactiveSync', () => {
     const reactiveSync = createReactiveSync(fn);
 
     expect(typeof reactiveSync).toBe('object');
-    expect(reactiveSync).toHaveProperty('use');
-    expect(typeof reactiveSync.use).toBe('function');
+    expect(reactiveSync).toHaveProperty('useHook');
+    expect(typeof reactiveSync.useHook).toBe('function');
   });
 
   it('should throw an error for invalid input', () => {
@@ -21,22 +21,20 @@ describe('createReactiveSync', () => {
 
   // USAGE TESTS
   it('USAGE: no params', () => {
-    const { fn, reactiveSync } =
-      SyncTestFixtures.withoutParams.getReactive();
+    const { fn, reactiveSync } = SyncTestFixtures.withoutParams.getReactive();
 
     // Usage implementation test - use() calls
-    const result = reactiveSync.use();
+    const result = reactiveSync.useHook();
     expect(fn).toHaveBeenCalledWith();
     expect(fn).toHaveBeenCalledTimes(1);
     expect(result).toBe('test');
   });
 
   it('USAGE: with params', () => {
-    const { fn, reactiveSync } =
-      SyncTestFixtures.withParams.getReactive();
+    const { fn, reactiveSync } = SyncTestFixtures.withParams.getReactive();
 
     // Usage implementation test - use() calls
-    const result = reactiveSync.use({ name: 'John' });
+    const result = reactiveSync.useHook({ name: 'John' });
     expect(fn).toHaveBeenCalledWith({ name: 'John' });
     expect(fn).toHaveBeenCalledTimes(1);
     expect(result).toBe('Hello John');
@@ -47,13 +45,13 @@ describe('createReactiveSync', () => {
       SyncTestFixtures.withOptionalParams.getReactive();
 
     // Usage implementation test - use() calls with params
-    const resultWithParams = reactiveSync.use({ name: 'John' });
+    const resultWithParams = reactiveSync.useHook({ name: 'John' });
     expect(fn).toHaveBeenCalledWith({ name: 'John' });
     expect(fn).toHaveBeenCalledTimes(1);
     expect(resultWithParams).toBe('Hello John');
 
     // Usage implementation test - use() calls without params
-    const resultWithoutParams = reactiveSync.use();
+    const resultWithoutParams = reactiveSync.useHook();
     expect(fn).toHaveBeenCalledWith();
     expect(fn).toHaveBeenCalledTimes(2);
     expect(resultWithoutParams).toBe('Hello');
@@ -61,36 +59,33 @@ describe('createReactiveSync', () => {
 
   // TYPE ERROR TESTS
   it('TYPE ERRORS: no params', () => {
-    const { reactiveSync } =
-      SyncTestFixtures.withoutParams.getReactive();
+    const { reactiveSync } = SyncTestFixtures.withoutParams.getReactive();
 
     try {
       // @ts-expect-error testing invalid call
-      reactiveSync.use({ fake: 'option' });
+      reactiveSync.useHook({ fake: 'option' });
     } catch {
       // Expected to throw
     }
   });
 
   it('TYPE ERRORS: with params', () => {
-    const { reactiveSync } =
-      SyncTestFixtures.withParams.getReactive();
+    const { reactiveSync } = SyncTestFixtures.withParams.getReactive();
 
     try {
       // @ts-expect-error testing invalid call
-      reactiveSync.use();
+      reactiveSync.useHook();
     } catch {
       // Expected to throw
     }
   });
 
   it('TYPE ERRORS: optional params', () => {
-    const { reactiveSync } =
-      SyncTestFixtures.withOptionalParams.getReactive();
+    const { reactiveSync } = SyncTestFixtures.withOptionalParams.getReactive();
 
     try {
       // @ts-expect-error testing invalid call
-      reactiveSync.use(1);
+      reactiveSync.useHook(1);
     } catch {
       // Expected to throw
     }

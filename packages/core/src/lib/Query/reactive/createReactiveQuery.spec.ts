@@ -8,8 +8,8 @@ describe('createReactiveQuery', () => {
     const reactiveQuery = createReactiveQuery(fn);
 
     expect(typeof reactiveQuery).toBe('object');
-    expect(reactiveQuery).toHaveProperty('use');
-    expect(typeof reactiveQuery.use).toBe('function');
+    expect(reactiveQuery).toHaveProperty('useHook');
+    expect(typeof reactiveQuery.useHook).toBe('function');
   });
 
   it('should throw an error for invalid input', () => {
@@ -25,11 +25,11 @@ describe('createReactiveQuery', () => {
       QueryTestFixtures.withoutParams.getReactive();
 
     // Usage implementation test - use() calls
-    const resultWithoutOptions = reactiveQuery.use();
+    const resultWithoutOptions = reactiveQuery.useHook();
     expect(fn).toHaveBeenCalledWith();
     expect(fn).toHaveBeenCalledTimes(1);
 
-    const resultWithOptions = reactiveQuery.use({
+    const resultWithOptions = reactiveQuery.useHook({
       options: undefined,
       nativeOptions: undefined,
     });
@@ -54,11 +54,11 @@ describe('createReactiveQuery', () => {
       QueryTestFixtures.withParams.getReactive();
 
     // Usage implementation test - use() calls
-    const resultWithoutOptions = reactiveQuery.use({ name: 'John' });
+    const resultWithoutOptions = reactiveQuery.useHook({ name: 'John' });
     expect(fn).toHaveBeenCalledWith({ name: 'John' });
     expect(fn).toHaveBeenCalledTimes(1);
 
-    const resultWithOptions = reactiveQuery.use(
+    const resultWithOptions = reactiveQuery.useHook(
       { name: 'John' },
       {
         options: undefined,
@@ -89,13 +89,13 @@ describe('createReactiveQuery', () => {
       QueryTestFixtures.withOptionalParams.getReactive();
 
     // Usage implementation test - use() calls with params
-    const resultWithParamsWithoutOptions = reactiveQuery.use({
+    const resultWithParamsWithoutOptions = reactiveQuery.useHook({
       name: 'John',
     });
     expect(fn).toHaveBeenCalledWith({ name: 'John' });
     expect(fn).toHaveBeenCalledTimes(1);
 
-    reactiveQuery.use(
+    reactiveQuery.useHook(
       { name: 'John' },
       { options: undefined, nativeOptions: undefined },
     );
@@ -106,11 +106,11 @@ describe('createReactiveQuery', () => {
     expect(fn).toHaveBeenCalledTimes(2);
 
     // Usage implementation test - use() calls without params
-    const resultWithoutParamsWithoutOptions = reactiveQuery.use();
+    const resultWithoutParamsWithoutOptions = reactiveQuery.useHook();
     expect(fn).toHaveBeenCalledWith();
     expect(fn).toHaveBeenCalledTimes(3);
 
-    reactiveQuery.use(undefined, {
+    reactiveQuery.useHook(undefined, {
       options: undefined,
       nativeOptions: undefined,
     });
@@ -139,12 +139,12 @@ describe('createReactiveQuery', () => {
 
     try {
       // @ts-expect-error testing invalid call
-      reactiveQuery.use({ fake: 'option' });
+      reactiveQuery.useHook({ fake: 'option' });
     } catch {
       // Expected to throw
     }
 
-    const result = reactiveQuery.use();
+    const result = reactiveQuery.useHook();
     try {
       // @ts-expect-error testing invalid call
       result.data.nonExistent();
@@ -158,7 +158,7 @@ describe('createReactiveQuery', () => {
 
     try {
       // @ts-expect-error testing invalid call
-      reactiveQuery.use();
+      reactiveQuery.useHook();
     } catch {
       // Expected to throw
     }
@@ -170,7 +170,7 @@ describe('createReactiveQuery', () => {
 
     try {
       // @ts-expect-error testing invalid call
-      reactiveQuery.use(1);
+      reactiveQuery.useHook(1);
     } catch {
       // Expected to throw
     }

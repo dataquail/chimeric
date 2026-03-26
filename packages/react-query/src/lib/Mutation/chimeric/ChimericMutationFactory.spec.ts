@@ -14,7 +14,7 @@ describe('ChimericMutationFactory', () => {
       queryClient,
       mutationFn,
     });
-    const { result } = renderHook(chimericMutation.use, {
+    const { result } = renderHook(chimericMutation.useHook, {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -38,7 +38,7 @@ describe('ChimericMutationFactory', () => {
       queryClient,
       mutationFn,
     });
-    const { result } = renderHook(() => chimericMutation.use(), {
+    const { result } = renderHook(() => chimericMutation.useHook(), {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -63,7 +63,7 @@ describe('ChimericMutationFactory', () => {
       queryClient,
       mutationFn,
     });
-    const { result } = renderHook(() => chimericMutation.use(), {
+    const { result } = renderHook(() => chimericMutation.useHook(), {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -170,7 +170,7 @@ describe('ChimericMutationFactory', () => {
       queryClient,
       mutationFn,
     });
-    const { result } = renderHook(() => chimericMutation.use(), {
+    const { result } = renderHook(() => chimericMutation.useHook(), {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -189,7 +189,7 @@ describe('ChimericMutationFactory', () => {
       queryClient,
       mutationFn,
     });
-    const { result } = renderHook(() => chimericMutation.use(), {
+    const { result } = renderHook(() => chimericMutation.useHook(), {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -212,7 +212,7 @@ describe('ChimericMutationFactory', () => {
       queryClient,
       mutationFn,
     });
-    const { result } = renderHook(() => chimericMutation.use(), {
+    const { result } = renderHook(() => chimericMutation.useHook(), {
       wrapper: getTestWrapper(queryClient),
     });
 

@@ -23,7 +23,7 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
       useFromStore: () => storeValue,
     });
 
-    const { result } = renderHook(() => chimericQuery.use(), {
+    const { result } = renderHook(() => chimericQuery.useHook(), {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -53,9 +53,12 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
       useFromStore: () => storeValue,
     });
 
-    const { result } = renderHook(() => chimericQuery.use({ name: 'John' }), {
-      wrapper: getTestWrapper(queryClient),
-    });
+    const { result } = renderHook(
+      () => chimericQuery.useHook({ name: 'John' }),
+      {
+        wrapper: getTestWrapper(queryClient),
+      },
+    );
 
     await waitFor(() => {
       expect(result.current.isPending).toBe(false);
@@ -84,7 +87,7 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
     });
 
     const { result: resultWithParams } = renderHook(
-      () => chimericQuery.use({ name: 'John' }),
+      () => chimericQuery.useHook({ name: 'John' }),
       {
         wrapper: getTestWrapper(queryClient),
       },
@@ -99,7 +102,7 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
     expect(queryFn).toHaveBeenCalledWith({ name: 'John' });
 
     const { result: resultWithoutParams } = renderHook(
-      () => chimericQuery.use(),
+      () => chimericQuery.useHook(),
       {
         wrapper: getTestWrapper(queryClient),
       },
@@ -208,7 +211,7 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
 
     try {
       // @ts-expect-error - no params expected
-      renderHook(() => chimericQuery.use({ name: 'John' }), {
+      renderHook(() => chimericQuery.useHook({ name: 'John' }), {
         wrapper: getTestWrapper(queryClient),
       });
     } catch {
@@ -234,12 +237,12 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
 
     try {
       // @ts-expect-error - no params expected
-      renderHook(() => chimericQuery.use(), {
+      renderHook(() => chimericQuery.useHook(), {
         wrapper: getTestWrapper(queryClient),
       });
 
       // @ts-expect-error - should error because wrong params
-      renderHook(() => chimericQuery.use({ wrong: 'param' }), {
+      renderHook(() => chimericQuery.useHook({ wrong: 'param' }), {
         wrapper: getTestWrapper(queryClient),
       });
     } catch {
@@ -265,11 +268,11 @@ describe('ChimericQueryWithManagedStoreFactory', () => {
 
     try {
       // @ts-expect-error - should error because wrong params
-      renderHook(() => chimericQuery.use({ wrong: 'param' }), {
+      renderHook(() => chimericQuery.useHook({ wrong: 'param' }), {
         wrapper: getTestWrapper(queryClient),
       });
 
-      renderHook(() => chimericQuery.use(), {
+      renderHook(() => chimericQuery.useHook(), {
         wrapper: getTestWrapper(queryClient),
       });
     } catch {

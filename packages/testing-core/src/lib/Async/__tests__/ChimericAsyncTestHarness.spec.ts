@@ -20,7 +20,7 @@ describe('ChimericAsyncTestHarness', () => {
 
     const result = await harness.result.current.invoke();
 
-    expect(reactiveAsync.use).toHaveBeenCalled();
+    expect(reactiveAsync.useHook).toHaveBeenCalled();
     expect(invokeFn).toHaveBeenCalled();
     expect(result).toBe('test');
   });
@@ -41,7 +41,7 @@ describe('ChimericAsyncTestHarness', () => {
 
     const result = await harness.result.current.invoke({ name: 'John' });
 
-    expect(reactiveAsync.use).toHaveBeenCalled();
+    expect(reactiveAsync.useHook).toHaveBeenCalled();
     expect(invokeFn).toHaveBeenCalledWith({ name: 'John' });
     expect(result).toBe('Hello John');
   });
@@ -62,7 +62,7 @@ describe('ChimericAsyncTestHarness', () => {
 
     const result1 = await harness.result.current.invoke();
 
-    expect(reactiveAsync.use).toHaveBeenCalled();
+    expect(reactiveAsync.useHook).toHaveBeenCalled();
     expect(invokeFn).toHaveBeenCalledWith();
     expect(result1).toBe('Hello');
 

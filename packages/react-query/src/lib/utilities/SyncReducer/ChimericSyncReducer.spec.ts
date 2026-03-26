@@ -204,7 +204,7 @@ describe('ChimericSyncReducer', () => {
     it('should aggregate from one reactive sync interface', () => {
       const { todoStore, getAllTodos } = createTodoStoreAndServices();
 
-      const { result } = renderHook(getAllTodos.use);
+      const { result } = renderHook(getAllTodos.useHook);
 
       expect(result.current.length).toBe(0);
 
@@ -222,7 +222,7 @@ describe('ChimericSyncReducer', () => {
         },
       });
 
-      const { result: result2 } = renderHook(TestChimericSyncReducer.use, {
+      const { result: result2 } = renderHook(TestChimericSyncReducer.useHook, {
         initialProps: 0,
       });
 
@@ -280,7 +280,7 @@ describe('ChimericSyncReducer', () => {
         },
       });
 
-      const { result } = renderHook(TestChimericSyncReducer.use, {
+      const { result } = renderHook(TestChimericSyncReducer.useHook, {
         initialProps: 0,
       });
 

@@ -42,12 +42,12 @@ describe('fuseChimericInfiniteQuery', () => {
     expect(idiomaticFn).toHaveBeenCalledTimes(2);
 
     // Test reactive interface - use without options
-    const reactiveResultWithoutOptions = chimericInfiniteQuery.use();
+    const reactiveResultWithoutOptions = chimericInfiniteQuery.useHook();
     expect(reactiveFn).toHaveBeenCalledWith();
     expect(reactiveFn).toHaveBeenCalledTimes(1);
 
     // Test reactive interface - use with options
-    const resultWithOptions = chimericInfiniteQuery.use({
+    const resultWithOptions = chimericInfiniteQuery.useHook({
       options: undefined,
       nativeOptions: undefined,
     });
@@ -118,14 +118,14 @@ describe('fuseChimericInfiniteQuery', () => {
     expect(idiomaticFn).toHaveBeenCalledTimes(2);
 
     // Test reactive interface - use without options
-    const reactiveResultWithoutOptions = chimericInfiniteQuery.use({
+    const reactiveResultWithoutOptions = chimericInfiniteQuery.useHook({
       search: 'test',
     });
     expect(reactiveFn).toHaveBeenCalledWith({ search: 'test' });
     expect(reactiveFn).toHaveBeenCalledTimes(1);
 
     // Test reactive interface - use with options
-    const resultWithOptions = chimericInfiniteQuery.use(
+    const resultWithOptions = chimericInfiniteQuery.useHook(
       { search: 'test' },
       {
         options: undefined,
@@ -224,12 +224,12 @@ describe('fuseChimericInfiniteQuery', () => {
     expect(idiomaticFn).toHaveBeenCalledTimes(4);
 
     // Test reactive interface - use without options
-    const reactiveResultWithoutOptions = chimericInfiniteQuery.use();
+    const reactiveResultWithoutOptions = chimericInfiniteQuery.useHook();
     expect(reactiveFn).toHaveBeenCalledWith();
     expect(reactiveFn).toHaveBeenCalledTimes(1);
 
     // Test reactive interface - use with options
-    chimericInfiniteQuery.use(undefined, {
+    chimericInfiniteQuery.useHook(undefined, {
       options: undefined,
       nativeOptions: undefined,
     });
@@ -240,7 +240,7 @@ describe('fuseChimericInfiniteQuery', () => {
     expect(reactiveFn).toHaveBeenCalledTimes(2);
 
     // Test reactive interface - use with params
-    const resultWithParams = chimericInfiniteQuery.use({ search: 'test' });
+    const resultWithParams = chimericInfiniteQuery.useHook({ search: 'test' });
     expect(reactiveFn).toHaveBeenCalledWith({ search: 'test' });
     expect(reactiveFn).toHaveBeenCalledTimes(3);
 
@@ -272,7 +272,7 @@ describe('fuseChimericInfiniteQuery', () => {
       // @ts-expect-error testing invalid call
       await chimericInfiniteQuery({ search: 'test' });
 
-      const result = chimericInfiniteQuery.use();
+      const result = chimericInfiniteQuery.useHook();
       // @ts-expect-error testing invalid call
       result.data.nonExistent();
     } catch {
@@ -293,7 +293,7 @@ describe('fuseChimericInfiniteQuery', () => {
       await chimericInfiniteQuery();
 
       // @ts-expect-error testing invalid call
-      chimericInfiniteQuery.use();
+      chimericInfiniteQuery.useHook();
     } catch {
       // Expected to throw
     }
@@ -312,7 +312,7 @@ describe('fuseChimericInfiniteQuery', () => {
       await chimericInfiniteQuery(1);
 
       // @ts-expect-error testing invalid call
-      chimericInfiniteQuery.use(1);
+      chimericInfiniteQuery.useHook(1);
     } catch {
       // Expected to throw
     }

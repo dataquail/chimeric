@@ -3,7 +3,7 @@ import { hasLength, useForm } from '@mantine/form';
 import { activeTodoService } from 'src/core/infrastructure/services/ActiveTodoService';
 
 export const AddNewActiveTodoForm = () => {
-  const { invoke, isPending } = activeTodoService.createOne.use();
+  const { invoke, isPending } = activeTodoService.createOne.useHook();
   const form = useForm({
     mode: 'uncontrolled',
     initialValues: {

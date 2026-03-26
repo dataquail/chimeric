@@ -115,7 +115,7 @@ export function ReactiveInfiniteQueryFactory<
         TPageParam,
         TError,
         TQueryKey
-      >['use']
+      >['useHook']
     >[0],
     maybeOptions?: Parameters<
       ReactiveInfiniteQuery<
@@ -124,7 +124,7 @@ export function ReactiveInfiniteQueryFactory<
         TPageParam,
         TError,
         TQueryKey
-      >['use']
+      >['useHook']
     >[1],
   ) => {
     const params =
@@ -202,7 +202,7 @@ export function ReactiveInfiniteQueryFactory<
         TPageParam,
         TError,
         TQueryKey
-      >['use']
+      >['useHook']
     >;
   };
 

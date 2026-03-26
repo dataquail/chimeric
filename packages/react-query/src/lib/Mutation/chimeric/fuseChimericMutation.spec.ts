@@ -32,12 +32,12 @@ describe('fuseChimericMutation', () => {
     expect(idiomaticFn).toHaveBeenCalledTimes(2);
 
     // Test reactive interface - use without options
-    const reactiveResultWithoutOptions = chimericMutation.use();
+    const reactiveResultWithoutOptions = chimericMutation.useHook();
     expect(reactiveFn).toHaveBeenCalledWith();
     expect(reactiveFn).toHaveBeenCalledTimes(1);
 
     // Test reactive interface - use with options
-    const resultWithOptions = chimericMutation.use({
+    const resultWithOptions = chimericMutation.useHook({
       options: undefined,
       nativeOptions: undefined,
     });
@@ -106,12 +106,12 @@ describe('fuseChimericMutation', () => {
     expect(idiomaticFn).toHaveBeenCalledTimes(2);
 
     // Test reactive interface - use without options
-    const reactiveResultWithoutOptions = chimericMutation.use();
+    const reactiveResultWithoutOptions = chimericMutation.useHook();
     expect(reactiveFn).toHaveBeenCalledWith();
     expect(reactiveFn).toHaveBeenCalledTimes(1);
 
     // Test reactive interface - use with options
-    const resultWithOptions = chimericMutation.use({
+    const resultWithOptions = chimericMutation.useHook({
       options: undefined,
       nativeOptions: undefined,
     });
@@ -206,12 +206,12 @@ describe('fuseChimericMutation', () => {
     expect(idiomaticFn).toHaveBeenCalledTimes(4);
 
     // Test reactive interface - use without options
-    const reactiveResultWithoutOptions = chimericMutation.use();
+    const reactiveResultWithoutOptions = chimericMutation.useHook();
     expect(reactiveFn).toHaveBeenCalledWith();
     expect(reactiveFn).toHaveBeenCalledTimes(1);
 
     // Test reactive interface - use with options
-    const resultWithOptions = chimericMutation.use({
+    const resultWithOptions = chimericMutation.useHook({
       options: undefined,
       nativeOptions: undefined,
     });
@@ -279,7 +279,7 @@ describe('fuseChimericMutation', () => {
       // @ts-expect-error testing invalid call
       await chimericMutation({ name: 'John' });
 
-      const result = chimericMutation.use();
+      const result = chimericMutation.useHook();
       // @ts-expect-error testing invalid call
       await result.invoke({ name: 'John' });
     } catch {
@@ -299,7 +299,7 @@ describe('fuseChimericMutation', () => {
       // @ts-expect-error testing invalid call
       await chimericMutation();
 
-      const result = chimericMutation.use();
+      const result = chimericMutation.useHook();
       // @ts-expect-error testing invalid call
       await result.invoke();
     } catch {
@@ -319,7 +319,7 @@ describe('fuseChimericMutation', () => {
       // @ts-expect-error testing invalid call
       await chimericMutation(1);
 
-      const result = chimericMutation.use();
+      const result = chimericMutation.useHook();
       // @ts-expect-error testing invalid call
       await result.invoke(1);
     } catch {
@@ -329,8 +329,11 @@ describe('fuseChimericMutation', () => {
 
   // ANNOTATION TESTS
   it('ANNOTATION: no params', async () => {
-    const { idiomaticMutation, reactiveMutation, annotation: _annotation } =
-      MutationTestFixtures.withoutParams.getChimeric();
+    const {
+      idiomaticMutation,
+      reactiveMutation,
+      annotation: _annotation,
+    } = MutationTestFixtures.withoutParams.getChimeric();
     const chimericMutation = fuseChimericMutation({
       idiomatic: idiomaticMutation,
       reactive: reactiveMutation,
@@ -342,8 +345,11 @@ describe('fuseChimericMutation', () => {
   });
 
   it('ANNOTATION: with params', async () => {
-    const { idiomaticMutation, reactiveMutation, annotation: _annotation } =
-      MutationTestFixtures.withParams.getChimeric();
+    const {
+      idiomaticMutation,
+      reactiveMutation,
+      annotation: _annotation,
+    } = MutationTestFixtures.withParams.getChimeric();
     const chimericMutation = fuseChimericMutation({
       idiomatic: idiomaticMutation,
       reactive: reactiveMutation,
@@ -355,8 +361,11 @@ describe('fuseChimericMutation', () => {
   });
 
   it('ANNOTATION: optional params', async () => {
-    const { idiomaticMutation, reactiveMutation, annotation: _annotation } =
-      MutationTestFixtures.withOptionalParams.getChimeric();
+    const {
+      idiomaticMutation,
+      reactiveMutation,
+      annotation: _annotation,
+    } = MutationTestFixtures.withOptionalParams.getChimeric();
     const chimericMutation = fuseChimericMutation({
       idiomatic: idiomaticMutation,
       reactive: reactiveMutation,

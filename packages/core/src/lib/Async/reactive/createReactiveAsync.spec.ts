@@ -8,8 +8,8 @@ describe('createReactiveAsync', () => {
     const reactiveAsync = createReactiveAsync(fn);
 
     expect(typeof reactiveAsync).toBe('object');
-    expect(reactiveAsync).toHaveProperty('use');
-    expect(typeof reactiveAsync.use).toBe('function');
+    expect(reactiveAsync).toHaveProperty('useHook');
+    expect(typeof reactiveAsync.useHook).toBe('function');
   });
 
   it('should throw an error for invalid input', () => {
@@ -25,7 +25,7 @@ describe('createReactiveAsync', () => {
       AsyncTestFixtures.withoutParams.getReactive();
 
     // Usage implementation test - use() calls
-    const result = reactiveAsync.use();
+    const result = reactiveAsync.useHook();
     expect(fn).toHaveBeenCalledWith();
     expect(fn).toHaveBeenCalledTimes(1);
 
@@ -40,7 +40,7 @@ describe('createReactiveAsync', () => {
       AsyncTestFixtures.withParams.getReactive();
 
     // Usage implementation test - use() calls
-    const result = reactiveAsync.use();
+    const result = reactiveAsync.useHook();
     expect(fn).toHaveBeenCalledWith();
     expect(fn).toHaveBeenCalledTimes(1);
 
@@ -55,7 +55,7 @@ describe('createReactiveAsync', () => {
       AsyncTestFixtures.withOptionalParams.getReactive();
 
     // Usage implementation test - use() calls
-    const result = reactiveAsync.use();
+    const result = reactiveAsync.useHook();
     expect(fn).toHaveBeenCalledWith();
     expect(fn).toHaveBeenCalledTimes(1);
 
@@ -72,10 +72,9 @@ describe('createReactiveAsync', () => {
 
   // TYPE ERROR TESTS
   it('TYPE ERRORS: no params', async () => {
-    const { reactiveAsync } =
-      AsyncTestFixtures.withoutParams.getReactive();
+    const { reactiveAsync } = AsyncTestFixtures.withoutParams.getReactive();
 
-    const result = reactiveAsync.use();
+    const result = reactiveAsync.useHook();
     try {
       // @ts-expect-error testing invalid call
       await result.invoke({ name: 'John' });
@@ -85,10 +84,9 @@ describe('createReactiveAsync', () => {
   });
 
   it('TYPE ERRORS: with params', async () => {
-    const { reactiveAsync } =
-      AsyncTestFixtures.withParams.getReactive();
+    const { reactiveAsync } = AsyncTestFixtures.withParams.getReactive();
 
-    const result = reactiveAsync.use();
+    const result = reactiveAsync.useHook();
     try {
       // @ts-expect-error testing invalid call
       await result.invoke();
@@ -101,7 +99,7 @@ describe('createReactiveAsync', () => {
     const { reactiveAsync } =
       AsyncTestFixtures.withOptionalParams.getReactive();
 
-    const result = reactiveAsync.use();
+    const result = reactiveAsync.useHook();
     try {
       // @ts-expect-error testing invalid call
       await result.invoke(1);

@@ -68,7 +68,7 @@ export function ReactiveMutationFactory<
   });
   const mutationCandidate = (
     allInitialOptions: Parameters<
-      ReactiveMutation<TParams, TResult, TError>['use']
+      ReactiveMutation<TParams, TResult, TError>['useHook']
     >[0] = {},
   ) => {
     const { options: initialOptions, nativeOptions: initialNativeOptions } =
@@ -84,12 +84,12 @@ export function ReactiveMutationFactory<
       invoke: (
         paramsOrOptions?: Parameters<
           ReturnType<
-            ReactiveMutation<TParams, TResult, TError>['use']
+            ReactiveMutation<TParams, TResult, TError>['useHook']
           >['invoke']
         >[0],
         maybeOptions?: Parameters<
           ReturnType<
-            ReactiveMutation<TParams, TResult, TError>['use']
+            ReactiveMutation<TParams, TResult, TError>['useHook']
           >['invoke']
         >[1],
       ) => {

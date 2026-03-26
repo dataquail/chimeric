@@ -18,7 +18,7 @@ describe('ChimericQueryFactory', () => {
         }),
     });
 
-    const { result } = renderHook(() => chimericQuery.use(), {
+    const { result } = renderHook(() => chimericQuery.useHook(), {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -43,9 +43,12 @@ describe('ChimericQueryFactory', () => {
         }),
     });
 
-    const { result } = renderHook(() => chimericQuery.use({ name: 'John' }), {
-      wrapper: getTestWrapper(queryClient),
-    });
+    const { result } = renderHook(
+      () => chimericQuery.useHook({ name: 'John' }),
+      {
+        wrapper: getTestWrapper(queryClient),
+      },
+    );
 
     await waitFor(() => {
       expect(result.current.isPending).toBe(false);
@@ -69,7 +72,7 @@ describe('ChimericQueryFactory', () => {
     });
 
     const { result: resultWithParams } = renderHook(
-      () => chimericQuery.use({ name: 'John' }),
+      () => chimericQuery.useHook({ name: 'John' }),
       {
         wrapper: getTestWrapper(queryClient),
       },
@@ -84,7 +87,7 @@ describe('ChimericQueryFactory', () => {
     expect(queryFn).toHaveBeenCalledWith({ name: 'John' });
 
     const { result: resultWithoutParams } = renderHook(
-      () => chimericQuery.use(),
+      () => chimericQuery.useHook(),
       {
         wrapper: getTestWrapper(queryClient),
       },
@@ -174,7 +177,7 @@ describe('ChimericQueryFactory', () => {
 
     try {
       // @ts-expect-error - Testing type error
-      renderHook(() => chimericQuery.use({ name: 'John' }), {
+      renderHook(() => chimericQuery.useHook({ name: 'John' }), {
         wrapper: getTestWrapper(queryClient),
       });
     } catch {
@@ -196,12 +199,12 @@ describe('ChimericQueryFactory', () => {
 
     try {
       // @ts-expect-error - Testing type error
-      renderHook(() => chimericQuery.use(), {
+      renderHook(() => chimericQuery.useHook(), {
         wrapper: getTestWrapper(queryClient),
       });
 
       // @ts-expect-error - Testing type error
-      renderHook(() => chimericQuery.use({ wrong: 'param' }), {
+      renderHook(() => chimericQuery.useHook({ wrong: 'param' }), {
         wrapper: getTestWrapper(queryClient),
       });
     } catch {
@@ -223,11 +226,11 @@ describe('ChimericQueryFactory', () => {
 
     try {
       // @ts-expect-error - Testing type error
-      renderHook(() => chimericQuery.use({ wrong: 'param' }), {
+      renderHook(() => chimericQuery.useHook({ wrong: 'param' }), {
         wrapper: getTestWrapper(queryClient),
       });
 
-      renderHook(() => chimericQuery.use(), {
+      renderHook(() => chimericQuery.useHook(), {
         wrapper: getTestWrapper(queryClient),
       });
     } catch {
@@ -318,7 +321,8 @@ describe('ChimericQueryFactory', () => {
   });
 
   it('ANNOTATIONS: with params', async () => {
-    const { annotation: _annotation, queryFn } = QueryTestFixtures.withParams.getChimeric();
+    const { annotation: _annotation, queryFn } =
+      QueryTestFixtures.withParams.getChimeric();
     type TestAnnotation = typeof _annotation;
     const testAnnotation: TestAnnotation = ChimericQueryFactory({
       queryClient: new QueryClient(),

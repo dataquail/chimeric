@@ -364,7 +364,7 @@ const getService = (
   if (!service) {
     return () => undefined;
   } else {
-    return service.service.use || (() => undefined);
+    return service.service.useHook || (() => undefined);
   }
 };
 

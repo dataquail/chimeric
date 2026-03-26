@@ -18,8 +18,8 @@ describe('ChimericSyncTestHarness', () => {
     });
 
     expect(testHarness.result.current).toBe('test');
-    expect(reactiveSync.use).toHaveBeenCalledTimes(1);
-    expect(reactiveSync.use).toHaveBeenCalledWith(undefined);
+    expect(reactiveSync.useHook).toHaveBeenCalledTimes(1);
+    expect(reactiveSync.useHook).toHaveBeenCalledWith(undefined);
   });
 
   it('USAGE: REACTIVE: with params', () => {
@@ -37,8 +37,8 @@ describe('ChimericSyncTestHarness', () => {
     });
 
     expect(testHarness.result.current).toBe('Hello John');
-    expect(reactiveSync.use).toHaveBeenCalledTimes(1);
-    expect(reactiveSync.use).toHaveBeenCalledWith({ name: 'John' });
+    expect(reactiveSync.useHook).toHaveBeenCalledTimes(1);
+    expect(reactiveSync.useHook).toHaveBeenCalledWith({ name: 'John' });
   });
 
   it('USAGE: REACTIVE: with optional params', () => {
@@ -56,8 +56,8 @@ describe('ChimericSyncTestHarness', () => {
     });
 
     expect(testHarnessWithParams.result.current).toBe('Hello John');
-    expect(reactiveSync.use).toHaveBeenCalledTimes(1);
-    expect(reactiveSync.use).toHaveBeenCalledWith({ name: 'John' });
+    expect(reactiveSync.useHook).toHaveBeenCalledTimes(1);
+    expect(reactiveSync.useHook).toHaveBeenCalledWith({ name: 'John' });
 
     const testHarnessNoParams = ChimericSyncTestHarness({
       chimericSync,
@@ -65,8 +65,8 @@ describe('ChimericSyncTestHarness', () => {
     });
 
     expect(testHarnessNoParams.result.current).toBe('Hello');
-    expect(reactiveSync.use).toHaveBeenCalledTimes(2);
-    expect(reactiveSync.use).toHaveBeenCalledWith(undefined);
+    expect(reactiveSync.useHook).toHaveBeenCalledTimes(2);
+    expect(reactiveSync.useHook).toHaveBeenCalledWith(undefined);
   });
 
   // USAGE: IDIOMATIC

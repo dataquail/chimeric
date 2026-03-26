@@ -10,7 +10,7 @@ type InjectedProps = {
 export const AddNewActiveTodoForm = injectComponent<InjectedProps>(
   { activeTodoService: InjectionSymbol('IActiveTodoService') },
   ({ activeTodoService }) => {
-    const { invoke, isPending } = activeTodoService.createOne.use();
+    const { invoke, isPending } = activeTodoService.createOne.useHook();
     const form = useForm({
       mode: 'uncontrolled',
       initialValues: {

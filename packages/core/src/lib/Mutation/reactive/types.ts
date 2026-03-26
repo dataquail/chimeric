@@ -6,7 +6,7 @@ export type ReactiveMutation<
   TNativeInvokeOptions = unknown,
   TNativeReturnType = unknown,
 > = {
-  use: (allOptions?: {
+  useHook: (allOptions?: {
     options?: ReactiveMutationOptions;
     nativeOptions?: TNativeReactiveOptions;
   }) => {

@@ -26,6 +26,12 @@
     },
     {
       "path": "./examples/basic-todo-app"
+    },
+    {
+      "path": "./examples/nextjs-todo-app-ioc"
+    },
+    {
+      "path": "./examples/todo-api"
     }
   ]
 }

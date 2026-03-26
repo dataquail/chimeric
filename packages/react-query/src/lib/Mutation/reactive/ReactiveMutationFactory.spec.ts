@@ -11,7 +11,7 @@ describe('ReactiveMutationFactory', () => {
     const { mutationFn } = MutationTestFixtures.withoutParams.getReactive();
     const queryClient = new QueryClient();
     const reactiveMutation = ReactiveMutationFactory({ mutationFn });
-    const { result } = renderHook(reactiveMutation.use, {
+    const { result } = renderHook(reactiveMutation.useHook, {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -32,7 +32,7 @@ describe('ReactiveMutationFactory', () => {
     const { mutationFn } = MutationTestFixtures.withParams.getReactive();
     const queryClient = new QueryClient();
     const reactiveMutation = ReactiveMutationFactory({ mutationFn });
-    const { result } = renderHook(() => reactiveMutation.use(), {
+    const { result } = renderHook(() => reactiveMutation.useHook(), {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -54,7 +54,7 @@ describe('ReactiveMutationFactory', () => {
       MutationTestFixtures.withOptionalParams.getReactive();
     const queryClient = new QueryClient();
     const reactiveMutation = ReactiveMutationFactory({ mutationFn });
-    const { result } = renderHook(() => reactiveMutation.use(), {
+    const { result } = renderHook(() => reactiveMutation.useHook(), {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -85,7 +85,7 @@ describe('ReactiveMutationFactory', () => {
     const { mutationFn } = MutationTestFixtures.withoutParams.getReactive();
     const queryClient = new QueryClient();
     const reactiveMutation = ReactiveMutationFactory({ mutationFn });
-    const { result } = renderHook(() => reactiveMutation.use(), {
+    const { result } = renderHook(() => reactiveMutation.useHook(), {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -101,7 +101,7 @@ describe('ReactiveMutationFactory', () => {
     const { mutationFn } = MutationTestFixtures.withParams.getReactive();
     const queryClient = new QueryClient();
     const reactiveMutation = ReactiveMutationFactory({ mutationFn });
-    const { result } = renderHook(() => reactiveMutation.use(), {
+    const { result } = renderHook(() => reactiveMutation.useHook(), {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -121,7 +121,7 @@ describe('ReactiveMutationFactory', () => {
       MutationTestFixtures.withOptionalParams.getReactive();
     const queryClient = new QueryClient();
     const reactiveMutation = ReactiveMutationFactory({ mutationFn });
-    const { result } = renderHook(() => reactiveMutation.use(), {
+    const { result } = renderHook(() => reactiveMutation.useHook(), {
       wrapper: getTestWrapper(queryClient),
     });
 

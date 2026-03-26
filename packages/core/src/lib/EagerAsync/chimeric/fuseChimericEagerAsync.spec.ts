@@ -18,7 +18,7 @@ describe('fuseChimericEagerAsync', () => {
     expect(idiomaticFn).toHaveBeenCalledTimes(1);
 
     // Test reactive interface - use without params
-    const reactiveResult = chimericEagerAsync.use();
+    const reactiveResult = chimericEagerAsync.useHook();
     expect(reactiveFn).toHaveBeenCalledWith();
     expect(reactiveFn).toHaveBeenCalledTimes(1);
     expect(reactiveResult.data).toBe('test');
@@ -41,7 +41,7 @@ describe('fuseChimericEagerAsync', () => {
     expect(idiomaticFn).toHaveBeenCalledTimes(1);
 
     // Test reactive interface - use with params
-    const reactiveResult = chimericEagerAsync.use({ name: 'John' });
+    const reactiveResult = chimericEagerAsync.useHook({ name: 'John' });
     expect(reactiveFn).toHaveBeenCalledWith({ name: 'John' });
     expect(reactiveFn).toHaveBeenCalledTimes(1);
     expect(reactiveResult.data).toBe('Hello John');
@@ -74,19 +74,21 @@ describe('fuseChimericEagerAsync', () => {
     expect(idiomaticFn).toHaveBeenCalledTimes(3);
 
     // Test reactive interface - use without params
-    const reactiveResultWithoutParams = chimericEagerAsync.use();
+    const reactiveResultWithoutParams = chimericEagerAsync.useHook();
     expect(reactiveFn).toHaveBeenCalledWith();
     expect(reactiveFn).toHaveBeenCalledTimes(1);
     expect(reactiveResultWithoutParams.data).toBe('Hello');
 
     // Test reactive interface - use with undefined
-    const reactiveResultWithUndefined = chimericEagerAsync.use(undefined);
+    const reactiveResultWithUndefined = chimericEagerAsync.useHook(undefined);
     expect(reactiveFn).toHaveBeenCalledWith(undefined);
     expect(reactiveFn).toHaveBeenCalledTimes(2);
     expect(reactiveResultWithUndefined.data).toBe('Hello');
 
     // Test reactive interface - use with params
-    const reactiveResultWithParams = chimericEagerAsync.use({ name: 'John' });
+    const reactiveResultWithParams = chimericEagerAsync.useHook({
+      name: 'John',
+    });
     expect(reactiveFn).toHaveBeenCalledWith({ name: 'John' });
     expect(reactiveFn).toHaveBeenCalledTimes(3);
     expect(reactiveResultWithParams.data).toBe('Hello John');
@@ -105,7 +107,7 @@ describe('fuseChimericEagerAsync', () => {
       // @ts-expect-error testing invalid call
       await chimericEagerAsync({ name: 'John' });
 
-      const result = chimericEagerAsync.use();
+      const result = chimericEagerAsync.useHook();
       // @ts-expect-error testing invalid call
       result.data.nonExistent();
     } catch {
@@ -126,7 +128,7 @@ describe('fuseChimericEagerAsync', () => {
       await chimericEagerAsync();
 
       // @ts-expect-error testing invalid call
-      chimericEagerAsync.use();
+      chimericEagerAsync.useHook();
     } catch {
       // Expected to throw
     }
@@ -145,7 +147,7 @@ describe('fuseChimericEagerAsync', () => {
       await chimericEagerAsync(1);
 
       // @ts-expect-error testing invalid call
-      chimericEagerAsync.use(1);
+      chimericEagerAsync.useHook(1);
     } catch {
       // Expected to throw
     }

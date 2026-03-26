@@ -11,7 +11,7 @@ describe('ReactiveInfiniteQueryTestHarness', () => {
       reactiveInfiniteQuery,
     });
 
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalled();
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalled();
 
     ReactiveInfiniteQueryTestHarness({
       reactiveInfiniteQuery,
@@ -19,8 +19,8 @@ describe('ReactiveInfiniteQueryTestHarness', () => {
       nativeOptions: { staleTime: 1000 },
     });
 
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledTimes(2);
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledWith({
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledTimes(2);
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledWith({
       options: { enabled: false },
       nativeOptions: { staleTime: 1000 },
     });
@@ -35,10 +35,10 @@ describe('ReactiveInfiniteQueryTestHarness', () => {
       params: { filter: 'active' },
     });
 
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledWith({
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledWith({
       filter: 'active',
     });
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledTimes(1);
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledTimes(1);
 
     ReactiveInfiniteQueryTestHarness({
       reactiveInfiniteQuery,
@@ -47,14 +47,14 @@ describe('ReactiveInfiniteQueryTestHarness', () => {
       nativeOptions: undefined,
     });
 
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledWith(
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledWith(
       { filter: 'active' },
       {
         options: { enabled: false },
         nativeOptions: undefined,
       },
     );
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledTimes(2);
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledTimes(2);
   });
 
   it('USAGE: with optional params', () => {
@@ -66,17 +66,17 @@ describe('ReactiveInfiniteQueryTestHarness', () => {
       params: { filter: 'active' },
     });
 
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledWith({
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledWith({
       filter: 'active',
     });
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledTimes(1);
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledTimes(1);
 
     ReactiveInfiniteQueryTestHarness({
       reactiveInfiniteQuery,
     });
 
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledWith(undefined);
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledTimes(2);
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledWith(undefined);
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledTimes(2);
 
     ReactiveInfiniteQueryTestHarness({
       reactiveInfiniteQuery,
@@ -84,11 +84,11 @@ describe('ReactiveInfiniteQueryTestHarness', () => {
       nativeOptions: undefined,
     });
 
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledWith(undefined, {
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledWith(undefined, {
       options: { enabled: false },
       nativeOptions: undefined,
     });
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledTimes(3);
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledTimes(3);
 
     ReactiveInfiniteQueryTestHarness({
       reactiveInfiniteQuery,
@@ -97,14 +97,14 @@ describe('ReactiveInfiniteQueryTestHarness', () => {
       nativeOptions: undefined,
     });
 
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledWith(
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledWith(
       { filter: 'active' },
       {
         options: { enabled: false },
         nativeOptions: undefined,
       },
     );
-    expect(reactiveInfiniteQuery.use).toHaveBeenCalledTimes(4);
+    expect(reactiveInfiniteQuery.useHook).toHaveBeenCalledTimes(4);
   });
 
   // TYPE ERRORS

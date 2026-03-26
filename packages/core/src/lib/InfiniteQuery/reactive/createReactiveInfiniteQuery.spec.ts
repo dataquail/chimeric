@@ -8,8 +8,8 @@ describe('createReactiveInfiniteQuery', () => {
     const reactiveInfiniteQuery = createReactiveInfiniteQuery(fn);
 
     expect(typeof reactiveInfiniteQuery).toBe('object');
-    expect(reactiveInfiniteQuery).toHaveProperty('use');
-    expect(typeof reactiveInfiniteQuery.use).toBe('function');
+    expect(reactiveInfiniteQuery).toHaveProperty('useHook');
+    expect(typeof reactiveInfiniteQuery.useHook).toBe('function');
   });
 
   it('should throw an error for invalid input', () => {
@@ -30,7 +30,7 @@ describe('createReactiveInfiniteQuery', () => {
     } = InfiniteQueryTestFixtures.withoutParams.getReactive();
 
     // Usage implementation test - use() calls
-    const resultWithoutOptions = reactiveInfiniteQuery.use();
+    const resultWithoutOptions = reactiveInfiniteQuery.useHook();
     expect(fn).toHaveBeenCalledWith();
     expect(fn).toHaveBeenCalledTimes(1);
     expect(resultWithoutOptions.data).toHaveProperty('pages');
@@ -39,7 +39,7 @@ describe('createReactiveInfiniteQuery', () => {
     expect(resultWithoutOptions).toHaveProperty('fetchPreviousPage');
     expect(resultWithoutOptions).toHaveProperty('refetch');
 
-    const resultWithOptions = reactiveInfiniteQuery.use({
+    const resultWithOptions = reactiveInfiniteQuery.useHook({
       options: undefined,
       nativeOptions: undefined,
     });
@@ -56,9 +56,9 @@ describe('createReactiveInfiniteQuery', () => {
     expect(fetchNextPageFn).toHaveBeenCalledWith();
     expect(fetchNextPageFn).toHaveBeenCalledTimes(1);
 
-    await expect(
-      resultWithOptions.fetchPreviousPage(),
-    ).resolves.toHaveProperty('pages');
+    await expect(resultWithOptions.fetchPreviousPage()).resolves.toHaveProperty(
+      'pages',
+    );
     expect(fetchPreviousPageFn).toHaveBeenCalledWith();
     expect(fetchPreviousPageFn).toHaveBeenCalledTimes(1);
 
@@ -79,11 +79,11 @@ describe('createReactiveInfiniteQuery', () => {
     } = InfiniteQueryTestFixtures.withParams.getReactive();
 
     // Usage implementation test - use() calls
-    const resultWithoutOptions = reactiveInfiniteQuery.use({ search: '1' });
+    const resultWithoutOptions = reactiveInfiniteQuery.useHook({ search: '1' });
     expect(fn).toHaveBeenCalledWith({ search: '1' });
     expect(fn).toHaveBeenCalledTimes(1);
 
-    const resultWithOptions = reactiveInfiniteQuery.use(
+    const resultWithOptions = reactiveInfiniteQuery.useHook(
       { search: '1' },
       {
         options: undefined,
@@ -106,9 +106,9 @@ describe('createReactiveInfiniteQuery', () => {
     expect(fetchNextPageFn).toHaveBeenCalledWith();
     expect(fetchNextPageFn).toHaveBeenCalledTimes(1);
 
-    await expect(
-      resultWithOptions.fetchPreviousPage(),
-    ).resolves.toHaveProperty('pages');
+    await expect(resultWithOptions.fetchPreviousPage()).resolves.toHaveProperty(
+      'pages',
+    );
     expect(fetchPreviousPageFn).toHaveBeenCalledWith();
     expect(fetchPreviousPageFn).toHaveBeenCalledTimes(1);
 
@@ -124,13 +124,13 @@ describe('createReactiveInfiniteQuery', () => {
       InfiniteQueryTestFixtures.withOptionalParams.getReactive();
 
     // Usage implementation test - use() calls with params
-    const resultWithParamsWithoutOptions = reactiveInfiniteQuery.use({
+    const resultWithParamsWithoutOptions = reactiveInfiniteQuery.useHook({
       search: '1',
     });
     expect(fn).toHaveBeenCalledWith({ search: '1' });
     expect(fn).toHaveBeenCalledTimes(1);
 
-    reactiveInfiniteQuery.use(
+    reactiveInfiniteQuery.useHook(
       { search: '1' },
       { options: undefined, nativeOptions: undefined },
     );
@@ -141,11 +141,11 @@ describe('createReactiveInfiniteQuery', () => {
     expect(fn).toHaveBeenCalledTimes(2);
 
     // Usage implementation test - use() calls without params
-    const resultWithoutParamsWithoutOptions = reactiveInfiniteQuery.use();
+    const resultWithoutParamsWithoutOptions = reactiveInfiniteQuery.useHook();
     expect(fn).toHaveBeenCalledWith();
     expect(fn).toHaveBeenCalledTimes(3);
 
-    reactiveInfiniteQuery.use(undefined, {
+    reactiveInfiniteQuery.useHook(undefined, {
       options: undefined,
       nativeOptions: undefined,
     });
@@ -189,12 +189,12 @@ describe('createReactiveInfiniteQuery', () => {
 
     try {
       // @ts-expect-error testing invalid call
-      reactiveInfiniteQuery.use({ fake: 'option' });
+      reactiveInfiniteQuery.useHook({ fake: 'option' });
     } catch {
       // Expected to throw
     }
 
-    const result = reactiveInfiniteQuery.use();
+    const result = reactiveInfiniteQuery.useHook();
     try {
       // @ts-expect-error testing invalid call
       result.data.nonExistent();
@@ -209,7 +209,7 @@ describe('createReactiveInfiniteQuery', () => {
 
     try {
       // @ts-expect-error testing invalid call
-      reactiveInfiniteQuery.use();
+      reactiveInfiniteQuery.useHook();
     } catch {
       // Expected to throw
     }
@@ -221,7 +221,7 @@ describe('createReactiveInfiniteQuery', () => {
 
     try {
       // @ts-expect-error testing invalid call
-      reactiveInfiniteQuery.use(1);
+      reactiveInfiniteQuery.useHook(1);
     } catch {
       // Expected to throw
     }

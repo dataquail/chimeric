@@ -15,7 +15,7 @@ describe('isReactiveQuery', () => {
     expect(isReactiveQuery(null as any)).toBe(false);
     expect(isReactiveQuery(undefined as any)).toBe(false);
     expect(isReactiveQuery({} as any)).toBe(false);
-    expect(isReactiveQuery({ notUse: 'something' } as any)).toBe(false);
-    expect(isReactiveQuery({ use: 'not a function' } as any)).toBe(false);
+    expect(isReactiveQuery({ notUseHook: 'something' } as any)).toBe(false);
+    expect(isReactiveQuery({ useHook: 'not a function' } as any)).toBe(false);
   });
 });

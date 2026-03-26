@@ -8,7 +8,7 @@ describe('ReactiveAsyncFactory', () => {
   it('USAGE: no params', async () => {
     const { fn } = AsyncTestFixtures.withoutParams.getReactive();
     const reactiveAsync = ReactiveAsyncFactory(fn);
-    const { result } = renderHook(reactiveAsync.use);
+    const { result } = renderHook(reactiveAsync.useHook);
 
     expect(result.current.isIdle).toBe(true);
     expect(result.current.isSuccess).toBe(false);
@@ -26,7 +26,7 @@ describe('ReactiveAsyncFactory', () => {
   it('USAGE: with params', async () => {
     const { fn } = AsyncTestFixtures.withParams.getReactive();
     const reactiveAsync = ReactiveAsyncFactory(fn);
-    const { result } = renderHook(() => reactiveAsync.use());
+    const { result } = renderHook(() => reactiveAsync.useHook());
 
     expect(result.current.isIdle).toBe(true);
     expect(result.current.isSuccess).toBe(false);
@@ -44,7 +44,7 @@ describe('ReactiveAsyncFactory', () => {
   it('USAGE: with optional params', async () => {
     const { fn } = AsyncTestFixtures.withOptionalParams.getReactive();
     const reactiveAsync = ReactiveAsyncFactory(fn);
-    const { result } = renderHook(() => reactiveAsync.use());
+    const { result } = renderHook(() => reactiveAsync.useHook());
 
     expect(result.current.isIdle).toBe(true);
     expect(result.current.isSuccess).toBe(false);
@@ -70,7 +70,7 @@ describe('ReactiveAsyncFactory', () => {
   it('USAGE: retry option', async () => {
     const mockPromise = vi.fn(() => Promise.reject(new Error('test')));
     const reactiveAsync = ReactiveAsyncFactory(mockPromise);
-    const { result } = renderHook(() => reactiveAsync.use({ retry: 3 }));
+    const { result } = renderHook(() => reactiveAsync.useHook({ retry: 3 }));
 
     expect(result.current.isIdle).toBe(true);
 
@@ -98,7 +98,7 @@ describe('ReactiveAsyncFactory', () => {
   it('TYPE ERRORS: no params', async () => {
     const { fn } = AsyncTestFixtures.withoutParams.getReactive();
     const reactiveAsync = ReactiveAsyncFactory(fn);
-    const { result } = renderHook(() => reactiveAsync.use());
+    const { result } = renderHook(() => reactiveAsync.useHook());
 
     try {
       // @ts-expect-error - Testing type error
@@ -111,7 +111,7 @@ describe('ReactiveAsyncFactory', () => {
   it('TYPE ERRORS: with params', async () => {
     const { fn } = AsyncTestFixtures.withParams.getReactive();
     const reactiveAsync = ReactiveAsyncFactory(fn);
-    const { result } = renderHook(() => reactiveAsync.use());
+    const { result } = renderHook(() => reactiveAsync.useHook());
 
     try {
       // @ts-expect-error - Testing type error
@@ -127,7 +127,7 @@ describe('ReactiveAsyncFactory', () => {
   it('TYPE ERRORS: with optional params', async () => {
     const { fn } = AsyncTestFixtures.withOptionalParams.getReactive();
     const reactiveAsync = ReactiveAsyncFactory(fn);
-    const { result } = renderHook(() => reactiveAsync.use());
+    const { result } = renderHook(() => reactiveAsync.useHook());
 
     try {
       // @ts-expect-error - Testing type error

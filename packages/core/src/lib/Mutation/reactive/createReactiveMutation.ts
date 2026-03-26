@@ -18,7 +18,7 @@ export function createReactiveMutation<
     TNativeReactiveOptions,
     TNativeInvokeOptions,
     TNativeReturnType
-  >['use'],
+  >['useHook'],
 ): ReactiveMutation<
   void,
   TResult,
@@ -44,7 +44,7 @@ export function createReactiveMutation<
     TNativeReactiveOptions,
     TNativeInvokeOptions,
     TNativeReturnType
-  >['use'],
+  >['useHook'],
 ): ReactiveMutation<
   TParams | undefined,
   TResult,
@@ -70,7 +70,7 @@ export function createReactiveMutation<
     TNativeReactiveOptions,
     TNativeInvokeOptions,
     TNativeReturnType
-  >['use'],
+  >['useHook'],
 ): ReactiveMutation<
   TParams,
   TResult,
@@ -96,7 +96,7 @@ export function createReactiveMutation<
     TNativeReactiveOptions,
     TNativeInvokeOptions,
     TNativeReturnType
-  >['use'],
+  >['useHook'],
 ): ReactiveMutation<
   TParams,
   TResult,
@@ -106,7 +106,7 @@ export function createReactiveMutation<
   TNativeReturnType
 > {
   const reactiveMutation = {
-    use: reactiveFn,
+    useHook: reactiveFn,
   };
   if (isEligibleReactive(reactiveMutation)) {
     return markReactive(

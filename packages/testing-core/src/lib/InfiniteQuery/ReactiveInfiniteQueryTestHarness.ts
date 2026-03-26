@@ -135,7 +135,7 @@ export function ReactiveInfiniteQueryTestHarness<
       nativeOptions;
   }
   const hookArgs =
-    reactiveInfiniteQuery.use.length === 1
+    reactiveInfiniteQuery.useHook.length === 1
       ? Object.keys(allOptions).length
         ? ([allOptions] as const)
         : []
@@ -143,7 +143,7 @@ export function ReactiveInfiniteQueryTestHarness<
       ? ([params, allOptions] as const)
       : ([params] as const);
   const hook = renderHook(
-    () => reactiveInfiniteQuery.use(...(hookArgs as [any])),
+    () => reactiveInfiniteQuery.useHook(...(hookArgs as [any])),
     { wrapper },
   );
   return {

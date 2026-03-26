@@ -20,7 +20,7 @@ describe('ChimericInfiniteQueryFactory', () => {
         }),
     });
 
-    const { result } = renderHook(() => chimericInfiniteQuery.use(), {
+    const { result } = renderHook(() => chimericInfiniteQuery.useHook(), {
       wrapper: getTestWrapper(queryClient),
     });
 
@@ -51,7 +51,7 @@ describe('ChimericInfiniteQueryFactory', () => {
     });
 
     const { result } = renderHook(
-      () => chimericInfiniteQuery.use({ search: 'test' }),
+      () => chimericInfiniteQuery.useHook({ search: 'test' }),
       {
         wrapper: getTestWrapper(queryClient),
       },
@@ -85,7 +85,7 @@ describe('ChimericInfiniteQueryFactory', () => {
     });
 
     const { result: resultWithParams } = renderHook(
-      () => chimericInfiniteQuery.use({ search: 'test' }),
+      () => chimericInfiniteQuery.useHook({ search: 'test' }),
       {
         wrapper: getTestWrapper(queryClient),
       },
@@ -103,7 +103,7 @@ describe('ChimericInfiniteQueryFactory', () => {
     expect(queryFn).toHaveBeenCalledWith({ search: 'test' });
 
     const { result: resultWithoutParams } = renderHook(
-      () => chimericInfiniteQuery.use(),
+      () => chimericInfiniteQuery.useHook(),
       {
         wrapper: getTestWrapper(queryClient),
       },
@@ -217,7 +217,7 @@ describe('ChimericInfiniteQueryFactory', () => {
 
     try {
       // @ts-expect-error - Testing type error
-      renderHook(() => chimericInfiniteQuery.use({ search: 'test' }), {
+      renderHook(() => chimericInfiniteQuery.useHook({ search: 'test' }), {
         wrapper: getTestWrapper(queryClient),
       });
     } catch {
@@ -241,12 +241,12 @@ describe('ChimericInfiniteQueryFactory', () => {
 
     try {
       // @ts-expect-error - Testing type error
-      renderHook(() => chimericInfiniteQuery.use(), {
+      renderHook(() => chimericInfiniteQuery.useHook(), {
         wrapper: getTestWrapper(queryClient),
       });
 
       // @ts-expect-error - Testing type error
-      renderHook(() => chimericInfiniteQuery.use({ wrong: 'param' }), {
+      renderHook(() => chimericInfiniteQuery.useHook({ wrong: 'param' }), {
         wrapper: getTestWrapper(queryClient),
       });
     } catch {
@@ -271,11 +271,11 @@ describe('ChimericInfiniteQueryFactory', () => {
 
     try {
       // @ts-expect-error - Testing type error
-      renderHook(() => chimericInfiniteQuery.use({ wrong: 'param' }), {
+      renderHook(() => chimericInfiniteQuery.useHook({ wrong: 'param' }), {
         wrapper: getTestWrapper(queryClient),
       });
 
-      renderHook(() => chimericInfiniteQuery.use(), {
+      renderHook(() => chimericInfiniteQuery.useHook(), {
         wrapper: getTestWrapper(queryClient),
       });
     } catch {
