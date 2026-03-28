@@ -51,12 +51,6 @@
     },
     {
       "path": "../../packages/react-query/tsconfig.lib.json"
-    },
-    {
-      "path": "../../packages/testing-react-query/tsconfig.lib.json"
-    },
-    {
-      "path": "../../packages/testing-react/tsconfig.lib.json"
     }
   ]
 }

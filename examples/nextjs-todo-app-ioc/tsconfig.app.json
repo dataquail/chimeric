@@ -50,16 +50,10 @@
   ],
   "references": [
     {
-      "path": "../../packages/react-query"
+      "path": "../../packages/react-query/tsconfig.lib.json"
     },
     {
-      "path": "../../packages/react"
-    },
-    {
-      "path": "../../packages/testing-react-query"
-    },
-    {
-      "path": "../../packages/testing-react"
+      "path": "../../packages/react/tsconfig.lib.json"
     }
   ]
 }
