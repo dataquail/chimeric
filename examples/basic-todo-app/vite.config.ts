@@ -2,7 +2,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
-import fs from 'fs';
 
 export default defineConfig(() => ({
   root: __dirname,
@@ -15,38 +14,7 @@ export default defineConfig(() => ({
     port: 4300,
     host: 'localhost',
   },
-  plugins: [
-    react(),
-    {
-      name: 'configure-msw',
-      configureServer(server) {
-        // During development, serve mockServiceWorker.js from the root
-        server.middlewares.use((req, res, next) => {
-          if (req.url === '/mockServiceWorker.js') {
-            const workerPath = resolve(
-              './node_modules/msw/lib/mockServiceWorker.js',
-            );
-            if (fs.existsSync(workerPath)) {
-              res.setHeader('Content-Type', 'application/javascript');
-              res.end(fs.readFileSync(workerPath, 'utf8'));
-              return;
-            }
-          }
-          next();
-        });
-      },
-      writeBundle() {
-        // For production build, copy mockServiceWorker.js to the dist folder root
-        const workerPath = resolve(
-          './node_modules/msw/lib/mockServiceWorker.js',
-        );
-        const outputPath = resolve('./dist/mockServiceWorker.js');
-        if (fs.existsSync(workerPath)) {
-          fs.copyFileSync(workerPath, outputPath);
-        }
-      },
-    },
-  ],
+  plugins: [react()],
   // Uncomment this if you are using workers.
   // worker: {
   //  plugins: [ nxViteTsPaths() ],

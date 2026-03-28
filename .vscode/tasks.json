@@ -1,0 +1,71 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "API: todo-api",
+      "type": "shell",
+      "command": "npx nx build @chimeric/todo-api && node examples/todo-api/dist/main.js",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "servers"
+      }
+    },
+    {
+      "label": "App: basic-todo-app",
+      "type": "shell",
+      "command": "npx nx dev basic-todo-app",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "servers"
+      }
+    },
+    {
+      "label": "App: todo-app",
+      "type": "shell",
+      "command": "npx nx dev todo-app",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "servers"
+      }
+    },
+    {
+      "label": "App: nextjs-todo-app-ioc",
+      "type": "shell",
+      "command": "npx nx dev @chimeric/nextjs-todo-app-ioc",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "servers"
+      }
+    },
+    {
+      "label": "Dev: basic-todo-app + API",
+      "dependsOn": ["API: todo-api", "App: basic-todo-app"],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    },
+    {
+      "label": "Dev: todo-app + API",
+      "dependsOn": ["API: todo-api", "App: todo-app"],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    },
+    {
+      "label": "Dev: nextjs-todo-app-ioc + API",
+      "dependsOn": ["API: todo-api", "App: nextjs-todo-app-ioc"],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    }
+  ]
+}
