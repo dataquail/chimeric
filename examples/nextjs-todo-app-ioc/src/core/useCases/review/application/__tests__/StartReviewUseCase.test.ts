@@ -1,15 +1,8 @@
 import { describe, it, expect, beforeAll, afterEach, afterAll } from 'vitest';
 import { setupServer } from 'msw/node';
-import { act } from 'react';
-import {
-  chimericMethods,
-  ChimericAsyncTestHarness,
-  ChimericSyncTestHarness,
-} from '@chimeric/testing-react';
 import { InjectionSymbol, type InjectionType } from '@/core/global/types';
 import { appContainer } from '@/core/global/appContainer';
 import { mockGetAllActiveTodos } from '@/__test__/network/activeTodo/mockGetAllActiveTodos';
-import { getTestWrapper } from '@/__test__/getTestWrapper';
 import { mockGetAllSavedForLaterTodos } from '@/__test__/network/savedForLaterTodo/mockGetAllSavedForLaterTodos';
 
 describe('StartReviewUseCase', () => {
@@ -66,37 +59,14 @@ describe('StartReviewUseCase', () => {
     });
   };
 
-  it.each(chimericMethods)('startReview.%s', async (chimericMethod) => {
+  it('startReview', async () => {
     withOneUncompletedAndOneCompletedActiveTodoInList();
     withOneSavedForLaterTodoInList();
-    const testWrapper = getTestWrapper();
-    const startReviewHarness = ChimericAsyncTestHarness({
-      chimericAsync: getStartReviewUseCase().execute,
-      method: chimericMethod,
-      wrapper: testWrapper,
-    });
-    const getReviewHarness = ChimericSyncTestHarness({
-      chimericSync: getReviewRepository().get,
-      method: chimericMethod,
-      wrapper: testWrapper,
-    });
 
-    expect(startReviewHarness.result?.current.isPending).toBe(false);
-    expect(startReviewHarness.result?.current.isSuccess).toBe(false);
+    await getStartReviewUseCase().execute();
 
-    act(() => {
-      startReviewHarness.result.current.invoke();
-    });
-
-    await startReviewHarness.waitFor(() =>
-      expect(startReviewHarness.result.current.isPending).toBe(true),
-    );
-
-    await getReviewHarness.waitFor(
-      () => expect(getReviewHarness.result.current).not.toBeUndefined(),
-      { reinvokeIdiomaticFn: true },
-    );
+    const review = getReviewRepository().get();
     // omits completed activeTodo 2
-    expect(getReviewHarness.result.current?.todoIdList).toEqual(['1', '3']);
+    expect(review?.todoIdList).toEqual(['1', '3']);
   });
 });

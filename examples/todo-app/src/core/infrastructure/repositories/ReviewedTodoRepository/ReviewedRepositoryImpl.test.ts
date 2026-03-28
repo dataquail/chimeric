@@ -1,12 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import {
-  ChimericSyncTestHarness,
-  chimericMethods,
-} from '@chimeric/testing-react';
 import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
 import { appContainer } from 'src/core/global/appContainer';
-import { getTestWrapper } from 'src/__test__/getTestWrapper';
-import { act } from 'react';
 import { createReviewedTodo } from 'src/core/domain/review/entities/ReviewedTodo';
 import { useReviewedTodoStore } from './reviewedTodoStore';
 
@@ -21,102 +15,65 @@ describe('ReviewedTodoRepositoryImpl', () => {
     );
   };
 
-  it.each(chimericMethods)('getOneById.%s', async (method) => {
+  it('getOneById', () => {
     const reviewedTodoRepository = getReviewedTodoRepository();
-    const getOneByIdHarness = ChimericSyncTestHarness({
-      chimericSync: reviewedTodoRepository.getOneById,
-      method,
-      params: { id: '1' },
-      wrapper: getTestWrapper(),
+    const nonExistentReviewedTodo = reviewedTodoRepository.getOneById({
+      id: 'some-id',
     });
-    expect(getOneByIdHarness.result.current).toBeUndefined();
+    expect(nonExistentReviewedTodo).toBeUndefined();
 
-    act(() => {
-      reviewedTodoRepository.save(createReviewedTodo('1'));
+    reviewedTodoRepository.save(createReviewedTodo('some-id'));
+
+    const existentReviewedTodo = reviewedTodoRepository.getOneById({
+      id: 'some-id',
     });
-
-    await getOneByIdHarness.waitFor(
-      () => expect(getOneByIdHarness.result.current).toBeDefined(),
-      { reinvokeIdiomaticFn: true },
-    );
-
-    expect(getOneByIdHarness.result.current).toBeDefined();
-    expect(getOneByIdHarness.result.current?.id).toEqual('1');
+    expect(existentReviewedTodo).toBeDefined();
+    expect(existentReviewedTodo?.id).toEqual('some-id');
   });
 
-  it.each(chimericMethods)('saveMany.%s', async (method) => {
+  it('saveMany', () => {
     const reviewedTodoRepository = getReviewedTodoRepository();
-    const getOneById1Harness = ChimericSyncTestHarness({
-      chimericSync: reviewedTodoRepository.getOneById,
-      method,
-      params: { id: '1' },
-      wrapper: getTestWrapper(),
+    const nonExistentReviewedTodo1 = reviewedTodoRepository.getOneById({
+      id: 'id-1',
     });
-
-    const getOneById2Harness = ChimericSyncTestHarness({
-      chimericSync: reviewedTodoRepository.getOneById,
-      method,
-      params: { id: '2' },
-      wrapper: getTestWrapper(),
+    const nonExistentReviewedTodo2 = reviewedTodoRepository.getOneById({
+      id: 'id-2',
     });
+    expect(nonExistentReviewedTodo1).toBeUndefined();
+    expect(nonExistentReviewedTodo2).toBeUndefined();
 
-    expect(getOneById1Harness.result.current).toBeUndefined();
-    expect(getOneById2Harness.result.current).toBeUndefined();
+    reviewedTodoRepository.saveMany([
+      createReviewedTodo('id-1'),
+      createReviewedTodo('id-2'),
+    ]);
 
-    act(() => {
-      reviewedTodoRepository.saveMany([
-        createReviewedTodo('1'),
-        createReviewedTodo('2'),
-      ]);
+    const existentReviewedTodo1 = reviewedTodoRepository.getOneById({
+      id: 'id-1',
     });
-
-    await getOneById1Harness.waitFor(
-      () => expect(getOneById1Harness.result.current).toBeDefined(),
-      { reinvokeIdiomaticFn: true },
-    );
-    await getOneById2Harness.waitFor(
-      () => expect(getOneById2Harness.result.current).toBeDefined(),
-      { reinvokeIdiomaticFn: true },
-    );
-
-    expect(getOneById1Harness.result.current).toBeDefined();
-    expect(getOneById1Harness.result.current?.id).toEqual('1');
-
-    expect(getOneById2Harness.result.current).toBeDefined();
+    const existentReviewedTodo2 = reviewedTodoRepository.getOneById({
+      id: 'id-2',
+    });
+    expect(existentReviewedTodo1).toBeDefined();
+    expect(existentReviewedTodo1?.id).toEqual('id-1');
+    expect(existentReviewedTodo2).toBeDefined();
+    expect(existentReviewedTodo2?.id).toEqual('id-2');
   });
 
-  it.each(chimericMethods)('delete.%s', async (method) => {
+  it('delete', () => {
     const reviewedTodoRepository = getReviewedTodoRepository();
-    const getOneByIdHarness = ChimericSyncTestHarness({
-      chimericSync: reviewedTodoRepository.getOneById,
-      method,
-      params: { id: '1' },
-      wrapper: getTestWrapper(),
+    reviewedTodoRepository.save(createReviewedTodo('to-be-deleted-id'));
+
+    const existentReviewedTodo = reviewedTodoRepository.getOneById({
+      id: 'to-be-deleted-id',
     });
+    expect(existentReviewedTodo).toBeDefined();
+    expect(existentReviewedTodo?.id).toEqual('to-be-deleted-id');
 
-    expect(getOneByIdHarness.result.current).toBeUndefined();
+    reviewedTodoRepository.delete({ id: 'to-be-deleted-id' });
 
-    act(() => {
-      reviewedTodoRepository.save(createReviewedTodo('1'));
+    const deletedReviewedTodo = reviewedTodoRepository.getOneById({
+      id: 'to-be-deleted-id',
     });
-
-    await getOneByIdHarness.waitFor(
-      () => expect(getOneByIdHarness.result.current).toBeDefined(),
-      { reinvokeIdiomaticFn: true },
-    );
-
-    expect(getOneByIdHarness.result.current).toBeDefined();
-    expect(getOneByIdHarness.result.current?.id).toEqual('1');
-
-    act(() => {
-      reviewedTodoRepository.delete({ id: '1' });
-    });
-
-    await getOneByIdHarness.waitFor(
-      () => expect(getOneByIdHarness.result.current).toBeUndefined(),
-      { reinvokeIdiomaticFn: true },
-    );
-
-    expect(getOneByIdHarness.result.current).toBeUndefined();
+    expect(deletedReviewedTodo).toBeUndefined();
   });
 });

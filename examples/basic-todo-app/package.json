@@ -33,8 +33,6 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@chimeric/testing-react": "workspace:*",
-    "@chimeric/testing-react-query": "workspace:*",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.4.5",
     "@testing-library/react": "^14.3.1",

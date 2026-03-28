@@ -1,12 +1,5 @@
 import { describe, it, expect, beforeAll, afterEach, afterAll } from 'vitest';
 import { setupServer } from 'msw/node';
-import { act } from 'react';
-import { getTestWrapper } from 'src/__test__/getTestWrapper';
-import {
-  chimericMethods,
-  ChimericQueryTestHarness,
-  ChimericMutationTestHarness,
-} from '@chimeric/testing-react-query';
 import { mockGetAllSavedForLaterTodos } from 'src/__test__/network/savedForLaterTodo/mockGetAllSavedForLaterTodos';
 import { mockGetOneSavedForLaterTodo } from 'src/__test__/network/savedForLaterTodo/mockGetOneSavedForLaterTodo';
 import { mockActivateSavedForLaterTodo } from 'src/__test__/network/savedForLaterTodo/mockActivateSavedForLaterTodo';
@@ -69,134 +62,45 @@ describe('SavedForLaterTodoService', () => {
     });
   };
 
-  it.each(chimericMethods)('getAll.%s', async (method) => {
+  it('getAll', async () => {
     withOneSavedForLaterTodoInList();
-    const harness = ChimericQueryTestHarness({
-      chimericQuery: savedForLaterTodoService.getAll,
-      method,
-      wrapper: getTestWrapper(),
-    });
-    expect(harness.result.current.isPending).toBe(true);
-    expect(harness.result.current.isSuccess).toBe(false);
-    await harness.waitFor(() =>
-      expect(harness.result.current.isPending).toBe(false),
-    );
-    expect(harness.result.current.data?.length).toBe(1);
-    expect(harness.result.current.data?.[0].id).toBe('1');
-    expect(harness.result.current.data?.[0].title).toBe(
-      'Saved For Later Todo 1',
-    );
-    expect(harness.result?.current.data?.[0].createdAt.toISOString()).toBe(
-      nowTimeStamp,
-    );
+    const all = await savedForLaterTodoService.getAll();
+    expect(all.length).toBe(1);
+    expect(all[0].id).toBe('1');
+    expect(all[0].title).toBe('Saved For Later Todo 1');
+    expect(all[0].createdAt.toISOString()).toBe(nowTimeStamp);
   });
 
-  it.each(chimericMethods)('getOneById.%s', async (method) => {
+  it('getOneById', async () => {
     withOneSavedForLaterTodo();
-    const harness = ChimericQueryTestHarness({
-      chimericQuery: savedForLaterTodoService.getOneById,
-      method,
-      params: { id: '1' },
-      wrapper: getTestWrapper(),
-    });
-    expect(harness.result.current.isPending).toBe(true);
-    expect(harness.result.current.isSuccess).toBe(false);
-    await harness.waitFor(() =>
-      expect(harness.result.current.isPending).toBe(false),
-    );
-    expect(harness.result.current.data?.id).toBe('1');
+    const todo = await savedForLaterTodoService.getOneById({ id: '1' });
+    expect(todo?.id).toBe('1');
   });
 
-  it.each(chimericMethods)('activate.%s', async (method) => {
+  it('activate', async () => {
     withOneSavedForLaterTodoInList();
+    expect((await savedForLaterTodoService.getAll()).length).toBe(1);
     withSuccessfullyActivatedSavedForLaterTodo();
-    const testWrapper = getTestWrapper();
-    const activateOneHarness = ChimericMutationTestHarness({
-      chimericMutation: savedForLaterTodoService.activate,
-      method,
-      wrapper: testWrapper,
-    });
-    const getAllHarness = ChimericQueryTestHarness({
-      chimericQuery: savedForLaterTodoService.getAll,
-      method,
-      wrapper: testWrapper,
-    });
-    await getAllHarness.waitFor(() =>
-      expect(getAllHarness.result.current.isPending).toBe(false),
-    );
-    expect(getAllHarness.result.current.data?.length).toBe(1);
+    await savedForLaterTodoService.activate({ savedForLaterTodoId: '1' });
     withNoSavedForLaterTodosInList();
-    act(() => {
-      activateOneHarness.result.current.invoke({ savedForLaterTodoId: '1' });
-    });
-    await activateOneHarness.waitFor(() =>
-      expect(activateOneHarness.result.current.isPending).toBe(false),
-    );
-    await getAllHarness.waitFor(
-      () => expect(getAllHarness.result.current.isPending).toBe(false),
-      { reinvokeIdiomaticFn: true },
-    );
-    expect(getAllHarness.result.current.data?.length).toBe(0);
+    expect((await savedForLaterTodoService.getAll()).length).toBe(0);
   });
 
-  it.each(chimericMethods)('deleteOne.%s', async (method) => {
+  it('deleteOne', async () => {
     withOneSavedForLaterTodoInList();
-    const testWrapper = getTestWrapper();
-    const deleteOneHarness = ChimericMutationTestHarness({
-      chimericMutation: savedForLaterTodoService.deleteOne,
-      method,
-      wrapper: testWrapper,
-    });
-    const getAllHarness = ChimericQueryTestHarness({
-      chimericQuery: savedForLaterTodoService.getAll,
-      method,
-      wrapper: testWrapper,
-    });
+    expect((await savedForLaterTodoService.getAll()).length).toBe(1);
     withSuccessfullyDeletedSavedForLaterTodo();
     withNoSavedForLaterTodosInList();
-    act(() => {
-      deleteOneHarness.result.current.invoke({ id: '1' });
-    });
-    await deleteOneHarness.waitFor(() =>
-      expect(deleteOneHarness.result.current.isPending).toBe(false),
-    );
-    await getAllHarness.waitFor(
-      () => expect(getAllHarness.result.current.isPending).toBe(false),
-      { reinvokeIdiomaticFn: true },
-    );
-    expect(getAllHarness.result.current.data?.length).toBe(0);
+    await savedForLaterTodoService.deleteOne({ id: '1' });
+    expect((await savedForLaterTodoService.getAll()).length).toBe(0);
   });
 
-  it.each(chimericMethods)('saveForLater.%s', async (method) => {
+  it('saveForLater', async () => {
     withNoSavedForLaterTodosInList();
-    const testWrapper = getTestWrapper();
-    const saveForLaterHarness = ChimericMutationTestHarness({
-      chimericMutation: savedForLaterTodoService.saveForLater,
-      method,
-      wrapper: testWrapper,
-    });
-    const getAllHarness = ChimericQueryTestHarness({
-      chimericQuery: savedForLaterTodoService.getAll,
-      method,
-      wrapper: testWrapper,
-    });
-    await getAllHarness.waitFor(() =>
-      expect(getAllHarness.result.current.isPending).toBe(false),
-    );
-    expect(getAllHarness.result.current.data?.length).toBe(0);
-
+    expect((await savedForLaterTodoService.getAll()).length).toBe(0);
     withSuccessfullySavedForLaterTodo();
+    await savedForLaterTodoService.saveForLater({ activeTodoId: '1' });
     withOneSavedForLaterTodoInList();
-    act(() => {
-      saveForLaterHarness.result.current.invoke({ activeTodoId: '1' });
-    });
-    await saveForLaterHarness.waitFor(() =>
-      expect(saveForLaterHarness.result.current.isPending).toBe(false),
-    );
-    await getAllHarness.waitFor(
-      () => expect(getAllHarness.result.current.isPending).toBe(false),
-      { reinvokeIdiomaticFn: true },
-    );
-    expect(getAllHarness.result.current.data?.length).toBe(1);
+    expect((await savedForLaterTodoService.getAll()).length).toBe(1);
   });
 });

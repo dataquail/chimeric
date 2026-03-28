@@ -100,7 +100,6 @@ The core architectural pattern provides dual interfaces for every operation:
 - **@chimeric/core**: Core types and utilities (ChimericSync, ChimericAsync, ChimericQuery, ChimericMutation)
 - **@chimeric/react**: React-specific implementations and hooks
 - **@chimeric/react-query**: React Query integration with chimeric patterns
-- **@chimeric/testing-***: Test harnesses for each package
 
 ### Key Architectural Principles
 1. **Dual Interface Design**: Every operation supports both function calls and React hooks
@@ -124,6 +123,5 @@ The core architectural pattern provides dual interfaces for every operation:
 
 ### Testing Approach
 - Unit tests are co-located with source files as `.spec.ts` files
-- Use the test harnesses from `@chimeric/testing-*` packages for consistent testing
-- Test both idiomatic and reactive interfaces independently
+- Test chimeric interfaces idiomatically (direct function calls)
 - Mock external dependencies using Vitest's mocking capabilities
