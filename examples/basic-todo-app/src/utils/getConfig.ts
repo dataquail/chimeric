@@ -4,8 +4,8 @@ export const getConfig = () => {
 
   const configMap = {
     development: {
-      API_HOST: 'dataquail.github.io/basic-todo-app/api',
-      API_URL: 'https://dataquail.github.io/basic-todo-app/api',
+      API_HOST: 'localhost:3333/api',
+      API_URL: 'http://localhost:3333/api',
     },
   };
 
