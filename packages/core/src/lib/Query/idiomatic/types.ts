@@ -1,8 +1,33 @@
+export type IdiomaticPrefetch<
+  TParams = void,
+  TIdiomaticNativeOptions = unknown,
+> = [TParams] extends [void]
+  ? (allOptions?: {
+      nativeOptions?: TIdiomaticNativeOptions;
+    }) => Promise<void>
+  : [TParams] extends [undefined]
+  ? (allOptions?: {
+      nativeOptions?: TIdiomaticNativeOptions;
+    }) => Promise<void>
+  : undefined extends TParams
+  ? (
+      params?: NonNullable<TParams>,
+      allOptions?: {
+        nativeOptions?: TIdiomaticNativeOptions;
+      },
+    ) => Promise<void>
+  : (
+      params: TParams,
+      allOptions?: {
+        nativeOptions?: TIdiomaticNativeOptions;
+      },
+    ) => Promise<void>;
+
 export type IdiomaticQuery<
   TParams = void,
   TResult = unknown,
   TIdiomaticNativeOptions = unknown,
-> = [TParams] extends [void]
+> = ([TParams] extends [void]
   ? (allOptions?: {
       options?: IdiomaticQueryOptions;
       nativeOptions?: TIdiomaticNativeOptions;
@@ -26,7 +51,9 @@ export type IdiomaticQuery<
         options?: IdiomaticQueryOptions;
         nativeOptions?: TIdiomaticNativeOptions;
       },
-    ) => Promise<TResult>;
+    ) => Promise<TResult>) & {
+  prefetch: IdiomaticPrefetch<TParams, TIdiomaticNativeOptions>;
+};
 
 export type IdiomaticQueryOptions = { forceRefetch?: boolean };
 

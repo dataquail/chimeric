@@ -316,4 +316,172 @@ describe('fuseChimericQuery', () => {
     });
     expect(chimericQuery).toBeDefined();
   });
+
+  // PREFETCH USAGE TESTS
+  it('PREFETCH USAGE: no params', async () => {
+    const {
+      idiomaticQuery,
+      prefetchFn,
+      reactiveQuery,
+      usePrefetchHookFn,
+    } = QueryTestFixtures.withoutParams.getChimeric();
+    const chimericQuery = fuseChimericQuery({
+      idiomatic: idiomaticQuery,
+      reactive: reactiveQuery,
+    });
+
+    // Test idiomatic prefetch
+    await chimericQuery.prefetch();
+    expect(prefetchFn).toHaveBeenCalledWith();
+    expect(prefetchFn).toHaveBeenCalledTimes(1);
+
+    await chimericQuery.prefetch({ nativeOptions: undefined });
+    expect(prefetchFn).toHaveBeenCalledWith({ nativeOptions: undefined });
+    expect(prefetchFn).toHaveBeenCalledTimes(2);
+
+    // Test reactive usePrefetchHook
+    chimericQuery.usePrefetchHook();
+    expect(usePrefetchHookFn).toHaveBeenCalledWith();
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(1);
+
+    chimericQuery.usePrefetchHook({ nativeOptions: undefined });
+    expect(usePrefetchHookFn).toHaveBeenCalledWith({
+      nativeOptions: undefined,
+    });
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(2);
+  });
+
+  it('PREFETCH USAGE: with params', async () => {
+    const {
+      idiomaticQuery,
+      prefetchFn,
+      reactiveQuery,
+      usePrefetchHookFn,
+    } = QueryTestFixtures.withParams.getChimeric();
+    const chimericQuery = fuseChimericQuery({
+      idiomatic: idiomaticQuery,
+      reactive: reactiveQuery,
+    });
+
+    // Test idiomatic prefetch
+    await chimericQuery.prefetch({ name: 'John' });
+    expect(prefetchFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(prefetchFn).toHaveBeenCalledTimes(1);
+
+    await chimericQuery.prefetch(
+      { name: 'John' },
+      { nativeOptions: undefined },
+    );
+    expect(prefetchFn).toHaveBeenCalledWith(
+      { name: 'John' },
+      { nativeOptions: undefined },
+    );
+    expect(prefetchFn).toHaveBeenCalledTimes(2);
+
+    // Test reactive usePrefetchHook
+    chimericQuery.usePrefetchHook({ name: 'John' });
+    expect(usePrefetchHookFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(1);
+
+    chimericQuery.usePrefetchHook(
+      { name: 'John' },
+      { nativeOptions: undefined },
+    );
+    expect(usePrefetchHookFn).toHaveBeenCalledWith(
+      { name: 'John' },
+      { nativeOptions: undefined },
+    );
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(2);
+  });
+
+  it('PREFETCH USAGE: optional params', async () => {
+    const {
+      idiomaticQuery,
+      prefetchFn,
+      reactiveQuery,
+      usePrefetchHookFn,
+    } = QueryTestFixtures.withOptionalParams.getChimeric();
+    const chimericQuery = fuseChimericQuery({
+      idiomatic: idiomaticQuery,
+      reactive: reactiveQuery,
+    });
+
+    // Test idiomatic prefetch with params
+    await chimericQuery.prefetch({ name: 'John' });
+    expect(prefetchFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(prefetchFn).toHaveBeenCalledTimes(1);
+
+    // Test idiomatic prefetch without params
+    await chimericQuery.prefetch();
+    expect(prefetchFn).toHaveBeenCalledWith();
+    expect(prefetchFn).toHaveBeenCalledTimes(2);
+
+    // Test reactive usePrefetchHook with params
+    chimericQuery.usePrefetchHook({ name: 'John' });
+    expect(usePrefetchHookFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(1);
+
+    // Test reactive usePrefetchHook without params
+    chimericQuery.usePrefetchHook();
+    expect(usePrefetchHookFn).toHaveBeenCalledWith();
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(2);
+  });
+
+  // PREFETCH TYPE ERROR TESTS
+  it('PREFETCH TYPE ERRORS: no params', async () => {
+    const { idiomaticQuery, reactiveQuery } =
+      QueryTestFixtures.withoutParams.getChimeric();
+    const chimericQuery = fuseChimericQuery({
+      idiomatic: idiomaticQuery,
+      reactive: reactiveQuery,
+    });
+
+    try {
+      // @ts-expect-error testing invalid call
+      await chimericQuery.prefetch({ name: 'John' });
+
+      // @ts-expect-error testing invalid call
+      chimericQuery.usePrefetchHook({ name: 'John' });
+    } catch {
+      // Expected to throw
+    }
+  });
+
+  it('PREFETCH TYPE ERRORS: with params', async () => {
+    const { idiomaticQuery, reactiveQuery } =
+      QueryTestFixtures.withParams.getChimeric();
+    const chimericQuery = fuseChimericQuery({
+      idiomatic: idiomaticQuery,
+      reactive: reactiveQuery,
+    });
+
+    try {
+      // @ts-expect-error testing invalid call
+      await chimericQuery.prefetch();
+
+      // @ts-expect-error testing invalid call
+      chimericQuery.usePrefetchHook();
+    } catch {
+      // Expected to throw
+    }
+  });
+
+  it('PREFETCH TYPE ERRORS: optional params', async () => {
+    const { idiomaticQuery, reactiveQuery } =
+      QueryTestFixtures.withOptionalParams.getChimeric();
+    const chimericQuery = fuseChimericQuery({
+      idiomatic: idiomaticQuery,
+      reactive: reactiveQuery,
+    });
+
+    try {
+      // @ts-expect-error testing invalid call
+      await chimericQuery.prefetch(1);
+
+      // @ts-expect-error testing invalid call
+      chimericQuery.usePrefetchHook(1);
+    } catch {
+      // Expected to throw
+    }
+  });
 });

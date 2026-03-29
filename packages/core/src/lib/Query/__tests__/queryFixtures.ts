@@ -19,9 +19,15 @@ export const QueryTestFixtures = {
           nativeOptions?: unknown;
         }) => 'test',
       );
+      const prefetchFn = vi.fn(
+        async (_allOptions?: {
+          nativeOptions?: unknown;
+        }) => { return; },
+      );
       return {
         fn,
-        idiomaticQuery: createIdiomaticQuery(fn),
+        prefetchFn,
+        idiomaticQuery: createIdiomaticQuery(fn, prefetchFn),
         annotation: {} as DefineIdiomaticQuery<() => Promise<string>>,
       };
     },
@@ -42,27 +48,36 @@ export const QueryTestFixtures = {
           native: undefined as unknown,
         }),
       );
+      const usePrefetchHookFn = vi.fn(
+        (_allOptions?: {
+          nativeOptions?: unknown;
+        }) => { return; },
+      );
       return {
         fn,
         refetchFn,
-        reactiveQuery: createReactiveQuery(fn),
+        usePrefetchHookFn,
+        reactiveQuery: createReactiveQuery(fn, usePrefetchHookFn),
         annotation: {} as DefineReactiveQuery<() => Promise<string>>,
       };
     },
     getChimeric: () => {
-      const { idiomaticQuery, fn: idiomaticFn } =
+      const { idiomaticQuery, fn: idiomaticFn, prefetchFn } =
         QueryTestFixtures.withoutParams.getIdiomatic();
       const {
         reactiveQuery,
         fn: reactiveFn,
         refetchFn,
+        usePrefetchHookFn,
       } = QueryTestFixtures.withoutParams.getReactive();
       return {
         idiomaticQuery,
         idiomaticFn,
+        prefetchFn,
         reactiveQuery,
         reactiveFn,
         refetchFn,
+        usePrefetchHookFn,
         annotation: {} as DefineChimericQuery<() => Promise<string>>,
       };
     },
@@ -78,9 +93,18 @@ export const QueryTestFixtures = {
           },
         ) => `Hello ${params.name}`,
       );
+      const prefetchFn = vi.fn(
+        async (
+          _params: { name: string },
+          _allOptions?: {
+            nativeOptions?: unknown;
+          },
+        ) => { return; },
+      );
       return {
         fn,
-        idiomaticQuery: createIdiomaticQuery(fn),
+        prefetchFn,
+        idiomaticQuery: createIdiomaticQuery(fn, prefetchFn),
         annotation: {} as DefineIdiomaticQuery<
           (params: { name: string }) => Promise<string>
         >,
@@ -110,29 +134,41 @@ export const QueryTestFixtures = {
           };
         },
       );
+      const usePrefetchHookFn = vi.fn(
+        (
+          _params: { name: string },
+          _allOptions?: {
+            nativeOptions?: unknown;
+          },
+        ) => { return; },
+      );
       return {
         fn,
         refetchFn,
-        reactiveQuery: createReactiveQuery(fn),
+        usePrefetchHookFn,
+        reactiveQuery: createReactiveQuery(fn, usePrefetchHookFn),
         annotation: {} as DefineReactiveQuery<
           (params: { name: string }) => Promise<string>
         >,
       };
     },
     getChimeric: () => {
-      const { idiomaticQuery, fn: idiomaticFn } =
+      const { idiomaticQuery, fn: idiomaticFn, prefetchFn } =
         QueryTestFixtures.withParams.getIdiomatic();
       const {
         reactiveQuery,
         fn: reactiveFn,
         refetchFn,
+        usePrefetchHookFn,
       } = QueryTestFixtures.withParams.getReactive();
       return {
         idiomaticQuery,
         idiomaticFn,
+        prefetchFn,
         reactiveQuery,
         reactiveFn,
         refetchFn,
+        usePrefetchHookFn,
         annotation: {} as DefineChimericQuery<
           (params: { name: string }) => Promise<string>
         >,
@@ -150,9 +186,18 @@ export const QueryTestFixtures = {
           },
         ) => (params ? `Hello ${params.name}` : 'Hello'),
       );
+      const prefetchFn = vi.fn(
+        async (
+          _params?: { name: string },
+          _allOptions?: {
+            nativeOptions?: unknown;
+          },
+        ) => { return; },
+      );
       return {
         fn,
-        idiomaticQuery: createIdiomaticQuery(fn),
+        prefetchFn,
+        idiomaticQuery: createIdiomaticQuery(fn, prefetchFn),
         annotation: {} as DefineIdiomaticQuery<
           (params?: { name: string }) => Promise<string>
         >,
@@ -186,31 +231,43 @@ export const QueryTestFixtures = {
           };
         },
       );
+      const usePrefetchHookFn = vi.fn(
+        (
+          _params?: { name: string },
+          _allOptions?: {
+            nativeOptions?: unknown;
+          },
+        ) => { return; },
+      );
       // Create a shared mock refetch for testing call counts
       const sharedRefetchFn = vi.fn(async () => 'test');
       return {
         fn,
         refetchFn: sharedRefetchFn,
-        reactiveQuery: createReactiveQuery(fn),
+        usePrefetchHookFn,
+        reactiveQuery: createReactiveQuery(fn, usePrefetchHookFn),
         annotation: {} as DefineReactiveQuery<
           (params?: { name: string }) => Promise<string>
         >,
       };
     },
     getChimeric: () => {
-      const { idiomaticQuery, fn: idiomaticFn } =
+      const { idiomaticQuery, fn: idiomaticFn, prefetchFn } =
         QueryTestFixtures.withOptionalParams.getIdiomatic();
       const {
         reactiveQuery,
         fn: reactiveFn,
         refetchFn,
+        usePrefetchHookFn,
       } = QueryTestFixtures.withOptionalParams.getReactive();
       return {
         idiomaticQuery,
         idiomaticFn,
+        prefetchFn,
         reactiveQuery,
         reactiveFn,
         refetchFn,
+        usePrefetchHookFn,
         annotation: {} as DefineChimericQuery<
           (params?: { name: string }) => Promise<string>
         >,

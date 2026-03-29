@@ -4,16 +4,21 @@ import { QueryTestFixtures } from '../__tests__/queryFixtures';
 
 describe('createIdiomaticQuery', () => {
   it('should create an idiomatic query function', () => {
-    const { fn } = QueryTestFixtures.withoutParams.getIdiomatic();
-    const idiomaticQuery = createIdiomaticQuery(fn);
+    const { fn, prefetchFn } = QueryTestFixtures.withoutParams.getIdiomatic();
+    const idiomaticQuery = createIdiomaticQuery(fn, prefetchFn);
     expect(typeof idiomaticQuery).toBe('function');
     expect(idiomaticQuery).toBe(fn);
+  });
+
+  it('should attach prefetch to the idiomatic query', () => {
+    const { idiomaticQuery } = QueryTestFixtures.withoutParams.getIdiomatic();
+    expect(typeof idiomaticQuery.prefetch).toBe('function');
   });
 
   it('should throw an error for invalid input', () => {
     const invalidInput = 'not a function';
     expect(() => {
-      createIdiomaticQuery(invalidInput as any);
+      createIdiomaticQuery(invalidInput as any, vi.fn());
     }).toThrow('idiomaticFn is not qualified to be idiomatic query');
   });
 
@@ -157,5 +162,111 @@ describe('createIdiomaticQuery', () => {
     type TestAnnotation = typeof _annotation;
     const testAnnotation: TestAnnotation = idiomaticQuery;
     expect(testAnnotation).toBe(idiomaticQuery);
+  });
+
+  // PREFETCH USAGE TESTS
+  it('PREFETCH USAGE: no params', async () => {
+    const { prefetchFn, idiomaticQuery } =
+      QueryTestFixtures.withoutParams.getIdiomatic();
+
+    // Call without options
+    await idiomaticQuery.prefetch();
+    expect(prefetchFn).toHaveBeenCalledWith();
+    expect(prefetchFn).toHaveBeenCalledTimes(1);
+
+    // Call with options
+    await idiomaticQuery.prefetch({
+      nativeOptions: undefined,
+    });
+    expect(prefetchFn).toHaveBeenCalledWith({
+      nativeOptions: undefined,
+    });
+    expect(prefetchFn).toHaveBeenCalledTimes(2);
+
+    // Returns void (Promise<void>)
+    const result = await idiomaticQuery.prefetch();
+    expect(result).toBeUndefined();
+  });
+
+  it('PREFETCH USAGE: with params', async () => {
+    const { prefetchFn, idiomaticQuery } =
+      QueryTestFixtures.withParams.getIdiomatic();
+
+    // Call with params without options
+    await idiomaticQuery.prefetch({ name: 'John' });
+    expect(prefetchFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(prefetchFn).toHaveBeenCalledTimes(1);
+
+    // Call with params with options
+    await idiomaticQuery.prefetch(
+      { name: 'John' },
+      { nativeOptions: undefined },
+    );
+    expect(prefetchFn).toHaveBeenCalledWith(
+      { name: 'John' },
+      { nativeOptions: undefined },
+    );
+    expect(prefetchFn).toHaveBeenCalledTimes(2);
+  });
+
+  it('PREFETCH USAGE: optional params', async () => {
+    const { prefetchFn, idiomaticQuery } =
+      QueryTestFixtures.withOptionalParams.getIdiomatic();
+
+    // Call with params
+    await idiomaticQuery.prefetch({ name: 'John' });
+    expect(prefetchFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(prefetchFn).toHaveBeenCalledTimes(1);
+
+    // Call without params
+    await idiomaticQuery.prefetch();
+    expect(prefetchFn).toHaveBeenCalledWith();
+    expect(prefetchFn).toHaveBeenCalledTimes(2);
+
+    // Call without params with options
+    await idiomaticQuery.prefetch(undefined, {
+      nativeOptions: undefined,
+    });
+    expect(prefetchFn).toHaveBeenCalledWith(undefined, {
+      nativeOptions: undefined,
+    });
+    expect(prefetchFn).toHaveBeenCalledTimes(3);
+  });
+
+  // PREFETCH TYPE ERROR TESTS
+  it('PREFETCH TYPE ERRORS: no params', async () => {
+    const { idiomaticQuery } =
+      QueryTestFixtures.withoutParams.getIdiomatic();
+
+    try {
+      // @ts-expect-error testing invalid call - no params variant shouldn't accept params
+      await idiomaticQuery.prefetch({ name: 'John' });
+    } catch {
+      // Expected to throw
+    }
+  });
+
+  it('PREFETCH TYPE ERRORS: with params', async () => {
+    const { idiomaticQuery } =
+      QueryTestFixtures.withParams.getIdiomatic();
+
+    try {
+      // @ts-expect-error testing invalid call - required params variant must have params
+      await idiomaticQuery.prefetch();
+    } catch {
+      // Expected to throw
+    }
+  });
+
+  it('PREFETCH TYPE ERRORS: optional params', async () => {
+    const { idiomaticQuery } =
+      QueryTestFixtures.withOptionalParams.getIdiomatic();
+
+    try {
+      // @ts-expect-error testing invalid call - wrong param type
+      await idiomaticQuery.prefetch(1);
+    } catch {
+      // Expected to throw
+    }
   });
 });

@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { type QueryKey, useQuery, queryOptions } from '@tanstack/react-query';
+import {
+  type QueryKey,
+  useQuery,
+  usePrefetchQuery,
+  queryOptions,
+} from '@tanstack/react-query';
 import {
   TanstackQueryReactiveNativeOptions,
+  TanstackQueryReactivePrefetchNativeOptions,
   type ReactiveQuery,
 } from './types';
 import { createReactiveQuery } from './createReactiveQuery';
@@ -104,7 +110,39 @@ export function ReactiveQueryFactory<
     >;
   };
 
-  return createReactiveQuery(query) as ReactiveQuery<
+  const prefetchHook = (
+    paramsOrOptions?: Parameters<
+      ReactiveQuery<TParams, TResult, TError, TQueryKey>['usePrefetchHook']
+    >[0],
+    maybeOptions?: Parameters<
+      ReactiveQuery<TParams, TResult, TError, TQueryKey>['usePrefetchHook']
+    >[1],
+  ) => {
+    const params =
+      getQueryOptions.length === 0
+        ? (undefined as TParams)
+        : (paramsOrOptions as TParams);
+    const allOptions =
+      getQueryOptions.length === 0
+        ? (paramsOrOptions as {
+            nativeOptions?: TanstackQueryReactivePrefetchNativeOptions<
+              TResult,
+              TError,
+              TQueryKey
+            >;
+          })
+        : maybeOptions;
+    const nativeOptions = allOptions?.nativeOptions as
+      | TanstackQueryReactivePrefetchNativeOptions<TResult, TError, TQueryKey>
+      | undefined;
+
+    usePrefetchQuery({
+      ...getQueryOptions(params),
+      ...nativeOptions,
+    });
+  };
+
+  return createReactiveQuery(query, prefetchHook) as ReactiveQuery<
     TParams,
     TResult,
     TError,

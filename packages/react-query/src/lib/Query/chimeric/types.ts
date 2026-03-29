@@ -6,6 +6,7 @@ import { QueryKey } from '@tanstack/react-query';
 import { TanstackQueryIdiomaticNativeOptions } from '../idiomatic/types';
 import {
   TanstackQueryReactiveNativeOptions,
+  TanstackQueryReactivePrefetchNativeOptions,
   TanstackQueryReactiveReturnType,
 } from '../reactive/types';
 
@@ -20,7 +21,8 @@ export type ChimericQuery<
   TError,
   TanstackQueryIdiomaticNativeOptions<TResult, TError, TQueryKey>,
   TanstackQueryReactiveNativeOptions<TResult, TError, TQueryKey>,
-  TanstackQueryReactiveReturnType<TResult, TError>
+  TanstackQueryReactiveReturnType<TResult, TError>,
+  TanstackQueryReactivePrefetchNativeOptions<TResult, TError, TQueryKey>
 >;
 
 export type DefineChimericQuery<
@@ -38,5 +40,10 @@ export type DefineChimericQuery<
     TQueryKey
   >,
   TanstackQueryReactiveNativeOptions<Awaited<ReturnType<T>>, TError, TQueryKey>,
-  TanstackQueryReactiveReturnType<Awaited<ReturnType<T>>, TError>
+  TanstackQueryReactiveReturnType<Awaited<ReturnType<T>>, TError>,
+  TanstackQueryReactivePrefetchNativeOptions<
+    Awaited<ReturnType<T>>,
+    TError,
+    TQueryKey
+  >
 >;

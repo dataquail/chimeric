@@ -141,7 +141,62 @@ export function IdiomaticQueryWithManagedStoreFactory<
     return getFromStore(params);
   };
 
-  return createIdiomaticQuery(idiomaticQuery) as IdiomaticQuery<
+  const prefetch = async (
+    paramsOrOptions?: Parameters<
+      IdiomaticQuery<TParams, TResult, TError, TQueryKey>['prefetch']
+    >[0],
+    maybeOptions?: Parameters<
+      IdiomaticQuery<TParams, TResult, TError, TQueryKey>['prefetch']
+    >[1],
+  ) => {
+    const params =
+      getQueryOptions.length === 0
+        ? (undefined as TParams)
+        : (paramsOrOptions as TParams);
+    const allOptions =
+      getQueryOptions.length === 0
+        ? (paramsOrOptions as {
+            nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+              TResult,
+              TError,
+              TQueryKey
+            >;
+          })
+        : maybeOptions;
+    const nativeOptions = allOptions?.nativeOptions as
+      | TanstackQueryIdiomaticNativeOptions<TResult, TError, TQueryKey>
+      | undefined;
+
+    let prefetchQueryOptions: FetchQueryOptions<
+      TResult,
+      TError,
+      TResult,
+      TQueryKey
+    > = getQueryOptions(params);
+
+    // Prioritize native options last so they can override anything
+    if (nativeOptions) {
+      prefetchQueryOptions = {
+        ...prefetchQueryOptions,
+        ...nativeOptions,
+      };
+    }
+
+    const { queryFn, queryKey, ...restOptions } = prefetchQueryOptions;
+
+    await queryClient.prefetchQuery({
+      queryKey,
+      ...restOptions,
+      queryFn: async (context): Promise<TResult> => {
+        if (queryFn && typeof queryFn === 'function') {
+          await queryFn(context);
+        }
+        return null as unknown as TResult;
+      },
+    });
+  };
+
+  return createIdiomaticQuery(idiomaticQuery, prefetch) as IdiomaticQuery<
     TParams,
     TResult,
     TError,

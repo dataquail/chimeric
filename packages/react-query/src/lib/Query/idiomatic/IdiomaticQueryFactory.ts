@@ -113,7 +113,51 @@ export function IdiomaticQueryFactory<
     return queryClient.fetchQuery(fetchQueryOptions);
   };
 
-  return createIdiomaticQuery(idiomaticQuery) as IdiomaticQuery<
+  const prefetch = async (
+    paramsOrOptions?: Parameters<
+      IdiomaticQuery<TParams, TResult, TError, TQueryKey>['prefetch']
+    >[0],
+    maybeOptions?: Parameters<
+      IdiomaticQuery<TParams, TResult, TError, TQueryKey>['prefetch']
+    >[1],
+  ) => {
+    const params =
+      getQueryOptions.length === 0
+        ? (undefined as TParams)
+        : (paramsOrOptions as TParams);
+    const allOptions =
+      getQueryOptions.length === 0
+        ? (paramsOrOptions as {
+            nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+              TResult,
+              TError,
+              TQueryKey
+            >;
+          })
+        : maybeOptions;
+    const nativeOptions = allOptions?.nativeOptions as
+      | TanstackQueryIdiomaticNativeOptions<TResult, TError, TQueryKey>
+      | undefined;
+
+    let prefetchQueryOptions: FetchQueryOptions<
+      TResult,
+      TError,
+      TResult,
+      TQueryKey
+    > = getQueryOptions(params);
+
+    // Prioritize native options last so they can override anything
+    if (nativeOptions) {
+      prefetchQueryOptions = {
+        ...prefetchQueryOptions,
+        ...nativeOptions,
+      };
+    }
+
+    await queryClient.prefetchQuery(prefetchQueryOptions);
+  };
+
+  return createIdiomaticQuery(idiomaticQuery, prefetch) as IdiomaticQuery<
     TParams,
     TResult,
     TError,

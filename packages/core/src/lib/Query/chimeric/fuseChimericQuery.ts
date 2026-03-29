@@ -14,6 +14,7 @@ export function fuseChimericQuery<
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
+  TNativeReactivePrefetchOptions = unknown,
 >(args: {
   idiomatic: IdiomaticQuery<void, TResult, TNativeIdiomaticOptions>;
   reactive: ReactiveQuery<
@@ -21,7 +22,8 @@ export function fuseChimericQuery<
     TResult,
     TError,
     TNativeReactiveOptions,
-    TNativeReactiveResult
+    TNativeReactiveResult,
+    TNativeReactivePrefetchOptions
   >;
 }): ChimericQuery<
   void,
@@ -29,7 +31,8 @@ export function fuseChimericQuery<
   TError,
   TNativeIdiomaticOptions,
   TNativeReactiveOptions,
-  TNativeReactiveResult
+  TNativeReactiveResult,
+  TNativeReactivePrefetchOptions
 >;
 
 // Overload for optional params
@@ -40,6 +43,7 @@ export function fuseChimericQuery<
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
+  TNativeReactivePrefetchOptions = unknown,
 >(args: {
   idiomatic: IdiomaticQuery<
     TParams | undefined,
@@ -51,7 +55,8 @@ export function fuseChimericQuery<
     TResult,
     TError,
     TNativeReactiveOptions,
-    TNativeReactiveResult
+    TNativeReactiveResult,
+    TNativeReactivePrefetchOptions
   >;
 }): ChimericQuery<
   TParams | undefined,
@@ -59,7 +64,8 @@ export function fuseChimericQuery<
   TError,
   TNativeIdiomaticOptions,
   TNativeReactiveOptions,
-  TNativeReactiveResult
+  TNativeReactiveResult,
+  TNativeReactivePrefetchOptions
 >;
 
 // Overload for required params
@@ -70,6 +76,7 @@ export function fuseChimericQuery<
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
+  TNativeReactivePrefetchOptions = unknown,
 >(args: {
   idiomatic: IdiomaticQuery<TParams, TResult, TNativeIdiomaticOptions>;
   reactive: ReactiveQuery<
@@ -77,7 +84,8 @@ export function fuseChimericQuery<
     TResult,
     TError,
     TNativeReactiveOptions,
-    TNativeReactiveResult
+    TNativeReactiveResult,
+    TNativeReactivePrefetchOptions
   >;
 }): ChimericQuery<
   TParams,
@@ -85,7 +93,8 @@ export function fuseChimericQuery<
   TError,
   TNativeIdiomaticOptions,
   TNativeReactiveOptions,
-  TNativeReactiveResult
+  TNativeReactiveResult,
+  TNativeReactivePrefetchOptions
 >;
 
 // Implementation
@@ -96,6 +105,7 @@ export function fuseChimericQuery<
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
+  TNativeReactivePrefetchOptions = unknown,
 >(args: {
   idiomatic: any;
   reactive: any;
@@ -105,7 +115,8 @@ export function fuseChimericQuery<
   TError,
   TNativeIdiomaticOptions,
   TNativeReactiveOptions,
-  TNativeReactiveResult
+  TNativeReactiveResult,
+  TNativeReactivePrefetchOptions
 > {
   if (isIdiomaticQuery(args.idiomatic) && isReactiveQuery(args.reactive)) {
     const chimericFn = args.idiomatic as ChimericQuery<
@@ -114,9 +125,11 @@ export function fuseChimericQuery<
       TError,
       TNativeIdiomaticOptions,
       TNativeReactiveOptions,
-      TNativeReactiveResult
+      TNativeReactiveResult,
+      TNativeReactivePrefetchOptions
     >;
     (chimericFn.useHook as any) = args.reactive.useHook;
+    (chimericFn.usePrefetchHook as any) = args.reactive.usePrefetchHook;
     markReactive(chimericFn, TYPE_MARKERS.REACTIVE_QUERY);
     markIdiomatic(chimericFn, TYPE_MARKERS.IDIOMATIC_QUERY);
 

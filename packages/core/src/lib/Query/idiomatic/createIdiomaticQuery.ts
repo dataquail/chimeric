@@ -9,6 +9,9 @@ export function createIdiomaticQuery<TResult, TNativeOptions = unknown>(
     options?: { forceRefetch?: boolean };
     nativeOptions?: TNativeOptions;
   }) => Promise<TResult>,
+  prefetchFn: (allOptions?: {
+    nativeOptions?: TNativeOptions;
+  }) => Promise<void>,
 ): IdiomaticQuery<void, TResult, TNativeOptions>;
 
 // Overload for optional params (params as first arg, allOptions as second)
@@ -24,6 +27,12 @@ export function createIdiomaticQuery<
       nativeOptions?: TNativeOptions;
     },
   ) => Promise<TResult>,
+  prefetchFn: (
+    params?: TParams,
+    allOptions?: {
+      nativeOptions?: TNativeOptions;
+    },
+  ) => Promise<void>,
 ): IdiomaticQuery<TParams | undefined, TResult, TNativeOptions>;
 
 // Overload for required params (params as first arg, allOptions as second)
@@ -39,6 +48,12 @@ export function createIdiomaticQuery<
       nativeOptions?: TNativeOptions;
     },
   ) => Promise<TResult>,
+  prefetchFn: (
+    params: TParams,
+    allOptions?: {
+      nativeOptions?: TNativeOptions;
+    },
+  ) => Promise<void>,
 ): IdiomaticQuery<TParams, TResult, TNativeOptions>;
 
 // Implementation
@@ -46,8 +61,12 @@ export function createIdiomaticQuery<
   TParams = void,
   TResult = unknown,
   TNativeOptions = unknown,
->(idiomaticFn: any): IdiomaticQuery<TParams, TResult, TNativeOptions> {
+>(
+  idiomaticFn: any,
+  prefetchFn: any,
+): IdiomaticQuery<TParams, TResult, TNativeOptions> {
   if (isEligibleIdiomatic(idiomaticFn)) {
+    (idiomaticFn as any).prefetch = prefetchFn;
     return markIdiomatic(
       idiomaticFn,
       TYPE_MARKERS.IDIOMATIC_QUERY,

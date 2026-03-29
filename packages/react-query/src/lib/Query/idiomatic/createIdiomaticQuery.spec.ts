@@ -4,16 +4,17 @@ import { QueryTestFixtures } from '../__tests__/queryFixtures';
 
 describe('createIdiomaticQuery', () => {
   it('should create an idiomatic query function', () => {
-    const { fn } = QueryTestFixtures.withoutParams.getIdiomatic();
-    const idiomaticQuery = createIdiomaticQuery(fn);
+    const { fn, prefetchFn } = QueryTestFixtures.withoutParams.getIdiomatic();
+    const idiomaticQuery = createIdiomaticQuery(fn, prefetchFn);
     expect(typeof idiomaticQuery).toBe('function');
     expect(idiomaticQuery).toBe(fn);
+    expect(typeof idiomaticQuery.prefetch).toBe('function');
   });
 
   it('should throw an error for invalid input', () => {
     const invalidInput = 'not a function';
     expect(() => {
-      createIdiomaticQuery(invalidInput as any);
+      createIdiomaticQuery(invalidInput as any, vi.fn());
     }).toThrow('idiomaticFn is not qualified to be idiomatic query');
   });
 
