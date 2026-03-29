@@ -181,14 +181,62 @@ export function IdiomaticInfiniteQueryFactory<
     };
   };
 
-  return createIdiomaticInfiniteQuery(
-    idiomaticInfiniteQuery as IdiomaticInfiniteQuery<
-      TParams,
-      TPageData,
-      TPageParam,
+  const prefetch = async (
+    paramsOrOptions?: Parameters<
+      IdiomaticInfiniteQuery<TParams, TPageData, TPageParam, TError, TQueryKey>['prefetch']
+    >[0],
+    maybeOptions?: Parameters<
+      IdiomaticInfiniteQuery<TParams, TPageData, TPageParam, TError, TQueryKey>['prefetch']
+    >[1],
+  ) => {
+    const params =
+      getInfiniteQueryOptions.length === 0
+        ? (undefined as TParams)
+        : (paramsOrOptions as TParams);
+    const allOptions =
+      getInfiniteQueryOptions.length === 0
+        ? (paramsOrOptions as {
+            nativeOptions?: TanstackInfiniteQueryIdiomaticNativeOptions<
+              TPageData,
+              TError,
+              TPageParam,
+              TQueryKey
+            >;
+          })
+        : maybeOptions;
+    const nativeOptions = allOptions?.nativeOptions as
+      | TanstackInfiniteQueryIdiomaticNativeOptions<
+          TPageData,
+          TError,
+          TPageParam,
+          TQueryKey
+        >
+      | undefined;
+    const infiniteOptions = getInfiniteQueryOptions(params as TParams);
+
+    const prefetchOptions: FetchInfiniteQueryOptions<
+      InfiniteData<TPageData, TPageParam>,
       TError,
-      TQueryKey
-    >,
+      TPageData,
+      TQueryKey,
+      TPageParam
+    > = {
+      ...infiniteOptions,
+      ...nativeOptions,
+    } as FetchInfiniteQueryOptions<
+      InfiniteData<TPageData, TPageParam>,
+      TError,
+      TPageData,
+      TQueryKey,
+      TPageParam
+    >;
+
+    await queryClient.prefetchInfiniteQuery(prefetchOptions);
+  };
+
+  return createIdiomaticInfiniteQuery(
+    idiomaticInfiniteQuery,
+    prefetch,
   ) as IdiomaticInfiniteQuery<
     TParams,
     TPageData,

@@ -9,6 +9,7 @@ describe('isChimericInfiniteQuery', () => {
   it('should return true for a valid chimeric infinite query', () => {
     const idiomaticInfiniteQuery = createIdiomaticInfiniteQuery(
       vi.fn(async () => ({ pages: [], pageParams: [] })),
+      vi.fn(async () => { return; }),
     );
     const reactiveInfiniteQuery = createReactiveInfiniteQuery(
       vi.fn(() => ({
@@ -27,6 +28,7 @@ describe('isChimericInfiniteQuery', () => {
         refetch: vi.fn(),
         native: {},
       })),
+      vi.fn(() => { return; }),
     );
     const chimericInfiniteQuery = fuseChimericInfiniteQuery({
       idiomatic: idiomaticInfiniteQuery,
@@ -54,6 +56,7 @@ describe('isChimericInfiniteQuery', () => {
             pageParams: [] as string[],
           }),
       ),
+      vi.fn(async () => { return; }),
     );
     expect(isChimericInfiniteQuery(idiomaticInfiniteQuery as any)).toBe(false);
   });
@@ -76,6 +79,7 @@ describe('isChimericInfiniteQuery', () => {
         refetch: vi.fn(),
         native: {},
       })),
+      vi.fn(() => { return; }),
     );
     expect(isChimericInfiniteQuery(reactiveInfiniteQuery as any)).toBe(false);
   });

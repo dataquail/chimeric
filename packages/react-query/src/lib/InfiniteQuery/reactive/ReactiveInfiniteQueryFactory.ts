@@ -1,14 +1,19 @@
 import {
   type QueryKey,
+  type FetchInfiniteQueryOptions,
   useInfiniteQuery,
+  usePrefetchInfiniteQuery,
   infiniteQueryOptions,
   type InfiniteData,
 } from '@tanstack/react-query';
 import {
   TanstackInfiniteQueryReactiveNativeOptions,
+  TanstackInfiniteQueryReactivePrefetchNativeOptions,
   type ReactiveInfiniteQuery,
 } from './types';
-import { createReactiveInfiniteQuery } from './createReactiveInfiniteQuery';
+import {
+  createReactiveInfiniteQuery as coreCreateReactiveInfiniteQuery,
+} from '@chimeric/core';
 import {
   ReactiveInfiniteQueryOptions,
   validateMaxArgLength,
@@ -206,7 +211,64 @@ export function ReactiveInfiniteQueryFactory<
     >;
   };
 
-  return createReactiveInfiniteQuery(query) as ReactiveInfiniteQuery<
+  const prefetchHook = (
+    paramsOrOptions?: Parameters<
+      ReactiveInfiniteQuery<
+        TParams,
+        TPageData,
+        TPageParam,
+        TError,
+        TQueryKey
+      >['usePrefetchHook']
+    >[0],
+    maybeOptions?: Parameters<
+      ReactiveInfiniteQuery<
+        TParams,
+        TPageData,
+        TPageParam,
+        TError,
+        TQueryKey
+      >['usePrefetchHook']
+    >[1],
+  ) => {
+    const params =
+      getInfiniteQueryOptions.length === 0
+        ? (undefined as TParams)
+        : (paramsOrOptions as TParams);
+    const allOptions =
+      getInfiniteQueryOptions.length === 0
+        ? (paramsOrOptions as {
+            nativeOptions?: TanstackInfiniteQueryReactivePrefetchNativeOptions<
+              TPageData,
+              TError,
+              TPageParam,
+              TQueryKey
+            >;
+          })
+        : maybeOptions;
+    const nativeOptions = allOptions?.nativeOptions as
+      | TanstackInfiniteQueryReactivePrefetchNativeOptions<
+          TPageData,
+          TError,
+          TPageParam,
+          TQueryKey
+        >
+      | undefined;
+
+    usePrefetchInfiniteQuery({
+      ...getInfiniteQueryOptions(params as TParams),
+      ...nativeOptions,
+    } as FetchInfiniteQueryOptions<
+      TPageData,
+      TError,
+      TPageData,
+      TQueryKey,
+      TPageParam
+    >);
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return coreCreateReactiveInfiniteQuery(query as any, prefetchHook as any) as unknown as ReactiveInfiniteQuery<
     TParams,
     TPageData,
     TPageParam,

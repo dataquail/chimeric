@@ -15,6 +15,7 @@ export function fuseChimericInfiniteQuery<
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
+  TNativeReactivePrefetchOptions = unknown,
 >(args: {
   idiomatic: IdiomaticInfiniteQuery<
     void,
@@ -28,7 +29,8 @@ export function fuseChimericInfiniteQuery<
     TPageParam,
     TError,
     TNativeReactiveOptions,
-    TNativeReactiveResult
+    TNativeReactiveResult,
+    TNativeReactivePrefetchOptions
   >;
 }): ChimericInfiniteQuery<
   void,
@@ -37,7 +39,8 @@ export function fuseChimericInfiniteQuery<
   TError,
   TNativeIdiomaticOptions,
   TNativeReactiveOptions,
-  TNativeReactiveResult
+  TNativeReactiveResult,
+  TNativeReactivePrefetchOptions
 >;
 
 // Optional params
@@ -49,6 +52,7 @@ export function fuseChimericInfiniteQuery<
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
+  TNativeReactivePrefetchOptions = unknown,
 >(args: {
   idiomatic: IdiomaticInfiniteQuery<
     TParams | undefined,
@@ -62,7 +66,8 @@ export function fuseChimericInfiniteQuery<
     TPageParam,
     TError,
     TNativeReactiveOptions,
-    TNativeReactiveResult
+    TNativeReactiveResult,
+    TNativeReactivePrefetchOptions
   >;
 }): ChimericInfiniteQuery<
   TParams | undefined,
@@ -71,7 +76,8 @@ export function fuseChimericInfiniteQuery<
   TError,
   TNativeIdiomaticOptions,
   TNativeReactiveOptions,
-  TNativeReactiveResult
+  TNativeReactiveResult,
+  TNativeReactivePrefetchOptions
 >;
 
 // Required params
@@ -83,6 +89,7 @@ export function fuseChimericInfiniteQuery<
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
+  TNativeReactivePrefetchOptions = unknown,
 >(args: {
   idiomatic: IdiomaticInfiniteQuery<
     TParams,
@@ -96,7 +103,8 @@ export function fuseChimericInfiniteQuery<
     TPageParam,
     TError,
     TNativeReactiveOptions,
-    TNativeReactiveResult
+    TNativeReactiveResult,
+    TNativeReactivePrefetchOptions
   >;
 }): ChimericInfiniteQuery<
   TParams,
@@ -105,7 +113,8 @@ export function fuseChimericInfiniteQuery<
   TError,
   TNativeIdiomaticOptions,
   TNativeReactiveOptions,
-  TNativeReactiveResult
+  TNativeReactiveResult,
+  TNativeReactivePrefetchOptions
 >;
 
 // Implementation
@@ -117,21 +126,10 @@ export function fuseChimericInfiniteQuery<
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
+  TNativeReactivePrefetchOptions = unknown,
 >(args: {
-  idiomatic: IdiomaticInfiniteQuery<
-    TParams,
-    TPageData,
-    TPageParam,
-    TNativeIdiomaticOptions
-  >;
-  reactive: ReactiveInfiniteQuery<
-    TParams,
-    TPageData,
-    TPageParam,
-    TError,
-    TNativeReactiveOptions,
-    TNativeReactiveResult
-  >;
+  idiomatic: any;
+  reactive: any;
 }): ChimericInfiniteQuery<
   TParams,
   TPageData,
@@ -139,7 +137,8 @@ export function fuseChimericInfiniteQuery<
   TError,
   TNativeIdiomaticOptions,
   TNativeReactiveOptions,
-  TNativeReactiveResult
+  TNativeReactiveResult,
+  TNativeReactivePrefetchOptions
 > {
   if (
     isIdiomaticInfiniteQuery(args.idiomatic) &&
@@ -152,9 +151,11 @@ export function fuseChimericInfiniteQuery<
       TError,
       TNativeIdiomaticOptions,
       TNativeReactiveOptions,
-      TNativeReactiveResult
+      TNativeReactiveResult,
+      TNativeReactivePrefetchOptions
     >;
-    chimericFn.useHook = args.reactive.useHook;
+    (chimericFn.useHook as any) = args.reactive.useHook;
+    (chimericFn.usePrefetchHook as any) = args.reactive.usePrefetchHook;
     markReactive(chimericFn, TYPE_MARKERS.REACTIVE_INFINITE_QUERY);
     markIdiomatic(chimericFn, TYPE_MARKERS.IDIOMATIC_INFINITE_QUERY);
 

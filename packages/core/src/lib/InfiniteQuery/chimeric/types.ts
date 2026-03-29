@@ -9,6 +9,7 @@ export type ChimericInfiniteQuery<
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
+  TNativeReactivePrefetchOptions = unknown,
 > = IdiomaticInfiniteQuery<
   TParams,
   TPageData,
@@ -21,7 +22,8 @@ export type ChimericInfiniteQuery<
     TPageParam,
     TError,
     TNativeReactiveOptions,
-    TNativeReactiveResult
+    TNativeReactiveResult,
+    TNativeReactivePrefetchOptions
   >;
 
 export type DefineChimericInfiniteQuery<
@@ -34,6 +36,7 @@ export type DefineChimericInfiniteQuery<
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
+  TNativeReactivePrefetchOptions = unknown,
 > = Parameters<T> extends []
   ? ChimericInfiniteQuery<
       void,
@@ -42,7 +45,8 @@ export type DefineChimericInfiniteQuery<
       TError,
       TNativeIdiomaticOptions,
       TNativeReactiveOptions,
-      TNativeReactiveResult
+      TNativeReactiveResult,
+      TNativeReactivePrefetchOptions
     >
   : ChimericInfiniteQuery<
       Parameters<T>[0],
@@ -51,5 +55,6 @@ export type DefineChimericInfiniteQuery<
       TError,
       TNativeIdiomaticOptions,
       TNativeReactiveOptions,
-      TNativeReactiveResult
+      TNativeReactiveResult,
+      TNativeReactivePrefetchOptions
     >;

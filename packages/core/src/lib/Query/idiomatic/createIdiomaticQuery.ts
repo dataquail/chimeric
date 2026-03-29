@@ -62,8 +62,19 @@ export function createIdiomaticQuery<
   TResult = unknown,
   TNativeOptions = unknown,
 >(
-  idiomaticFn: any,
-  prefetchFn: any,
+  idiomaticFn: (
+    params: TParams,
+    allOptions?: {
+      options?: { forceRefetch?: boolean };
+      nativeOptions?: TNativeOptions;
+    },
+  ) => Promise<TResult>,
+  prefetchFn: (
+    params: TParams,
+    allOptions?: {
+      nativeOptions?: TNativeOptions;
+    },
+  ) => Promise<void>,
 ): IdiomaticQuery<TParams, TResult, TNativeOptions> {
   if (isEligibleIdiomatic(idiomaticFn)) {
     (idiomaticFn as any).prefetch = prefetchFn;

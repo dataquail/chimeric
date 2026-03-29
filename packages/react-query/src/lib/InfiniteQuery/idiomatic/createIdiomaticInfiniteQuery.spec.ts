@@ -4,16 +4,18 @@ import { InfiniteQueryTestFixtures } from '../__tests__/infiniteQueryFixtures';
 
 describe('createIdiomaticInfiniteQuery', () => {
   it('should create an idiomatic infinite query function', () => {
-    const { fn } = InfiniteQueryTestFixtures.withoutParams.getIdiomatic();
-    const idiomaticInfiniteQuery = createIdiomaticInfiniteQuery(fn);
+    const { fn, prefetchFn } =
+      InfiniteQueryTestFixtures.withoutParams.getIdiomatic();
+    const idiomaticInfiniteQuery = createIdiomaticInfiniteQuery(fn, prefetchFn);
     expect(typeof idiomaticInfiniteQuery).toBe('function');
     expect(idiomaticInfiniteQuery).toBe(fn);
+    expect(typeof idiomaticInfiniteQuery.prefetch).toBe('function');
   });
 
   it('should throw an error for invalid input', () => {
     const invalidInput = 'not a function';
     expect(() => {
-      createIdiomaticInfiniteQuery(invalidInput as any);
+      createIdiomaticInfiniteQuery(invalidInput as any, vi.fn());
     }).toThrow('idiomaticFn is not qualified to be idiomatic infinite query');
   });
 

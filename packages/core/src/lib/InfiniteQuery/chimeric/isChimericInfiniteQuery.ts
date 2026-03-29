@@ -10,16 +10,9 @@ export const isChimericInfiniteQuery = <
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
+  TNativeReactivePrefetchOptions = unknown,
 >(
-  maybeChimericInfiniteQuery: ChimericInfiniteQuery<
-    TParams,
-    TPageData,
-    TPageParam,
-    TError,
-    TNativeIdiomaticOptions,
-    TNativeReactiveOptions,
-    TNativeReactiveResult
-  >,
+  maybeChimericInfiniteQuery: unknown,
 ): maybeChimericInfiniteQuery is ChimericInfiniteQuery<
   TParams,
   TPageData,
@@ -27,7 +20,8 @@ export const isChimericInfiniteQuery = <
   TError,
   TNativeIdiomaticOptions,
   TNativeReactiveOptions,
-  TNativeReactiveResult
+  TNativeReactiveResult,
+  TNativeReactivePrefetchOptions
 > => {
   return (
     isIdiomaticInfiniteQuery(maybeChimericInfiniteQuery) &&

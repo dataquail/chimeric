@@ -286,7 +286,12 @@ describe('ReactiveInfiniteQueryFactory', () => {
     const { annotation: _annotation, queryFn } =
       InfiniteQueryTestFixtures.withoutParams.getReactive();
     type TestAnnotation = typeof _annotation;
-    const testAnnotation: TestAnnotation = ReactiveInfiniteQueryFactory({
+    const testAnnotation: TestAnnotation = ReactiveInfiniteQueryFactory<
+      { items: Array<{ id: number; name: string }> },
+      number,
+      Error,
+      string[]
+    >({
       getInfiniteQueryOptions: () =>
         infiniteQueryOptions({
           queryKey: ['test'],

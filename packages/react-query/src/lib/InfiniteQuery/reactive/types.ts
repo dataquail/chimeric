@@ -7,6 +7,7 @@ import {
   type UseInfiniteQueryResult,
   type QueryKey,
   type UseInfiniteQueryOptions,
+  type FetchInfiniteQueryOptions,
   type InfiniteData,
 } from '@tanstack/react-query';
 
@@ -22,7 +23,13 @@ export type ReactiveInfiniteQuery<
   TPageParam,
   TError,
   TanstackInfiniteQueryReactiveNativeOptions<TPageData, TError, TPageParam, TQueryKey>,
-  TanstackInfiniteQueryReactiveReturnType<TPageData, TError, TPageParam>
+  TanstackInfiniteQueryReactiveReturnType<TPageData, TError, TPageParam>,
+  TanstackInfiniteQueryReactivePrefetchNativeOptions<
+    TPageData,
+    TError,
+    TPageParam,
+    TQueryKey
+  >
 >;
 
 export type DefineReactiveInfiniteQuery<
@@ -39,7 +46,13 @@ export type DefineReactiveInfiniteQuery<
   TPageParam,
   TError,
   TanstackInfiniteQueryReactiveNativeOptions<TPageData, TError, TPageParam, TQueryKey>,
-  TanstackInfiniteQueryReactiveReturnType<TPageData, TError, TPageParam>
+  TanstackInfiniteQueryReactiveReturnType<TPageData, TError, TPageParam>,
+  TanstackInfiniteQueryReactivePrefetchNativeOptions<
+    TPageData,
+    TError,
+    TPageParam,
+    TQueryKey
+  >
 >;
 
 export type TanstackInfiniteQueryReactiveNativeOptions<
@@ -64,3 +77,18 @@ export type TanstackInfiniteQueryReactiveReturnType<
   TError extends Error = Error,
   TPageParam = unknown,
 > = UseInfiniteQueryResult<InfiniteData<TPageData, TPageParam>, TError>;
+
+export type TanstackInfiniteQueryReactivePrefetchNativeOptions<
+  TPageData = unknown,
+  TError extends Error = Error,
+  TPageParam = unknown,
+  TQueryKey extends QueryKey = QueryKey,
+> = Omit<
+  FetchInfiniteQueryOptions<
+    InfiniteData<TPageData, TPageParam>,
+    TError,
+    InfiniteData<TPageData, TPageParam>,
+    TQueryKey
+  >,
+  'queryKey' | 'queryFn' | 'initialPageParam' | 'getNextPageParam' | 'getPreviousPageParam'
+>;

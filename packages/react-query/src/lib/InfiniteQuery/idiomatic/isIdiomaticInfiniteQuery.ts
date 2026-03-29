@@ -9,13 +9,7 @@ export const isIdiomaticInfiniteQuery = <
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(
-  maybeIdiomaticInfiniteQuery: IdiomaticInfiniteQuery<
-    TParams,
-    TPageData,
-    TPageParam,
-    TError,
-    TQueryKey
-  >,
+  maybeIdiomaticInfiniteQuery: unknown,
 ): maybeIdiomaticInfiniteQuery is IdiomaticInfiniteQuery<
   TParams,
   TPageData,

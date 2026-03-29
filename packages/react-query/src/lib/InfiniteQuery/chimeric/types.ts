@@ -3,6 +3,7 @@ import { QueryKey } from '@tanstack/react-query';
 import { TanstackInfiniteQueryIdiomaticNativeOptions } from '../idiomatic/types';
 import {
   TanstackInfiniteQueryReactiveNativeOptions,
+  TanstackInfiniteQueryReactivePrefetchNativeOptions,
   TanstackInfiniteQueryReactiveReturnType,
 } from '../reactive/types';
 
@@ -29,7 +30,13 @@ export type ChimericInfiniteQuery<
     TPageParam,
     TQueryKey
   >,
-  TanstackInfiniteQueryReactiveReturnType<TPageData, TError, TPageParam>
+  TanstackInfiniteQueryReactiveReturnType<TPageData, TError, TPageParam>,
+  TanstackInfiniteQueryReactivePrefetchNativeOptions<
+    TPageData,
+    TError,
+    TPageParam,
+    TQueryKey
+  >
 >;
 
 export type DefineChimericInfiniteQuery<

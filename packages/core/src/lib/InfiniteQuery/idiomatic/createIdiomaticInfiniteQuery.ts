@@ -1,7 +1,11 @@
 import { isEligibleIdiomatic } from '../../utilities/isEligibleIdiomatic';
 import { TYPE_MARKERS } from '../../utilities/typeMarkers';
 import { markIdiomatic } from '../../utilities/markIdiomatic';
-import { IdiomaticInfiniteQuery } from './types';
+import {
+  IdiomaticInfiniteQuery,
+  IdiomaticInfiniteQueryOptions,
+  IdiomaticInfiniteQueryResult,
+} from './types';
 
 // No params
 export function createIdiomaticInfiniteQuery<
@@ -9,12 +13,13 @@ export function createIdiomaticInfiniteQuery<
   TPageParam = unknown,
   TNativeOptions = unknown,
 >(
-  idiomaticFn: IdiomaticInfiniteQuery<
-    void,
-    TPageData,
-    TPageParam,
-    TNativeOptions
-  >,
+  idiomaticFn: (allOptions?: {
+    options?: IdiomaticInfiniteQueryOptions<TPageParam>;
+    nativeOptions?: TNativeOptions;
+  }) => Promise<IdiomaticInfiniteQueryResult<TPageData, TPageParam>>,
+  prefetchFn: (allOptions?: {
+    nativeOptions?: TNativeOptions;
+  }) => Promise<void>,
 ): IdiomaticInfiniteQuery<void, TPageData, TPageParam, TNativeOptions>;
 
 // Optional params
@@ -24,12 +29,19 @@ export function createIdiomaticInfiniteQuery<
   TPageParam = unknown,
   TNativeOptions = unknown,
 >(
-  idiomaticFn: IdiomaticInfiniteQuery<
-    TParams | undefined,
-    TPageData,
-    TPageParam,
-    TNativeOptions
-  >,
+  idiomaticFn: (
+    params?: TParams,
+    allOptions?: {
+      options?: IdiomaticInfiniteQueryOptions<TPageParam>;
+      nativeOptions?: TNativeOptions;
+    },
+  ) => Promise<IdiomaticInfiniteQueryResult<TPageData, TPageParam>>,
+  prefetchFn: (
+    params?: TParams,
+    allOptions?: {
+      nativeOptions?: TNativeOptions;
+    },
+  ) => Promise<void>,
 ): IdiomaticInfiniteQuery<
   TParams | undefined,
   TPageData,
@@ -44,12 +56,19 @@ export function createIdiomaticInfiniteQuery<
   TPageParam = unknown,
   TNativeOptions = unknown,
 >(
-  idiomaticFn: IdiomaticInfiniteQuery<
-    TParams,
-    TPageData,
-    TPageParam,
-    TNativeOptions
-  >,
+  idiomaticFn: (
+    params: TParams,
+    allOptions?: {
+      options?: IdiomaticInfiniteQueryOptions<TPageParam>;
+      nativeOptions?: TNativeOptions;
+    },
+  ) => Promise<IdiomaticInfiniteQueryResult<TPageData, TPageParam>>,
+  prefetchFn: (
+    params: TParams,
+    allOptions?: {
+      nativeOptions?: TNativeOptions;
+    },
+  ) => Promise<void>,
 ): IdiomaticInfiniteQuery<TParams, TPageData, TPageParam, TNativeOptions>;
 
 // Implementation
@@ -59,14 +78,22 @@ export function createIdiomaticInfiniteQuery<
   TPageParam = unknown,
   TNativeOptions = unknown,
 >(
-  idiomaticFn: IdiomaticInfiniteQuery<
-    TParams,
-    TPageData,
-    TPageParam,
-    TNativeOptions
-  >,
+  idiomaticFn: (
+    params: TParams,
+    allOptions?: {
+      options?: IdiomaticInfiniteQueryOptions<TPageParam>;
+      nativeOptions?: TNativeOptions;
+    },
+  ) => Promise<IdiomaticInfiniteQueryResult<TPageData, TPageParam>>,
+  prefetchFn: (
+    params: TParams,
+    allOptions?: {
+      nativeOptions?: TNativeOptions;
+    },
+  ) => Promise<void>,
 ): IdiomaticInfiniteQuery<TParams, TPageData, TPageParam, TNativeOptions> {
   if (isEligibleIdiomatic(idiomaticFn)) {
+    (idiomaticFn as any).prefetch = prefetchFn;
     return markIdiomatic(
       idiomaticFn,
       TYPE_MARKERS.IDIOMATIC_INFINITE_QUERY,
