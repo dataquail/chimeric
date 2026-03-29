@@ -1,10 +1,12 @@
 import {
   createReactiveInfiniteQuery as coreCreateReactiveInfiniteQuery,
-  ReactiveInfiniteQuery as CoreReactiveInfiniteQuery,
+  ReactiveInfiniteQueryResult,
+  ReactiveInfiniteQueryOptions,
 } from '@chimeric/core';
 import {
   ReactiveInfiniteQuery,
   TanstackInfiniteQueryReactiveNativeOptions,
+  TanstackInfiniteQueryReactivePrefetchNativeOptions,
   TanstackInfiniteQueryReactiveReturnType,
 } from './types';
 import { QueryKey } from '@tanstack/react-query';
@@ -16,19 +18,28 @@ export function createReactiveInfiniteQuery<
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(
-  reactiveFn: CoreReactiveInfiniteQuery<
-    void,
-    TPageData,
-    TPageParam,
-    TError,
-    TanstackInfiniteQueryReactiveNativeOptions<
+  reactiveFn: (allOptions?: {
+    options?: ReactiveInfiniteQueryOptions;
+    nativeOptions?: TanstackInfiniteQueryReactiveNativeOptions<
       TPageData,
       TError,
       TPageParam,
       TQueryKey
-    >,
+    >;
+  }) => ReactiveInfiniteQueryResult<
+    TPageData,
+    TPageParam,
+    TError,
     TanstackInfiniteQueryReactiveReturnType<TPageData, TError, TPageParam>
-  >['useHook'],
+  >,
+  usePrefetchHookFn: (allOptions?: {
+    nativeOptions?: TanstackInfiniteQueryReactivePrefetchNativeOptions<
+      TPageData,
+      TError,
+      TPageParam,
+      TQueryKey
+    >;
+  }) => void,
 ): ReactiveInfiniteQuery<void, TPageData, TPageParam, TError, TQueryKey>;
 
 // Optional params
@@ -39,19 +50,34 @@ export function createReactiveInfiniteQuery<
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(
-  reactiveFn: CoreReactiveInfiniteQuery<
-    TParams | undefined,
+  reactiveFn: (
+    params?: TParams,
+    allOptions?: {
+      options?: ReactiveInfiniteQueryOptions;
+      nativeOptions?: TanstackInfiniteQueryReactiveNativeOptions<
+        TPageData,
+        TError,
+        TPageParam,
+        TQueryKey
+      >;
+    },
+  ) => ReactiveInfiniteQueryResult<
     TPageData,
     TPageParam,
     TError,
-    TanstackInfiniteQueryReactiveNativeOptions<
-      TPageData,
-      TError,
-      TPageParam,
-      TQueryKey
-    >,
     TanstackInfiniteQueryReactiveReturnType<TPageData, TError, TPageParam>
-  >['useHook'],
+  >,
+  usePrefetchHookFn: (
+    params?: TParams,
+    allOptions?: {
+      nativeOptions?: TanstackInfiniteQueryReactivePrefetchNativeOptions<
+        TPageData,
+        TError,
+        TPageParam,
+        TQueryKey
+      >;
+    },
+  ) => void,
 ): ReactiveInfiniteQuery<
   TParams | undefined,
   TPageData,
@@ -68,19 +94,34 @@ export function createReactiveInfiniteQuery<
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(
-  reactiveFn: CoreReactiveInfiniteQuery<
-    TParams,
+  reactiveFn: (
+    params: TParams,
+    allOptions?: {
+      options?: ReactiveInfiniteQueryOptions;
+      nativeOptions?: TanstackInfiniteQueryReactiveNativeOptions<
+        TPageData,
+        TError,
+        TPageParam,
+        TQueryKey
+      >;
+    },
+  ) => ReactiveInfiniteQueryResult<
     TPageData,
     TPageParam,
     TError,
-    TanstackInfiniteQueryReactiveNativeOptions<
-      TPageData,
-      TError,
-      TPageParam,
-      TQueryKey
-    >,
     TanstackInfiniteQueryReactiveReturnType<TPageData, TError, TPageParam>
-  >['useHook'],
+  >,
+  usePrefetchHookFn: (
+    params: TParams,
+    allOptions?: {
+      nativeOptions?: TanstackInfiniteQueryReactivePrefetchNativeOptions<
+        TPageData,
+        TError,
+        TPageParam,
+        TQueryKey
+      >;
+    },
+  ) => void,
 ): ReactiveInfiniteQuery<TParams, TPageData, TPageParam, TError, TQueryKey>;
 
 // Implementation
@@ -91,25 +132,37 @@ export function createReactiveInfiniteQuery<
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(
-  reactiveFn: CoreReactiveInfiniteQuery<
-    TParams,
+  reactiveFn: (
+    params: TParams,
+    allOptions?: {
+      options?: ReactiveInfiniteQueryOptions;
+      nativeOptions?: TanstackInfiniteQueryReactiveNativeOptions<
+        TPageData,
+        TError,
+        TPageParam,
+        TQueryKey
+      >;
+    },
+  ) => ReactiveInfiniteQueryResult<
     TPageData,
     TPageParam,
     TError,
-    TanstackInfiniteQueryReactiveNativeOptions<
-      TPageData,
-      TError,
-      TPageParam,
-      TQueryKey
-    >,
     TanstackInfiniteQueryReactiveReturnType<TPageData, TError, TPageParam>
-  >['useHook'],
+  >,
+  usePrefetchHookFn: (
+    params: TParams,
+    allOptions?: {
+      nativeOptions?: TanstackInfiniteQueryReactivePrefetchNativeOptions<
+        TPageData,
+        TError,
+        TPageParam,
+        TQueryKey
+      >;
+    },
+  ) => void,
 ): ReactiveInfiniteQuery<TParams, TPageData, TPageParam, TError, TQueryKey> {
-  return coreCreateReactiveInfiniteQuery(reactiveFn) as ReactiveInfiniteQuery<
-    TParams,
-    TPageData,
-    TPageParam,
-    TError,
-    TQueryKey
-  >;
+  return coreCreateReactiveInfiniteQuery(
+    reactiveFn,
+    usePrefetchHookFn,
+  ) as ReactiveInfiniteQuery<TParams, TPageData, TPageParam, TError, TQueryKey>;
 }

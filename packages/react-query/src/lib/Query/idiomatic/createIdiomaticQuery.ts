@@ -95,8 +95,27 @@ export function createIdiomaticQuery<
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(
-  idiomaticFn: any,
-  prefetchFn: any,
+  idiomaticFn: (
+    params: TParams,
+    allOptions?: {
+      options?: IdiomaticQueryOptions;
+      nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+        TResult,
+        TError,
+        TQueryKey
+      >;
+    },
+  ) => Promise<TResult>,
+  prefetchFn: (
+    params: TParams,
+    allOptions?: {
+      nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+        TResult,
+        TError,
+        TQueryKey
+      >;
+    },
+  ) => Promise<void>,
 ): IdiomaticQuery<TParams, TResult, TError, TQueryKey> {
   return coreCreateIdiomaticQuery(idiomaticFn, prefetchFn) as IdiomaticQuery<
     TParams,

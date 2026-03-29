@@ -12,6 +12,7 @@ import { createReactiveInfiniteQuery } from '../reactive/createReactiveInfiniteQ
 import {
   DefineReactiveInfiniteQuery,
   TanstackInfiniteQueryReactiveNativeOptions,
+  TanstackInfiniteQueryReactivePrefetchNativeOptions,
   TanstackInfiniteQueryReactiveReturnType,
 } from '../reactive/types';
 
@@ -34,12 +35,23 @@ export const InfiniteQueryTestFixtures = {
           pageParams: [0],
         }),
       );
+      const prefetchFn = vi.fn(
+        async (_allOptions?: {
+          nativeOptions?: TanstackInfiniteQueryIdiomaticNativeOptions<
+            PageData,
+            Error,
+            number,
+            string[]
+          >;
+        }) => { return; },
+      );
       return {
         fn,
+        prefetchFn,
         queryFn: vi.fn(() =>
           Promise.resolve({ items: [{ id: 1, name: 'Item 1' }] }),
         ),
-        idiomaticInfiniteQuery: createIdiomaticInfiniteQuery(fn),
+        idiomaticInfiniteQuery: createIdiomaticInfiniteQuery(fn, prefetchFn),
         annotation: {} as DefineIdiomaticInfiniteQuery<
           () => Promise<{
             pages: Array<PageData>;
@@ -99,15 +111,26 @@ export const InfiniteQueryTestFixtures = {
             >,
         }),
       );
+      const usePrefetchHookFn = vi.fn(
+        (_allOptions?: {
+          nativeOptions?: TanstackInfiniteQueryReactivePrefetchNativeOptions<
+            PageData,
+            Error,
+            number,
+            string[]
+          >;
+        }) => { return; },
+      );
       return {
         fn,
         fetchNextPageFn,
         fetchPreviousPageFn,
         refetchFn,
+        usePrefetchHookFn,
         queryFn: vi.fn(() =>
           Promise.resolve({ items: [{ id: 1, name: 'Item 1' }] }),
         ),
-        reactiveInfiniteQuery: createReactiveInfiniteQuery(fn),
+        reactiveInfiniteQuery: createReactiveInfiniteQuery(fn, usePrefetchHookFn),
         annotation: {} as DefineReactiveInfiniteQuery<
           () => Promise<{
             pages: Array<PageData>;
@@ -121,7 +144,7 @@ export const InfiniteQueryTestFixtures = {
       };
     },
     getChimeric: () => {
-      const { idiomaticInfiniteQuery, fn: idiomaticFn } =
+      const { idiomaticInfiniteQuery, fn: idiomaticFn, prefetchFn } =
         InfiniteQueryTestFixtures.withoutParams.getIdiomatic();
       const {
         reactiveInfiniteQuery,
@@ -129,15 +152,18 @@ export const InfiniteQueryTestFixtures = {
         fetchNextPageFn,
         fetchPreviousPageFn,
         refetchFn,
+        usePrefetchHookFn,
       } = InfiniteQueryTestFixtures.withoutParams.getReactive();
       return {
         idiomaticInfiniteQuery,
         idiomaticFn,
+        prefetchFn,
         reactiveInfiniteQuery,
         reactiveFn,
         fetchNextPageFn,
         fetchPreviousPageFn,
         refetchFn,
+        usePrefetchHookFn,
         queryFn: vi.fn(() =>
           Promise.resolve({ items: [{ id: 1, name: 'Item 1' }] }),
         ),
@@ -177,8 +203,22 @@ export const InfiniteQueryTestFixtures = {
           pageParams: [0],
         }),
       );
+      const prefetchFn = vi.fn(
+        async (
+          _params: { search: string },
+          _allOptions?: {
+            nativeOptions?: TanstackInfiniteQueryIdiomaticNativeOptions<
+              PageData,
+              Error,
+              number,
+              string[]
+            >;
+          },
+        ) => { return; },
+      );
       return {
         fn,
+        prefetchFn,
         queryFn: vi.fn((args: { search: string }) =>
           Promise.resolve({
             items: [{ id: 1, name: `Filtered by ${args.search}` }],
@@ -190,7 +230,7 @@ export const InfiniteQueryTestFixtures = {
           number,
           Error,
           string[]
-        >(fn),
+        >(fn, prefetchFn),
         annotation: {} as DefineIdiomaticInfiniteQuery<
           (params: { search: string }) => Promise<{
             pages: Array<PageData>;
@@ -278,17 +318,31 @@ export const InfiniteQueryTestFixtures = {
           };
         },
       );
+      const usePrefetchHookFn = vi.fn(
+        (
+          _params: { search: string },
+          _allOptions?: {
+            nativeOptions?: TanstackInfiniteQueryReactivePrefetchNativeOptions<
+              PageData,
+              Error,
+              number,
+              string[]
+            >;
+          },
+        ) => { return; },
+      );
       return {
         fn,
         fetchNextPageFn,
         fetchPreviousPageFn,
         refetchFn,
+        usePrefetchHookFn,
         queryFn: vi.fn((args: { search: string }) =>
           Promise.resolve({
             items: [{ id: 1, name: `Filtered by ${args.search}` }],
           }),
         ),
-        reactiveInfiniteQuery: createReactiveInfiniteQuery(fn),
+        reactiveInfiniteQuery: createReactiveInfiniteQuery(fn, usePrefetchHookFn),
         annotation: {} as DefineReactiveInfiniteQuery<
           (params: { search: string }) => Promise<{
             pages: Array<PageData>;
@@ -302,7 +356,7 @@ export const InfiniteQueryTestFixtures = {
       };
     },
     getChimeric: () => {
-      const { idiomaticInfiniteQuery, fn: idiomaticFn } =
+      const { idiomaticInfiniteQuery, fn: idiomaticFn, prefetchFn } =
         InfiniteQueryTestFixtures.withParams.getIdiomatic();
       const {
         reactiveInfiniteQuery,
@@ -310,15 +364,18 @@ export const InfiniteQueryTestFixtures = {
         fetchNextPageFn,
         fetchPreviousPageFn,
         refetchFn,
+        usePrefetchHookFn,
       } = InfiniteQueryTestFixtures.withParams.getReactive();
       return {
         idiomaticInfiniteQuery,
         idiomaticFn,
+        prefetchFn,
         reactiveInfiniteQuery,
         reactiveFn,
         fetchNextPageFn,
         fetchPreviousPageFn,
         refetchFn,
+        usePrefetchHookFn,
         queryFn: vi.fn((args: { search: string }) =>
           Promise.resolve({
             items: [{ id: 1, name: `Filtered by ${args.search}` }],
@@ -365,8 +422,22 @@ export const InfiniteQueryTestFixtures = {
           pageParams: [0],
         }),
       );
+      const prefetchFn = vi.fn(
+        async (
+          _params?: { search: string },
+          _allOptions?: {
+            nativeOptions?: TanstackInfiniteQueryIdiomaticNativeOptions<
+              PageData,
+              Error,
+              number,
+              string[]
+            >;
+          },
+        ) => { return; },
+      );
       return {
         fn,
+        prefetchFn,
         queryFn: vi.fn((args?: { search: string }) =>
           Promise.resolve({
             items: [
@@ -383,7 +454,7 @@ export const InfiniteQueryTestFixtures = {
           number,
           Error,
           string[]
-        >(fn),
+        >(fn, prefetchFn),
         annotation: {} as DefineIdiomaticInfiniteQuery<
           (params?: { search: string }) => Promise<{
             pages: Array<PageData>;
@@ -499,6 +570,19 @@ export const InfiniteQueryTestFixtures = {
           };
         },
       );
+      const usePrefetchHookFn = vi.fn(
+        (
+          _params?: { search: string },
+          _allOptions?: {
+            nativeOptions?: TanstackInfiniteQueryReactivePrefetchNativeOptions<
+              PageData,
+              Error,
+              number,
+              string[]
+            >;
+          },
+        ) => { return; },
+      );
       // Create shared mocks for testing call counts
       const sharedFetchNextPageFn = vi.fn(async () => ({
         pages: [{ items: [{ id: 2, name: 'Page 2' }] }],
@@ -517,6 +601,7 @@ export const InfiniteQueryTestFixtures = {
         fetchNextPageFn: sharedFetchNextPageFn,
         fetchPreviousPageFn: sharedFetchPreviousPageFn,
         refetchFn: sharedRefetchFn,
+        usePrefetchHookFn,
         queryFn: vi.fn((args?: { search: string }) =>
           Promise.resolve({
             items: [
@@ -527,7 +612,7 @@ export const InfiniteQueryTestFixtures = {
             ],
           }),
         ),
-        reactiveInfiniteQuery: createReactiveInfiniteQuery(fn),
+        reactiveInfiniteQuery: createReactiveInfiniteQuery(fn, usePrefetchHookFn),
         annotation: {} as DefineReactiveInfiniteQuery<
           (params?: { search: string }) => Promise<{
             pages: Array<PageData>;
@@ -541,7 +626,7 @@ export const InfiniteQueryTestFixtures = {
       };
     },
     getChimeric: () => {
-      const { idiomaticInfiniteQuery, fn: idiomaticFn } =
+      const { idiomaticInfiniteQuery, fn: idiomaticFn, prefetchFn } =
         InfiniteQueryTestFixtures.withOptionalParams.getIdiomatic();
       const {
         reactiveInfiniteQuery,
@@ -549,15 +634,18 @@ export const InfiniteQueryTestFixtures = {
         fetchNextPageFn,
         fetchPreviousPageFn,
         refetchFn,
+        usePrefetchHookFn,
       } = InfiniteQueryTestFixtures.withOptionalParams.getReactive();
       return {
         idiomaticInfiniteQuery,
         idiomaticFn,
+        prefetchFn,
         reactiveInfiniteQuery,
         reactiveFn,
         fetchNextPageFn,
         fetchPreviousPageFn,
         refetchFn,
+        usePrefetchHookFn,
         queryFn: vi.fn((args?: { search: string }) =>
           Promise.resolve({
             items: [

@@ -7,6 +7,7 @@ describe('isIdiomaticInfiniteQuery', () => {
   it('should return true for a valid idiomatic infinite query', () => {
     const mockIdiomaticInfiniteQuery = createIdiomaticInfiniteQuery(
       vi.fn(async () => ({ pages: [], pageParams: [] })),
+      vi.fn(async () => { return; }),
     );
     expect(isIdiomaticInfiniteQuery(mockIdiomaticInfiniteQuery)).toBe(true);
   });

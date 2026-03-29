@@ -9,13 +9,7 @@ export const isReactiveInfiniteQuery = <
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(
-  maybeReactiveInfiniteQuery: ReactiveInfiniteQuery<
-    TParams,
-    TPageData,
-    TPageParam,
-    TError,
-    TQueryKey
-  >,
+  maybeReactiveInfiniteQuery: unknown,
 ): maybeReactiveInfiniteQuery is ReactiveInfiniteQuery<
   TParams,
   TPageData,

@@ -5,6 +5,7 @@ export type ReactiveInfiniteQuery<
   TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
+  TNativePrefetchOptions = unknown,
 > = [TParams] extends [void]
   ? {
       useHook: (allOptions?: {
@@ -16,6 +17,9 @@ export type ReactiveInfiniteQuery<
         TError,
         TNativeReturnType
       >;
+      usePrefetchHook: (allOptions?: {
+        nativeOptions?: TNativePrefetchOptions;
+      }) => void;
     }
   : [TParams] extends [undefined]
   ? {
@@ -28,6 +32,9 @@ export type ReactiveInfiniteQuery<
         TError,
         TNativeReturnType
       >;
+      usePrefetchHook: (allOptions?: {
+        nativeOptions?: TNativePrefetchOptions;
+      }) => void;
     }
   : undefined extends TParams
   ? {
@@ -43,6 +50,12 @@ export type ReactiveInfiniteQuery<
         TError,
         TNativeReturnType
       >;
+      usePrefetchHook: (
+        params?: NonNullable<TParams>,
+        allOptions?: {
+          nativeOptions?: TNativePrefetchOptions;
+        },
+      ) => void;
     }
   : {
       useHook: (
@@ -57,6 +70,12 @@ export type ReactiveInfiniteQuery<
         TError,
         TNativeReturnType
       >;
+      usePrefetchHook: (
+        params: TParams,
+        allOptions?: {
+          nativeOptions?: TNativePrefetchOptions;
+        },
+      ) => void;
     };
 
 export type ReactiveInfiniteQueryOptions = {
@@ -111,6 +130,7 @@ export type DefineReactiveInfiniteQuery<
   TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
+  TNativePrefetchOptions = unknown,
 > = Parameters<T> extends []
   ? ReactiveInfiniteQuery<
       void,
@@ -118,7 +138,8 @@ export type DefineReactiveInfiniteQuery<
       TPageParam,
       TError,
       TNativeOptions,
-      TNativeReturnType
+      TNativeReturnType,
+      TNativePrefetchOptions
     >
   : ReactiveInfiniteQuery<
       Parameters<T>[0],
@@ -126,5 +147,6 @@ export type DefineReactiveInfiniteQuery<
       TPageParam,
       TError,
       TNativeOptions,
-      TNativeReturnType
+      TNativeReturnType,
+      TNativePrefetchOptions
     >;

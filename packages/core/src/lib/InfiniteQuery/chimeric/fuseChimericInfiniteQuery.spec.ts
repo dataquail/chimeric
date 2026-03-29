@@ -404,4 +404,76 @@ describe('fuseChimericInfiniteQuery', () => {
     });
     expect(chimericInfiniteQuery).toBeDefined();
   });
+
+  // PREFETCH USAGE TESTS
+  it('PREFETCH USAGE: no params', async () => {
+    const {
+      idiomaticInfiniteQuery,
+      prefetchFn,
+      reactiveInfiniteQuery,
+      usePrefetchHookFn,
+    } = InfiniteQueryTestFixtures.withoutParams.getChimeric();
+    const chimericInfiniteQuery = fuseChimericInfiniteQuery({
+      idiomatic: idiomaticInfiniteQuery,
+      reactive: reactiveInfiniteQuery,
+    });
+
+    await chimericInfiniteQuery.prefetch();
+    expect(prefetchFn).toHaveBeenCalledWith();
+    expect(prefetchFn).toHaveBeenCalledTimes(1);
+
+    chimericInfiniteQuery.usePrefetchHook();
+    expect(usePrefetchHookFn).toHaveBeenCalledWith();
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(1);
+  });
+
+  it('PREFETCH USAGE: with params', async () => {
+    const {
+      idiomaticInfiniteQuery,
+      prefetchFn,
+      reactiveInfiniteQuery,
+      usePrefetchHookFn,
+    } = InfiniteQueryTestFixtures.withParams.getChimeric();
+    const chimericInfiniteQuery = fuseChimericInfiniteQuery({
+      idiomatic: idiomaticInfiniteQuery,
+      reactive: reactiveInfiniteQuery,
+    });
+
+    await chimericInfiniteQuery.prefetch({ search: '1' });
+    expect(prefetchFn).toHaveBeenCalledWith({ search: '1' });
+    expect(prefetchFn).toHaveBeenCalledTimes(1);
+
+    chimericInfiniteQuery.usePrefetchHook({ search: '1' });
+    expect(usePrefetchHookFn).toHaveBeenCalledWith({ search: '1' });
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(1);
+  });
+
+  it('PREFETCH USAGE: optional params', async () => {
+    const {
+      idiomaticInfiniteQuery,
+      prefetchFn,
+      reactiveInfiniteQuery,
+      usePrefetchHookFn,
+    } = InfiniteQueryTestFixtures.withOptionalParams.getChimeric();
+    const chimericInfiniteQuery = fuseChimericInfiniteQuery({
+      idiomatic: idiomaticInfiniteQuery,
+      reactive: reactiveInfiniteQuery,
+    });
+
+    await chimericInfiniteQuery.prefetch({ search: '1' });
+    expect(prefetchFn).toHaveBeenCalledWith({ search: '1' });
+    expect(prefetchFn).toHaveBeenCalledTimes(1);
+
+    await chimericInfiniteQuery.prefetch();
+    expect(prefetchFn).toHaveBeenCalledWith();
+    expect(prefetchFn).toHaveBeenCalledTimes(2);
+
+    chimericInfiniteQuery.usePrefetchHook({ search: '1' });
+    expect(usePrefetchHookFn).toHaveBeenCalledWith({ search: '1' });
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(1);
+
+    chimericInfiniteQuery.usePrefetchHook();
+    expect(usePrefetchHookFn).toHaveBeenCalledWith();
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(2);
+  });
 });

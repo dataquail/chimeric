@@ -4,18 +4,24 @@ import { createReactiveInfiniteQuery } from './createReactiveInfiniteQuery';
 
 describe('createReactiveInfiniteQuery', () => {
   it('should create a reactive infinite query function', () => {
-    const { fn } = InfiniteQueryTestFixtures.withoutParams.getReactive();
-    const reactiveInfiniteQuery = createReactiveInfiniteQuery(fn);
+    const { fn, usePrefetchHookFn } =
+      InfiniteQueryTestFixtures.withoutParams.getReactive();
+    const reactiveInfiniteQuery = createReactiveInfiniteQuery(
+      fn,
+      usePrefetchHookFn,
+    );
 
     expect(typeof reactiveInfiniteQuery).toBe('object');
     expect(reactiveInfiniteQuery).toHaveProperty('useHook');
     expect(typeof reactiveInfiniteQuery.useHook).toBe('function');
+    expect(reactiveInfiniteQuery).toHaveProperty('usePrefetchHook');
+    expect(typeof reactiveInfiniteQuery.usePrefetchHook).toBe('function');
   });
 
   it('should throw an error for invalid input', () => {
     const invalidInput = 'not a function';
     expect(() => {
-      createReactiveInfiniteQuery(invalidInput as any);
+      createReactiveInfiniteQuery(invalidInput as any, vi.fn());
     }).toThrow('reactiveFn is not qualified to be reactive infinite query');
   });
 
@@ -253,5 +259,56 @@ describe('createReactiveInfiniteQuery', () => {
     type TestAnnotation = typeof _annotation;
     const testAnnotation: TestAnnotation = reactiveInfiniteQuery;
     expect(testAnnotation).toBe(reactiveInfiniteQuery);
+  });
+
+  // PREFETCH USAGE TESTS
+  it('PREFETCH USAGE: no params', () => {
+    const { usePrefetchHookFn, reactiveInfiniteQuery } =
+      InfiniteQueryTestFixtures.withoutParams.getReactive();
+
+    reactiveInfiniteQuery.usePrefetchHook();
+    expect(usePrefetchHookFn).toHaveBeenCalledWith();
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(1);
+
+    reactiveInfiniteQuery.usePrefetchHook({ nativeOptions: undefined });
+    expect(usePrefetchHookFn).toHaveBeenCalledWith({
+      nativeOptions: undefined,
+    });
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(2);
+
+    const result = reactiveInfiniteQuery.usePrefetchHook();
+    expect(result).toBeUndefined();
+  });
+
+  it('PREFETCH USAGE: with params', () => {
+    const { usePrefetchHookFn, reactiveInfiniteQuery } =
+      InfiniteQueryTestFixtures.withParams.getReactive();
+
+    reactiveInfiniteQuery.usePrefetchHook({ search: '1' });
+    expect(usePrefetchHookFn).toHaveBeenCalledWith({ search: '1' });
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(1);
+
+    reactiveInfiniteQuery.usePrefetchHook(
+      { search: '1' },
+      { nativeOptions: undefined },
+    );
+    expect(usePrefetchHookFn).toHaveBeenCalledWith(
+      { search: '1' },
+      { nativeOptions: undefined },
+    );
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(2);
+  });
+
+  it('PREFETCH USAGE: optional params', () => {
+    const { usePrefetchHookFn, reactiveInfiniteQuery } =
+      InfiniteQueryTestFixtures.withOptionalParams.getReactive();
+
+    reactiveInfiniteQuery.usePrefetchHook({ search: '1' });
+    expect(usePrefetchHookFn).toHaveBeenCalledWith({ search: '1' });
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(1);
+
+    reactiveInfiniteQuery.usePrefetchHook();
+    expect(usePrefetchHookFn).toHaveBeenCalledWith();
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(2);
   });
 });

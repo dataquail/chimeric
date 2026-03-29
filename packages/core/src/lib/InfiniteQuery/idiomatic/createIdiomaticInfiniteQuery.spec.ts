@@ -4,16 +4,23 @@ import { InfiniteQueryTestFixtures } from '../__tests__/infiniteQueryFixtures';
 
 describe('createIdiomaticInfiniteQuery', () => {
   it('should create an idiomatic infinite query function', () => {
-    const { fn } = InfiniteQueryTestFixtures.withoutParams.getIdiomatic();
-    const idiomaticInfiniteQuery = createIdiomaticInfiniteQuery(fn);
+    const { fn, prefetchFn } =
+      InfiniteQueryTestFixtures.withoutParams.getIdiomatic();
+    const idiomaticInfiniteQuery = createIdiomaticInfiniteQuery(fn, prefetchFn);
     expect(typeof idiomaticInfiniteQuery).toBe('function');
     expect(idiomaticInfiniteQuery).toBe(fn);
+  });
+
+  it('should attach prefetch to the idiomatic infinite query', () => {
+    const { idiomaticInfiniteQuery } =
+      InfiniteQueryTestFixtures.withoutParams.getIdiomatic();
+    expect(typeof idiomaticInfiniteQuery.prefetch).toBe('function');
   });
 
   it('should throw an error for invalid input', () => {
     const invalidInput = 'not a function';
     expect(() => {
-      createIdiomaticInfiniteQuery(invalidInput as any);
+      createIdiomaticInfiniteQuery(invalidInput as any, vi.fn());
     }).toThrow('idiomaticFn is not qualified to be idiomatic infinite query');
   });
 
@@ -182,5 +189,54 @@ describe('createIdiomaticInfiniteQuery', () => {
     type TestAnnotation = typeof _annotation;
     const testAnnotation: TestAnnotation = idiomaticInfiniteQuery;
     expect(testAnnotation).toBe(idiomaticInfiniteQuery);
+  });
+
+  // PREFETCH USAGE TESTS
+  it('PREFETCH USAGE: no params', async () => {
+    const { prefetchFn, idiomaticInfiniteQuery } =
+      InfiniteQueryTestFixtures.withoutParams.getIdiomatic();
+
+    await idiomaticInfiniteQuery.prefetch();
+    expect(prefetchFn).toHaveBeenCalledWith();
+    expect(prefetchFn).toHaveBeenCalledTimes(1);
+
+    await idiomaticInfiniteQuery.prefetch({ nativeOptions: undefined });
+    expect(prefetchFn).toHaveBeenCalledWith({ nativeOptions: undefined });
+    expect(prefetchFn).toHaveBeenCalledTimes(2);
+
+    const result = await idiomaticInfiniteQuery.prefetch();
+    expect(result).toBeUndefined();
+  });
+
+  it('PREFETCH USAGE: with params', async () => {
+    const { prefetchFn, idiomaticInfiniteQuery } =
+      InfiniteQueryTestFixtures.withParams.getIdiomatic();
+
+    await idiomaticInfiniteQuery.prefetch({ search: '1' });
+    expect(prefetchFn).toHaveBeenCalledWith({ search: '1' });
+    expect(prefetchFn).toHaveBeenCalledTimes(1);
+
+    await idiomaticInfiniteQuery.prefetch(
+      { search: '1' },
+      { nativeOptions: undefined },
+    );
+    expect(prefetchFn).toHaveBeenCalledWith(
+      { search: '1' },
+      { nativeOptions: undefined },
+    );
+    expect(prefetchFn).toHaveBeenCalledTimes(2);
+  });
+
+  it('PREFETCH USAGE: optional params', async () => {
+    const { prefetchFn, idiomaticInfiniteQuery } =
+      InfiniteQueryTestFixtures.withOptionalParams.getIdiomatic();
+
+    await idiomaticInfiniteQuery.prefetch({ search: '1' });
+    expect(prefetchFn).toHaveBeenCalledWith({ search: '1' });
+    expect(prefetchFn).toHaveBeenCalledTimes(1);
+
+    await idiomaticInfiniteQuery.prefetch();
+    expect(prefetchFn).toHaveBeenCalledWith();
+    expect(prefetchFn).toHaveBeenCalledTimes(2);
   });
 });

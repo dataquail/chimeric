@@ -9,13 +9,7 @@ export const isChimericInfiniteQuery = <
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(
-  maybeChimericInfiniteQuery: ChimericInfiniteQuery<
-    TParams,
-    TPageData,
-    TPageParam,
-    TError,
-    TQueryKey
-  >,
+  maybeChimericInfiniteQuery: unknown,
 ): maybeChimericInfiniteQuery is ChimericInfiniteQuery<
   TParams,
   TPageData,

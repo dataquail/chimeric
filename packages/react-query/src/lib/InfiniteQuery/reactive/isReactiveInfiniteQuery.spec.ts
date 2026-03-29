@@ -27,6 +27,7 @@ describe('isReactiveInfiniteQuery', () => {
           never
         >,
       })),
+      vi.fn(() => { return; }),
     );
     expect(isReactiveInfiniteQuery(mockReactiveInfiniteQuery)).toBe(true);
   });

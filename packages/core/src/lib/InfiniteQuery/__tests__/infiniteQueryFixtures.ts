@@ -55,9 +55,16 @@ export const InfiniteQueryTestFixtures = {
         },
       );
 
+      const prefetchFn = vi.fn(
+        async (_allOptions?: {
+          nativeOptions?: unknown;
+        }) => { return; },
+      );
+
       return {
         fn,
-        idiomaticInfiniteQuery: createIdiomaticInfiniteQuery(fn),
+        prefetchFn,
+        idiomaticInfiniteQuery: createIdiomaticInfiniteQuery(fn, prefetchFn),
         annotation: {} as DefineIdiomaticInfiniteQuery<
           () => Promise<{ pages: MockPage[]; pageParams: number[] }>,
           MockPage,
@@ -118,12 +125,19 @@ export const InfiniteQueryTestFixtures = {
         }),
       );
 
+      const usePrefetchHookFn = vi.fn(
+        (_allOptions?: {
+          nativeOptions?: unknown;
+        }) => { return; },
+      );
+
       return {
         fn,
         fetchNextPageFn,
         fetchPreviousPageFn,
         refetchFn,
-        reactiveInfiniteQuery: createReactiveInfiniteQuery(fn),
+        usePrefetchHookFn,
+        reactiveInfiniteQuery: createReactiveInfiniteQuery(fn, usePrefetchHookFn),
         annotation: {} as DefineReactiveInfiniteQuery<
           () => Promise<{ pages: MockPage[]; pageParams: number[] }>,
           MockPage,
@@ -132,7 +146,7 @@ export const InfiniteQueryTestFixtures = {
       };
     },
     getChimeric: () => {
-      const { idiomaticInfiniteQuery, fn: idiomaticFn } =
+      const { idiomaticInfiniteQuery, fn: idiomaticFn, prefetchFn } =
         InfiniteQueryTestFixtures.withoutParams.getIdiomatic();
       const {
         reactiveInfiniteQuery,
@@ -140,15 +154,18 @@ export const InfiniteQueryTestFixtures = {
         fetchNextPageFn,
         fetchPreviousPageFn,
         refetchFn,
+        usePrefetchHookFn,
       } = InfiniteQueryTestFixtures.withoutParams.getReactive();
       return {
         idiomaticInfiniteQuery,
         idiomaticFn,
+        prefetchFn,
         reactiveInfiniteQuery,
         reactiveFn,
         fetchNextPageFn,
         fetchPreviousPageFn,
         refetchFn,
+        usePrefetchHookFn,
         annotation: {} as DefineChimericInfiniteQuery<
           () => Promise<{ pages: MockPage[]; pageParams: number[] }>,
           MockPage,
@@ -181,9 +198,19 @@ export const InfiniteQueryTestFixtures = {
         },
       );
 
+      const prefetchFn = vi.fn(
+        async (
+          _params: { search: string },
+          _allOptions?: {
+            nativeOptions?: unknown;
+          },
+        ) => { return; },
+      );
+
       return {
         fn,
-        idiomaticInfiniteQuery: createIdiomaticInfiniteQuery(fn),
+        prefetchFn,
+        idiomaticInfiniteQuery: createIdiomaticInfiniteQuery(fn, prefetchFn),
         annotation: {} as DefineIdiomaticInfiniteQuery<
           (params: { search: string }) => Promise<{
             pages: MockPage[];
@@ -270,12 +297,22 @@ export const InfiniteQueryTestFixtures = {
         },
       );
 
+      const usePrefetchHookFn = vi.fn(
+        (
+          _params: { search: string },
+          _allOptions?: {
+            nativeOptions?: unknown;
+          },
+        ) => { return; },
+      );
+
       return {
         fn,
         fetchNextPageFn,
         fetchPreviousPageFn,
         refetchFn,
-        reactiveInfiniteQuery: createReactiveInfiniteQuery(fn),
+        usePrefetchHookFn,
+        reactiveInfiniteQuery: createReactiveInfiniteQuery(fn, usePrefetchHookFn),
         annotation: {} as DefineReactiveInfiniteQuery<
           (params: { search: string }) => Promise<{
             pages: MockPage[];
@@ -287,7 +324,7 @@ export const InfiniteQueryTestFixtures = {
       };
     },
     getChimeric: () => {
-      const { idiomaticInfiniteQuery, fn: idiomaticFn } =
+      const { idiomaticInfiniteQuery, fn: idiomaticFn, prefetchFn } =
         InfiniteQueryTestFixtures.withParams.getIdiomatic();
       const {
         reactiveInfiniteQuery,
@@ -295,15 +332,18 @@ export const InfiniteQueryTestFixtures = {
         fetchNextPageFn,
         fetchPreviousPageFn,
         refetchFn,
+        usePrefetchHookFn,
       } = InfiniteQueryTestFixtures.withParams.getReactive();
       return {
         idiomaticInfiniteQuery,
         idiomaticFn,
+        prefetchFn,
         reactiveInfiniteQuery,
         reactiveFn,
         fetchNextPageFn,
         fetchPreviousPageFn,
         refetchFn,
+        usePrefetchHookFn,
         annotation: {} as DefineChimericInfiniteQuery<
           (params: { search: string }) => Promise<{
             pages: MockPage[];
@@ -345,9 +385,19 @@ export const InfiniteQueryTestFixtures = {
         },
       );
 
+      const prefetchFn = vi.fn(
+        async (
+          _params?: { search: string },
+          _allOptions?: {
+            nativeOptions?: unknown;
+          },
+        ) => { return; },
+      );
+
       return {
         fn,
-        idiomaticInfiniteQuery: createIdiomaticInfiniteQuery(fn),
+        prefetchFn,
+        idiomaticInfiniteQuery: createIdiomaticInfiniteQuery(fn, prefetchFn),
         annotation: {} as DefineIdiomaticInfiniteQuery<
           (params?: { search: string }) => Promise<{
             pages: MockPage[];
@@ -497,12 +547,22 @@ export const InfiniteQueryTestFixtures = {
         pageParams: [0, 1],
       }));
 
+      const usePrefetchHookFn = vi.fn(
+        (
+          _params?: { search: string },
+          _allOptions?: {
+            nativeOptions?: unknown;
+          },
+        ) => { return; },
+      );
+
       return {
         fn,
         fetchNextPageFn: sharedFetchNextPageFn,
         fetchPreviousPageFn: sharedFetchPreviousPageFn,
         refetchFn: sharedRefetchFn,
-        reactiveInfiniteQuery: createReactiveInfiniteQuery(fn),
+        usePrefetchHookFn,
+        reactiveInfiniteQuery: createReactiveInfiniteQuery(fn, usePrefetchHookFn),
         annotation: {} as DefineReactiveInfiniteQuery<
           (params?: { search: string }) => Promise<{
             pages: MockPage[];
@@ -514,7 +574,7 @@ export const InfiniteQueryTestFixtures = {
       };
     },
     getChimeric: () => {
-      const { idiomaticInfiniteQuery, fn: idiomaticFn } =
+      const { idiomaticInfiniteQuery, fn: idiomaticFn, prefetchFn } =
         InfiniteQueryTestFixtures.withOptionalParams.getIdiomatic();
       const {
         reactiveInfiniteQuery,
@@ -522,15 +582,18 @@ export const InfiniteQueryTestFixtures = {
         fetchNextPageFn,
         fetchPreviousPageFn,
         refetchFn,
+        usePrefetchHookFn,
       } = InfiniteQueryTestFixtures.withOptionalParams.getReactive();
       return {
         idiomaticInfiniteQuery,
         idiomaticFn,
+        prefetchFn,
         reactiveInfiniteQuery,
         reactiveFn,
         fetchNextPageFn,
         fetchPreviousPageFn,
         refetchFn,
+        usePrefetchHookFn,
         annotation: {} as DefineChimericInfiniteQuery<
           (params?: { search: string }) => Promise<{
             pages: MockPage[];

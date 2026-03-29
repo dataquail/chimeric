@@ -102,8 +102,19 @@ export function createReactiveQuery<
   TNativeReturnType = unknown,
   TNativePrefetchOptions = unknown,
 >(
-  reactiveFn: any,
-  usePrefetchHookFn: any,
+  reactiveFn: (
+    params: TParams,
+    allOptions?: {
+      options?: ReactiveQueryOptions;
+      nativeOptions?: TNativeOptions;
+    },
+  ) => ReactiveQueryReturn<TResult, TError, TNativeReturnType>,
+  usePrefetchHookFn: (
+    params: TParams,
+    allOptions?: {
+      nativeOptions?: TNativePrefetchOptions;
+    },
+  ) => void,
 ): ReactiveQuery<
   TParams,
   TResult,
@@ -117,7 +128,17 @@ export function createReactiveQuery<
     usePrefetchHook: usePrefetchHookFn,
   };
   if (isEligibleReactive(reactiveQuery)) {
-    return markReactive(reactiveQuery, TYPE_MARKERS.REACTIVE_QUERY);
+    return markReactive(
+      reactiveQuery,
+      TYPE_MARKERS.REACTIVE_QUERY,
+    ) as ReactiveQuery<
+      TParams,
+      TResult,
+      TError,
+      TNativeOptions,
+      TNativeReturnType,
+      TNativePrefetchOptions
+    >;
   } else {
     throw new Error('reactiveFn is not qualified to be reactive query');
   }

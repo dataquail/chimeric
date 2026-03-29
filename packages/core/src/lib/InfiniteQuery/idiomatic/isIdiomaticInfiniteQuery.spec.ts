@@ -6,6 +6,7 @@ describe('isIdiomaticInfiniteQuery', () => {
   it('should return true for a valid idiomatic infinite query', () => {
     const idiomaticInfiniteQuery = createIdiomaticInfiniteQuery(
       vi.fn(async () => ({ pages: [], pageParams: [] })),
+      vi.fn(),
     );
     expect(isIdiomaticInfiniteQuery(idiomaticInfiniteQuery)).toBe(true);
   });
@@ -31,5 +32,12 @@ describe('isIdiomaticInfiniteQuery', () => {
   it('should return false for a reactive query object', () => {
     const reactiveQuery = { use: vi.fn() };
     expect(isIdiomaticInfiniteQuery(reactiveQuery as any)).toBe(false);
+  });
+
+  it('should return false for a function missing the prefetch property', () => {
+    // A plain function (even if it were marked) is not a valid idiomatic infinite query
+    // without the prefetch method
+    const fn = vi.fn() as any;
+    expect(isIdiomaticInfiniteQuery(fn)).toBe(false);
   });
 });

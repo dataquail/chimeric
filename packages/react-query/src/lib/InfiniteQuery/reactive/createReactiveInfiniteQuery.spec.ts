@@ -4,18 +4,24 @@ import { createReactiveInfiniteQuery } from './createReactiveInfiniteQuery';
 
 describe('createReactiveInfiniteQuery', () => {
   it('should create a reactive infinite query function', () => {
-    const { fn } = InfiniteQueryTestFixtures.withoutParams.getReactive();
-    const reactiveInfiniteQuery = createReactiveInfiniteQuery(fn);
+    const { fn, usePrefetchHookFn } =
+      InfiniteQueryTestFixtures.withoutParams.getReactive();
+    const reactiveInfiniteQuery = createReactiveInfiniteQuery(
+      fn,
+      usePrefetchHookFn,
+    );
 
     expect(typeof reactiveInfiniteQuery).toBe('object');
     expect(reactiveInfiniteQuery).toHaveProperty('useHook');
     expect(typeof reactiveInfiniteQuery.useHook).toBe('function');
+    expect(reactiveInfiniteQuery).toHaveProperty('usePrefetchHook');
+    expect(typeof reactiveInfiniteQuery.usePrefetchHook).toBe('function');
   });
 
   it('should throw an error for invalid input', () => {
     const invalidInput = 'not a function';
     expect(() => {
-      createReactiveInfiniteQuery(invalidInput as any);
+      createReactiveInfiniteQuery(invalidInput as any, vi.fn());
     }).toThrow('reactiveFn is not qualified to be reactive infinite query');
   });
 

@@ -1,5 +1,9 @@
 import { isEligibleReactive } from '../../utilities/isEligibleReactive';
-import { ReactiveInfiniteQuery } from './types';
+import {
+  ReactiveInfiniteQuery,
+  ReactiveInfiniteQueryResult,
+  ReactiveInfiniteQueryOptions,
+} from './types';
 import { TYPE_MARKERS } from '../../utilities/typeMarkers';
 import { markReactive } from '../../utilities/markReactive';
 
@@ -10,22 +14,28 @@ export function createReactiveInfiniteQuery<
   TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
+  TNativePrefetchOptions = unknown,
 >(
-  reactiveFn: ReactiveInfiniteQuery<
-    void,
+  reactiveFn: (allOptions?: {
+    options?: ReactiveInfiniteQueryOptions;
+    nativeOptions?: TNativeOptions;
+  }) => ReactiveInfiniteQueryResult<
     TPageData,
     TPageParam,
     TError,
-    TNativeOptions,
     TNativeReturnType
-  >['useHook'],
+  >,
+  usePrefetchHookFn: (allOptions?: {
+    nativeOptions?: TNativePrefetchOptions;
+  }) => void,
 ): ReactiveInfiniteQuery<
   void,
   TPageData,
   TPageParam,
   TError,
   TNativeOptions,
-  TNativeReturnType
+  TNativeReturnType,
+  TNativePrefetchOptions
 >;
 
 // Optional params
@@ -36,22 +46,34 @@ export function createReactiveInfiniteQuery<
   TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
+  TNativePrefetchOptions = unknown,
 >(
-  reactiveFn: ReactiveInfiniteQuery<
-    TParams | undefined,
+  reactiveFn: (
+    params?: TParams,
+    allOptions?: {
+      options?: ReactiveInfiniteQueryOptions;
+      nativeOptions?: TNativeOptions;
+    },
+  ) => ReactiveInfiniteQueryResult<
     TPageData,
     TPageParam,
     TError,
-    TNativeOptions,
     TNativeReturnType
-  >['useHook'],
+  >,
+  usePrefetchHookFn: (
+    params?: TParams,
+    allOptions?: {
+      nativeOptions?: TNativePrefetchOptions;
+    },
+  ) => void,
 ): ReactiveInfiniteQuery<
   TParams | undefined,
   TPageData,
   TPageParam,
   TError,
   TNativeOptions,
-  TNativeReturnType
+  TNativeReturnType,
+  TNativePrefetchOptions
 >;
 
 // Required params
@@ -62,22 +84,34 @@ export function createReactiveInfiniteQuery<
   TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
+  TNativePrefetchOptions = unknown,
 >(
-  reactiveFn: ReactiveInfiniteQuery<
-    TParams,
+  reactiveFn: (
+    params: TParams,
+    allOptions?: {
+      options?: ReactiveInfiniteQueryOptions;
+      nativeOptions?: TNativeOptions;
+    },
+  ) => ReactiveInfiniteQueryResult<
     TPageData,
     TPageParam,
     TError,
-    TNativeOptions,
     TNativeReturnType
-  >['useHook'],
+  >,
+  usePrefetchHookFn: (
+    params: TParams,
+    allOptions?: {
+      nativeOptions?: TNativePrefetchOptions;
+    },
+  ) => void,
 ): ReactiveInfiniteQuery<
   TParams,
   TPageData,
   TPageParam,
   TError,
   TNativeOptions,
-  TNativeReturnType
+  TNativeReturnType,
+  TNativePrefetchOptions
 >;
 
 // Implementation
@@ -88,25 +122,22 @@ export function createReactiveInfiniteQuery<
   TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
+  TNativePrefetchOptions = unknown,
 >(
-  reactiveFn: ReactiveInfiniteQuery<
-    TParams,
-    TPageData,
-    TPageParam,
-    TError,
-    TNativeOptions,
-    TNativeReturnType
-  >['useHook'],
+  reactiveFn: any,
+  usePrefetchHookFn: any,
 ): ReactiveInfiniteQuery<
   TParams,
   TPageData,
   TPageParam,
   TError,
   TNativeOptions,
-  TNativeReturnType
+  TNativeReturnType,
+  TNativePrefetchOptions
 > {
   const reactiveInfiniteQuery = {
     useHook: reactiveFn,
+    usePrefetchHook: usePrefetchHookFn,
   };
   if (isEligibleReactive(reactiveInfiniteQuery)) {
     return markReactive(
@@ -118,7 +149,8 @@ export function createReactiveInfiniteQuery<
       TPageParam,
       TError,
       TNativeOptions,
-      TNativeReturnType
+      TNativeReturnType,
+      TNativePrefetchOptions
     >;
   } else {
     throw new Error(

@@ -21,6 +21,7 @@ describe('isReactiveInfiniteQuery', () => {
         refetch: vi.fn(),
         native: {},
       })),
+      vi.fn(),
     );
     expect(isReactiveInfiniteQuery(reactiveInfiniteQuery)).toBe(true);
   });
@@ -54,5 +55,17 @@ describe('isReactiveInfiniteQuery', () => {
         } as any),
     );
     expect(isReactiveInfiniteQuery(idiomaticFunction as any)).toBe(false);
+  });
+
+  it('should return false for object with useHook but missing usePrefetchHook', () => {
+    expect(
+      isReactiveInfiniteQuery({ useHook: vi.fn() } as any),
+    ).toBe(false);
+  });
+
+  it('should return false for object with usePrefetchHook but missing useHook', () => {
+    expect(
+      isReactiveInfiniteQuery({ usePrefetchHook: vi.fn() } as any),
+    ).toBe(false);
   });
 });
