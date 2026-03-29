@@ -459,9 +459,6 @@ importers:
       date-fns:
         specifier: ^3.6.0
         version: 3.6.0
-      inversify:
-        specifier: ^6.0.3
-        version: 6.2.2(reflect-metadata@0.2.2)
       react:
         specifier: 19.0.0
         version: 19.0.0
@@ -477,9 +474,6 @@ importers:
       redux:
         specifier: ^5.0.1
         version: 5.0.1
-      reflect-metadata:
-        specifier: ^0.2.2
-        version: 0.2.2
       sass:
         specifier: ^1.77.2
         version: 1.86.0

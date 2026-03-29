@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
-import { appContainer } from 'src/core/global/appContainer';
+import { container } from 'src/core/global/container';
 import { createReviewedTodo } from 'src/core/domain/review/entities/ReviewedTodo';
 import { useReviewedTodoStore } from './reviewedTodoStore';
 
@@ -9,11 +8,7 @@ describe('ReviewedTodoRepositoryImpl', () => {
     useReviewedTodoStore.getState().deleteAllTodos();
   });
 
-  const getReviewedTodoRepository = () => {
-    return appContainer.get<InjectionType<'IReviewedTodoRepository'>>(
-      InjectionSymbol('IReviewedTodoRepository'),
-    );
-  };
+  const getReviewedTodoRepository = () => container.reviewedTodoRepository;
 
   it('getOneById', () => {
     const reviewedTodoRepository = getReviewedTodoRepository();

@@ -1,19 +1,11 @@
 import { ReactNode } from 'react';
 import { Provider } from 'react-redux';
-import { injectComponent } from 'src/utils/inversify/InjectComponent/DI';
-import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
+import { container } from 'src/core/global/container';
 
-type InjectedProps = {
-  appStoreProvider: InjectionType<'IAppStoreProvider'>;
-};
-
-type OwnProps = {
+type Props = {
   children: ReactNode;
 };
 
-export const StoreProvider = injectComponent<InjectedProps, OwnProps>(
-  { appStoreProvider: InjectionSymbol('IAppStoreProvider') },
-  ({ appStoreProvider, children }) => {
-    return <Provider store={appStoreProvider.get()}>{children}</Provider>;
-  },
-);
+export const StoreProvider = ({ children }: Props) => {
+  return <Provider store={container.appStoreProvider.get()}>{children}</Provider>;
+};

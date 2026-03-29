@@ -1,26 +1,21 @@
-import { inject, injectable } from 'inversify';
 import { createReview } from 'src/core/domain/review/entities/Review';
 import { DefineChimericAsync, ChimericAsyncFactory } from '@chimeric/react';
-import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
+import { IReviewRepository } from 'src/core/domain/review/ports/IReviewRepository';
+import { IActiveTodoService } from 'src/core/domain/activeTodo/ports/IActiveTodoService';
+import { ISavedForLaterTodoService } from 'src/core/domain/savedForLaterTodo/ports/ISavedForLaterTodoService';
 
-@injectable()
-export class StartReviewUseCase {
-  public readonly execute: DefineChimericAsync<() => Promise<void>>;
+export type StartReviewUseCase = {
+  execute: DefineChimericAsync<() => Promise<void>>;
+};
 
-  constructor(
-    @inject(InjectionSymbol('IReviewRepository'))
-    private readonly reviewRepository: InjectionType<'IReviewRepository'>,
-    @inject(InjectionSymbol('IActiveTodoService'))
-    private readonly activeTodoService: InjectionType<'IActiveTodoService'>,
-    @inject(InjectionSymbol('ISavedForLaterTodoService'))
-    private readonly savedForLaterTodoService: InjectionType<'ISavedForLaterTodoService'>,
-  ) {
-    this.execute = ChimericAsyncFactory(this._execute.bind(this));
-  }
-
-  private async _execute() {
-    const activeTodoList = await this.activeTodoService.getAll();
-    const savedForLaterTodoList = await this.savedForLaterTodoService.getAll();
+export const createStartReviewUseCase = (
+  reviewRepository: IReviewRepository,
+  activeTodoService: IActiveTodoService,
+  savedForLaterTodoService: ISavedForLaterTodoService,
+): StartReviewUseCase => {
+  const _execute = async () => {
+    const activeTodoList = await activeTodoService.getAll();
+    const savedForLaterTodoList = await savedForLaterTodoService.getAll();
 
     const todosToReviewIdList: string[] = [
       ...activeTodoList
@@ -30,6 +25,10 @@ export class StartReviewUseCase {
     ];
 
     const review = createReview(todosToReviewIdList);
-    this.reviewRepository.save(review);
-  }
-}
+    reviewRepository.save(review);
+  };
+
+  return {
+    execute: ChimericAsyncFactory(_execute),
+  };
+};

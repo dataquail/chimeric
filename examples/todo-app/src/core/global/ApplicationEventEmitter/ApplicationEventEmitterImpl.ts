@@ -1,7 +1,5 @@
-import { injectable } from 'inversify';
 import { IApplicationEventEmitter, Listener } from './IApplicationEventEmitter';
 
-@injectable()
 export class ApplicationEventEmitterImpl implements IApplicationEventEmitter {
   private readonly events: Set<unknown>;
   private readonly listeners: Set<Listener>;

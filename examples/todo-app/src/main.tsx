@@ -1,6 +1,4 @@
-import 'reflect-metadata';
 import '@mantine/core/styles.css';
-import 'src/core/global/inversify.config';
 import './styles.css';
 import { StrictMode } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';

@@ -1,30 +1,22 @@
-import { injectComponent } from 'src/utils/inversify/InjectComponent/DI';
 import { QueryClientProvider as ReactQueryClientProvider } from '@tanstack/react-query';
-import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
+import { container } from 'src/core/global/container';
 
-type InjectedProps = {
-  queryClientProvider: InjectionType<'IQueryClientProvider'>;
-};
-
-type OwnProps = {
+type Props = {
   children: React.ReactNode;
 };
 
-export const ReactQueryTestWrapper = injectComponent<InjectedProps, OwnProps>(
-  { queryClientProvider: InjectionSymbol('IQueryClientProvider') },
-  (props) => {
-    props.queryClientProvider.get().setDefaultOptions({
-      queries: {
-        // ✅ turns retries off
-        retry: false,
-        staleTime: Infinity,
-      },
-    });
+export const ReactQueryTestWrapper = (props: Props) => {
+  container.queryClientProvider.get().setDefaultOptions({
+    queries: {
+      // turns retries off
+      retry: false,
+      staleTime: Infinity,
+    },
+  });
 
-    return (
-      <ReactQueryClientProvider client={props.queryClientProvider.get()}>
-        {props.children}
-      </ReactQueryClientProvider>
-    );
-  },
-);
+  return (
+    <ReactQueryClientProvider client={container.queryClientProvider.get()}>
+      {props.children}
+    </ReactQueryClientProvider>
+  );
+};
