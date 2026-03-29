@@ -13,12 +13,23 @@ export function createReactiveQuery<
   TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
+  TNativePrefetchOptions = unknown,
 >(
   reactiveFn: (allOptions?: {
     options?: ReactiveQueryOptions;
     nativeOptions?: TNativeOptions;
   }) => ReactiveQueryReturn<TResult, TError, TNativeReturnType>,
-): ReactiveQuery<void, TResult, TError, TNativeOptions, TNativeReturnType>;
+  usePrefetchHookFn: (allOptions?: {
+    nativeOptions?: TNativePrefetchOptions;
+  }) => void,
+): ReactiveQuery<
+  void,
+  TResult,
+  TError,
+  TNativeOptions,
+  TNativeReturnType,
+  TNativePrefetchOptions
+>;
 
 // Optional params
 export function createReactiveQuery<
@@ -27,6 +38,7 @@ export function createReactiveQuery<
   TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
+  TNativePrefetchOptions = unknown,
 >(
   reactiveFn: (
     params?: TParams,
@@ -35,12 +47,19 @@ export function createReactiveQuery<
       nativeOptions?: TNativeOptions;
     },
   ) => ReactiveQueryReturn<TResult, TError, TNativeReturnType>,
+  usePrefetchHookFn: (
+    params?: TParams,
+    allOptions?: {
+      nativeOptions?: TNativePrefetchOptions;
+    },
+  ) => void,
 ): ReactiveQuery<
   TParams | undefined,
   TResult,
   TError,
   TNativeOptions,
-  TNativeReturnType
+  TNativeReturnType,
+  TNativePrefetchOptions
 >;
 
 // Required params
@@ -50,6 +69,7 @@ export function createReactiveQuery<
   TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
+  TNativePrefetchOptions = unknown,
 >(
   reactiveFn: (
     params: TParams,
@@ -58,7 +78,20 @@ export function createReactiveQuery<
       nativeOptions?: TNativeOptions;
     },
   ) => ReactiveQueryReturn<TResult, TError, TNativeReturnType>,
-): ReactiveQuery<TParams, TResult, TError, TNativeOptions, TNativeReturnType>;
+  usePrefetchHookFn: (
+    params: TParams,
+    allOptions?: {
+      nativeOptions?: TNativePrefetchOptions;
+    },
+  ) => void,
+): ReactiveQuery<
+  TParams,
+  TResult,
+  TError,
+  TNativeOptions,
+  TNativeReturnType,
+  TNativePrefetchOptions
+>;
 
 // Implementation
 export function createReactiveQuery<
@@ -67,11 +100,21 @@ export function createReactiveQuery<
   TError extends Error = Error,
   TNativeOptions = unknown,
   TNativeReturnType = unknown,
+  TNativePrefetchOptions = unknown,
 >(
   reactiveFn: any,
-): ReactiveQuery<TParams, TResult, TError, TNativeOptions, TNativeReturnType> {
+  usePrefetchHookFn: any,
+): ReactiveQuery<
+  TParams,
+  TResult,
+  TError,
+  TNativeOptions,
+  TNativeReturnType,
+  TNativePrefetchOptions
+> {
   const reactiveQuery = {
     useHook: reactiveFn,
+    usePrefetchHook: usePrefetchHookFn,
   };
   if (isEligibleReactive(reactiveQuery)) {
     return markReactive(reactiveQuery, TYPE_MARKERS.REACTIVE_QUERY);

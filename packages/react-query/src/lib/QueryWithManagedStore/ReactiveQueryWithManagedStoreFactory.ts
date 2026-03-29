@@ -2,12 +2,14 @@
 import {
   type QueryKey,
   useQuery,
+  usePrefetchQuery,
   queryOptions,
   DefinedInitialDataOptions,
 } from '@tanstack/react-query';
 import {
   ReactiveQuery,
   TanstackQueryReactiveNativeOptions,
+  TanstackQueryReactivePrefetchNativeOptions,
 } from '../Query/reactive/types';
 import { createReactiveQuery } from '../Query/reactive/createReactiveQuery';
 import { ReactiveQueryOptions, validateMaxArgLength } from '@chimeric/core';
@@ -73,79 +75,116 @@ export function ReactiveQueryWithManagedStoreFactory<
     fnName: 'useFromStore',
     maximumLength: 1,
   });
-  return createReactiveQuery(
-    (
-      paramsOrOptions?: Parameters<
-        ReactiveQuery<TParams, TResult, TError, TQueryKey>['useHook']
-      >[0],
-      maybeOptions?: Parameters<
-        ReactiveQuery<TParams, TResult, TError, TQueryKey>['useHook']
-      >[1],
-    ) => {
-      const params =
-        getQueryOptions.length === 0
-          ? (undefined as TParams)
-          : (paramsOrOptions as TParams);
-      const allOptions =
-        getQueryOptions.length === 0
-          ? (paramsOrOptions as {
-              options?: ReactiveQueryOptions;
-              nativeOptions?: TanstackQueryReactiveNativeOptions<
-                TResult,
-                TError,
-                TQueryKey
-              >;
-            })
-          : maybeOptions;
-      const nativeOptions = allOptions?.nativeOptions as
-        | TanstackQueryReactiveNativeOptions<TResult, TError, TQueryKey>
-        | undefined;
-      let fetchQueryOptions: ReturnType<
-        typeof queryOptions<any, TError, void, TQueryKey>
-      > = getQueryOptions(params);
+  const reactiveFn = (
+    paramsOrOptions?: Parameters<
+      ReactiveQuery<TParams, TResult, TError, TQueryKey>['useHook']
+    >[0],
+    maybeOptions?: Parameters<
+      ReactiveQuery<TParams, TResult, TError, TQueryKey>['useHook']
+    >[1],
+  ) => {
+    const params =
+      getQueryOptions.length === 0
+        ? (undefined as TParams)
+        : (paramsOrOptions as TParams);
+    const allOptions =
+      getQueryOptions.length === 0
+        ? (paramsOrOptions as {
+            options?: ReactiveQueryOptions;
+            nativeOptions?: TanstackQueryReactiveNativeOptions<
+              TResult,
+              TError,
+              TQueryKey
+            >;
+          })
+        : maybeOptions;
+    const nativeOptions = allOptions?.nativeOptions as
+      | TanstackQueryReactiveNativeOptions<TResult, TError, TQueryKey>
+      | undefined;
+    let fetchQueryOptions: ReturnType<
+      typeof queryOptions<any, TError, void, TQueryKey>
+    > = getQueryOptions(params);
 
-      if (allOptions?.options?.enabled === false) {
-        fetchQueryOptions.enabled = false;
-      }
+    if (allOptions?.options?.enabled === false) {
+      fetchQueryOptions.enabled = false;
+    }
 
-      // Prioritize native options last so they can override anything
-      if (nativeOptions) {
-        fetchQueryOptions = {
-          ...fetchQueryOptions,
-          ...nativeOptions,
-        };
-      }
-
-      const { queryFn, ...restInitialQueryOptions } = fetchQueryOptions;
-
-      const query = useQuery({
-        ...restInitialQueryOptions,
-        queryFn: async (context): Promise<TResult> => {
-          if (typeof queryFn === 'function') {
-            await queryFn(context);
-          }
-          // ensures queryFn returns a value (null) so caller doesn't need to remember to
-          // write their queryFn to return a value. The return value is ideally void,
-          // but tanstack query doesn't support void. The return value does not matter
-          // because the store is managed by the user directly.
-          return null as unknown as TResult;
-        },
-      } as DefinedInitialDataOptions<TResult, TError, TResult, TQueryKey>);
-      const dataFromStore = useFromStore(params as TParams);
-
-      return {
-        isIdle: !query.isFetched,
-        isPending: query.isPending,
-        isSuccess: query.isSuccess,
-        isError: query.isError,
-        error: query.error,
-        data: dataFromStore,
-        refetch: async () => {
-          await query.refetch();
-          return dataFromStore;
-        },
-        native: query,
+    // Prioritize native options last so they can override anything
+    if (nativeOptions) {
+      fetchQueryOptions = {
+        ...fetchQueryOptions,
+        ...nativeOptions,
       };
-    },
-  ) as ReactiveQuery<TParams, TResult, TError, TQueryKey>;
+    }
+
+    const { queryFn, ...restInitialQueryOptions } = fetchQueryOptions;
+
+    const query = useQuery({
+      ...restInitialQueryOptions,
+      queryFn: async (context): Promise<TResult> => {
+        if (typeof queryFn === 'function') {
+          await queryFn(context);
+        }
+        // ensures queryFn returns a value (null) so caller doesn't need to remember to
+        // write their queryFn to return a value. The return value is ideally void,
+        // but tanstack query doesn't support void. The return value does not matter
+        // because the store is managed by the user directly.
+        return null as unknown as TResult;
+      },
+    } as DefinedInitialDataOptions<TResult, TError, TResult, TQueryKey>);
+    const dataFromStore = useFromStore(params as TParams);
+
+    return {
+      isIdle: !query.isFetched,
+      isPending: query.isPending,
+      isSuccess: query.isSuccess,
+      isError: query.isError,
+      error: query.error,
+      data: dataFromStore,
+      refetch: async () => {
+        await query.refetch();
+        return dataFromStore;
+      },
+      native: query,
+    };
+  };
+
+  const prefetchHook = (
+    paramsOrOptions?: Parameters<
+      ReactiveQuery<TParams, TResult, TError, TQueryKey>['usePrefetchHook']
+    >[0],
+    maybeOptions?: Parameters<
+      ReactiveQuery<TParams, TResult, TError, TQueryKey>['usePrefetchHook']
+    >[1],
+  ) => {
+    const params =
+      getQueryOptions.length === 0
+        ? (undefined as TParams)
+        : (paramsOrOptions as TParams);
+    const allOptions =
+      getQueryOptions.length === 0
+        ? (paramsOrOptions as {
+            nativeOptions?: TanstackQueryReactivePrefetchNativeOptions<
+              TResult,
+              TError,
+              TQueryKey
+            >;
+          })
+        : maybeOptions;
+    const nativeOptions = allOptions?.nativeOptions as
+      | TanstackQueryReactivePrefetchNativeOptions<TResult, TError, TQueryKey>
+      | undefined;
+
+    usePrefetchQuery({
+      ...getQueryOptions(params),
+      ...nativeOptions,
+    });
+  };
+
+  return createReactiveQuery(reactiveFn, prefetchHook) as ReactiveQuery<
+    TParams,
+    TResult,
+    TError,
+    TQueryKey
+  >;
 }

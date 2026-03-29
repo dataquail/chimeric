@@ -8,13 +8,15 @@ export type ChimericQuery<
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
+  TNativeReactivePrefetchOptions = unknown,
 > = IdiomaticQuery<TParams, TResult, TNativeIdiomaticOptions> &
   ReactiveQuery<
     TParams,
     TResult,
     TError,
     TNativeReactiveOptions,
-    TNativeReactiveResult
+    TNativeReactiveResult,
+    TNativeReactivePrefetchOptions
   >;
 
 export type DefineChimericQuery<
@@ -25,6 +27,7 @@ export type DefineChimericQuery<
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
+  TNativeReactivePrefetchOptions = unknown,
 > = Parameters<T> extends []
   ? ChimericQuery<
       void,
@@ -32,7 +35,8 @@ export type DefineChimericQuery<
       E,
       TNativeIdiomaticOptions,
       TNativeReactiveOptions,
-      TNativeReactiveResult
+      TNativeReactiveResult,
+      TNativeReactivePrefetchOptions
     >
   : ChimericQuery<
       Parameters<T>[0],
@@ -40,5 +44,6 @@ export type DefineChimericQuery<
       E,
       TNativeIdiomaticOptions,
       TNativeReactiveOptions,
-      TNativeReactiveResult
+      TNativeReactiveResult,
+      TNativeReactivePrefetchOptions
     >;

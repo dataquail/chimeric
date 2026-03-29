@@ -9,22 +9,17 @@ export const isChimericQuery = <
   TNativeIdiomaticOptions = unknown,
   TNativeReactiveOptions = unknown,
   TNativeReactiveResult = unknown,
+  TNativeReactivePrefetchOptions = unknown,
 >(
-  maybeChimericQuery: ChimericQuery<
-    TParams,
-    TResult,
-    TError,
-    TNativeIdiomaticOptions,
-    TNativeReactiveOptions,
-    TNativeReactiveResult
-  >,
+  maybeChimericQuery: unknown,
 ): maybeChimericQuery is ChimericQuery<
   TParams,
   TResult,
   TError,
   TNativeIdiomaticOptions,
   TNativeReactiveOptions,
-  TNativeReactiveResult
+  TNativeReactiveResult,
+  TNativeReactivePrefetchOptions
 > => {
   return (
     isIdiomaticQuery(maybeChimericQuery) && isReactiveQuery(maybeChimericQuery)

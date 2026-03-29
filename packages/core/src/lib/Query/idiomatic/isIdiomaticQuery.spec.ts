@@ -16,4 +16,11 @@ describe('isIdiomaticQuery', () => {
     expect(isIdiomaticQuery(null as any)).toBe(false);
     expect(isIdiomaticQuery(undefined as any)).toBe(false);
   });
+
+  it('should return false for a function missing the prefetch property', () => {
+    // A plain function (even if it were marked) is not a valid idiomatic query
+    // without the prefetch method
+    const fn = vi.fn() as any;
+    expect(isIdiomaticQuery(fn)).toBe(false);
+  });
 });

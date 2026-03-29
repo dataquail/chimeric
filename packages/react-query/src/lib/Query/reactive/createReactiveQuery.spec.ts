@@ -4,18 +4,21 @@ import { createReactiveQuery } from './createReactiveQuery';
 
 describe('createReactiveQuery', () => {
   it('should create a reactive query function', () => {
-    const { fn } = QueryTestFixtures.withoutParams.getReactive();
-    const reactiveQuery = createReactiveQuery(fn);
+    const { fn, usePrefetchHookFn } =
+      QueryTestFixtures.withoutParams.getReactive();
+    const reactiveQuery = createReactiveQuery(fn, usePrefetchHookFn);
 
     expect(typeof reactiveQuery).toBe('object');
     expect(reactiveQuery).toHaveProperty('useHook');
     expect(typeof reactiveQuery.useHook).toBe('function');
+    expect(reactiveQuery).toHaveProperty('usePrefetchHook');
+    expect(typeof reactiveQuery.usePrefetchHook).toBe('function');
   });
 
   it('should throw an error for invalid input', () => {
     const invalidInput = 'not a function';
     expect(() => {
-      createReactiveQuery(invalidInput as any);
+      createReactiveQuery(invalidInput as any, vi.fn());
     }).toThrow('reactiveFn is not qualified to be reactive query');
   });
 

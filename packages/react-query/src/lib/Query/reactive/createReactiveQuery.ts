@@ -6,6 +6,7 @@ import {
 import {
   ReactiveQuery,
   TanstackQueryReactiveNativeOptions,
+  TanstackQueryReactivePrefetchNativeOptions,
   TanstackQueryReactiveReturnType,
 } from './types';
 import { QueryKey } from '@tanstack/react-query';
@@ -28,6 +29,13 @@ export function createReactiveQuery<
     TError,
     TanstackQueryReactiveReturnType<TResult, TError>
   >,
+  usePrefetchHookFn: (allOptions?: {
+    nativeOptions?: TanstackQueryReactivePrefetchNativeOptions<
+      TResult,
+      TError,
+      TQueryKey
+    >;
+  }) => void,
 ): ReactiveQuery<void, TResult, TError, TQueryKey>;
 
 // Overload for optional params
@@ -52,6 +60,16 @@ export function createReactiveQuery<
     TError,
     TanstackQueryReactiveReturnType<TResult, TError>
   >,
+  usePrefetchHookFn: (
+    params?: TParams,
+    allOptions?: {
+      nativeOptions?: TanstackQueryReactivePrefetchNativeOptions<
+        TResult,
+        TError,
+        TQueryKey
+      >;
+    },
+  ) => void,
 ): ReactiveQuery<TParams | undefined, TResult, TError, TQueryKey>;
 
 // Overload for required params
@@ -76,6 +94,16 @@ export function createReactiveQuery<
     TError,
     TanstackQueryReactiveReturnType<TResult, TError>
   >,
+  usePrefetchHookFn: (
+    params: TParams,
+    allOptions?: {
+      nativeOptions?: TanstackQueryReactivePrefetchNativeOptions<
+        TResult,
+        TError,
+        TQueryKey
+      >;
+    },
+  ) => void,
 ): ReactiveQuery<TParams, TResult, TError, TQueryKey>;
 
 // Implementation
@@ -100,8 +128,18 @@ export function createReactiveQuery<
     TError,
     TanstackQueryReactiveReturnType<TResult, TError>
   >,
+  usePrefetchHookFn: (
+    params?: TParams,
+    allOptions?: {
+      nativeOptions?: TanstackQueryReactivePrefetchNativeOptions<
+        TResult,
+        TError,
+        TQueryKey
+      >;
+    },
+  ) => void,
 ): ReactiveQuery<TParams, TResult, TError, TQueryKey> {
-  return coreCreateReactiveQuery(reactiveFn) as ReactiveQuery<
+  return coreCreateReactiveQuery(reactiveFn, usePrefetchHookFn) as ReactiveQuery<
     TParams,
     TResult,
     TError,

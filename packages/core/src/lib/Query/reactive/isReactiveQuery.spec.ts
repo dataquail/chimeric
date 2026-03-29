@@ -18,4 +18,16 @@ describe('isReactiveQuery', () => {
     expect(isReactiveQuery({ notUseHook: 'something' } as any)).toBe(false);
     expect(isReactiveQuery({ useHook: 'not a function' } as any)).toBe(false);
   });
+
+  it('should return false for object with useHook but missing usePrefetchHook', () => {
+    expect(
+      isReactiveQuery({ useHook: vi.fn() } as any),
+    ).toBe(false);
+  });
+
+  it('should return false for object with usePrefetchHook but missing useHook', () => {
+    expect(
+      isReactiveQuery({ usePrefetchHook: vi.fn() } as any),
+    ).toBe(false);
+  });
 });

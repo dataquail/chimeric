@@ -9,6 +9,7 @@ import { createReactiveQuery } from '../reactive/createReactiveQuery';
 import {
   DefineReactiveQuery,
   TanstackQueryReactiveNativeOptions,
+  TanstackQueryReactivePrefetchNativeOptions,
   TanstackQueryReactiveReturnType,
 } from '../reactive/types';
 
@@ -25,10 +26,20 @@ export const QueryTestFixtures = {
           >;
         }) => 'test',
       );
+      const prefetchFn = vi.fn(
+        async (_allOptions?: {
+          nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+            string,
+            Error,
+            string[]
+          >;
+        }) => { return; },
+      );
       return {
         fn,
+        prefetchFn,
         queryFn: vi.fn(() => Promise.resolve('test')),
-        idiomaticQuery: createIdiomaticQuery(fn),
+        idiomaticQuery: createIdiomaticQuery(fn, prefetchFn),
         annotation: {} as DefineIdiomaticQuery<
           () => Promise<string>,
           Error,
@@ -60,11 +71,21 @@ export const QueryTestFixtures = {
           >,
         }),
       );
+      const usePrefetchHookFn = vi.fn(
+        (_allOptions?: {
+          nativeOptions?: TanstackQueryReactivePrefetchNativeOptions<
+            string,
+            Error,
+            string[]
+          >;
+        }) => { return; },
+      );
       return {
         fn,
         refetchFn,
+        usePrefetchHookFn,
         queryFn: vi.fn(() => Promise.resolve('test')),
-        reactiveQuery: createReactiveQuery(fn),
+        reactiveQuery: createReactiveQuery(fn, usePrefetchHookFn),
         annotation: {} as DefineReactiveQuery<
           () => Promise<string>,
           Error,
@@ -73,19 +94,22 @@ export const QueryTestFixtures = {
       };
     },
     getChimeric: () => {
-      const { idiomaticQuery, fn: idiomaticFn } =
+      const { idiomaticQuery, fn: idiomaticFn, prefetchFn } =
         QueryTestFixtures.withoutParams.getIdiomatic();
       const {
         reactiveQuery,
         fn: reactiveFn,
         refetchFn,
+        usePrefetchHookFn,
       } = QueryTestFixtures.withoutParams.getReactive();
       return {
         idiomaticQuery,
         idiomaticFn,
+        prefetchFn,
         reactiveQuery,
         reactiveFn,
         refetchFn,
+        usePrefetchHookFn,
         queryFn: vi.fn(() => Promise.resolve('test')),
         annotation: {} as DefineChimericQuery<
           () => Promise<string>,
@@ -110,8 +134,21 @@ export const QueryTestFixtures = {
           },
         ) => `Hello ${params.name}`,
       );
+      const prefetchFn = vi.fn(
+        async (
+          _params: { name: string },
+          _allOptions?: {
+            nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+              string,
+              Error,
+              string[]
+            >;
+          },
+        ) => { return; },
+      );
       return {
         fn,
+        prefetchFn,
         queryFn: vi.fn((args: { name: string }) =>
           Promise.resolve(`Hello ${args.name}`),
         ),
@@ -122,7 +159,7 @@ export const QueryTestFixtures = {
           string,
           Error,
           string[]
-        >(fn),
+        >(fn, prefetchFn),
         annotation: {} as DefineIdiomaticQuery<
           (params: { name: string }) => Promise<string>,
           Error,
@@ -161,13 +198,26 @@ export const QueryTestFixtures = {
           };
         },
       );
+      const usePrefetchHookFn = vi.fn(
+        (
+          _params: { name: string },
+          _allOptions?: {
+            nativeOptions?: TanstackQueryReactivePrefetchNativeOptions<
+              string,
+              Error,
+              string[]
+            >;
+          },
+        ) => { return; },
+      );
       return {
         fn,
         refetchFn,
+        usePrefetchHookFn,
         queryFn: vi.fn((args: { name: string }) =>
           Promise.resolve(`Hello ${args.name}`),
         ),
-        reactiveQuery: createReactiveQuery(fn),
+        reactiveQuery: createReactiveQuery(fn, usePrefetchHookFn),
         annotation: {} as DefineReactiveQuery<
           (params: { name: string }) => Promise<string>,
           Error,
@@ -176,19 +226,22 @@ export const QueryTestFixtures = {
       };
     },
     getChimeric: () => {
-      const { idiomaticQuery, fn: idiomaticFn } =
+      const { idiomaticQuery, fn: idiomaticFn, prefetchFn } =
         QueryTestFixtures.withParams.getIdiomatic();
       const {
         reactiveQuery,
         fn: reactiveFn,
         refetchFn,
+        usePrefetchHookFn,
       } = QueryTestFixtures.withParams.getReactive();
       return {
         idiomaticQuery,
         idiomaticFn,
+        prefetchFn,
         reactiveQuery,
         reactiveFn,
         refetchFn,
+        usePrefetchHookFn,
         queryFn: vi.fn((args: { name: string }) =>
           Promise.resolve(`Hello ${args.name}`),
         ),
@@ -215,8 +268,21 @@ export const QueryTestFixtures = {
           },
         ) => (params ? `Hello ${params.name}` : 'Hello'),
       );
+      const prefetchFn = vi.fn(
+        async (
+          _params?: { name: string },
+          _allOptions?: {
+            nativeOptions?: TanstackQueryIdiomaticNativeOptions<
+              string,
+              Error,
+              string[]
+            >;
+          },
+        ) => { return; },
+      );
       return {
         fn,
+        prefetchFn,
         queryFn: vi.fn((args?: { name: string }) =>
           Promise.resolve(args ? `Hello ${args.name}` : 'Hello'),
         ),
@@ -225,7 +291,7 @@ export const QueryTestFixtures = {
           string,
           Error,
           string[]
-        >(fn),
+        >(fn, prefetchFn),
         annotation: {} as DefineIdiomaticQuery<
           (params?: { name: string }) => Promise<string>,
           Error,
@@ -268,15 +334,28 @@ export const QueryTestFixtures = {
           };
         },
       );
+      const usePrefetchHookFn = vi.fn(
+        (
+          _params?: { name: string },
+          _allOptions?: {
+            nativeOptions?: TanstackQueryReactivePrefetchNativeOptions<
+              string,
+              Error,
+              string[]
+            >;
+          },
+        ) => { return; },
+      );
       // Create a shared mock refetch for testing call counts
       const sharedRefetchFn = vi.fn(async () => 'test');
       return {
         fn,
         refetchFn: sharedRefetchFn,
+        usePrefetchHookFn,
         queryFn: vi.fn((args?: { name: string }) =>
           Promise.resolve(args ? `Hello ${args.name}` : 'Hello'),
         ),
-        reactiveQuery: createReactiveQuery(fn),
+        reactiveQuery: createReactiveQuery(fn, usePrefetchHookFn),
         annotation: {} as DefineReactiveQuery<
           (params?: { name: string }) => Promise<string>,
           Error,
@@ -285,19 +364,22 @@ export const QueryTestFixtures = {
       };
     },
     getChimeric: () => {
-      const { idiomaticQuery, fn: idiomaticFn } =
+      const { idiomaticQuery, fn: idiomaticFn, prefetchFn } =
         QueryTestFixtures.withOptionalParams.getIdiomatic();
       const {
         reactiveQuery,
         fn: reactiveFn,
         refetchFn,
+        usePrefetchHookFn,
       } = QueryTestFixtures.withOptionalParams.getReactive();
       return {
         idiomaticQuery,
         idiomaticFn,
+        prefetchFn,
         reactiveQuery,
         reactiveFn,
         refetchFn,
+        usePrefetchHookFn,
         queryFn: vi.fn((args?: { name: string }) =>
           Promise.resolve(args ? `Hello ${args.name}` : 'Hello'),
         ),

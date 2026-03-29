@@ -6,7 +6,7 @@ export function isIdiomaticQuery<
   TResult = unknown,
   TError extends Error = Error,
 >(
-  query: IdiomaticQuery<TParams, TResult, TError>,
+  query: unknown,
 ): query is IdiomaticQuery<TParams, TResult, TError> {
   return coreIsIdiomaticQuery(query);
 }

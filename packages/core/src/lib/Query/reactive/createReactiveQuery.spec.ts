@@ -4,18 +4,24 @@ import { createReactiveQuery } from './createReactiveQuery';
 
 describe('createReactiveQuery', () => {
   it('should create a reactive query function', () => {
-    const { fn } = QueryTestFixtures.withoutParams.getReactive();
-    const reactiveQuery = createReactiveQuery(fn);
+    const { fn, usePrefetchHookFn } =
+      QueryTestFixtures.withoutParams.getReactive();
+    const reactiveQuery = createReactiveQuery(fn, usePrefetchHookFn);
 
     expect(typeof reactiveQuery).toBe('object');
     expect(reactiveQuery).toHaveProperty('useHook');
     expect(typeof reactiveQuery.useHook).toBe('function');
   });
 
+  it('should attach usePrefetchHook to the reactive query', () => {
+    const { reactiveQuery } = QueryTestFixtures.withoutParams.getReactive();
+    expect(typeof reactiveQuery.usePrefetchHook).toBe('function');
+  });
+
   it('should throw an error for invalid input', () => {
     const invalidInput = 'not a function';
     expect(() => {
-      createReactiveQuery(invalidInput as any);
+      createReactiveQuery(invalidInput as any, vi.fn());
     }).toThrow('reactiveFn is not qualified to be reactive query');
   });
 
@@ -202,5 +208,109 @@ describe('createReactiveQuery', () => {
     type TestAnnotation = typeof _annotation;
     const testAnnotation: TestAnnotation = reactiveQuery;
     expect(testAnnotation).toBe(reactiveQuery);
+  });
+
+  // PREFETCH USAGE TESTS
+  it('PREFETCH USAGE: no params', () => {
+    const { usePrefetchHookFn, reactiveQuery } =
+      QueryTestFixtures.withoutParams.getReactive();
+
+    // Call without options
+    reactiveQuery.usePrefetchHook();
+    expect(usePrefetchHookFn).toHaveBeenCalledWith();
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(1);
+
+    // Call with options
+    reactiveQuery.usePrefetchHook({
+      nativeOptions: undefined,
+    });
+    expect(usePrefetchHookFn).toHaveBeenCalledWith({
+      nativeOptions: undefined,
+    });
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(2);
+
+    // Returns void
+    const result = reactiveQuery.usePrefetchHook();
+    expect(result).toBeUndefined();
+  });
+
+  it('PREFETCH USAGE: with params', () => {
+    const { usePrefetchHookFn, reactiveQuery } =
+      QueryTestFixtures.withParams.getReactive();
+
+    // Call with params without options
+    reactiveQuery.usePrefetchHook({ name: 'John' });
+    expect(usePrefetchHookFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(1);
+
+    // Call with params with options
+    reactiveQuery.usePrefetchHook(
+      { name: 'John' },
+      { nativeOptions: undefined },
+    );
+    expect(usePrefetchHookFn).toHaveBeenCalledWith(
+      { name: 'John' },
+      { nativeOptions: undefined },
+    );
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(2);
+  });
+
+  it('PREFETCH USAGE: optional params', () => {
+    const { usePrefetchHookFn, reactiveQuery } =
+      QueryTestFixtures.withOptionalParams.getReactive();
+
+    // Call with params
+    reactiveQuery.usePrefetchHook({ name: 'John' });
+    expect(usePrefetchHookFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(1);
+
+    // Call without params
+    reactiveQuery.usePrefetchHook();
+    expect(usePrefetchHookFn).toHaveBeenCalledWith();
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(2);
+
+    // Call without params with options
+    reactiveQuery.usePrefetchHook(undefined, {
+      nativeOptions: undefined,
+    });
+    expect(usePrefetchHookFn).toHaveBeenCalledWith(undefined, {
+      nativeOptions: undefined,
+    });
+    expect(usePrefetchHookFn).toHaveBeenCalledTimes(3);
+  });
+
+  // PREFETCH TYPE ERROR TESTS
+  it('PREFETCH TYPE ERRORS: no params', () => {
+    const { reactiveQuery } = QueryTestFixtures.withoutParams.getReactive();
+
+    try {
+      // @ts-expect-error testing invalid call - no params variant shouldn't accept params
+      reactiveQuery.usePrefetchHook({ name: 'John' });
+    } catch {
+      // Expected to throw
+    }
+  });
+
+  it('PREFETCH TYPE ERRORS: with params', () => {
+    const { reactiveQuery } = QueryTestFixtures.withParams.getReactive();
+
+    try {
+      // @ts-expect-error testing invalid call - required params variant must have params
+      reactiveQuery.usePrefetchHook();
+    } catch {
+      // Expected to throw
+    }
+  });
+
+  it('PREFETCH TYPE ERRORS: optional params', () => {
+    const { reactiveQuery } =
+      QueryTestFixtures.withOptionalParams.getReactive();
+
+    try {
+      // @ts-expect-error testing invalid call - wrong param type
+      reactiveQuery.usePrefetchHook(1);
+    } catch {
+      // Expected to throw
+    }
   });
 });
