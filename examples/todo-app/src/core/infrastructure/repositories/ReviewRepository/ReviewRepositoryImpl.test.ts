@@ -1,14 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
-import { appContainer } from 'src/core/global/appContainer';
+import { container } from 'src/core/global/container';
 import { createReview } from 'src/core/domain/review/entities/Review';
 
 describe('ReviewRepositoryImpl', () => {
-  const getReviewRepository = () => {
-    return appContainer.get<InjectionType<'IReviewRepository'>>(
-      InjectionSymbol('IReviewRepository'),
-    );
-  };
+  const getReviewRepository = () => container.reviewRepository;
 
   it('get', () => {
     const reviewRepository = getReviewRepository();

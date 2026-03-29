@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeAll, afterEach, afterAll } from 'vitest';
 import { setupServer } from 'msw/node';
-import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
-import { appContainer } from 'src/core/global/appContainer';
+import { container } from 'src/core/global/container';
 import { mockGetAllActiveTodos } from 'src/__test__/network/activeTodo/mockGetAllActiveTodos';
 import { mockCreateOneActiveTodo } from 'src/__test__/network/activeTodo/mockCreateOneActiveTodo';
 import { mockDeleteOneActiveTodo } from 'src/__test__/network/activeTodo/mockDeleteOneActiveTodo';
@@ -18,11 +17,7 @@ describe('ActiveTodoServiceImpl', () => {
 
   const nowTimeStamp = new Date().toISOString();
 
-  const getActiveTodoService = () => {
-    return appContainer.get<InjectionType<'IActiveTodoService'>>(
-      InjectionSymbol('IActiveTodoService'),
-    );
-  };
+  const getActiveTodoService = () => container.activeTodoService;
 
   const withOneUncompletedActiveTodoInList = () => {
     mockGetAllActiveTodos(server, {

@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeAll, afterEach, afterAll } from 'vitest';
 import { setupServer } from 'msw/node';
-import { InjectionSymbol, type InjectionType } from 'src/core/global/types';
-import { appContainer } from 'src/core/global/appContainer';
+import { container } from 'src/core/global/container';
 import { mockGetAllActiveTodos } from 'src/__test__/network/activeTodo/mockGetAllActiveTodos';
 import { mockGetAllSavedForLaterTodos } from 'src/__test__/network/savedForLaterTodo/mockGetAllSavedForLaterTodos';
 
@@ -14,17 +13,8 @@ describe('StartReviewUseCase', () => {
 
   const nowTimeStamp = new Date().toISOString();
 
-  const getStartReviewUseCase = () => {
-    return appContainer.get<InjectionType<'StartReviewUseCase'>>(
-      InjectionSymbol('StartReviewUseCase'),
-    );
-  };
-
-  const getReviewRepository = () => {
-    return appContainer.get<InjectionType<'IReviewRepository'>>(
-      InjectionSymbol('IReviewRepository'),
-    );
-  };
+  const getStartReviewUseCase = () => container.startReviewUseCase;
+  const getReviewRepository = () => container.reviewRepository;
 
   const withOneUncompletedAndOneCompletedActiveTodoInList = () => {
     mockGetAllActiveTodos(server, {
