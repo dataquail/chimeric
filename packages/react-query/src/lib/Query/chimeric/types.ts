@@ -5,9 +5,12 @@ import {
 import { QueryKey } from '@tanstack/react-query';
 import { TanstackQueryIdiomaticNativeOptions } from '../idiomatic/types';
 import {
+  ReactiveQuerySuspense,
   TanstackQueryReactiveNativeOptions,
   TanstackQueryReactivePrefetchNativeOptions,
   TanstackQueryReactiveReturnType,
+  TanstackQueryReactiveSuspenseNativeOptions,
+  TanstackQueryReactiveSuspenseReturnType,
 } from '../reactive/types';
 
 export type ChimericQuery<
@@ -23,7 +26,14 @@ export type ChimericQuery<
   TanstackQueryReactiveNativeOptions<TResult, TError, TQueryKey>,
   TanstackQueryReactiveReturnType<TResult, TError>,
   TanstackQueryReactivePrefetchNativeOptions<TResult, TError, TQueryKey>
->;
+> &
+  ReactiveQuerySuspense<
+    TParams,
+    TResult,
+    TError,
+    TanstackQueryReactiveSuspenseNativeOptions<TResult, TError, TQueryKey>,
+    TanstackQueryReactiveSuspenseReturnType<TResult, TError>
+  >;
 
 export type DefineChimericQuery<
   T extends (
@@ -46,4 +56,15 @@ export type DefineChimericQuery<
     TError,
     TQueryKey
   >
->;
+> &
+  ReactiveQuerySuspense<
+    Parameters<T> extends [] ? void : Parameters<T>[0],
+    Awaited<ReturnType<T>>,
+    TError,
+    TanstackQueryReactiveSuspenseNativeOptions<
+      Awaited<ReturnType<T>>,
+      TError,
+      TQueryKey
+    >,
+    TanstackQueryReactiveSuspenseReturnType<Awaited<ReturnType<T>>, TError>
+  >;

@@ -2,12 +2,14 @@
 import {
   type QueryKey,
   useQuery,
+  useSuspenseQuery,
   usePrefetchQuery,
   queryOptions,
 } from '@tanstack/react-query';
 import {
   TanstackQueryReactiveNativeOptions,
   TanstackQueryReactivePrefetchNativeOptions,
+  TanstackQueryReactiveSuspenseNativeOptions,
   type ReactiveQuery,
 } from './types';
 import { createReactiveQuery } from './createReactiveQuery';
@@ -142,10 +144,56 @@ export function ReactiveQueryFactory<
     });
   };
 
-  return createReactiveQuery(query, prefetchHook) as ReactiveQuery<
-    TParams,
-    TResult,
-    TError,
-    TQueryKey
-  >;
+  const suspenseHook = (
+    paramsOrOptions?: Parameters<
+      ReactiveQuery<TParams, TResult, TError, TQueryKey>['useSuspenseHook']
+    >[0],
+    maybeOptions?: Parameters<
+      ReactiveQuery<TParams, TResult, TError, TQueryKey>['useSuspenseHook']
+    >[1],
+  ) => {
+    const params =
+      getQueryOptions.length === 0
+        ? (undefined as TParams)
+        : (paramsOrOptions as TParams);
+    const allOptions =
+      getQueryOptions.length === 0
+        ? (paramsOrOptions as {
+            nativeOptions?: TanstackQueryReactiveSuspenseNativeOptions<
+              TResult,
+              TError,
+              TQueryKey
+            >;
+          })
+        : maybeOptions;
+    const nativeOptions = allOptions?.nativeOptions as
+      | TanstackQueryReactiveSuspenseNativeOptions<TResult, TError, TQueryKey>
+      | undefined;
+
+    const query = useSuspenseQuery({
+      ...getQueryOptions(params),
+      ...nativeOptions,
+    });
+
+    return {
+      isPending: query.isPending,
+      isSuccess: query.isSuccess,
+      isError: query.isError,
+      error: query.error,
+      data: query.data,
+      refetch: async () => (await query.refetch()).data as TResult,
+      native: query,
+    } as ReturnType<
+      ReactiveQuery<TParams, TResult, TError, TQueryKey>['useSuspenseHook']
+    >;
+  };
+
+  const reactiveQuery = createReactiveQuery(
+    query,
+    prefetchHook,
+  ) as ReactiveQuery<TParams, TResult, TError, TQueryKey>;
+
+  (reactiveQuery as any).useSuspenseHook = suspenseHook;
+
+  return reactiveQuery;
 }
