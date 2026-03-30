@@ -46,10 +46,16 @@ export function fuseChimericQuery<
   idiomatic: any;
   reactive: any;
 }): ChimericQuery<TParams, TResult, TError, TQueryKey> {
-  return coreFuseChimericQuery(args) as ChimericQuery<
+  const chimeric = coreFuseChimericQuery(args) as ChimericQuery<
     TParams,
     TResult,
     TError,
     TQueryKey
   >;
+
+  if (args.reactive.useSuspenseHook) {
+    (chimeric as any).useSuspenseHook = args.reactive.useSuspenseHook;
+  }
+
+  return chimeric;
 }

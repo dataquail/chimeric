@@ -2,6 +2,7 @@ import { QueryClient, queryOptions } from '@tanstack/react-query';
 import { ChimericQueryFactory } from '../chimeric/ChimericQueryFactory';
 import { renderHook, waitFor } from '@testing-library/react';
 import { getTestWrapper } from '../../__tests__/getTestWrapper';
+import { getSuspenseTestWrapper } from '../../__tests__/getSuspenseTestWrapper';
 import { QueryTestFixtures } from '../__tests__/queryFixtures';
 
 describe('ChimericQueryFactory', () => {
@@ -348,5 +349,98 @@ describe('ChimericQueryFactory', () => {
         }),
     });
     expect(testAnnotation).toBeDefined();
+  });
+
+  // USAGE: SUSPENSE
+  it('USAGE: SUSPENSE: no params', async () => {
+    const { queryFn } = QueryTestFixtures.withoutParams.getChimeric();
+    const queryClient = new QueryClient();
+    const chimericQuery = ChimericQueryFactory({
+      queryClient,
+      getQueryOptions: () =>
+        queryOptions({
+          queryKey: ['test-suspense'],
+          queryFn,
+        }),
+    });
+
+    const { result } = renderHook(() => chimericQuery.useSuspenseHook(), {
+      wrapper: getSuspenseTestWrapper(queryClient),
+    });
+
+    await waitFor(() => {
+      expect(result.current.data).toBe('test');
+    });
+
+    expect(result.current.isSuccess).toBe(true);
+    expect(result.current.isPending).toBe(false);
+    expect(queryFn).toHaveBeenCalled();
+  });
+
+  it('USAGE: SUSPENSE: with params', async () => {
+    const { queryFn } = QueryTestFixtures.withParams.getChimeric();
+    const queryClient = new QueryClient();
+    const chimericQuery = ChimericQueryFactory({
+      queryClient,
+      getQueryOptions: (args: { name: string }) =>
+        queryOptions({
+          queryKey: ['test-suspense', args.name],
+          queryFn: () => queryFn(args),
+        }),
+    });
+
+    const { result } = renderHook(
+      () => chimericQuery.useSuspenseHook({ name: 'John' }),
+      {
+        wrapper: getSuspenseTestWrapper(queryClient),
+      },
+    );
+
+    await waitFor(() => {
+      expect(result.current.data).toBe('Hello John');
+    });
+
+    expect(result.current.isSuccess).toBe(true);
+    expect(queryFn).toHaveBeenCalledWith({ name: 'John' });
+  });
+
+  it('USAGE: SUSPENSE: with optional params', async () => {
+    const { queryFn } = QueryTestFixtures.withOptionalParams.getChimeric();
+    const queryClient = new QueryClient();
+    const chimericQuery = ChimericQueryFactory({
+      queryClient,
+      getQueryOptions: (args?: { name: string }) =>
+        queryOptions({
+          queryKey: args?.name ? ['test-suspense', args.name] : ['test-suspense'],
+          queryFn: () => queryFn(args),
+        }),
+    });
+
+    const { result: resultWithParams } = renderHook(
+      () => chimericQuery.useSuspenseHook({ name: 'John' }),
+      {
+        wrapper: getSuspenseTestWrapper(queryClient),
+      },
+    );
+
+    await waitFor(() => {
+      expect(resultWithParams.current.data).toBe('Hello John');
+    });
+
+    expect(resultWithParams.current.isSuccess).toBe(true);
+
+    const queryClient2 = new QueryClient();
+    const { result: resultWithoutParams } = renderHook(
+      () => chimericQuery.useSuspenseHook(),
+      {
+        wrapper: getSuspenseTestWrapper(queryClient2),
+      },
+    );
+
+    await waitFor(() => {
+      expect(resultWithoutParams.current.data).toBe('Hello');
+    });
+
+    expect(resultWithoutParams.current.isSuccess).toBe(true);
   });
 });
