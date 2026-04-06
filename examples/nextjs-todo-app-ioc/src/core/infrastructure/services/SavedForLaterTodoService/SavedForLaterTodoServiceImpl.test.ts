@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeAll, afterEach, afterAll } from 'vitest';
 import { setupServer } from 'msw/node';
-import { InjectionSymbol, type InjectionType } from '@/core/global/types';
-import { appContainer } from '@/core/global/appContainer';
+import { getContainer } from '@/core/global/container';
 import { mockGetAllSavedForLaterTodos } from '@/__test__/network/savedForLaterTodo/mockGetAllSavedForLaterTodos';
 import { mockGetOneSavedForLaterTodo } from '@/__test__/network/savedForLaterTodo/mockGetOneSavedForLaterTodo';
 import { mockActivateSavedForLaterTodo } from '@/__test__/network/savedForLaterTodo/mockActivateSavedForLaterTodo';
@@ -18,9 +17,7 @@ describe('SavedForLaterTodoServiceImpl', () => {
   const nowTimeStamp = new Date().toISOString();
 
   const getSavedForLaterTodoService = () => {
-    return appContainer.get<InjectionType<'ISavedForLaterTodoService'>>(
-      InjectionSymbol('ISavedForLaterTodoService'),
-    );
+    return getContainer().savedForLaterTodoService;
   };
 
   const withOneSavedForLaterTodoInList = () => {

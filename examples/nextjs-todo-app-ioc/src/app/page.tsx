@@ -1,7 +1,5 @@
-'use client';
-
-import { ActiveTodo } from '@/routes/ActiveTodo';
+import { redirect } from 'next/navigation';
 
 export default function HomePage() {
-  return <ActiveTodo />;
+  redirect('/active-todo');
 }

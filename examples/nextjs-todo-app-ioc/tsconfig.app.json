@@ -24,7 +24,6 @@
     "outDir": "dist",
     "rootDir": "src",
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
-    "experimentalDecorators": true
   },
   "include": [
     "src/**/*.ts",
@@ -43,6 +42,7 @@
     "jest.config.cts",
     "src/**/*.spec.ts",
     "src/**/*.test.ts",
+    "src/__test__/**",
     ".next",
     "eslint.config.js",
     "eslint.config.cjs",

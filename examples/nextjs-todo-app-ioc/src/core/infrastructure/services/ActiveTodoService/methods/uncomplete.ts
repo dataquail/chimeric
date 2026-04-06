@@ -5,7 +5,6 @@ import { getConfig } from '@/utils/getConfig';
 import { wrappedFetch } from '@/utils/network/wrappedFetch';
 import { getQueryOptionsGetAll } from './getAll';
 import { getQueryOptionsGetOneById } from './getOneById';
-import { AppStore } from '@/lib/store';
 
 export type IUncompleteActiveTodo = (args: {
   id: string;
@@ -27,7 +26,6 @@ export const uncompleteActiveTodo: IUncompleteActiveTodo = async (args: {
 };
 
 export const UncompleteOneMethodImpl = (
-  appStore: AppStore,
   queryClient: QueryClient,
 ): IActiveTodoService['uncompleteOne'] => {
   return ChimericMutationFactory({
@@ -39,10 +37,10 @@ export const UncompleteOneMethodImpl = (
     mutationKey: ['uncompleteOne'],
     onSuccess: async (_data, args) => {
       await queryClient.invalidateQueries({
-        queryKey: getQueryOptionsGetAll(appStore)().queryKey,
+        queryKey: getQueryOptionsGetAll().queryKey,
       });
       await queryClient.invalidateQueries({
-        queryKey: getQueryOptionsGetOneById(appStore)(args).queryKey,
+        queryKey: getQueryOptionsGetOneById(args).queryKey,
       });
     },
   });

@@ -51,9 +51,9 @@ export const AppShellWrapper = ({ children }: Props) => {
       <AppShell.Navbar p="md">
         <>
           <NavLink
-            href="/"
+            href="/active-todo"
             label="Active Todos"
-            active={pathname === '/'}
+            active={pathname === '/active-todo'}
             leftSection={<IconHome2 size="1rem" stroke={1.5} />}
             component={Link}
           />

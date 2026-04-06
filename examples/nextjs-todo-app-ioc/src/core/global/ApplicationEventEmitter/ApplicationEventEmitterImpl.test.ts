@@ -1,5 +1,12 @@
 import { vi } from 'vitest';
+import { DomainEvent } from '@/utils/domain/DomainEvent';
 import { ApplicationEventEmitterImpl } from './ApplicationEventEmitterImpl';
+
+class TestEvent extends DomainEvent<{ value: string }> {
+  constructor(payload: { value: string }) {
+    super('TestEvent', payload);
+  }
+}
 
 describe('ApplicationEventEmitterImpl ', () => {
   it('should call the listener when an event is emitted', () => {
@@ -114,5 +121,60 @@ describe('ApplicationEventEmitterImpl ', () => {
 
     expect(listener).toHaveBeenCalledTimes(1);
     expect(emitter.getEvents()).toEqual([]);
+  });
+
+  it('should emit DomainEvents locally and defer them on server', () => {
+    const emitter = new ApplicationEventEmitterImpl();
+    const listener = vi.fn();
+    const event = new TestEvent({ value: 'hello' });
+
+    emitter.subscribe(listener);
+    emitter.emit(event);
+
+    expect(listener).toHaveBeenCalledWith(event);
+    expect(emitter.getDeferredEvents()).toEqual([
+      { name: 'TestEvent', payload: { value: 'hello' } },
+    ]);
+  });
+
+  it('should not defer non-DomainEvent values on server', () => {
+    const emitter = new ApplicationEventEmitterImpl();
+
+    emitter.emit('plain string');
+    emitter.emit(42);
+
+    expect(emitter.getDeferredEvents()).toEqual([]);
+  });
+
+  it('should deserialize and re-emit events via flushSerializedEvents', () => {
+    const deserializer = (data: { name: string; payload: object }) => {
+      if (data.name === 'TestEvent') {
+        return new TestEvent(data.payload as { value: string });
+      }
+      return undefined;
+    };
+    const emitter = new ApplicationEventEmitterImpl([deserializer]);
+    const listener = vi.fn();
+
+    emitter.subscribe(listener);
+    emitter.flushSerializedEvents([
+      { name: 'TestEvent', payload: { value: 'flushed' } },
+    ]);
+
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener.mock.calls[0][0]).toBeInstanceOf(TestEvent);
+    expect(listener.mock.calls[0][0].payload).toEqual({ value: 'flushed' });
+  });
+
+  it('should skip serialized events with no matching deserializer', () => {
+    const emitter = new ApplicationEventEmitterImpl([]);
+    const listener = vi.fn();
+
+    emitter.subscribe(listener);
+    emitter.flushSerializedEvents([
+      { name: 'UnknownEvent', payload: {} },
+    ]);
+
+    expect(listener).not.toHaveBeenCalled();
   });
 });

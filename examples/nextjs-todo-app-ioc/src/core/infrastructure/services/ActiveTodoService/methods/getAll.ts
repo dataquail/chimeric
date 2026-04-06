@@ -1,13 +1,12 @@
 import { QueryClient, queryOptions } from '@tanstack/react-query';
-import { useMemo } from 'react';
-import { AppStore, useAppSelector } from '@/lib/store';
 import { IActiveTodoService } from '@/core/domain/activeTodo/ports/IActiveTodoService';
 import {
   ActiveTodo,
   mapTodoDtoToActiveTodo,
 } from '@/core/domain/activeTodo/entities/ActiveTodo';
-import { saveAllActiveTodos } from '../activeTodoStore';
-import { ChimericQueryWithManagedStoreFactory } from '@chimeric/react-query';
+import { ChimericQueryFactory } from '@chimeric/react-query';
+import { IApplicationEventEmitter } from '@/core/global/ApplicationEventEmitter/IApplicationEventEmitter';
+import { ActiveTodosFetchedEvent } from '@/core/domain/activeTodo/events/ActiveTodosFetchedEvent';
 import { getConfig } from '@/utils/getConfig';
 import { TodoListDto } from '@/core/domain/activeTodo/dtos/out/TodoListDto';
 import { wrappedFetch } from '@/utils/network/wrappedFetch';
@@ -18,39 +17,38 @@ export const getTodoList: IGetAllActiveTodos = async () => {
   return wrappedFetch<TodoListDto>(`${getConfig().API_URL}/active-todo`);
 };
 
-export const getQueryOptionsGetAll = (appStore: AppStore) => () =>
+export const GET_ALL_QUERY_KEY = ['GET_TODO_LIST'] as const;
+
+export const getQueryOptionsGetAll = () =>
   queryOptions({
-    queryKey: ['GET_TODO_LIST'],
-    queryFn: async () => {
+    queryKey: [...GET_ALL_QUERY_KEY],
+    queryFn: async (): Promise<ActiveTodo[]> => {
       const todoListDto = await getTodoList();
-      appStore.dispatch(
-        saveAllActiveTodos(todoListDto.list.map(mapTodoDtoToActiveTodo)),
-      );
+      return todoListDto.list.map(mapTodoDtoToActiveTodo);
     },
   });
 
 export const GetAllMethodImpl = (
-  appStore: AppStore,
   queryClient: QueryClient,
+  applicationEventEmitter: IApplicationEventEmitter,
 ): IActiveTodoService['getAll'] => {
-  return ChimericQueryWithManagedStoreFactory({
+  const getQueryOptions = () =>
+    queryOptions({
+      queryKey: [...GET_ALL_QUERY_KEY],
+      queryFn: async (): Promise<ActiveTodo[]> => {
+        const todoListDto = await getTodoList();
+        const activeTodos = todoListDto.list.map(mapTodoDtoToActiveTodo);
+        applicationEventEmitter.emit(
+          new ActiveTodosFetchedEvent({
+            ids: activeTodos.map((todo) => todo.id),
+          }),
+        );
+        return activeTodos;
+      },
+    });
+
+  return ChimericQueryFactory({
     queryClient,
-    getQueryOptions: getQueryOptionsGetAll(appStore),
-    getFromStore: () =>
-      Object.values(appStore.getState().todo.activeTodos.dict).filter(
-        Boolean,
-      ) as ActiveTodo[],
-    useFromStore: () => {
-      const activeTodoListDictionary = useAppSelector(
-        (state) => state.todo.activeTodos.dict,
-      );
-      return useMemo(
-        () =>
-          Object.values(activeTodoListDictionary).filter(
-            Boolean,
-          ) as ActiveTodo[],
-        [activeTodoListDictionary],
-      );
-    },
+    getQueryOptions,
   });
 };

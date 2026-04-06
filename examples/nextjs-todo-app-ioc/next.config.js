@@ -1,6 +1,5 @@
 //@ts-check
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { composePlugins, withNx } = require('@nx/next');
 
 /**
@@ -10,12 +9,9 @@ const nextConfig = {
   // Use this to set Nx-specific options
   // See: https://nx.dev/recipes/next/next-config-setup
   nx: {},
-  // Required for reflect-metadata and inversify
   experimental: {
     optimizePackageImports: ['@mantine/core', '@mantine/hooks'],
   },
-  // Transpile inversify for server components
-  transpilePackages: ['inversify', 'reflect-metadata'],
   typescript: {
     tsconfigPath: './tsconfig.app.json',
   },

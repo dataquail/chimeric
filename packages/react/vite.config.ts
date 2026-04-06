@@ -95,10 +95,13 @@ export default defineConfig(() => ({
       transformMixedEsModules: true,
     },
     lib: {
-      // Could also be a dictionary or array of multiple entry points.
-      entry: 'src/index.ts',
+      entry: {
+        index: 'src/index.ts',
+        server: 'src/server.ts',
+      },
       name: '@chimeric/react',
-      fileName: (format) => `index.${format === 'es' ? 'esm' : 'cjs'}.js`,
+      fileName: (format, entryName) =>
+        `${entryName}.${format === 'es' ? 'esm' : 'cjs'}.js`,
       // Change this to the formats you want to support.
       // Don't forget to update your package.json as well.
       formats: ['es', 'cjs'],
