@@ -24,10 +24,6 @@ export * from './lib/Query/reactive/types';
 export * from './lib/Query/reactive/ReactiveQueryFactory';
 export * from './lib/Query/reactive/isReactiveQuery';
 export * from './lib/Query/reactive/createReactiveQuery';
-// QueryWithManagedStore
-export * from './lib/QueryWithManagedStore/ChimericQueryWithManagedStoreFactory';
-export * from './lib/QueryWithManagedStore/IdiomaticQueryWithManagedStoreFactory';
-export * from './lib/QueryWithManagedStore/ReactiveQueryWithManagedStoreFactory';
 // InfiniteQuery
 export * from './lib/InfiniteQuery/chimeric/types';
 export * from './lib/InfiniteQuery/chimeric/ChimericInfiniteQueryFactory';

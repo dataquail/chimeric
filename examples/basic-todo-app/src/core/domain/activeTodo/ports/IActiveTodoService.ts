@@ -28,6 +28,4 @@ export type IActiveTodoService = {
     (args: { id: string }) => Promise<{ id: string }>,
     Error
   >;
-  prioritize: (args: { id: string }) => void;
-  deprioritize: (args: { id: string }) => void;
 };

@@ -43,8 +43,6 @@ export const createGetTodosUnderReviewUseCase = (
           (todo) => todo.id === todoUnderReviewId,
         );
 
-        // If the todoUnderReview does not have a counterpart in the active or saved for later list,
-        // then the client state has fallen out of sync with the server stateand we should ignore it.
         if (!activeTodo && !savedForLaterTodo) {
           return acc;
         }
@@ -57,7 +55,6 @@ export const createGetTodosUnderReviewUseCase = (
               title: activeTodo.title,
               createdAt: activeTodo.createdAt,
               completedAt: activeTodo.completedAt,
-              isPrioritized: activeTodo.isPrioritized,
               lastReviewedAt: previouslyReviewedTodo?.lastReviewedAt,
             },
           ];
@@ -69,7 +66,6 @@ export const createGetTodosUnderReviewUseCase = (
               title: savedForLaterTodo.title,
               createdAt: savedForLaterTodo.createdAt,
               completedAt: undefined,
-              isPrioritized: null,
               lastReviewedAt: previouslyReviewedTodo?.lastReviewedAt,
             },
           ];

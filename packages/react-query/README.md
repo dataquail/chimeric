@@ -42,11 +42,6 @@ import {
   IdiomaticMutationFactory,
   ChimericMutationFactory,
 
-  // Managed Store Query Factories
-  ReactiveQueryWithManagedStoreFactory,
-  IdiomaticQueryWithManagedStoreFactory,
-  ChimericQueryWithManagedStoreFactory,
-
   // Types
   type ReactiveQuery,
   type IdiomaticQuery,
@@ -437,79 +432,6 @@ const DeleteUserButton = ({ userId }: { userId: string }) => {
       </button>
 
       {isError && <div>Error: {error?.message}</div>}
-    </div>
-  );
-};
-```
-
-## Managed Store Queries
-
-For applications using external state management (Redux, Zustand, etc.), managed store queries sync TanStack Query's cache invalidation with your store updates.
-
-### ReactiveQueryWithManagedStoreFactory
-
-```tsx
-import { ReactiveQueryWithManagedStoreFactory } from '@chimeric/react-query';
-import { useSelector, useDispatch } from 'react-redux';
-import { queryOptions } from '@tanstack/react-query';
-
-// Create a managed store query
-const fetchAndStoreUsers = ReactiveQueryWithManagedStoreFactory({
-  // TanStack Query handles cache invalidation and background fetching
-  getQueryOptions: () =>
-    queryOptions({
-      queryKey: ['users'],
-      queryFn: async () => {
-        const response = await fetch('/api/users');
-        const users = await response.json();
-
-        // Update your store directly
-        dispatch(setUsers(users));
-
-        // Return value doesn't matter - data comes from store
-        return null;
-      },
-      staleTime: 5 * 60 * 1000, // 5 minutes
-    }),
-
-  // Data comes from your store
-  useFromStore: () => useSelector((state: RootState) => state.users.list),
-});
-
-// Use in component
-const UsersList = () => {
-  const {
-    data: users, // This comes from your Redux store
-    isPending,
-    isError,
-    error,
-    refetch,
-    native,
-  } = fetchAndStoreUsers.useQuery();
-
-  // TanStack Query manages when to fetch, but data comes from your store
-  // This is intended for use-cases that need flexiblity (realtime data, frontend-only state)
-
-  if (isPending) return <div>Loading users...</div>;
-  if (isError) return <div>Error: {error?.message}</div>;
-
-  return (
-    <div>
-      <h2>Users ({users?.length || 0})</h2>
-
-      <button onClick={() => refetch()}>Refresh Users</button>
-
-      {users?.map((user) => (
-        <div key={user.id}>
-          {user.name} - {user.email}
-        </div>
-      ))}
-
-      {/* TanStack Query still provides cache status */}
-      <div>
-        Cache Status: {native.isStale ? 'Stale' : 'Fresh'}
-        {native.isFetching && ' (Fetching...)'}
-      </div>
     </div>
   );
 };

@@ -20,18 +20,24 @@ import {
 import { ActiveTodo } from 'src/core/domain/activeTodo/entities/ActiveTodo';
 import { activeTodoService } from 'src/core/infrastructure/services/ActiveTodoService';
 import { savedForLaterTodoService } from 'src/core/infrastructure/services/SavedForLaterTodoService';
+import { priorityTodoRepository } from 'src/core/infrastructure/repositories/PriorityTodoRepository';
+import { prioritizeTodoUseCase } from 'src/core/useCases/activeTodo/application/prioritizeTodoUseCase';
+import { deprioritizeTodoUseCase } from 'src/core/useCases/activeTodo/application/deprioritizeTodoUseCase';
 
 type OwnProps = {
   todo: ActiveTodo;
 };
 
 export const ActiveTodoCard = ({ todo }: OwnProps) => {
+  const priorityTodo = priorityTodoRepository.getOneById.useHook({
+    id: todo.id,
+  });
+  const isPrioritized = priorityTodo?.isPrioritized ?? false;
+
   const saveForLater = savedForLaterTodoService.saveForLater.useHook();
   const completeOne = activeTodoService.completeOne.useHook();
   const uncompleteOne = activeTodoService.uncompleteOne.useHook();
   const deleteOne = activeTodoService.deleteOne.useHook();
-  const prioritize = activeTodoService.prioritize;
-  const deprioritize = activeTodoService.deprioritize;
 
   return (
     <Box key={todo.id} p="xs" pr="lg">
@@ -62,7 +68,7 @@ export const ActiveTodoCard = ({ todo }: OwnProps) => {
               <Text size="sm">{`Created At: ${format(todo.createdAt, 'M/d/yyyy h:m aaa')}`}</Text>
               <Text size="sm">{`Completed At: ${todo.completedAt ? format(todo.completedAt, 'M/d/yyyy h:m aaa') : 'N/A'}`}</Text>
             </Stack>
-            {todo.isPrioritized && (
+            {isPrioritized && (
               <Box style={{ flexGrow: 1 }} p="xs">
                 <IconStarFilled
                   style={{
@@ -92,12 +98,12 @@ export const ActiveTodoCard = ({ todo }: OwnProps) => {
             >
               Delete
             </Menu.Item>
-            {todo.isPrioritized ? (
+            {isPrioritized ? (
               <Menu.Item
                 leftSection={
                   <IconStar style={{ width: rem(14), height: rem(14) }} />
                 }
-                onClick={() => deprioritize({ id: todo.id })}
+                onClick={() => deprioritizeTodoUseCase({ id: todo.id })}
               >
                 Deprioritize
               </Menu.Item>
@@ -106,7 +112,7 @@ export const ActiveTodoCard = ({ todo }: OwnProps) => {
                 leftSection={
                   <IconStarFilled style={{ width: rem(14), height: rem(14) }} />
                 }
-                onClick={() => prioritize({ id: todo.id })}
+                onClick={() => prioritizeTodoUseCase({ id: todo.id })}
               >
                 Prioritize
               </Menu.Item>

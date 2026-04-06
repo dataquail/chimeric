@@ -7,12 +7,19 @@ import { mockCompleteOneActiveTodo } from 'src/__test__/network/activeTodo/mockC
 import { mockUncompleteOneActiveTodo } from 'src/__test__/network/activeTodo/mockUncompleteOneActiveTodo';
 import { mockGetOneActiveTodo } from 'src/__test__/network/activeTodo/mockGetOneActiveTodo';
 import { activeTodoService } from '.';
+import { priorityTodoRepository } from 'src/core/infrastructure/repositories/PriorityTodoRepository';
+import { prioritizeTodoUseCase } from 'src/core/useCases/activeTodo/application/prioritizeTodoUseCase';
+import { deprioritizeTodoUseCase } from 'src/core/useCases/activeTodo/application/deprioritizeTodoUseCase';
+import { usePriorityTodoStore } from 'src/core/infrastructure/repositories/PriorityTodoRepository/priorityTodoStore';
 
 describe('ActiveTodoService', () => {
   const server = setupServer();
 
   beforeAll(() => server.listen());
-  afterEach(() => server.resetHandlers());
+  afterEach(() => {
+    server.resetHandlers();
+    usePriorityTodoStore.setState({ dict: {} });
+  });
   afterAll(() => server.close());
 
   const nowTimeStamp = new Date().toISOString();
@@ -139,37 +146,32 @@ describe('ActiveTodoService', () => {
 
   it('prioritize', async () => {
     withOneUncompletedActiveTodoInList();
-    const allActiveTodos = await activeTodoService.getAll();
-    expect(allActiveTodos.length).toBe(1);
-    expect(allActiveTodos[0].id).toBe('1');
-    expect(allActiveTodos[0].title).toBe('Active Todo 1');
-    expect(allActiveTodos[0].createdAt.toISOString()).toBe(nowTimeStamp);
-    expect(allActiveTodos[0].completedAt).toBeUndefined();
-    expect(allActiveTodos[0].isPrioritized).toBe(false);
+    await activeTodoService.getAll();
 
-    activeTodoService.prioritize({ id: '1' });
-    const allActiveTodosAfterPrioritization =
-      await activeTodoService.getAll();
-    expect(allActiveTodosAfterPrioritization.length).toBe(1);
-    expect(allActiveTodosAfterPrioritization[0].isPrioritized).toBe(true);
+    const priorityTodo = priorityTodoRepository.getOneById({ id: '1' });
+    expect(priorityTodo?.isPrioritized).toBe(false);
+
+    prioritizeTodoUseCase({ id: '1' });
+    const priorityTodoAfter = priorityTodoRepository.getOneById({ id: '1' });
+    expect(priorityTodoAfter?.isPrioritized).toBe(true);
   });
 
   it('deprioritize', async () => {
     withOneUncompletedActiveTodoInList();
-    const allActiveTodos = await activeTodoService.getAll();
-    expect(allActiveTodos.length).toBe(1);
-    expect(allActiveTodos[0].isPrioritized).toBe(false);
+    await activeTodoService.getAll();
 
-    activeTodoService.prioritize({ id: '1' });
-    const allActiveTodosAfterPrioritization =
-      await activeTodoService.getAll();
-    expect(allActiveTodosAfterPrioritization.length).toBe(1);
-    expect(allActiveTodosAfterPrioritization[0].isPrioritized).toBe(true);
+    expect(
+      priorityTodoRepository.getOneById({ id: '1' })?.isPrioritized,
+    ).toBe(false);
 
-    activeTodoService.deprioritize({ id: '1' });
-    const allActiveTodosAfterDeprioritization =
-      await activeTodoService.getAll();
-    expect(allActiveTodosAfterDeprioritization.length).toBe(1);
-    expect(allActiveTodosAfterDeprioritization[0].isPrioritized).toBe(false);
+    prioritizeTodoUseCase({ id: '1' });
+    expect(
+      priorityTodoRepository.getOneById({ id: '1' })?.isPrioritized,
+    ).toBe(true);
+
+    deprioritizeTodoUseCase({ id: '1' });
+    expect(
+      priorityTodoRepository.getOneById({ id: '1' })?.isPrioritized,
+    ).toBe(false);
   });
 });
