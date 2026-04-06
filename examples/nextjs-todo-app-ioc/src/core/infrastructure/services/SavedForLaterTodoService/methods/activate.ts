@@ -8,7 +8,6 @@ import { getQueryOptionsGetOneById } from './getOneById';
 import { getConfig } from '@/utils/getConfig';
 import { wrappedFetch } from '@/utils/network/wrappedFetch';
 import { ActivateBody } from '@/core/domain/savedForLaterTodo/dtos/in/ActivateBody';
-import { AppStore } from '@/lib/store';
 
 export type IActivateSavedForLaterTodo = (
   args: ActivateBody,
@@ -31,7 +30,6 @@ export const activateSavedForLaterTodo: IActivateSavedForLaterTodo = async (
 };
 
 export const ActivateMethodImpl = (
-  appStore: AppStore,
   queryClient: QueryClient,
 ): ISavedForLaterTodoService['activate'] => {
   return ChimericMutationFactory({
@@ -45,10 +43,10 @@ export const ActivateMethodImpl = (
         queryKey: getQueryOptionsGetOneById(data.id).queryKey,
       });
       await queryClient.invalidateQueries({
-        queryKey: getQueryOptionsGetAllActiveTodos(appStore)().queryKey,
+        queryKey: getQueryOptionsGetAllActiveTodos().queryKey,
       });
       await queryClient.invalidateQueries({
-        queryKey: getQueryOptionsGetOneByIdActiveTodo(appStore)(data).queryKey,
+        queryKey: getQueryOptionsGetOneByIdActiveTodo(data).queryKey,
       });
     },
   });

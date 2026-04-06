@@ -28,6 +28,11 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
+      "react-server": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/server.esm.js",
+        "require": "./dist/server.cjs.js"
+      },
       "types": "./dist/index.d.ts",
       "import": "./dist/index.esm.js",
       "require": "./dist/index.cjs.js",

@@ -1,9 +1,10 @@
 import { QueryClient, queryOptions } from '@tanstack/react-query';
-import { AppStore, useAppSelector } from '@/lib/store';
 import { IActiveTodoService } from '@/core/domain/activeTodo/ports/IActiveTodoService';
-import { saveActiveTodo } from '../activeTodoStore';
-import { mapTodoDtoToActiveTodo } from '@/core/domain/activeTodo/entities/ActiveTodo';
-import { ChimericQueryWithManagedStoreFactory } from '@chimeric/react-query';
+import {
+  ActiveTodo,
+  mapTodoDtoToActiveTodo,
+} from '@/core/domain/activeTodo/entities/ActiveTodo';
+import { ChimericQueryFactory } from '@chimeric/react-query';
 import { getConfig } from '@/utils/getConfig';
 import { wrappedFetch } from '@/utils/network/wrappedFetch';
 import { TodoDto } from '@/core/domain/activeTodo/dtos/out/TodoDto';
@@ -14,27 +15,20 @@ export const getActiveTodo: IGetActiveTodo = async (args: { id: string }) => {
   return wrappedFetch<TodoDto>(`${getConfig().API_URL}/active-todo/${args.id}`);
 };
 
-export const getQueryOptionsGetOneById =
-  (appStore: AppStore) => (args: { id: string }) =>
-    queryOptions({
-      queryKey: ['GET_TODO', args.id],
-      queryFn: async () => {
-        const activeTodoDto = await getActiveTodo(args);
-        appStore.dispatch(
-          saveActiveTodo(mapTodoDtoToActiveTodo(activeTodoDto)),
-        );
-      },
-    });
+export const getQueryOptionsGetOneById = (args: { id: string }) =>
+  queryOptions({
+    queryKey: ['GET_TODO', args.id],
+    queryFn: async (): Promise<ActiveTodo> => {
+      const activeTodoDto = await getActiveTodo(args);
+      return mapTodoDtoToActiveTodo(activeTodoDto);
+    },
+  });
 
 export const GetOneByIdMethodImpl = (
-  appStore: AppStore,
   queryClient: QueryClient,
 ): IActiveTodoService['getOneById'] => {
-  return ChimericQueryWithManagedStoreFactory({
+  return ChimericQueryFactory({
     queryClient,
-    getFromStore: (args) => appStore.getState().todo.activeTodos.dict[args.id],
-    useFromStore: (args) =>
-      useAppSelector((state) => state.todo.activeTodos.dict[args.id]),
-    getQueryOptions: getQueryOptionsGetOneById(appStore),
+    getQueryOptions: getQueryOptionsGetOneById,
   });
 };

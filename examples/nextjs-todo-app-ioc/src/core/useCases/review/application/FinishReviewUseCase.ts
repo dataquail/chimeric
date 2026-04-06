@@ -1,28 +1,23 @@
-import { inject, injectable } from 'inversify';
-import { InjectionSymbol, type InjectionType } from '@/core/global/types';
+import { IReviewRepository } from '@/core/domain/review/ports/IReviewRepository';
+import { IReviewedTodoRepository } from '@/core/domain/review/ports/IReviewedTodoRepository';
 import { createReviewedTodo } from '@/core/domain/review/entities/ReviewedTodo';
 
-@injectable()
-export class FinishReviewUseCase {
-  constructor(
-    @inject(InjectionSymbol('IReviewRepository'))
-    private readonly reviewRepository: InjectionType<'IReviewRepository'>,
-    @inject(InjectionSymbol('IReviewedTodoRepository'))
-    private readonly reviewedTodoRepository: InjectionType<'IReviewedTodoRepository'>,
-  ) {}
+export type FinishReviewUseCase = () => void;
 
-  public execute() {
-    const review = this.reviewRepository.get();
+export const createFinishReviewUseCase = (
+  reviewRepository: IReviewRepository,
+  reviewedTodoRepository: IReviewedTodoRepository,
+): FinishReviewUseCase => () => {
+  const review = reviewRepository.get();
 
-    if (!review) {
-      throw new Error('No review found');
-    }
-
-    const reviewedTodoList = review.todoIdList.map((todoId) =>
-      createReviewedTodo(todoId),
-    );
-
-    this.reviewedTodoRepository.saveMany(reviewedTodoList);
-    this.reviewRepository.delete();
+  if (!review) {
+    throw new Error('No review found');
   }
-}
+
+  const reviewedTodoList = review.todoIdList.map((todoId) =>
+    createReviewedTodo(todoId),
+  );
+
+  reviewedTodoRepository.saveMany(reviewedTodoList);
+  reviewRepository.delete();
+};

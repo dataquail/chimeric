@@ -1,26 +1,19 @@
-import { inject, injectable } from 'inversify';
-import { InjectionSymbol, type InjectionType } from '@/core/global/types';
+import { IReviewRepository } from '@/core/domain/review/ports/IReviewRepository';
+import { IReviewedTodoRepository } from '@/core/domain/review/ports/IReviewedTodoRepository';
+import { IApplicationEventEmitter } from '@/core/global/ApplicationEventEmitter/IApplicationEventEmitter';
 import { ActiveTodoDeletedEvent } from '@/core/domain/activeTodo/events/ActiveTodoDeletedEvent';
 
-@injectable()
-export class HandleActiveTodoDelete {
-  constructor(
-    @inject(InjectionSymbol('IReviewRepository'))
-    private readonly reviewRepository: InjectionType<'IReviewRepository'>,
-    @inject(InjectionSymbol('IReviewedTodoRepository'))
-    private readonly reviewedTodoRepository: InjectionType<'IReviewedTodoRepository'>,
-    @inject(InjectionSymbol('IApplicationEventEmitter'))
-    private readonly applicationEventEmitter: InjectionType<'IApplicationEventEmitter'>,
-  ) {
-    this.applicationEventEmitter.subscribe(this.execute.bind(this));
-  }
-
-  public execute(event: unknown) {
+export const createHandleActiveTodoDelete = (
+  reviewRepository: IReviewRepository,
+  reviewedTodoRepository: IReviewedTodoRepository,
+  applicationEventEmitter: IApplicationEventEmitter,
+) => {
+  const execute = (event: unknown) => {
     if (event instanceof ActiveTodoDeletedEvent) {
-      const review = this.reviewRepository.get();
+      const review = reviewRepository.get();
 
       if (review) {
-        this.reviewRepository.save({
+        reviewRepository.save({
           createdAt: review.createdAt,
           todoIdList: review.todoIdList.filter(
             (todoId) => todoId !== event.payload.id,
@@ -28,7 +21,11 @@ export class HandleActiveTodoDelete {
         });
       }
 
-      this.reviewedTodoRepository.delete({ id: event.payload.id });
+      reviewedTodoRepository.delete({ id: event.payload.id });
     }
-  }
-}
+  };
+
+  applicationEventEmitter.subscribe(execute);
+
+  return { execute };
+};

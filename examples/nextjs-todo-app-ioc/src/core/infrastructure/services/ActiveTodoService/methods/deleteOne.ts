@@ -1,9 +1,7 @@
-import { AppStore } from '@/lib/store';
 import { QueryClient } from '@tanstack/react-query';
 import { IApplicationEventEmitter } from '@/core/global/ApplicationEventEmitter/IApplicationEventEmitter';
 import { IActiveTodoService } from '@/core/domain/activeTodo/ports/IActiveTodoService';
 import { ChimericMutationFactory } from '@chimeric/react-query';
-import { removeActiveTodo } from '../activeTodoStore';
 import { getConfig } from '@/utils/getConfig';
 import { wrappedFetch } from '@/utils/network/wrappedFetch';
 import { getQueryOptionsGetAll } from './getAll';
@@ -31,7 +29,6 @@ export const deleteActiveTodo: IDeleteActiveTodo = async (args: {
 
 export const DeleteOneMethodImpl = (
   queryClient: QueryClient,
-  appStore: AppStore,
   applicationEventEmitter: IApplicationEventEmitter,
 ): IActiveTodoService['deleteOne'] => {
   return ChimericMutationFactory({
@@ -41,12 +38,11 @@ export const DeleteOneMethodImpl = (
     },
     onSuccess: async (_data, args) => {
       applicationEventEmitter.emit(new ActiveTodoDeletedEvent({ id: args.id }));
-      appStore.dispatch(removeActiveTodo(args.id));
       await queryClient.invalidateQueries({
-        queryKey: getQueryOptionsGetAll(appStore)().queryKey,
+        queryKey: getQueryOptionsGetAll().queryKey,
       });
       await queryClient.invalidateQueries({
-        queryKey: getQueryOptionsGetOneById(appStore)(args).queryKey,
+        queryKey: getQueryOptionsGetOneById(args).queryKey,
       });
     },
   });

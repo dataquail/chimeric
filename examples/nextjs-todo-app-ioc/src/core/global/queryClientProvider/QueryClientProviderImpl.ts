@@ -1,8 +1,6 @@
-import { injectable } from 'inversify';
 import { IQueryClientProvider } from './IQueryClientProvider';
 import { QueryClient } from '@tanstack/react-query';
 
-@injectable()
 export class QueryClientProviderImpl implements IQueryClientProvider {
   private readonly _queryClient: QueryClient;
 

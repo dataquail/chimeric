@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeAll, afterEach, afterAll } from 'vitest';
 import { setupServer } from 'msw/node';
-import { InjectionSymbol, type InjectionType } from '@/core/global/types';
-import { appContainer } from '@/core/global/appContainer';
+import { getContainer } from '@/core/global/container';
 import { mockGetAllActiveTodos } from '@/__test__/network/activeTodo/mockGetAllActiveTodos';
 import { mockGetAllSavedForLaterTodos } from '@/__test__/network/savedForLaterTodo/mockGetAllSavedForLaterTodos';
 
@@ -15,15 +14,11 @@ describe('StartReviewUseCase', () => {
   const nowTimeStamp = new Date().toISOString();
 
   const getStartReviewUseCase = () => {
-    return appContainer.get<InjectionType<'StartReviewUseCase'>>(
-      InjectionSymbol('StartReviewUseCase'),
-    );
+    return getContainer().startReviewUseCase;
   };
 
   const getReviewRepository = () => {
-    return appContainer.get<InjectionType<'IReviewRepository'>>(
-      InjectionSymbol('IReviewRepository'),
-    );
+    return getContainer().reviewRepository;
   };
 
   const withOneUncompletedAndOneCompletedActiveTodoInList = () => {
@@ -63,7 +58,7 @@ describe('StartReviewUseCase', () => {
     withOneUncompletedAndOneCompletedActiveTodoInList();
     withOneSavedForLaterTodoInList();
 
-    await getStartReviewUseCase().execute();
+    await getStartReviewUseCase()();
 
     const review = getReviewRepository().get();
     // omits completed activeTodo 2

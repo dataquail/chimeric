@@ -1,7 +1,5 @@
-'use client';
-
-import { Review } from '@/routes/Review';
+import { ReviewContent } from './ReviewContent';
 
 export default function ReviewPage() {
-  return <Review />;
+  return <ReviewContent />;
 }
