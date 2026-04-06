@@ -8,7 +8,7 @@ import { ActiveTodo } from '../entities/ActiveTodo';
 export type IActiveTodoService = {
   getAll: DefineChimericQuery<() => Promise<ActiveTodo[]>, Error, string[]>;
   getOneById: DefineChimericQuery<
-    (args: { id: string }) => Promise<ActiveTodo | undefined>,
+    (args: { id: string }) => Promise<ActiveTodo>,
     Error,
     string[]
   >;
@@ -28,7 +28,5 @@ export type IActiveTodoService = {
     (args: { id: string }) => Promise<{ id: string }>,
     Error
   >;
-  prioritize: (args: { id: string }) => void;
-  deprioritize: (args: { id: string }) => void;
   clearAll: () => void;
 };

@@ -34,12 +34,6 @@ export * from './lib/Query/chimeric/fuseChimericQuery';
 export { ChimericQueryFactory } from './lib/Query/chimeric/ChimericQueryFactory.server';
 export { ReactiveQueryFactory } from './lib/Query/reactive/ReactiveQueryFactory.server';
 
-// QueryWithManagedStore - idiomatic (safe)
-export * from './lib/QueryWithManagedStore/IdiomaticQueryWithManagedStoreFactory';
-// QueryWithManagedStore - server replacements
-export { ChimericQueryWithManagedStoreFactory } from './lib/QueryWithManagedStore/ChimericQueryWithManagedStoreFactory.server';
-export { ReactiveQueryWithManagedStoreFactory } from './lib/QueryWithManagedStore/ReactiveQueryWithManagedStoreFactory.server';
-
 // InfiniteQuery - types (safe)
 export * from './lib/InfiniteQuery/chimeric/types';
 export * from './lib/InfiniteQuery/idiomatic/types';

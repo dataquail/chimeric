@@ -5,7 +5,6 @@ import { getConfig } from 'src/utils/getConfig';
 import { wrappedFetch } from 'src/utils/network/wrappedFetch';
 import { CreateTodoBody } from 'src/core/domain/activeTodo/dtos/in/CreateTodoBody';
 import { getQueryOptionsGetAll } from './getAll';
-import { AppStore } from 'src/lib/store';
 
 export type ICreateActiveTodo = (
   createTodoBody: CreateTodoBody,
@@ -23,7 +22,6 @@ export const createActiveTodo: ICreateActiveTodo = async (createTodoBody) => {
 };
 
 export const CreateOneMethodImpl = (
-  appStore: AppStore,
   queryClient: QueryClient,
 ): IActiveTodoService['createOne'] => {
   return ChimericMutationFactory({
@@ -31,7 +29,7 @@ export const CreateOneMethodImpl = (
     mutationFn: createActiveTodo,
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: getQueryOptionsGetAll(appStore)().queryKey,
+        queryKey: getQueryOptionsGetAll().queryKey,
       });
     },
   });

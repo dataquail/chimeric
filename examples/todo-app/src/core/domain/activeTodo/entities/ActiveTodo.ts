@@ -6,33 +6,6 @@ export type ActiveTodo = {
   title: string;
   createdAt: Date;
   completedAt: Date | undefined;
-  isPrioritized: boolean | null;
-};
-
-export const prioritizeActiveTodo = (activeTodo: ActiveTodo): ActiveTodo => {
-  if (activeTodo.isPrioritized) {
-    throw new Error('ActiveTodo already prioritized');
-  } else {
-    return {
-      ...activeTodo,
-      isPrioritized: true,
-    };
-  }
-};
-
-export const deprioritizeActiveTodo = (activeTodo: ActiveTodo): ActiveTodo => {
-  if (!activeTodo.isPrioritized) {
-    throw new Error('ActiveTodo already deprioritized');
-  } else {
-    return {
-      ...activeTodo,
-      isPrioritized: false,
-    };
-  }
-};
-
-export const isActiveTodoPrioritized = (activeTodo: ActiveTodo): boolean => {
-  return Boolean(activeTodo.isPrioritized);
 };
 
 export const isActiveTodoCompleted = (activeTodo: ActiveTodo): boolean => {
@@ -46,5 +19,4 @@ export const mapTodoDtoToActiveTodo = (todoDto: TodoDto): ActiveTodo => ({
   completedAt: todoDto.completed_at
     ? parseISO(todoDto.completed_at)
     : undefined,
-  isPrioritized: null,
 });

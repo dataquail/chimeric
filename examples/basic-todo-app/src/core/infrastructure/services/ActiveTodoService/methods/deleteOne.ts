@@ -1,12 +1,10 @@
 import { ChimericMutationFactory } from '@chimeric/react-query';
-import { removeActiveTodo } from '../activeTodoStore';
 import { getConfig } from 'src/utils/getConfig';
 import { wrappedFetch } from 'src/utils/network/wrappedFetch';
 import { getQueryOptionsGetAll } from './getAll';
 import { getQueryOptionsGetOneById } from './getOneById';
 import { ActiveTodoDeletedEvent } from 'src/core/domain/activeTodo/events/ActiveTodoDeletedEvent';
 import { queryClient } from 'src/core/global/queryClient';
-import { appStore } from 'src/core/global/appStore';
 import { applicationEventEmitter } from 'src/core/global/applicationEventEmitter';
 import { IActiveTodoService } from 'src/core/domain/activeTodo/ports/IActiveTodoService';
 
@@ -37,7 +35,6 @@ export const DeleteOneMethodImpl: IActiveTodoService['deleteOne'] =
     },
     onSuccess: async (_data, args) => {
       applicationEventEmitter.emit(new ActiveTodoDeletedEvent({ id: args.id }));
-      appStore.dispatch(removeActiveTodo(args.id));
       await queryClient.invalidateQueries({
         queryKey: getQueryOptionsGetAll().queryKey,
       });

@@ -25,14 +25,23 @@ type Props = {
 };
 
 export const ActiveTodoCard = ({ todo }: Props) => {
-  const { activeTodoService, savedForLaterTodoService } = container;
+  const {
+    activeTodoService,
+    savedForLaterTodoService,
+    priorityTodoRepository,
+    prioritizeTodoUseCase,
+    deprioritizeTodoUseCase,
+  } = container;
+
+  const priorityTodo = priorityTodoRepository.getOneById.useHook({
+    id: todo.id,
+  });
+  const isPrioritized = priorityTodo?.isPrioritized ?? false;
 
   const saveForLater = savedForLaterTodoService.saveForLater.useHook();
   const completeOne = activeTodoService.completeOne.useHook();
   const uncompleteOne = activeTodoService.uncompleteOne.useHook();
   const deleteOne = activeTodoService.deleteOne.useHook();
-  const prioritize = activeTodoService.prioritize;
-  const deprioritize = activeTodoService.deprioritize;
 
   return (
     <Box key={todo.id} p="xs" pr="lg">
@@ -63,7 +72,7 @@ export const ActiveTodoCard = ({ todo }: Props) => {
               <Text size="sm">{`Created At: ${format(todo.createdAt, 'M/d/yyyy h:m aaa')}`}</Text>
               <Text size="sm">{`Completed At: ${todo.completedAt ? format(todo.completedAt, 'M/d/yyyy h:m aaa') : 'N/A'}`}</Text>
             </Stack>
-            {todo.isPrioritized && (
+            {isPrioritized && (
               <Box style={{ flexGrow: 1 }} p="xs">
                 <IconStarFilled
                   style={{
@@ -93,12 +102,12 @@ export const ActiveTodoCard = ({ todo }: Props) => {
             >
               Delete
             </Menu.Item>
-            {todo.isPrioritized ? (
+            {isPrioritized ? (
               <Menu.Item
                 leftSection={
                   <IconStar style={{ width: rem(14), height: rem(14) }} />
                 }
-                onClick={() => deprioritize({ id: todo.id })}
+                onClick={() => deprioritizeTodoUseCase({ id: todo.id })}
               >
                 Deprioritize
               </Menu.Item>
@@ -109,7 +118,7 @@ export const ActiveTodoCard = ({ todo }: Props) => {
                     style={{ width: rem(14), height: rem(14) }}
                   />
                 }
-                onClick={() => prioritize({ id: todo.id })}
+                onClick={() => prioritizeTodoUseCase({ id: todo.id })}
               >
                 Prioritize
               </Menu.Item>

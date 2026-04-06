@@ -13,8 +13,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@chimeric/react-query": "workspace:*",
     "@chimeric/react": "workspace:*",
+    "@chimeric/react-query": "workspace:*",
     "@mantine/core": "^7.10.0",
     "@mantine/form": "^7.10.0",
     "@mantine/hooks": "^7.10.0",
@@ -29,7 +29,8 @@
     "redux": "^5.0.1",
     "sass": "^1.77.2",
     "sort-by": "^1.2.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "zustand": "^5.0.9"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",
