@@ -23,6 +23,12 @@
     },
     {
       "path": "./examples/todo-api"
+    },
+    {
+      "path": "./examples/redux-todo-app"
+    },
+    {
+      "path": "./packages/rtk-query"
     }
   ]
 }

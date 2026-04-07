@@ -1,0 +1,57 @@
+{
+  "name": "@chimeric/rtk-query",
+  "version": "1.1.0",
+  "description": "RTK Query utilities for chimeric interfaces",
+  "author": "zacharyweidenbach",
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "rtk-query",
+    "redux-toolkit",
+    "typescript",
+    "caching",
+    "mutation",
+    "interface",
+    "ioc",
+    "di",
+    "dependency injection"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dataquail/chimeric.git",
+    "directory": "packages/rtk-query"
+  },
+  "homepage": "https://dataquail.github.io/chimeric",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "typings": "dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.js",
+      "default": "./dist/index.esm.js"
+    }
+  },
+  "dependencies": {
+    "@chimeric/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@reduxjs/toolkit": "^2.0.0",
+    "react": "^18 || ^19",
+    "react-redux": "^9.0.0"
+  },
+  "devDependencies": {
+    "@chimeric/react": "workspace:*",
+    "@reduxjs/toolkit": "^2.6.0",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.4.5",
+    "@testing-library/react": "^14.3.1",
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-redux": "^9.0.0"
+  }
+}

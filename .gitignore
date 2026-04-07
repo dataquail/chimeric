@@ -51,7 +51,6 @@ vitest.config.*.timestamp*
 
 # Next.js
 .next
-out
 
 # Notes
-TODO.md
+/docs/scratch

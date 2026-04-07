@@ -1,0 +1,794 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  createReactiveEagerAsync,
+  isReactiveEagerAsync,
+  isReactiveQuery,
+  isReactiveSync,
+  ReactiveEagerAsync,
+  ReactiveEagerAsyncOptions,
+  ReactiveQueryOptions,
+  ReactiveSync,
+} from '@chimeric/core';
+import { useMemo, useRef } from 'react';
+import {
+  ReactiveQuery,
+  RtkQueryReactiveNativeOptions,
+} from '../../Query/reactive/types';
+import {
+  ExtractTResultExtends,
+  MetaAggregatorFactory,
+} from '../MetaAggregatorFactory';
+
+// Helper type to extract the result type from a service configuration
+type ExtractServiceResult<TConfig> = TConfig extends {
+  service: ReactiveQuery<infer _TParams, infer TResult, infer _TError>;
+}
+  ? TResult
+  : TConfig extends {
+      service: ReactiveEagerAsync<any, infer TResult, infer _TError>;
+    }
+  ? TResult
+  : TConfig extends {
+      service: ReactiveSync<infer _TParams, infer TResult>;
+    }
+  ? TResult
+  : never;
+
+type ExtractServiceResultWithUndefined<TConfig> = TConfig extends {
+  service: ReactiveQuery<any, infer TResult, any>;
+}
+  ? TResult | undefined
+  : TConfig extends {
+      service: ReactiveEagerAsync<any, infer TResult, any>;
+    }
+  ? TResult | undefined
+  : TConfig extends {
+      service: ReactiveSync<any, infer TResult>;
+    }
+  ? TResult
+  : never;
+
+// Type to extract results from a tuple of configs
+type ExtractResults<T extends readonly any[]> = T extends readonly [infer C0]
+  ? [ExtractServiceResult<C0>]
+  : T extends readonly [infer C0, infer C1]
+  ? [ExtractServiceResult<C0>, ExtractServiceResult<C1>]
+  : T extends readonly [infer C0, infer C1, infer C2]
+  ? [
+      ExtractServiceResult<C0>,
+      ExtractServiceResult<C1>,
+      ExtractServiceResult<C2>,
+    ]
+  : T extends readonly [infer C0, infer C1, infer C2, infer C3]
+  ? [
+      ExtractServiceResult<C0>,
+      ExtractServiceResult<C1>,
+      ExtractServiceResult<C2>,
+      ExtractServiceResult<C3>,
+    ]
+  : T extends readonly [infer C0, infer C1, infer C2, infer C3, infer C4]
+  ? [
+      ExtractServiceResult<C0>,
+      ExtractServiceResult<C1>,
+      ExtractServiceResult<C2>,
+      ExtractServiceResult<C3>,
+      ExtractServiceResult<C4>,
+    ]
+  : T extends readonly [
+      infer C0,
+      infer C1,
+      infer C2,
+      infer C3,
+      infer C4,
+      infer C5,
+    ]
+  ? [
+      ExtractServiceResult<C0>,
+      ExtractServiceResult<C1>,
+      ExtractServiceResult<C2>,
+      ExtractServiceResult<C3>,
+      ExtractServiceResult<C4>,
+      ExtractServiceResult<C5>,
+    ]
+  : T extends readonly [
+      infer C0,
+      infer C1,
+      infer C2,
+      infer C3,
+      infer C4,
+      infer C5,
+      infer C6,
+    ]
+  ? [
+      ExtractServiceResult<C0>,
+      ExtractServiceResult<C1>,
+      ExtractServiceResult<C2>,
+      ExtractServiceResult<C3>,
+      ExtractServiceResult<C4>,
+      ExtractServiceResult<C5>,
+      ExtractServiceResult<C6>,
+    ]
+  : T extends readonly [
+      infer C0,
+      infer C1,
+      infer C2,
+      infer C3,
+      infer C4,
+      infer C5,
+      infer C6,
+      infer C7,
+    ]
+  ? [
+      ExtractServiceResult<C0>,
+      ExtractServiceResult<C1>,
+      ExtractServiceResult<C2>,
+      ExtractServiceResult<C3>,
+      ExtractServiceResult<C4>,
+      ExtractServiceResult<C5>,
+      ExtractServiceResult<C6>,
+      ExtractServiceResult<C7>,
+    ]
+  : T extends readonly [
+      infer C0,
+      infer C1,
+      infer C2,
+      infer C3,
+      infer C4,
+      infer C5,
+      infer C6,
+      infer C7,
+      infer C8,
+    ]
+  ? [
+      ExtractServiceResult<C0>,
+      ExtractServiceResult<C1>,
+      ExtractServiceResult<C2>,
+      ExtractServiceResult<C3>,
+      ExtractServiceResult<C4>,
+      ExtractServiceResult<C5>,
+      ExtractServiceResult<C6>,
+      ExtractServiceResult<C7>,
+      ExtractServiceResult<C8>,
+    ]
+  : T extends readonly [
+      infer C0,
+      infer C1,
+      infer C2,
+      infer C3,
+      infer C4,
+      infer C5,
+      infer C6,
+      infer C7,
+      infer C8,
+      infer C9,
+    ]
+  ? [
+      ExtractServiceResult<C0>,
+      ExtractServiceResult<C1>,
+      ExtractServiceResult<C2>,
+      ExtractServiceResult<C3>,
+      ExtractServiceResult<C4>,
+      ExtractServiceResult<C5>,
+      ExtractServiceResult<C6>,
+      ExtractServiceResult<C7>,
+      ExtractServiceResult<C8>,
+      ExtractServiceResult<C9>,
+    ]
+  : never;
+
+type ExtractResultsWithUndefined<T extends readonly any[]> =
+  T extends readonly [infer C0]
+    ? [ExtractServiceResultWithUndefined<C0>]
+    : T extends readonly [infer C0, infer C1]
+    ? [
+        ExtractServiceResultWithUndefined<C0>,
+        ExtractServiceResultWithUndefined<C1>,
+      ]
+    : T extends readonly [infer C0, infer C1, infer C2]
+    ? [
+        ExtractServiceResultWithUndefined<C0>,
+        ExtractServiceResultWithUndefined<C1>,
+        ExtractServiceResultWithUndefined<C2>,
+      ]
+    : T extends readonly [infer C0, infer C1, infer C2, infer C3]
+    ? [
+        ExtractServiceResultWithUndefined<C0>,
+        ExtractServiceResultWithUndefined<C1>,
+        ExtractServiceResultWithUndefined<C2>,
+        ExtractServiceResultWithUndefined<C3>,
+      ]
+    : T extends readonly [infer C0, infer C1, infer C2, infer C3, infer C4]
+    ? [
+        ExtractServiceResultWithUndefined<C0>,
+        ExtractServiceResultWithUndefined<C1>,
+        ExtractServiceResultWithUndefined<C2>,
+        ExtractServiceResultWithUndefined<C3>,
+        ExtractServiceResultWithUndefined<C4>,
+      ]
+    : T extends readonly [
+        infer C0,
+        infer C1,
+        infer C2,
+        infer C3,
+        infer C4,
+        infer C5,
+      ]
+    ? [
+        ExtractServiceResultWithUndefined<C0>,
+        ExtractServiceResultWithUndefined<C1>,
+        ExtractServiceResultWithUndefined<C2>,
+        ExtractServiceResultWithUndefined<C3>,
+        ExtractServiceResultWithUndefined<C4>,
+        ExtractServiceResultWithUndefined<C5>,
+      ]
+    : T extends readonly [
+        infer C0,
+        infer C1,
+        infer C2,
+        infer C3,
+        infer C4,
+        infer C5,
+        infer C6,
+      ]
+    ? [
+        ExtractServiceResultWithUndefined<C0>,
+        ExtractServiceResultWithUndefined<C1>,
+        ExtractServiceResultWithUndefined<C2>,
+        ExtractServiceResultWithUndefined<C3>,
+        ExtractServiceResultWithUndefined<C4>,
+        ExtractServiceResultWithUndefined<C5>,
+        ExtractServiceResultWithUndefined<C6>,
+      ]
+    : T extends readonly [
+        infer C0,
+        infer C1,
+        infer C2,
+        infer C3,
+        infer C4,
+        infer C5,
+        infer C6,
+        infer C7,
+      ]
+    ? [
+        ExtractServiceResultWithUndefined<C0>,
+        ExtractServiceResultWithUndefined<C1>,
+        ExtractServiceResultWithUndefined<C2>,
+        ExtractServiceResultWithUndefined<C3>,
+        ExtractServiceResultWithUndefined<C4>,
+        ExtractServiceResultWithUndefined<C5>,
+        ExtractServiceResultWithUndefined<C6>,
+        ExtractServiceResultWithUndefined<C7>,
+      ]
+    : T extends readonly [
+        infer C0,
+        infer C1,
+        infer C2,
+        infer C3,
+        infer C4,
+        infer C5,
+        infer C6,
+        infer C7,
+        infer C8,
+      ]
+    ? [
+        ExtractServiceResultWithUndefined<C0>,
+        ExtractServiceResultWithUndefined<C1>,
+        ExtractServiceResultWithUndefined<C2>,
+        ExtractServiceResultWithUndefined<C3>,
+        ExtractServiceResultWithUndefined<C4>,
+        ExtractServiceResultWithUndefined<C5>,
+        ExtractServiceResultWithUndefined<C6>,
+        ExtractServiceResultWithUndefined<C7>,
+        ExtractServiceResultWithUndefined<C8>,
+      ]
+    : T extends readonly [
+        infer C0,
+        infer C1,
+        infer C2,
+        infer C3,
+        infer C4,
+        infer C5,
+        infer C6,
+        infer C7,
+        infer C8,
+        infer C9,
+      ]
+    ? [
+        ExtractServiceResultWithUndefined<C0>,
+        ExtractServiceResultWithUndefined<C1>,
+        ExtractServiceResultWithUndefined<C2>,
+        ExtractServiceResultWithUndefined<C3>,
+        ExtractServiceResultWithUndefined<C4>,
+        ExtractServiceResultWithUndefined<C5>,
+        ExtractServiceResultWithUndefined<C6>,
+        ExtractServiceResultWithUndefined<C7>,
+        ExtractServiceResultWithUndefined<C8>,
+        ExtractServiceResultWithUndefined<C9>,
+      ]
+    : never;
+
+type AnyServiceConfig = {
+  service:
+    | ReactiveSync<any, any>
+    | ReactiveEagerAsync<any, any>
+    | ReactiveQuery<any, any>;
+  getParams?: (params: any) => any;
+};
+
+type InferService<TConfig, TServiceParams> =
+  // QUERY
+  TConfig extends {
+    service: ReactiveQuery<infer TParams, infer TResult, infer TError>;
+  }
+    ? QueryConfig<TServiceParams, TParams, TResult, TError>
+    : // EAGER ASYNC
+    TConfig extends {
+        service: ReactiveEagerAsync<infer TParams, infer TResult, infer TError>;
+      }
+    ? EagerAsyncConfig<TServiceParams, TParams, TResult, TError>
+    : // SYNC
+    TConfig extends {
+        service: ReactiveSync<infer TParams, infer TResult>;
+      }
+    ? SyncConfig<TServiceParams, TParams, TResult>
+    : never;
+
+type QueryConfig<
+  TServiceParams,
+  TParams,
+  TResult,
+  TError extends Error,
+> = [TParams] extends [void]
+  ? {
+      service: ReactiveQuery<void, TResult, TError>;
+      getParams?: never;
+      getOptions?: () => {
+        options?: ReactiveQueryOptions;
+        nativeOptions?: RtkQueryReactiveNativeOptions;
+      };
+    }
+  : void extends TParams
+  ? {
+      service: ReactiveQuery<void, TResult, TError>;
+      getParams?: never;
+      getOptions?: () => {
+        options?: ReactiveQueryOptions;
+        nativeOptions?: RtkQueryReactiveNativeOptions;
+      };
+    }
+  : undefined extends TParams
+  ? {
+      service: ReactiveQuery<TParams, TResult, TError>;
+      getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+      getOptions?:
+        | ((params: TServiceParams) => {
+            options?: ReactiveQueryOptions;
+            nativeOptions?: RtkQueryReactiveNativeOptions;
+          })
+        | (() => {
+            options?: ReactiveQueryOptions;
+            nativeOptions?: RtkQueryReactiveNativeOptions;
+          });
+    }
+  : {
+      service: ReactiveQuery<TParams, TResult, TError>;
+      getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+      getOptions?:
+        | ((params: TServiceParams) => {
+            options?: ReactiveQueryOptions;
+            nativeOptions?: RtkQueryReactiveNativeOptions;
+          })
+        | (() => {
+            options?: ReactiveQueryOptions;
+            nativeOptions?: RtkQueryReactiveNativeOptions;
+          });
+    };
+
+type EagerAsyncConfig<
+  TServiceParams,
+  TParams,
+  TResult,
+  TError extends Error,
+> = [TParams] extends [void]
+  ? {
+      service: ReactiveEagerAsync<void, TResult, TError>;
+      getParams?: never;
+      getOptions?: () => ReactiveEagerAsyncOptions;
+    }
+  : void extends TParams
+  ? {
+      service: ReactiveEagerAsync<void, TResult, TError>;
+      getParams?: never;
+      getOptions?: () => ReactiveEagerAsyncOptions;
+    }
+  : undefined extends TParams
+  ? {
+      service: ReactiveEagerAsync<TParams, TResult, TError>;
+      getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+      getOptions?:
+        | ((params: TServiceParams) => ReactiveEagerAsyncOptions)
+        | (() => ReactiveEagerAsyncOptions);
+    }
+  : {
+      service: ReactiveEagerAsync<TParams, TResult, TError>;
+      getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+      getOptions?:
+        | ((params: TServiceParams) => ReactiveEagerAsyncOptions)
+        | (() => ReactiveEagerAsyncOptions);
+    };
+
+type SyncConfig<TServiceParams, TParams, TResult> = [TParams] extends [void]
+  ? {
+      service: ReactiveSync<void, TResult>;
+      getParams?: never;
+      getOptions?: never;
+    }
+  : void extends TParams
+  ? {
+      service: ReactiveSync<void, TResult>;
+      getParams?: never;
+      getOptions?: never;
+    }
+  : undefined extends TParams
+  ? {
+      service: ReactiveSync<TParams, TResult>;
+      getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+      getOptions?: never;
+    }
+  : {
+      service: ReactiveSync<TParams, TResult>;
+      getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+      getOptions?: never;
+    };
+
+export const ReactiveAsyncReducer = <TServiceParams = void>() => ({
+  build: <
+    TServiceResult,
+    TConfigList extends
+      | readonly [InferService<TConfigList[0], TServiceParams>]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+          InferService<TConfigList[4], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+          InferService<TConfigList[4], TServiceParams>,
+          InferService<TConfigList[5], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+          InferService<TConfigList[4], TServiceParams>,
+          InferService<TConfigList[5], TServiceParams>,
+          InferService<TConfigList[6], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+          InferService<TConfigList[4], TServiceParams>,
+          InferService<TConfigList[5], TServiceParams>,
+          InferService<TConfigList[6], TServiceParams>,
+          InferService<TConfigList[7], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+          InferService<TConfigList[4], TServiceParams>,
+          InferService<TConfigList[5], TServiceParams>,
+          InferService<TConfigList[6], TServiceParams>,
+          InferService<TConfigList[7], TServiceParams>,
+          InferService<TConfigList[8], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+          InferService<TConfigList[4], TServiceParams>,
+          InferService<TConfigList[5], TServiceParams>,
+          InferService<TConfigList[6], TServiceParams>,
+          InferService<TConfigList[7], TServiceParams>,
+          InferService<TConfigList[8], TServiceParams>,
+          InferService<TConfigList[9], TServiceParams>,
+        ],
+  >({
+    reducer,
+    initialValueReducer,
+    serviceList,
+  }: {
+    serviceList: TConfigList;
+    reducer: (
+      args: ExtractResults<TConfigList>,
+      serviceParams: TServiceParams,
+    ) => TServiceResult;
+    initialValueReducer?: (
+      args: ExtractResultsWithUndefined<TConfigList>,
+      serviceParams: TServiceParams,
+    ) => TServiceResult;
+  }): ReactiveEagerAsync<TServiceParams, TServiceResult> => {
+    const useService0 = getService(serviceList[0]);
+    const useService1 = getService(serviceList[1]);
+    const useService2 = getService(serviceList[2]);
+    const useService3 = getService(serviceList[3]);
+    const useService4 = getService(serviceList[4]);
+    const useService5 = getService(serviceList[5]);
+    const useService6 = getService(serviceList[6]);
+    const useService7 = getService(serviceList[7]);
+    const useService8 = getService(serviceList[8]);
+    const useService9 = getService(serviceList[9]);
+
+    const useEagerAsync = (params: TServiceParams | void) => {
+      // Memoize arguments
+      const [params0, options0] = useMemo(
+        () => getArgs(serviceList[0], params),
+        [params],
+      );
+      const [paramsOrMaybeOptions1, maybeOptions1] = useMemo(
+        () => getArgs(serviceList[1], params),
+        [params],
+      );
+      const [paramsOrMaybeOptions2, maybeOptions2] = useMemo(
+        () => getArgs(serviceList[2], params),
+        [params],
+      );
+      const [paramsOrMaybeOptions3, maybeOptions3] = useMemo(
+        () => getArgs(serviceList[3], params),
+        [params],
+      );
+      const [paramsOrMaybeOptions4, maybeOptions4] = useMemo(
+        () => getArgs(serviceList[4], params),
+        [params],
+      );
+      const [paramsOrMaybeOptions5, maybeOptions5] = useMemo(
+        () => getArgs(serviceList[5], params),
+        [params],
+      );
+      const [paramsOrMaybeOptions6, maybeOptions6] = useMemo(
+        () => getArgs(serviceList[6], params),
+        [params],
+      );
+      const [paramsOrMaybeOptions7, maybeOptions7] = useMemo(
+        () => getArgs(serviceList[7], params),
+        [params],
+      );
+      const [paramsOrMaybeOptions8, maybeOptions8] = useMemo(
+        () => getArgs(serviceList[8], params),
+        [params],
+      );
+      const [paramsOrMaybeOptions9, maybeOptions9] = useMemo(
+        () => getArgs(serviceList[9], params),
+        [params],
+      );
+      // Call hooks with memoized arguments
+      const result0 = useService0(params0, options0);
+      const result1 = useService1(paramsOrMaybeOptions1, maybeOptions1);
+      const result2 = useService2(paramsOrMaybeOptions2, maybeOptions2);
+      const result3 = useService3(paramsOrMaybeOptions3, maybeOptions3);
+      const result4 = useService4(paramsOrMaybeOptions4, maybeOptions4);
+      const result5 = useService5(paramsOrMaybeOptions5, maybeOptions5);
+      const result6 = useService6(paramsOrMaybeOptions6, maybeOptions6);
+      const result7 = useService7(paramsOrMaybeOptions7, maybeOptions7);
+      const result8 = useService8(paramsOrMaybeOptions8, maybeOptions8);
+      const result9 = useService9(paramsOrMaybeOptions9, maybeOptions9);
+
+      // Use deep memoization for each result to prevent unnecessary re-renders
+      const memoizedResult0 = useDeepMemo(
+        extractMemoKey(result0, serviceList[0]),
+      );
+      const memoizedResult1 = useDeepMemo(
+        extractMemoKey(result1, serviceList[1]),
+      );
+      const memoizedResult2 = useDeepMemo(
+        extractMemoKey(result2, serviceList[2]),
+      );
+      const memoizedResult3 = useDeepMemo(
+        extractMemoKey(result3, serviceList[3]),
+      );
+      const memoizedResult4 = useDeepMemo(
+        extractMemoKey(result4, serviceList[4]),
+      );
+      const memoizedResult5 = useDeepMemo(
+        extractMemoKey(result5, serviceList[5]),
+      );
+      const memoizedResult6 = useDeepMemo(
+        extractMemoKey(result6, serviceList[6]),
+      );
+      const memoizedResult7 = useDeepMemo(
+        extractMemoKey(result7, serviceList[7]),
+      );
+      const memoizedResult8 = useDeepMemo(
+        extractMemoKey(result8, serviceList[8]),
+      );
+      const memoizedResult9 = useDeepMemo(
+        extractMemoKey(result9, serviceList[9]),
+      );
+
+      // Memoize the final result to avoid unnecessary recalculations
+      return useMemo(() => {
+        const results = [
+          memoizedResult0,
+          memoizedResult1,
+          memoizedResult2,
+          memoizedResult3,
+          memoizedResult4,
+          memoizedResult5,
+          memoizedResult6,
+          memoizedResult7,
+          memoizedResult8,
+          memoizedResult9,
+        ].slice(0, serviceList.length);
+        return MetaAggregatorFactory({
+          metaList: results as ExtractTResultExtends<any[]>,
+          dataReducer: (dataList) =>
+            reducer(
+              dataList as ExtractResults<TConfigList>,
+              params as TServiceParams,
+            ),
+          context: params as TServiceParams,
+          initialValueReducer: initialValueReducer as any,
+        });
+      }, [
+        memoizedResult0,
+        memoizedResult1,
+        memoizedResult2,
+        memoizedResult3,
+        memoizedResult4,
+        memoizedResult5,
+        memoizedResult6,
+        memoizedResult7,
+        memoizedResult8,
+        memoizedResult9,
+        params,
+      ]);
+    };
+
+    return createReactiveEagerAsync<TServiceParams, TServiceResult>(
+      useEagerAsync as ReactiveEagerAsync<
+        TServiceParams,
+        TServiceResult
+      >['useHook'],
+    );
+  },
+});
+
+const getService = (
+  service: AnyServiceConfig | undefined,
+): ((paramsOrMaybeOptions?: any, maybeOptions?: any) => any) => {
+  if (!service) {
+    return () => undefined;
+  } else {
+    return service.service.useHook || (() => undefined);
+  }
+};
+
+// Deep comparison utility for nested objects
+const deepEqual = (a: any, b: any): boolean => {
+  if (a === b) return true;
+  if (a == null || b == null) return a === b;
+  if (typeof a !== 'object' || typeof b !== 'object') return a === b;
+
+  const keysA = Object.keys(a);
+  const keysB = Object.keys(b);
+
+  if (keysA.length !== keysB.length) return false;
+
+  for (const key of keysA) {
+    if (!keysB.includes(key)) return false;
+    if (!deepEqual(a[key], b[key])) return false;
+  }
+
+  return true;
+};
+
+// Custom hook for memoization with deep comparison
+const useDeepMemo = <T>(value: T): T => {
+  const ref = useRef<T>(value);
+
+  if (!deepEqual(ref.current, value)) {
+    ref.current = value;
+  }
+
+  return ref.current;
+};
+
+export const extractMemoKey = (
+  result: any,
+  serviceConfig: AnyServiceConfig | undefined,
+) => {
+  if (!result || !serviceConfig) {
+    return result;
+  }
+
+  if (isReactiveEagerAsync(serviceConfig.service)) {
+    // For eager async services, extract only the relevant state properties
+    return {
+      isIdle: result.isIdle,
+      isPending: result.isPending,
+      isSuccess: result.isSuccess,
+      isError: result.isError,
+      data: result.data,
+      error: result.error,
+    };
+  } else if (isReactiveSync(serviceConfig.service)) {
+    // For sync services, the result is the data directly - safe to memoize as-is
+    return result;
+  } else if (isReactiveQuery(serviceConfig.service)) {
+    // For query services, extract only the relevant state properties
+    return {
+      isIdle: result.isIdle,
+      isPending: result.isPending,
+      isSuccess: result.isSuccess,
+      isError: result.isError,
+      data: result.data,
+      error: result.error,
+    };
+  } else {
+    return result;
+  }
+};
+
+const getArgs = <TServiceParams>(
+  serviceConfig: AnyServiceConfig | undefined,
+  serviceParams: TServiceParams | void,
+):
+  | []
+  | [paramsOrMaybeOptions: any]
+  | [paramsOrMaybeOptions: any, maybeOptions: any] => {
+  if (!serviceConfig) {
+    return [];
+  }
+
+  // Get params either from getParams function or undefined for void services
+  if (isReactiveEagerAsync(serviceConfig.service)) {
+    const params = serviceConfig?.getParams
+      ? serviceConfig.getParams(serviceParams)
+      : undefined;
+    return [params];
+  } else if (isReactiveSync(serviceConfig.service)) {
+    const params = serviceConfig?.getParams
+      ? serviceConfig.getParams(serviceParams)
+      : undefined;
+    return [params];
+  } else if (isReactiveQuery(serviceConfig.service)) {
+    const params = serviceConfig?.getParams
+      ? serviceConfig.getParams(serviceParams)
+      : undefined;
+    const options =
+      (
+        serviceConfig as { getOptions?: (serviceParams: any) => void }
+      )?.getOptions?.(params) ?? {};
+
+    return serviceConfig.service.useHook.length > 1
+      ? [params, options]
+      : [options];
+  } else {
+    throw new Error('Invalid service type');
+  }
+};
