@@ -1,0 +1,552 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  ChimericEagerAsync,
+  ChimericSync,
+  fuseChimericEagerAsync,
+  IdiomaticEagerAsync,
+  IdiomaticQueryOptions,
+  ReactiveEagerAsync,
+  ReactiveQueryOptions,
+} from '@chimeric/core';
+import { IdiomaticAsyncReducer } from './IdiomaticAsyncReducer';
+import { ReactiveAsyncReducer } from './ReactiveAsyncReducer';
+import { RtkQueryIdiomaticNativeOptions } from '../../Query/idiomatic/types';
+import { ChimericQuery } from '../../Query/chimeric/types';
+import { RtkQueryReactiveNativeOptions } from '../../Query/reactive/types';
+
+// Helper type to extract the result type from a service configuration
+type ExtractServiceResult<TConfig> = TConfig extends {
+  service: ChimericQuery<infer _TParams, infer TResult>;
+}
+  ? TResult | undefined
+  : TConfig extends {
+      service: ChimericEagerAsync<infer _TParams, infer TResult, infer _TError>;
+    }
+  ? TResult
+  : TConfig extends {
+      service: ChimericSync<infer _TParams, infer TResult>;
+    }
+  ? TResult
+  : never;
+
+type ExtractServiceResultWithUndefined<TConfig> = TConfig extends {
+  service: ChimericQuery<infer _TParams, infer TResult>;
+}
+  ? TResult | undefined
+  : TConfig extends {
+      service: ChimericEagerAsync<infer _TParams, infer TResult, infer _TError>;
+    }
+  ? TResult | undefined
+  : TConfig extends {
+      service: ChimericSync<infer _TParams, infer TResult>;
+    }
+  ? TResult
+  : never;
+
+// Type to extract results from a tuple of configs
+type ExtractResults<T extends readonly any[]> = T extends readonly [infer C0]
+  ? [ExtractServiceResult<C0>]
+  : T extends readonly [infer C0, infer C1]
+  ? [ExtractServiceResult<C0>, ExtractServiceResult<C1>]
+  : T extends readonly [infer C0, infer C1, infer C2]
+  ? [
+      ExtractServiceResult<C0>,
+      ExtractServiceResult<C1>,
+      ExtractServiceResult<C2>,
+    ]
+  : T extends readonly [infer C0, infer C1, infer C2, infer C3]
+  ? [
+      ExtractServiceResult<C0>,
+      ExtractServiceResult<C1>,
+      ExtractServiceResult<C2>,
+      ExtractServiceResult<C3>,
+    ]
+  : T extends readonly [infer C0, infer C1, infer C2, infer C3, infer C4]
+  ? [
+      ExtractServiceResult<C0>,
+      ExtractServiceResult<C1>,
+      ExtractServiceResult<C2>,
+      ExtractServiceResult<C3>,
+      ExtractServiceResult<C4>,
+    ]
+  : T extends readonly [
+      infer C0,
+      infer C1,
+      infer C2,
+      infer C3,
+      infer C4,
+      infer C5,
+    ]
+  ? [
+      ExtractServiceResult<C0>,
+      ExtractServiceResult<C1>,
+      ExtractServiceResult<C2>,
+      ExtractServiceResult<C3>,
+      ExtractServiceResult<C4>,
+      ExtractServiceResult<C5>,
+    ]
+  : T extends readonly [
+      infer C0,
+      infer C1,
+      infer C2,
+      infer C3,
+      infer C4,
+      infer C5,
+      infer C6,
+    ]
+  ? [
+      ExtractServiceResult<C0>,
+      ExtractServiceResult<C1>,
+      ExtractServiceResult<C2>,
+      ExtractServiceResult<C3>,
+      ExtractServiceResult<C4>,
+      ExtractServiceResult<C5>,
+      ExtractServiceResult<C6>,
+    ]
+  : T extends readonly [
+      infer C0,
+      infer C1,
+      infer C2,
+      infer C3,
+      infer C4,
+      infer C5,
+      infer C6,
+      infer C7,
+    ]
+  ? [
+      ExtractServiceResult<C0>,
+      ExtractServiceResult<C1>,
+      ExtractServiceResult<C2>,
+      ExtractServiceResult<C3>,
+      ExtractServiceResult<C4>,
+      ExtractServiceResult<C5>,
+      ExtractServiceResult<C6>,
+      ExtractServiceResult<C7>,
+    ]
+  : T extends readonly [
+      infer C0,
+      infer C1,
+      infer C2,
+      infer C3,
+      infer C4,
+      infer C5,
+      infer C6,
+      infer C7,
+      infer C8,
+    ]
+  ? [
+      ExtractServiceResult<C0>,
+      ExtractServiceResult<C1>,
+      ExtractServiceResult<C2>,
+      ExtractServiceResult<C3>,
+      ExtractServiceResult<C4>,
+      ExtractServiceResult<C5>,
+      ExtractServiceResult<C6>,
+      ExtractServiceResult<C7>,
+      ExtractServiceResult<C8>,
+    ]
+  : T extends readonly [
+      infer C0,
+      infer C1,
+      infer C2,
+      infer C3,
+      infer C4,
+      infer C5,
+      infer C6,
+      infer C7,
+      infer C8,
+      infer C9,
+    ]
+  ? [
+      ExtractServiceResult<C0>,
+      ExtractServiceResult<C1>,
+      ExtractServiceResult<C2>,
+      ExtractServiceResult<C3>,
+      ExtractServiceResult<C4>,
+      ExtractServiceResult<C5>,
+      ExtractServiceResult<C6>,
+      ExtractServiceResult<C7>,
+      ExtractServiceResult<C8>,
+      ExtractServiceResult<C9>,
+    ]
+  : never;
+
+type ExtractResultsWithUndefined<T extends readonly any[]> =
+  T extends readonly [infer C0]
+    ? [ExtractServiceResultWithUndefined<C0>]
+    : T extends readonly [infer C0, infer C1]
+    ? [
+        ExtractServiceResultWithUndefined<C0>,
+        ExtractServiceResultWithUndefined<C1>,
+      ]
+    : T extends readonly [infer C0, infer C1, infer C2]
+    ? [
+        ExtractServiceResultWithUndefined<C0>,
+        ExtractServiceResultWithUndefined<C1>,
+        ExtractServiceResultWithUndefined<C2>,
+      ]
+    : T extends readonly [infer C0, infer C1, infer C2, infer C3]
+    ? [
+        ExtractServiceResultWithUndefined<C0>,
+        ExtractServiceResultWithUndefined<C1>,
+        ExtractServiceResultWithUndefined<C2>,
+        ExtractServiceResultWithUndefined<C3>,
+      ]
+    : T extends readonly [infer C0, infer C1, infer C2, infer C3, infer C4]
+    ? [
+        ExtractServiceResultWithUndefined<C0>,
+        ExtractServiceResultWithUndefined<C1>,
+        ExtractServiceResultWithUndefined<C2>,
+        ExtractServiceResultWithUndefined<C3>,
+        ExtractServiceResultWithUndefined<C4>,
+      ]
+    : T extends readonly [
+        infer C0,
+        infer C1,
+        infer C2,
+        infer C3,
+        infer C4,
+        infer C5,
+      ]
+    ? [
+        ExtractServiceResultWithUndefined<C0>,
+        ExtractServiceResultWithUndefined<C1>,
+        ExtractServiceResultWithUndefined<C2>,
+        ExtractServiceResultWithUndefined<C3>,
+        ExtractServiceResultWithUndefined<C4>,
+        ExtractServiceResultWithUndefined<C5>,
+      ]
+    : T extends readonly [
+        infer C0,
+        infer C1,
+        infer C2,
+        infer C3,
+        infer C4,
+        infer C5,
+        infer C6,
+      ]
+    ? [
+        ExtractServiceResultWithUndefined<C0>,
+        ExtractServiceResultWithUndefined<C1>,
+        ExtractServiceResultWithUndefined<C2>,
+        ExtractServiceResultWithUndefined<C3>,
+        ExtractServiceResultWithUndefined<C4>,
+        ExtractServiceResultWithUndefined<C5>,
+        ExtractServiceResultWithUndefined<C6>,
+      ]
+    : T extends readonly [
+        infer C0,
+        infer C1,
+        infer C2,
+        infer C3,
+        infer C4,
+        infer C5,
+        infer C6,
+        infer C7,
+      ]
+    ? [
+        ExtractServiceResultWithUndefined<C0>,
+        ExtractServiceResultWithUndefined<C1>,
+        ExtractServiceResultWithUndefined<C2>,
+        ExtractServiceResultWithUndefined<C3>,
+        ExtractServiceResultWithUndefined<C4>,
+        ExtractServiceResultWithUndefined<C5>,
+        ExtractServiceResultWithUndefined<C6>,
+        ExtractServiceResultWithUndefined<C7>,
+      ]
+    : T extends readonly [
+        infer C0,
+        infer C1,
+        infer C2,
+        infer C3,
+        infer C4,
+        infer C5,
+        infer C6,
+        infer C7,
+        infer C8,
+      ]
+    ? [
+        ExtractServiceResultWithUndefined<C0>,
+        ExtractServiceResultWithUndefined<C1>,
+        ExtractServiceResultWithUndefined<C2>,
+        ExtractServiceResultWithUndefined<C3>,
+        ExtractServiceResultWithUndefined<C4>,
+        ExtractServiceResultWithUndefined<C5>,
+        ExtractServiceResultWithUndefined<C6>,
+        ExtractServiceResultWithUndefined<C7>,
+        ExtractServiceResultWithUndefined<C8>,
+      ]
+    : T extends readonly [
+        infer C0,
+        infer C1,
+        infer C2,
+        infer C3,
+        infer C4,
+        infer C5,
+        infer C6,
+        infer C7,
+        infer C8,
+        infer C9,
+      ]
+    ? [
+        ExtractServiceResultWithUndefined<C0>,
+        ExtractServiceResultWithUndefined<C1>,
+        ExtractServiceResultWithUndefined<C2>,
+        ExtractServiceResultWithUndefined<C3>,
+        ExtractServiceResultWithUndefined<C4>,
+        ExtractServiceResultWithUndefined<C5>,
+        ExtractServiceResultWithUndefined<C6>,
+        ExtractServiceResultWithUndefined<C7>,
+        ExtractServiceResultWithUndefined<C8>,
+        ExtractServiceResultWithUndefined<C9>,
+      ]
+    : never;
+
+type AnyServiceConfig = {
+  service:
+    | ChimericSync<any, any>
+    | ChimericEagerAsync<any, any>
+    | ChimericQuery<any, any>;
+  getParams?: (params: any) => any;
+  getIdiomaticOptions?: (params: any) => any;
+  getReactiveOptions?: (params: any) => any;
+};
+
+type AllIdiomaticQueryOptions = {
+  options?: IdiomaticQueryOptions;
+  nativeOptions?: RtkQueryIdiomaticNativeOptions;
+};
+
+type AllReactiveQueryOptions = {
+  options?: ReactiveQueryOptions;
+  nativeOptions?: RtkQueryReactiveNativeOptions;
+};
+
+type InferService<TConfig, TServiceParams> =
+  // QUERY
+  TConfig extends {
+    service: ChimericQuery<infer TParams, infer TResult, infer TError>;
+  }
+    ? [TParams] extends [void]
+      ? {
+          service: ChimericQuery<void, TResult, TError>;
+          getParams?: never;
+          getIdiomaticOptions?: () => AllIdiomaticQueryOptions;
+          getReactiveOptions?: () => AllReactiveQueryOptions;
+        }
+      : void extends TParams
+      ? {
+          service: ChimericQuery<void, TResult, TError>;
+          getParams?: never;
+          getIdiomaticOptions?: () => AllIdiomaticQueryOptions;
+          getReactiveOptions?: () => AllReactiveQueryOptions;
+        }
+      : undefined extends TParams
+      ? {
+          service: ChimericQuery<TParams, TResult, TError>;
+          getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+          getIdiomaticOptions?:
+            | ((params: TServiceParams) => AllIdiomaticQueryOptions)
+            | (() => AllIdiomaticQueryOptions);
+          getReactiveOptions?:
+            | ((params: TServiceParams) => AllReactiveQueryOptions)
+            | (() => AllReactiveQueryOptions);
+        }
+      : {
+          service: ChimericQuery<TParams, TResult, TError>;
+          getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+          getIdiomaticOptions?:
+            | ((params: TServiceParams) => AllIdiomaticQueryOptions)
+            | (() => AllIdiomaticQueryOptions);
+          getReactiveOptions?:
+            | ((params: TServiceParams) => AllReactiveQueryOptions)
+            | (() => AllReactiveQueryOptions);
+        }
+    : // EAGER ASYNC
+    TConfig extends {
+        service: ChimericEagerAsync<infer TParams, infer TResult, infer TError>;
+      }
+    ? [TParams] extends [void]
+      ? {
+          service: ChimericEagerAsync<void, TResult, TError>;
+          getParams?: never;
+          getOptions?: never;
+        }
+      : void extends TParams
+      ? {
+          service: ChimericEagerAsync<void, TResult, TError>;
+          getParams?: never;
+          getOptions?: never;
+        }
+      : undefined extends TParams
+      ? {
+          service: ChimericEagerAsync<TParams, TResult, TError>;
+          getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+          getOptions?: never;
+        }
+      : {
+          service: ChimericEagerAsync<TParams, TResult, TError>;
+          getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+          getOptions?: never;
+        }
+    : // SYNC
+    TConfig extends {
+        service: ChimericSync<infer TParams, infer TResult>;
+      }
+    ? [TParams] extends [void]
+      ? {
+          service: ChimericSync<void, TResult>;
+          getParams?: never;
+          getOptions?: never;
+        }
+      : void extends TParams
+      ? {
+          service: ChimericSync<void, TResult>;
+          getParams?: never;
+          getOptions?: never;
+        }
+      : undefined extends TParams
+      ? {
+          service: ChimericSync<TParams, TResult>;
+          getParams?: ((params: TServiceParams) => TParams) | (() => TParams);
+          getOptions?: never;
+        }
+      : {
+          service: ChimericSync<TParams, TResult>;
+          getParams: ((params: TServiceParams) => TParams) | (() => TParams);
+          getOptions?: never;
+        }
+    : never;
+
+export const ChimericAsyncReducer = <TServiceParams = void>() => ({
+  build: <
+    TConfigList extends
+      | readonly [InferService<TConfigList[0], TServiceParams>]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+          InferService<TConfigList[4], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+          InferService<TConfigList[4], TServiceParams>,
+          InferService<TConfigList[5], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+          InferService<TConfigList[4], TServiceParams>,
+          InferService<TConfigList[5], TServiceParams>,
+          InferService<TConfigList[6], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+          InferService<TConfigList[4], TServiceParams>,
+          InferService<TConfigList[5], TServiceParams>,
+          InferService<TConfigList[6], TServiceParams>,
+          InferService<TConfigList[7], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+          InferService<TConfigList[4], TServiceParams>,
+          InferService<TConfigList[5], TServiceParams>,
+          InferService<TConfigList[6], TServiceParams>,
+          InferService<TConfigList[7], TServiceParams>,
+          InferService<TConfigList[8], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+          InferService<TConfigList[4], TServiceParams>,
+          InferService<TConfigList[5], TServiceParams>,
+          InferService<TConfigList[6], TServiceParams>,
+          InferService<TConfigList[7], TServiceParams>,
+          InferService<TConfigList[8], TServiceParams>,
+          InferService<TConfigList[9], TServiceParams>,
+        ],
+    TServiceResult,
+  >({
+    reducer,
+    initialValueReducer,
+    serviceList,
+  }: {
+    serviceList: TConfigList;
+    reducer: (
+      args: ExtractResults<TConfigList>,
+      serviceParams: TServiceParams,
+    ) => TServiceResult;
+    initialValueReducer?: (
+      args: ExtractResultsWithUndefined<TConfigList>,
+      serviceParams: TServiceParams,
+    ) => TServiceResult;
+  }): ChimericEagerAsync<TServiceParams, TServiceResult> => {
+    const idiomatic = IdiomaticAsyncReducer<TServiceParams>().build({
+      serviceList: serviceList.map((service) => {
+        return {
+          service: (service as AnyServiceConfig).service,
+          getParams: (service as AnyServiceConfig).getParams,
+          getOptions: (service as AnyServiceConfig).getIdiomaticOptions,
+        };
+      }) as any,
+      reducer: reducer as any,
+    });
+
+    const reactive = ReactiveAsyncReducer<TServiceParams>().build({
+      serviceList: serviceList.map((service) => {
+        return {
+          service: (service as AnyServiceConfig).service,
+          getParams: (service as AnyServiceConfig).getParams,
+          getOptions: (service as AnyServiceConfig).getReactiveOptions,
+        };
+      }) as any,
+      reducer: reducer as any,
+      initialValueReducer: initialValueReducer as any,
+    });
+
+    return fuseChimericEagerAsync<TServiceParams, TServiceResult>({
+      idiomatic: idiomatic as IdiomaticEagerAsync<
+        TServiceParams,
+        TServiceResult
+      >,
+      reactive: reactive as ReactiveEagerAsync<TServiceParams, TServiceResult>,
+    });
+  },
+});
+
+export const getService = (service: AnyServiceConfig | undefined) => {
+  if (!service) {
+    return () => undefined;
+  } else {
+    return service.service.useHook || (() => undefined);
+  }
+};

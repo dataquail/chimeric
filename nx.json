@@ -145,7 +145,8 @@
     "dependsOn": [
       "typecheck-core",
       "typecheck-react",
-      "typecheck-react-query"
+      "typecheck-react-query",
+      "typecheck-rtk-query"
     ]
   },
   "typecheck-core": {
@@ -164,6 +165,12 @@
     "executor": "nx:run-commands",
     "options": {
       "command": "tsc --noEmit -p {projectRoot}/packages/react-query/tsconfig.spec.json"
+    }
+  },
+  "typecheck-rtk-query": {
+    "executor": "nx:run-commands",
+    "options": {
+      "command": "tsc --noEmit -p {projectRoot}/packages/rtk-query/tsconfig.spec.json"
     }
   }
 }

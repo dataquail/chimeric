@@ -50,6 +50,18 @@
       }
     },
     {
+      "label": "App: redux-todo-app",
+      "type": "shell",
+      "command": "npx nx dev redux-todo-app",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "servers"
+      }
+    },
+    {
       "label": "Dev: basic-todo-app + API",
       "dependsOn": ["API: todo-api", "App: basic-todo-app"],
       "dependsOrder": "parallel",
@@ -64,6 +76,12 @@
     {
       "label": "Dev: nextjs-todo-app-ioc + API",
       "dependsOn": ["API: todo-api", "App: nextjs-todo-app-ioc"],
+      "dependsOrder": "parallel",
+      "problemMatcher": []
+    },
+    {
+      "label": "Dev: redux-todo-app + API",
+      "dependsOn": ["API: todo-api", "App: redux-todo-app"],
       "dependsOrder": "parallel",
       "problemMatcher": []
     }
