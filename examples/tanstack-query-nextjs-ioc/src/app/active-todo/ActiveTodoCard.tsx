@@ -1,23 +1,18 @@
 'use client';
 
 import {
+  ActionIcon,
   Box,
   Checkbox,
   Group,
   Loader,
-  Menu,
   Stack,
   Text,
   Title,
   rem,
 } from '@mantine/core';
 import { format } from 'date-fns';
-import {
-  IconDots,
-  IconStar,
-  IconStarFilled,
-  IconTrash,
-} from '@tabler/icons-react';
+import { IconStar, IconStarFilled, IconTrash } from '@tabler/icons-react';
 import { ActiveTodo } from '@/core/domain/activeTodo/entities/ActiveTodo';
 import { getContainer } from '@/core/global/container';
 
@@ -78,59 +73,33 @@ export const ActiveTodoCard = ({ todo }: Props) => {
                   : 'N/A'
               }`}</Text>
             </Stack>
-            {isPrioritized && (
-              <Box style={{ flexGrow: 1 }} p="xs">
-                <IconStarFilled
-                  style={{
-                    width: rem(20),
-                    height: rem(20),
-                    position: 'absolute',
-                    right: rem(70),
-                  }}
-                />
-              </Box>
-            )}
           </Group>
         </Checkbox.Card>
-        <Menu shadow="md" width={200}>
-          <Menu.Target>
-            <IconDots />
-          </Menu.Target>
-
-          <Menu.Dropdown>
-            <Menu.Label>Todo Options</Menu.Label>
-            <Menu.Item
-              color="red"
-              leftSection={
-                <IconTrash style={{ width: rem(14), height: rem(14) }} />
-              }
-              onClick={() => deleteOne.invoke({ id: todo.id })}
-            >
-              Delete
-            </Menu.Item>
-            {isPrioritized ? (
-              <Menu.Item
-                leftSection={
-                  <IconStar style={{ width: rem(14), height: rem(14) }} />
-                }
-                onClick={() => deprioritizeTodoUseCase({ id: todo.id })}
-              >
-                Deprioritize
-              </Menu.Item>
-            ) : (
-              <Menu.Item
-                leftSection={
-                  <IconStarFilled
-                    style={{ width: rem(14), height: rem(14) }}
-                  />
-                }
-                onClick={() => prioritizeTodoUseCase({ id: todo.id })}
-              >
-                Prioritize
-              </Menu.Item>
-            )}
-          </Menu.Dropdown>
-        </Menu>
+        <ActionIcon
+          variant={isPrioritized ? 'filled' : 'subtle'}
+          color="yellow"
+          size="lg"
+          onClick={() =>
+            isPrioritized
+              ? deprioritizeTodoUseCase({ id: todo.id })
+              : prioritizeTodoUseCase({ id: todo.id })
+          }
+        >
+          {isPrioritized ? (
+            <IconStarFilled style={{ width: rem(20), height: rem(20) }} />
+          ) : (
+            <IconStar style={{ width: rem(20), height: rem(20) }} />
+          )}
+        </ActionIcon>
+        <ActionIcon
+          variant="subtle"
+          color="red"
+          size="lg"
+          onClick={() => deleteOne.invoke({ id: todo.id })}
+          disabled={deleteOne.isPending}
+        >
+          <IconTrash style={{ width: rem(20), height: rem(20) }} />
+        </ActionIcon>
       </Group>
     </Box>
   );

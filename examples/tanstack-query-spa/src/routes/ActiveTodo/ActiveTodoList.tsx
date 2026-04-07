@@ -2,10 +2,24 @@ import { Flex, Loader, ScrollArea } from '@mantine/core';
 import { useViewportSize } from '@mantine/hooks';
 import { ActiveTodoCard } from './ActiveTodoCard';
 import { activeTodoService } from 'src/core/infrastructure/services/ActiveTodoService';
+import { usePriorityTodoStore } from 'src/core/infrastructure/repositories/PriorityTodoRepository/priorityTodoStore';
+import { useMemo } from 'react';
 
 export const ActiveTodoList = () => {
   const { data, isPending } = activeTodoService.getAll.useHook();
   const { height } = useViewportSize();
+  const priorityDict = usePriorityTodoStore((state) => state.dict);
+
+  const sortedData = useMemo(() => {
+    if (!data) return [];
+    return [...data].sort((a, b) => {
+      const aPrioritized = priorityDict[a.id]?.isPrioritized ?? false;
+      const bPrioritized = priorityDict[b.id]?.isPrioritized ?? false;
+      if (aPrioritized && !bPrioritized) return -1;
+      if (!aPrioritized && bPrioritized) return 1;
+      return 0;
+    });
+  }, [data, priorityDict]);
 
   if (isPending || !data) {
     return (
@@ -17,7 +31,7 @@ export const ActiveTodoList = () => {
 
   return (
     <ScrollArea.Autosize mah={`calc(${height}px - 172px`}>
-      {data.map((todo) => (
+      {sortedData.map((todo) => (
         <ActiveTodoCard key={todo.id} todo={todo} />
       ))}
     </ScrollArea.Autosize>
