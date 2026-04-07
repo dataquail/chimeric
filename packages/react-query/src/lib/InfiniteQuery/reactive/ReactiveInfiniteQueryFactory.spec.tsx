@@ -2,6 +2,7 @@ import { QueryClient, infiniteQueryOptions } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
 import { ReactiveInfiniteQueryFactory } from './ReactiveInfiniteQueryFactory';
 import { getTestWrapper } from '../../__tests__/getTestWrapper';
+import { getSuspenseTestWrapper } from '../../__tests__/getSuspenseTestWrapper';
 import { InfiniteQueryTestFixtures } from '../__tests__/infiniteQueryFixtures';
 
 describe('ReactiveInfiniteQueryFactory', () => {
@@ -336,5 +337,123 @@ describe('ReactiveInfiniteQueryFactory', () => {
         }),
     });
     expect(testAnnotation).toBeDefined();
+  });
+
+  // USAGE: SUSPENSE
+  it('USAGE: SUSPENSE: no params', async () => {
+    const { queryFn } = InfiniteQueryTestFixtures.withoutParams.getReactive();
+    const queryClient = new QueryClient();
+    const reactiveInfiniteQuery = ReactiveInfiniteQueryFactory({
+      getInfiniteQueryOptions: () =>
+        infiniteQueryOptions({
+          queryKey: ['test-suspense'],
+          queryFn,
+          initialPageParam: 0,
+          getNextPageParam: () => undefined,
+        }),
+    });
+
+    const { result } = renderHook(
+      () => reactiveInfiniteQuery.useSuspenseHook(),
+      {
+        wrapper: getSuspenseTestWrapper(queryClient),
+      },
+    );
+
+    await waitFor(() => {
+      expect(result.current.data).toBeDefined();
+    });
+
+    expect(result.current.isSuccess).toBe(true);
+    expect(result.current.isPending).toBe(false);
+    expect(result.current.data).toEqual({
+      pages: [{ items: [{ id: 1, name: 'Item 1' }] }],
+      pageParams: [0],
+    });
+    expect(queryFn).toHaveBeenCalled();
+  });
+
+  it('USAGE: SUSPENSE: with params', async () => {
+    const { queryFn } = InfiniteQueryTestFixtures.withParams.getReactive();
+    const queryClient = new QueryClient();
+    const reactiveInfiniteQuery = ReactiveInfiniteQueryFactory({
+      getInfiniteQueryOptions: (args: { search: string }) =>
+        infiniteQueryOptions({
+          queryKey: ['test-suspense', args.search],
+          queryFn: () => queryFn(args),
+          initialPageParam: 0,
+          getNextPageParam: () => undefined,
+        }),
+    });
+
+    const { result } = renderHook(
+      () => reactiveInfiniteQuery.useSuspenseHook({ search: 'test' }),
+      {
+        wrapper: getSuspenseTestWrapper(queryClient),
+      },
+    );
+
+    await waitFor(() => {
+      expect(result.current.data).toBeDefined();
+    });
+
+    expect(result.current.isSuccess).toBe(true);
+    expect(result.current.data).toEqual({
+      pages: [{ items: [{ id: 1, name: 'Filtered by test' }] }],
+      pageParams: [0],
+    });
+    expect(queryFn).toHaveBeenCalledWith({ search: 'test' });
+  });
+
+  it('USAGE: SUSPENSE: with optional params', async () => {
+    const { queryFn } =
+      InfiniteQueryTestFixtures.withOptionalParams.getReactive();
+    const queryClient = new QueryClient();
+    const reactiveInfiniteQuery = ReactiveInfiniteQueryFactory({
+      getInfiniteQueryOptions: (args?: { search: string }) =>
+        infiniteQueryOptions({
+          queryKey: args?.search
+            ? ['test-suspense', args.search]
+            : ['test-suspense'],
+          queryFn: () => queryFn(args),
+          initialPageParam: 0,
+          getNextPageParam: () => undefined,
+        }),
+    });
+
+    const { result: resultWithParams } = renderHook(
+      () => reactiveInfiniteQuery.useSuspenseHook({ search: 'test' }),
+      {
+        wrapper: getSuspenseTestWrapper(queryClient),
+      },
+    );
+
+    await waitFor(() => {
+      expect(resultWithParams.current.data).toBeDefined();
+    });
+
+    expect(resultWithParams.current.isSuccess).toBe(true);
+    expect(resultWithParams.current.data).toEqual({
+      pages: [{ items: [{ id: 1, name: 'Filtered by test' }] }],
+      pageParams: [0],
+    });
+
+    const queryClient2 = new QueryClient();
+    const { result: resultWithoutParams } = renderHook(
+      () => reactiveInfiniteQuery.useSuspenseHook(),
+      {
+        wrapper: getSuspenseTestWrapper(queryClient2),
+      },
+    );
+
+    await waitFor(() => {
+      expect(resultWithoutParams.current.data).toBeDefined();
+    });
+
+    expect(resultWithoutParams.current.isSuccess).toBe(true);
+    expect(resultWithoutParams.current.data).toEqual({
+      pages: [{ items: [{ id: 1, name: 'All items' }] }],
+      pageParams: [0],
+    });
   });
 });

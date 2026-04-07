@@ -5,11 +5,11 @@
 import express from 'express';
 import cors from 'cors';
 import * as path from 'path';
-import { ActiveTodoRepository, SavedForLaterTodoRepository } from './repositories';
+import { ActiveTodoRepository, ArchivedTodoRepository } from './repositories';
 import {
   createActiveTodoRoutes,
   createTodoRoutes,
-  createSavedForLaterTodoRoutes,
+  createArchivedTodoRoutes,
 } from './routes';
 
 const app = express();
@@ -21,7 +21,7 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 // Initialize repositories (in-memory storage)
 const activeTodoRepository = new ActiveTodoRepository();
-const savedForLaterTodoRepository = new SavedForLaterTodoRepository();
+const archivedTodoRepository = new ArchivedTodoRepository();
 
 // Routes
 app.get('/api', (req, res) => {
@@ -31,8 +31,8 @@ app.get('/api', (req, res) => {
 app.use('/api/active-todo', createActiveTodoRoutes(activeTodoRepository));
 app.use('/api/todo', createTodoRoutes(activeTodoRepository));
 app.use(
-  '/api/saved-for-later-todo',
-  createSavedForLaterTodoRoutes(savedForLaterTodoRepository, activeTodoRepository)
+  '/api/archived-todo',
+  createArchivedTodoRoutes(archivedTodoRepository, activeTodoRepository)
 );
 
 const port = process.env.PORT || 3333;

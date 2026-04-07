@@ -104,5 +104,18 @@ export function fuseChimericInfiniteQuery<
     TQueryKey
   >;
 }): ChimericInfiniteQuery<TParams, TPageData, TPageParam, TError, TQueryKey> {
-  return coreFuseChimericInfiniteQuery(args);
+  const chimeric = coreFuseChimericInfiniteQuery(args) as ChimericInfiniteQuery<
+    TParams,
+    TPageData,
+    TPageParam,
+    TError,
+    TQueryKey
+  >;
+
+  if (args.reactive.useSuspenseHook) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (chimeric as any).useSuspenseHook = args.reactive.useSuspenseHook;
+  }
+
+  return chimeric;
 }

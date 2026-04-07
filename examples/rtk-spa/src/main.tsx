@@ -7,7 +7,7 @@ import * as ReactDOM from 'react-dom/client';
 import { ErrorPage } from './components/ErrorPage';
 import { Providers } from './providers';
 import { ActiveTodo } from './routes/ActiveTodo';
-import { SavedForLaterTodo } from './routes/SavedForLaterTodo';
+import { ArchivedTodo } from './routes/ArchivedTodo';
 import { Review } from './routes/Review';
 
 const router = createBrowserRouter(
@@ -18,8 +18,8 @@ const router = createBrowserRouter(
       errorElement: <ErrorPage />,
     },
     {
-      path: '/saved-for-later',
-      element: <SavedForLaterTodo />,
+      path: '/archived',
+      element: <ArchivedTodo />,
       errorElement: <ErrorPage />,
     },
     {

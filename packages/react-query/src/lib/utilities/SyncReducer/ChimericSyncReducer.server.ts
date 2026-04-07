@@ -28,8 +28,81 @@ type InferService<TConfig, TServiceParams> = TConfig extends {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ChimericSyncReducer = <TServiceParams = void>() => ({
   build: <
+    TConfigList extends
+      | readonly [InferService<TConfigList[0], TServiceParams>]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+          InferService<TConfigList[4], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+          InferService<TConfigList[4], TServiceParams>,
+          InferService<TConfigList[5], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+          InferService<TConfigList[4], TServiceParams>,
+          InferService<TConfigList[5], TServiceParams>,
+          InferService<TConfigList[6], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+          InferService<TConfigList[4], TServiceParams>,
+          InferService<TConfigList[5], TServiceParams>,
+          InferService<TConfigList[6], TServiceParams>,
+          InferService<TConfigList[7], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+          InferService<TConfigList[4], TServiceParams>,
+          InferService<TConfigList[5], TServiceParams>,
+          InferService<TConfigList[6], TServiceParams>,
+          InferService<TConfigList[7], TServiceParams>,
+          InferService<TConfigList[8], TServiceParams>,
+        ]
+      | readonly [
+          InferService<TConfigList[0], TServiceParams>,
+          InferService<TConfigList[1], TServiceParams>,
+          InferService<TConfigList[2], TServiceParams>,
+          InferService<TConfigList[3], TServiceParams>,
+          InferService<TConfigList[4], TServiceParams>,
+          InferService<TConfigList[5], TServiceParams>,
+          InferService<TConfigList[6], TServiceParams>,
+          InferService<TConfigList[7], TServiceParams>,
+          InferService<TConfigList[8], TServiceParams>,
+          InferService<TConfigList[9], TServiceParams>,
+        ],
     TServiceResult,
-    TConfigList extends readonly InferService<TConfigList[number], TServiceParams>[],
   >({
     reducer,
     serviceList,

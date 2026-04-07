@@ -65,7 +65,7 @@ export const createTodoRoutes = (
     if (!todo) {
       return res.status(404).json({ message: 'Todo not found' });
     }
-    res.json(todo);
+    return res.json(todo);
   });
 
   return router;
