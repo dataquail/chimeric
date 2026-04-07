@@ -4,9 +4,9 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug @chimeric/todo-api with Nx",
+      "name": "Debug @chimeric/express-backend with Nx",
       "runtimeExecutable": "pnpm exec",
-      "runtimeArgs": ["nx", "serve", "@chimeric/todo-api"],
+      "runtimeArgs": ["nx", "serve", "@chimeric/express-backend"],
       "env": {
         "NODE_OPTIONS": "--inspect=9229"
       },
@@ -15,7 +15,7 @@
       "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
       "outFiles": [
-        "${workspaceFolder}/examples/todo-api/dist/**/*.(m|c|)js",
+        "${workspaceFolder}/examples/express-backend/dist/**/*.(m|c|)js",
         "!**/node_modules/**"
       ]
     }

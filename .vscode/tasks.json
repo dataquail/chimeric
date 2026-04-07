@@ -2,9 +2,9 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "API: todo-api",
+      "label": "API: express-backend",
       "type": "shell",
-      "command": "npx nx build @chimeric/todo-api && node examples/todo-api/dist/main.js",
+      "command": "npx nx build @chimeric/express-backend && node examples/express-backend/dist/main.js",
       "isBackground": true,
       "problemMatcher": [],
       "presentation": {
@@ -14,9 +14,9 @@
       }
     },
     {
-      "label": "App: basic-todo-app",
+      "label": "App: tanstack-query-spa",
       "type": "shell",
-      "command": "npx nx dev basic-todo-app",
+      "command": "npx nx dev @chimeric/tanstack-query-spa",
       "isBackground": true,
       "problemMatcher": [],
       "presentation": {
@@ -26,9 +26,9 @@
       }
     },
     {
-      "label": "App: todo-app",
+      "label": "App: tanstack-query-nextjs-ioc",
       "type": "shell",
-      "command": "npx nx dev todo-app",
+      "command": "npx nx dev @chimeric/tanstack-query-nextjs-ioc",
       "isBackground": true,
       "problemMatcher": [],
       "presentation": {
@@ -38,9 +38,9 @@
       }
     },
     {
-      "label": "App: nextjs-todo-app-ioc",
+      "label": "App: rtk-spa",
       "type": "shell",
-      "command": "npx nx dev @chimeric/nextjs-todo-app-ioc",
+      "command": "npx nx dev @chimeric/rtk-spa",
       "isBackground": true,
       "problemMatcher": [],
       "presentation": {
@@ -50,38 +50,20 @@
       }
     },
     {
-      "label": "App: redux-todo-app",
-      "type": "shell",
-      "command": "npx nx dev redux-todo-app",
-      "isBackground": true,
-      "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated",
-        "group": "servers"
-      }
-    },
-    {
-      "label": "Dev: basic-todo-app + API",
-      "dependsOn": ["API: todo-api", "App: basic-todo-app"],
+      "label": "Dev: tanstack-query-spa + API",
+      "dependsOn": ["API: express-backend", "App: tanstack-query-spa"],
       "dependsOrder": "parallel",
       "problemMatcher": []
     },
     {
-      "label": "Dev: todo-app + API",
-      "dependsOn": ["API: todo-api", "App: todo-app"],
+      "label": "Dev: tanstack-query-nextjs-ioc + API",
+      "dependsOn": ["API: express-backend", "App: tanstack-query-nextjs-ioc"],
       "dependsOrder": "parallel",
       "problemMatcher": []
     },
     {
-      "label": "Dev: nextjs-todo-app-ioc + API",
-      "dependsOn": ["API: todo-api", "App: nextjs-todo-app-ioc"],
-      "dependsOrder": "parallel",
-      "problemMatcher": []
-    },
-    {
-      "label": "Dev: redux-todo-app + API",
-      "dependsOn": ["API: todo-api", "App: redux-todo-app"],
+      "label": "Dev: rtk-spa + API",
+      "dependsOn": ["API: express-backend", "App: rtk-spa"],
       "dependsOrder": "parallel",
       "problemMatcher": []
     }
