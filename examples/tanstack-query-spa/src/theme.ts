@@ -1,6 +1,5 @@
-import { createTheme, MantineTheme } from '@mantine/core';
-import type { PartialDeep } from 'type-fest';
+import { createTheme, MantineThemeOverride } from '@mantine/core';
 
-export const theme: PartialDeep<MantineTheme> = createTheme({
+export const theme: MantineThemeOverride = createTheme({
   /* Put your mantine theme override here */
 });

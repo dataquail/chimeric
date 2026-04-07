@@ -2,9 +2,12 @@ import { ChimericInfiniteQuery as CoreChimericInfiniteQuery } from '@chimeric/co
 import { QueryKey } from '@tanstack/react-query';
 import { TanstackInfiniteQueryIdiomaticNativeOptions } from '../idiomatic/types';
 import {
+  ReactiveInfiniteQuerySuspense,
   TanstackInfiniteQueryReactiveNativeOptions,
   TanstackInfiniteQueryReactivePrefetchNativeOptions,
   TanstackInfiniteQueryReactiveReturnType,
+  TanstackInfiniteQueryReactiveSuspenseNativeOptions,
+  TanstackInfiniteQueryReactiveSuspenseReturnType,
 } from '../reactive/types';
 
 export type ChimericInfiniteQuery<
@@ -37,7 +40,15 @@ export type ChimericInfiniteQuery<
     TPageParam,
     TQueryKey
   >
->;
+> &
+  ReactiveInfiniteQuerySuspense<
+    TParams,
+    TPageData,
+    TPageParam,
+    TError,
+    TanstackInfiniteQueryReactiveSuspenseNativeOptions<TPageData, TError, TPageParam, TQueryKey>,
+    TanstackInfiniteQueryReactiveSuspenseReturnType<TPageData, TError, TPageParam>
+  >;
 
 export type DefineChimericInfiniteQuery<
   T extends (

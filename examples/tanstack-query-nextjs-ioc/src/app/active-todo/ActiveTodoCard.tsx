@@ -14,7 +14,6 @@ import {
 import { format } from 'date-fns';
 import {
   IconDots,
-  IconPlus,
   IconStar,
   IconStarFilled,
   IconTrash,
@@ -29,7 +28,6 @@ type Props = {
 export const ActiveTodoCard = ({ todo }: Props) => {
   const {
     activeTodoService,
-    savedForLaterTodoService,
     priorityTodoRepository,
     prioritizeTodoUseCase,
     deprioritizeTodoUseCase,
@@ -40,7 +38,6 @@ export const ActiveTodoCard = ({ todo }: Props) => {
   });
   const isPrioritized = priorityTodo?.isPrioritized ?? false;
 
-  const saveForLater = savedForLaterTodoService.saveForLater.useHook();
   const completeOne = activeTodoService.completeOne.useHook();
   const uncompleteOne = activeTodoService.uncompleteOne.useHook();
   const deleteOne = activeTodoService.deleteOne.useHook();
@@ -132,18 +129,6 @@ export const ActiveTodoCard = ({ todo }: Props) => {
                 Prioritize
               </Menu.Item>
             )}
-            <Menu.Item
-              leftSection={
-                <IconPlus style={{ width: rem(14), height: rem(14) }} />
-              }
-              onClick={() =>
-                saveForLater.invoke({
-                  activeTodoId: todo.id,
-                })
-              }
-            >
-              Save For Later
-            </Menu.Item>
           </Menu.Dropdown>
         </Menu>
       </Group>

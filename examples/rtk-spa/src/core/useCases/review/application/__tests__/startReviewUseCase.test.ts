@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeAll, afterEach, afterAll } from 'vitest';
 import { setupServer } from 'msw/node';
 import { mockGetAllActiveTodos } from 'src/__test__/network/activeTodo/mockGetAllActiveTodos';
-import { mockGetAllSavedForLaterTodos } from 'src/__test__/network/savedForLaterTodo/mockGetAllSavedForLaterTodos';
 import { startReviewUseCase } from '../startReviewUseCase';
 import { reviewRepository } from 'src/core/infrastructure/repositories/ReviewRepository';
 
@@ -16,7 +15,7 @@ describe('startReviewUseCase', () => {
 
   const withOneUncompletedAndOneCompletedActiveTodoInList = () => {
     mockGetAllActiveTodos(server, {
-      total_count: 1,
+      total_count: 2,
       list: [
         {
           id: '1',
@@ -34,27 +33,13 @@ describe('startReviewUseCase', () => {
     });
   };
 
-  const withOneSavedForLaterTodoInList = () => {
-    mockGetAllSavedForLaterTodos(server, {
-      total_count: 1,
-      list: [
-        {
-          id: '3',
-          title: 'Saved For Later Todo 3',
-          created_at: nowTimeStamp,
-        },
-      ],
-    });
-  };
-
-  it('startReview', async () => {
+  it('startReview gathers only completed active todos', async () => {
     withOneUncompletedAndOneCompletedActiveTodoInList();
-    withOneSavedForLaterTodoInList();
 
     await startReviewUseCase();
 
     const review = reviewRepository.get();
-    // omits completed activeTodo 2
-    expect(review?.todoIdList).toEqual(['1', '3']);
+    // only includes completed activeTodo 2
+    expect(review?.todoIdList).toEqual(['2']);
   });
 });

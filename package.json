@@ -24,6 +24,7 @@
     "dev:all": "pnpm run watch:all",
     "dev:examples": "pnpm run watch:examples",
     "typecheck:all": "nx run-many --target=typecheck --exclude=examples/**",
+    "typecheck:examples": "nx run-many --target=typecheck --exclude=packages/**",
     "precommit": "pnpm run lint:all && pnpm run test:all && pnpm run typecheck:all",
     "prettier": "prettier --ignore-unknown '**/*'",
     "prettier:write": "pnpm run prettier --write",

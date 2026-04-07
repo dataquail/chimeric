@@ -11,20 +11,14 @@ import {
 import { ActiveTodosFetchedEvent } from 'src/core/domain/activeTodo/events/ActiveTodosFetchedEvent';
 import { ActiveTodoDeletedEvent } from 'src/core/domain/activeTodo/events/ActiveTodoDeletedEvent';
 import { applicationEventEmitter } from './applicationEventEmitter';
-import { SavedForLaterTodoListDto } from 'src/core/domain/savedForLaterTodo/dtos/out/SavedForLaterTodoListDto';
-import { SavedForLaterTodoDto } from 'src/core/domain/savedForLaterTodo/dtos/out/SavedForLaterTodoDto';
-import {
-  SavedForLaterTodo,
-  mapSavedForLaterTodoDtoToSavedForLaterTodo,
-} from 'src/core/domain/savedForLaterTodo/entities/SavedForLaterTodo';
-import { SaveForLaterBody } from 'src/core/domain/savedForLaterTodo/dtos/in/SaveForLaterBody';
-import { ActivateBody } from 'src/core/domain/savedForLaterTodo/dtos/in/ActivateBody';
-import { SavedForLaterTodoDeletedEvent } from 'src/core/domain/savedForLaterTodo/events/SavedForLaterTodoDeletedEvent';
+import { ArchivedTodoPageDto } from 'src/core/domain/archivedTodo/dtos/out/ArchivedTodoPageDto';
+import { ArchiveBody } from 'src/core/domain/archivedTodo/dtos/in/ArchiveBody';
+import { ArchivedTodoDeletedEvent } from 'src/core/domain/archivedTodo/events/ArchivedTodoDeletedEvent';
 
 export const todoApi = createApi({
   reducerPath: 'todoApi',
   baseQuery: fakeBaseQuery(),
-  tagTypes: ['ActiveTodo', 'SavedForLaterTodo'],
+  tagTypes: ['ActiveTodo', 'ArchivedTodo'],
   endpoints: (build) => ({
     // Active Todo queries
     getAllActiveTodos: build.query<ActiveTodo[], void>({
@@ -42,7 +36,7 @@ export const todoApi = createApi({
       },
       providesTags: ['ActiveTodo'],
     }),
-    getActiveTodoById: build.query<ActiveTodo | undefined, { id: string }>({
+    getActiveTodoById: build.query<ActiveTodo, { id: string }>({
       queryFn: async (args) => {
         const activeTodoDto = await wrappedFetch<TodoDto>(
           `${getConfig().API_URL}/active-todo/${args.id}`,
@@ -122,77 +116,66 @@ export const todoApi = createApi({
       },
       invalidatesTags: ['ActiveTodo'],
     }),
-    // Saved For Later Todo queries
-    getAllSavedForLaterTodos: build.query<SavedForLaterTodo[], void>({
-      queryFn: async () => {
-        const savedForLaterTodoListDto =
-          await wrappedFetch<SavedForLaterTodoListDto>(
-            `${getConfig().API_URL}/saved-for-later-todo`,
-          );
-        const savedForLaterTodos = savedForLaterTodoListDto.list.map(
-          mapSavedForLaterTodoDtoToSavedForLaterTodo,
-        );
-        return { data: savedForLaterTodos };
-      },
-      providesTags: ['SavedForLaterTodo'],
-    }),
-    getSavedForLaterTodoById: build.query<
-      SavedForLaterTodo,
-      { id: string }
+    // Archived Todo queries
+    getAllArchivedTodos: build.infiniteQuery<
+      ArchivedTodoPageDto,
+      void,
+      number
     >({
+      infiniteQueryOptions: {
+        initialPageParam: 0,
+        getNextPageParam: (
+          lastPage: ArchivedTodoPageDto,
+          _allPages: ArchivedTodoPageDto[],
+          lastPageParam: number,
+        ) => lastPage.next_cursor ?? undefined,
+      },
+      queryFn: async ({ pageParam }) => {
+        const data = await wrappedFetch<ArchivedTodoPageDto>(
+          `${getConfig().API_URL}/archived-todo?page=${pageParam}&limit=10`,
+        );
+        return { data };
+      },
+      providesTags: ['ArchivedTodo'],
+    }),
+    // Archived Todo mutations
+    archiveCompletedTodos: build.mutation<{ ids: string[] }, ArchiveBody>({
+      queryFn: async (body) => {
+        const data = await wrappedFetch<{ ids: string[] }>(
+          `${getConfig().API_URL}/archived-todo/archive`,
+          {
+            method: 'post',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
+          },
+        );
+        return { data };
+      },
+      invalidatesTags: ['ArchivedTodo', 'ActiveTodo'],
+    }),
+    unarchiveArchivedTodo: build.mutation<{ id: string }, { id: string }>({
       queryFn: async (args) => {
-        const savedForLaterTodoDto = await wrappedFetch<SavedForLaterTodoDto>(
-          `${getConfig().API_URL}/saved-for-later-todo/${args.id}`,
-        );
-        return {
-          data: mapSavedForLaterTodoDtoToSavedForLaterTodo(
-            savedForLaterTodoDto,
-          ),
-        };
-      },
-      providesTags: (_result, _error, args) => [
-        { type: 'SavedForLaterTodo', id: args.id },
-      ],
-    }),
-    // Saved For Later Todo mutations
-    saveForLater: build.mutation<{ id: string }, SaveForLaterBody>({
-      queryFn: async (body) => {
         const data = await wrappedFetch<{ id: string }>(
-          `${getConfig().API_URL}/saved-for-later-todo/save-for-later`,
+          `${getConfig().API_URL}/archived-todo/${args.id}/unarchive`,
           {
             method: 'post',
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify(body),
           },
         );
         return { data };
       },
-      invalidatesTags: ['ActiveTodo', 'SavedForLaterTodo'],
+      invalidatesTags: ['ArchivedTodo', 'ActiveTodo'],
     }),
-    activateSavedTodo: build.mutation<{ id: string }, ActivateBody>({
-      queryFn: async (body) => {
-        const data = await wrappedFetch<{ id: string }>(
-          `${getConfig().API_URL}/saved-for-later-todo/activate`,
-          {
-            method: 'post',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(body),
-          },
-        );
-        return { data };
-      },
-      invalidatesTags: ['ActiveTodo', 'SavedForLaterTodo'],
-    }),
-    deleteSavedForLaterTodo: build.mutation<void, { id: string }>({
+    deleteArchivedTodo: build.mutation<void, { id: string }>({
       queryFn: async (args) => {
         await wrappedFetch(
-          `${getConfig().API_URL}/saved-for-later-todo/${args.id}`,
+          `${getConfig().API_URL}/archived-todo/${args.id}`,
           {
             method: 'delete',
             headers: {
@@ -202,11 +185,11 @@ export const todoApi = createApi({
           },
         );
         applicationEventEmitter.emit(
-          new SavedForLaterTodoDeletedEvent({ id: args.id }),
+          new ArchivedTodoDeletedEvent({ id: args.id }),
         );
         return { data: undefined };
       },
-      invalidatesTags: ['SavedForLaterTodo'],
+      invalidatesTags: ['ArchivedTodo'],
     }),
   }),
 });

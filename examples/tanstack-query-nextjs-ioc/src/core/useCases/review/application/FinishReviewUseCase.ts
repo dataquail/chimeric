@@ -1,23 +1,24 @@
+import { DefineChimericAsync, ChimericAsyncFactory } from '@chimeric/react';
 import { IReviewRepository } from '@/core/domain/review/ports/IReviewRepository';
-import { IReviewedTodoRepository } from '@/core/domain/review/ports/IReviewedTodoRepository';
-import { createReviewedTodo } from '@/core/domain/review/entities/ReviewedTodo';
+import { IArchivedTodoService } from '@/core/domain/archivedTodo/ports/IArchivedTodoService';
 
-export type FinishReviewUseCase = () => void;
+export type FinishReviewUseCase = DefineChimericAsync<() => Promise<void>>;
 
 export const createFinishReviewUseCase = (
   reviewRepository: IReviewRepository,
-  reviewedTodoRepository: IReviewedTodoRepository,
-): FinishReviewUseCase => () => {
-  const review = reviewRepository.get();
+  archivedTodoService: IArchivedTodoService,
+): FinishReviewUseCase => {
+  return ChimericAsyncFactory(async () => {
+    const review = reviewRepository.get();
 
-  if (!review) {
-    throw new Error('No review found');
-  }
+    if (!review) {
+      throw new Error('No review found');
+    }
 
-  const reviewedTodoList = review.todoIdList.map((todoId) =>
-    createReviewedTodo(todoId),
-  );
+    await archivedTodoService.archiveCompleted({
+      activeTodoIds: review.todoIdList,
+    });
 
-  reviewedTodoRepository.saveMany(reviewedTodoList);
-  reviewRepository.delete();
+    reviewRepository.delete();
+  });
 };

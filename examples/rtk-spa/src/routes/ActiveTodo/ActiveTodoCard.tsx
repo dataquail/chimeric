@@ -12,14 +12,12 @@ import {
 import { format } from 'date-fns';
 import {
   IconDots,
-  IconPlus,
   IconStar,
   IconStarFilled,
   IconTrash,
 } from '@tabler/icons-react';
 import { ActiveTodo } from 'src/core/domain/activeTodo/entities/ActiveTodo';
 import { activeTodoService } from 'src/core/infrastructure/services/ActiveTodoService';
-import { savedForLaterTodoService } from 'src/core/infrastructure/services/SavedForLaterTodoService';
 import { priorityTodoRepository } from 'src/core/infrastructure/repositories/PriorityTodoRepository';
 import { prioritizeTodoUseCase } from 'src/core/useCases/activeTodo/application/prioritizeTodoUseCase';
 import { deprioritizeTodoUseCase } from 'src/core/useCases/activeTodo/application/deprioritizeTodoUseCase';
@@ -34,7 +32,6 @@ export const ActiveTodoCard = ({ todo }: OwnProps) => {
   });
   const isPrioritized = priorityTodo?.isPrioritized ?? false;
 
-  const saveForLater = savedForLaterTodoService.saveForLater.useHook();
   const completeOne = activeTodoService.completeOne.useHook();
   const uncompleteOne = activeTodoService.uncompleteOne.useHook();
   const deleteOne = activeTodoService.deleteOne.useHook();
@@ -117,18 +114,6 @@ export const ActiveTodoCard = ({ todo }: OwnProps) => {
                 Prioritize
               </Menu.Item>
             )}
-            <Menu.Item
-              leftSection={
-                <IconPlus style={{ width: rem(14), height: rem(14) }} />
-              }
-              onClick={() =>
-                saveForLater.invoke({
-                  activeTodoId: todo.id,
-                })
-              }
-            >
-              Save For Later
-            </Menu.Item>
           </Menu.Dropdown>
         </Menu>
       </Group>

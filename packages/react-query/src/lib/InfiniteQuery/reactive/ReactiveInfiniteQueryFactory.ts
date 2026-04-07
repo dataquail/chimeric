@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   type QueryKey,
   type FetchInfiniteQueryOptions,
   useInfiniteQuery,
+  useSuspenseInfiniteQuery,
   usePrefetchInfiniteQuery,
   infiniteQueryOptions,
   type InfiniteData,
@@ -9,6 +11,7 @@ import {
 import {
   TanstackInfiniteQueryReactiveNativeOptions,
   TanstackInfiniteQueryReactivePrefetchNativeOptions,
+  TanstackInfiniteQueryReactiveSuspenseNativeOptions,
   type ReactiveInfiniteQuery,
 } from './types';
 import {
@@ -267,12 +270,112 @@ export function ReactiveInfiniteQueryFactory<
     >);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return coreCreateReactiveInfiniteQuery(query as any, prefetchHook as any) as unknown as ReactiveInfiniteQuery<
+  const suspenseHook = (
+    paramsOrOptions?: Parameters<
+      ReactiveInfiniteQuery<
+        TParams,
+        TPageData,
+        TPageParam,
+        TError,
+        TQueryKey
+      >['useSuspenseHook']
+    >[0],
+    maybeOptions?: Parameters<
+      ReactiveInfiniteQuery<
+        TParams,
+        TPageData,
+        TPageParam,
+        TError,
+        TQueryKey
+      >['useSuspenseHook']
+    >[1],
+  ) => {
+    const params =
+      getInfiniteQueryOptions.length === 0
+        ? (undefined as TParams)
+        : (paramsOrOptions as TParams);
+    const allOptions =
+      getInfiniteQueryOptions.length === 0
+        ? (paramsOrOptions as {
+            nativeOptions?: TanstackInfiniteQueryReactiveSuspenseNativeOptions<
+              TPageData,
+              TError,
+              TPageParam,
+              TQueryKey
+            >;
+          })
+        : maybeOptions;
+    const nativeOptions = allOptions?.nativeOptions as
+      | TanstackInfiniteQueryReactiveSuspenseNativeOptions<
+          TPageData,
+          TError,
+          TPageParam,
+          TQueryKey
+        >
+      | undefined;
+
+    const query = useSuspenseInfiniteQuery({
+      ...getInfiniteQueryOptions(params as TParams),
+      ...nativeOptions,
+    } as any);
+
+    return {
+      isPending: query.isPending,
+      isSuccess: query.isSuccess,
+      isError: query.isError,
+      error: query.error,
+      data: query.data
+        ? {
+            pages: query.data.pages,
+            pageParams: query.data.pageParams,
+          }
+        : undefined,
+      isFetchingNextPage: query.isFetchingNextPage,
+      isFetchingPreviousPage: query.isFetchingPreviousPage,
+      hasNextPage: query.hasNextPage ?? false,
+      hasPreviousPage: query.hasPreviousPage ?? false,
+      fetchNextPage: async () => {
+        const result = await query.fetchNextPage();
+        return {
+          pages: result.data?.pages ?? [],
+          pageParams: result.data?.pageParams ?? [],
+        };
+      },
+      fetchPreviousPage: async () => {
+        const result = await query.fetchPreviousPage();
+        return {
+          pages: result.data?.pages ?? [],
+          pageParams: result.data?.pageParams ?? [],
+        };
+      },
+      refetch: async () => {
+        const result = await query.refetch();
+        return {
+          pages: result.data?.pages ?? [],
+          pageParams: result.data?.pageParams ?? [],
+        };
+      },
+      native: query,
+    } as ReturnType<
+      ReactiveInfiniteQuery<
+        TParams,
+        TPageData,
+        TPageParam,
+        TError,
+        TQueryKey
+      >['useSuspenseHook']
+    >;
+  };
+
+  const reactiveInfiniteQuery = coreCreateReactiveInfiniteQuery(query as any, prefetchHook as any) as unknown as ReactiveInfiniteQuery<
     TParams,
     TPageData,
     TPageParam,
     TError,
     TQueryKey
   >;
+
+  (reactiveInfiniteQuery as any).useSuspenseHook = suspenseHook;
+
+  return reactiveInfiniteQuery;
 }

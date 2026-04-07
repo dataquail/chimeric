@@ -1,5 +1,4 @@
 import { ActiveTodoDeletedEvent } from 'src/core/domain/activeTodo/events/ActiveTodoDeletedEvent';
-import { reviewedTodoRepository } from 'src/core/infrastructure/repositories/ReviewedTodoRepository';
 import { reviewRepository } from 'src/core/infrastructure/repositories/ReviewRepository';
 
 export const handleActiveTodoDelete = (event: unknown) => {
@@ -14,7 +13,5 @@ export const handleActiveTodoDelete = (event: unknown) => {
         ),
       });
     }
-
-    reviewedTodoRepository.delete({ id: event.payload.id });
   }
 };

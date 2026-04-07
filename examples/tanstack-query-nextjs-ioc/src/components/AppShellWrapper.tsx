@@ -2,7 +2,7 @@
 
 import { AppShell, Avatar, Box, Burger, NavLink, Flex } from '@mantine/core';
 import { useDisclosure, useViewportSize } from '@mantine/hooks';
-import { IconHome2, IconPencilBolt, IconRestore } from '@tabler/icons-react';
+import { IconArchive, IconHome2, IconPencilBolt } from '@tabler/icons-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -58,10 +58,10 @@ export const AppShellWrapper = ({ children }: Props) => {
             component={Link}
           />
           <NavLink
-            href="/saved-for-later"
-            label="Saved For Later Todos"
-            active={pathname === '/saved-for-later'}
-            leftSection={<IconRestore size="1rem" stroke={1.5} />}
+            href="/archived"
+            label="Archived Todos"
+            active={pathname === '/archived'}
+            leftSection={<IconArchive size="1rem" stroke={1.5} />}
             component={Link}
           />
           <NavLink

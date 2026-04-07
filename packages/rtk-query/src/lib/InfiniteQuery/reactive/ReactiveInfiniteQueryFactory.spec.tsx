@@ -365,10 +365,9 @@ describe('ReactiveInfiniteQueryFactory', () => {
     });
 
     try {
-      // @ts-expect-error - Testing type error
       renderHook(
-        () =>
-          reactiveInfiniteQuery.usePrefetchHook({ category: 'wrong' }),
+        // @ts-expect-error - Testing type error
+        () => reactiveInfiniteQuery.usePrefetchHook({ category: 'wrong' }),
         {
           wrapper: getTestWrapper(store),
         },

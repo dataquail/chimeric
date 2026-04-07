@@ -315,8 +315,8 @@ describe('ChimericInfiniteQueryFactory', () => {
     });
 
     try {
-      // @ts-expect-error - Testing type error
       renderHook(
+        // @ts-expect-error - Testing type error
         () => chimericInfiniteQuery.usePrefetchHook({ category: 'wrong' }),
         {
           wrapper: getTestWrapper(store),
