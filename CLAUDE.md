@@ -57,8 +57,8 @@ pnpm run dev:all
 # Watch packages only
 pnpm run watch:packages
 
-# Serve todo app example
-pnpm run serve:todo-app
+# Serve tanstack-query-spa example
+pnpm run serve:tanstack-query-spa
 ```
 
 ### Pre-commit Check

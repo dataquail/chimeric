@@ -13,19 +13,16 @@
       "path": "./packages/react-query"
     },
     {
-      "path": "./examples/todo-app"
+      "path": "./examples/tanstack-query-spa"
     },
     {
-      "path": "./examples/basic-todo-app"
+      "path": "./examples/tanstack-query-nextjs-ioc"
     },
     {
-      "path": "./examples/nextjs-todo-app-ioc"
+      "path": "./examples/express-backend"
     },
     {
-      "path": "./examples/todo-api"
-    },
-    {
-      "path": "./examples/redux-todo-app"
+      "path": "./examples/rtk-spa"
     },
     {
       "path": "./packages/rtk-query"
