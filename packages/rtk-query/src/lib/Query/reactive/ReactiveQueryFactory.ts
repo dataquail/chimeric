@@ -11,6 +11,7 @@ import type {
 } from '@reduxjs/toolkit/query';
 import { createReactiveQuery, ReactiveQueryOptions } from '@chimeric/core';
 import { wrapRtkError } from '../../utilities/wrapRtkError';
+import { isChimericAllOptions } from '../../utilities/isChimericAllOptions';
 import { ReactiveQuery } from './types';
 
 type QueryEndpointWithHooks = {
@@ -39,8 +40,9 @@ export function ReactiveQueryFactory<
     ...args: unknown[]
   ) => {
     const [first, second] = args;
-    const params = first as QueryArgFrom<D>;
-    const allOptions = second as
+    const firstIsOptions = second === undefined && isChimericAllOptions(first);
+    const params = firstIsOptions ? (undefined as QueryArgFrom<D>) : (first as QueryArgFrom<D>);
+    const allOptions = (firstIsOptions ? first : second) as
       | {
           options?: ReactiveQueryOptions;
           nativeOptions?: SubscriptionOptions & Record<string, unknown>;
@@ -74,8 +76,9 @@ export function ReactiveQueryFactory<
     ...args: unknown[]
   ) => {
     const [first, second] = args;
-    const params = first as QueryArgFrom<D>;
-    const allOptions = second as
+    const firstIsOptions = second === undefined && isChimericAllOptions(first);
+    const params = firstIsOptions ? (undefined as QueryArgFrom<D>) : (first as QueryArgFrom<D>);
+    const allOptions = (firstIsOptions ? first : second) as
       | { nativeOptions?: PrefetchOptions }
       | undefined;
     const nativeOptions = allOptions?.nativeOptions;

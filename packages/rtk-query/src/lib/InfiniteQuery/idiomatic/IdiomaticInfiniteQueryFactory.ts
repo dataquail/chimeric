@@ -14,6 +14,7 @@ import {
   createIdiomaticInfiniteQuery,
   IdiomaticInfiniteQueryOptions,
 } from '@chimeric/core';
+import { isChimericAllOptions } from '../../utilities/isChimericAllOptions';
 import {
   IdiomaticInfiniteQuery,
   RtkInfiniteQueryIdiomaticNativeOptions,
@@ -43,8 +44,9 @@ export function IdiomaticInfiniteQueryFactory<
     ...args: unknown[]
   ) => {
     const [first, second] = args;
-    const params = first as InfiniteQueryArgFrom<D>;
-    const allOptions = second as
+    const firstIsOptions = second === undefined && isChimericAllOptions(first);
+    const params = firstIsOptions ? (undefined as InfiniteQueryArgFrom<D>) : (first as InfiniteQueryArgFrom<D>);
+    const allOptions = (firstIsOptions ? first : second) as
       | {
           options?: IdiomaticInfiniteQueryOptions<PageParamFrom<D>>;
           nativeOptions?: RtkInfiniteQueryIdiomaticNativeOptions;
@@ -76,8 +78,9 @@ export function IdiomaticInfiniteQueryFactory<
     ...args: unknown[]
   ) => {
     const [first, second] = args;
-    const params = first as InfiniteQueryArgFrom<D>;
-    const allOptions = second as
+    const firstIsOptions = second === undefined && isChimericAllOptions(first);
+    const params = firstIsOptions ? (undefined as InfiniteQueryArgFrom<D>) : (first as InfiniteQueryArgFrom<D>);
+    const allOptions = (firstIsOptions ? first : second) as
       | { nativeOptions?: RtkInfiniteQueryIdiomaticNativeOptions }
       | undefined;
     const nativeOptions = allOptions?.nativeOptions;
