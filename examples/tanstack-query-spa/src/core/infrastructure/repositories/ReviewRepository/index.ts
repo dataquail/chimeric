@@ -1,18 +1,22 @@
 import { Review } from 'src/core/domain/review/entities/Review';
-import { saveReview, deleteReview, ReviewRecord } from './reviewStore';
-import { appStore } from 'src/core/global/appStore';
+import { ReviewRecord, ReviewStore, useReviewStore } from './reviewStore';
 import { IReviewRepository } from 'src/core/domain/review/ports/IReviewRepository';
-import { ChimericSyncFactory } from 'src/utils/domain/ChimericSyncFactory';
+import { CreateChimericSyncFactory } from '@chimeric/react';
+
+const ChimericSyncFactory = CreateChimericSyncFactory<ReviewStore>({
+  getState: () => useReviewStore.getState(),
+  useSelector: useReviewStore,
+});
 
 export const reviewRepository: IReviewRepository = {
   save: (review: Review) => {
-    appStore.dispatch(saveReview(review));
+    useReviewStore.getState().save(review);
   },
   delete: () => {
-    appStore.dispatch(deleteReview());
+    useReviewStore.getState().delete();
   },
   get: ChimericSyncFactory({
-    selector: () => (state) => state.todo.review.record,
+    selector: () => (state) => state.record,
     reducer: (record) => (record ? toDomain(record) : undefined),
   }),
 };

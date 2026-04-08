@@ -1,36 +1,27 @@
 import { IReviewRepository } from '@/core/domain/review/ports/IReviewRepository';
 import { Review } from '@/core/domain/review/entities/Review';
-import { saveReview, deleteReview, ReviewRecord } from './reviewStore';
-import { useAppSelector } from '@/lib/store';
-import { IAppStoreProvider } from '@/core/global/appStoreProvider/IAppStoreProvider';
-import {
-  createIdiomaticSync,
-  createReactiveSync,
-  fuseChimericSync,
-} from '@chimeric/react';
+import { ReviewRecord, ReviewStore, useReviewStore } from './reviewStore';
+import { CreateChimericSyncFactory } from '@chimeric/react';
+
+const ChimericSyncFactory = CreateChimericSyncFactory<ReviewStore>({
+  getState: () => useReviewStore.getState(),
+  useSelector: useReviewStore,
+});
 
 const toDomain = (record: ReviewRecord): Review => ({
   createdAt: new Date(record.createdAt),
   todoIdList: record.todoIdList,
 });
 
-export const createReviewRepository = (
-  appStoreProvider: IAppStoreProvider,
-): IReviewRepository => ({
+export const createReviewRepository = (): IReviewRepository => ({
   save: (review: Review) => {
-    appStoreProvider.get().dispatch(saveReview(review));
+    useReviewStore.getState().save(review);
   },
   delete: () => {
-    appStoreProvider.get().dispatch(deleteReview());
+    useReviewStore.getState().delete();
   },
-  get: fuseChimericSync({
-    idiomatic: createIdiomaticSync(() => {
-      const record = appStoreProvider.get().getState().todo.review.record;
-      return record ? toDomain(record) : undefined;
-    }),
-    reactive: createReactiveSync(() => {
-      const record = useAppSelector((state) => state.todo.review.record);
-      return record ? toDomain(record) : undefined;
-    }),
+  get: ChimericSyncFactory({
+    selector: () => (state) => state.record,
+    reducer: (record) => (record ? toDomain(record) : undefined),
   }),
 });

@@ -10,7 +10,8 @@ import { activeTodoService } from '.';
 import { priorityTodoRepository } from 'src/core/infrastructure/repositories/PriorityTodoRepository';
 import { prioritizeTodoUseCase } from 'src/core/useCases/activeTodo/application/prioritizeTodoUseCase';
 import { deprioritizeTodoUseCase } from 'src/core/useCases/activeTodo/application/deprioritizeTodoUseCase';
-import { usePriorityTodoStore } from 'src/core/infrastructure/repositories/PriorityTodoRepository/priorityTodoStore';
+import { appStore } from 'src/core/global/appStore';
+import { revertAll } from 'src/lib/features/revertAll';
 
 describe('ActiveTodoService', () => {
   const server = setupServer();
@@ -18,7 +19,7 @@ describe('ActiveTodoService', () => {
   beforeAll(() => server.listen());
   afterEach(() => {
     server.resetHandlers();
-    usePriorityTodoStore.setState({ dict: {} });
+    appStore.dispatch(revertAll());
   });
   afterAll(() => server.close());
 

@@ -2,13 +2,15 @@ import { Flex, Loader, ScrollArea } from '@mantine/core';
 import { useViewportSize } from '@mantine/hooks';
 import { ActiveTodoCard } from './ActiveTodoCard';
 import { activeTodoService } from 'src/core/infrastructure/services/ActiveTodoService';
-import { usePriorityTodoStore } from 'src/core/infrastructure/repositories/PriorityTodoRepository/priorityTodoStore';
+import { useAppSelector } from 'src/lib/store';
 import { useMemo } from 'react';
 
 export const ActiveTodoList = () => {
   const { data, isPending } = activeTodoService.getAll.useHook();
   const { height } = useViewportSize();
-  const priorityDict = usePriorityTodoStore((state) => state.dict);
+  const priorityDict = useAppSelector(
+    (state) => state.todo.priorityTodo.dict,
+  );
 
   const sortedData = useMemo(() => {
     if (!data) return [];
