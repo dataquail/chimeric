@@ -1,4 +1,7 @@
-import { type QueryClient } from '@tanstack/react-query';
+import {
+  type QueryClient,
+  type MutationFunctionContext,
+} from '@tanstack/react-query';
 import { IdiomaticMutationFactory } from '../idiomatic/IdiomaticMutationFactory';
 import { createReactiveMutation } from '../reactive/createReactiveMutation';
 import { ChimericMutation } from './types';
@@ -14,7 +17,10 @@ export function ChimericMutationFactory<
 >(
   config: {
     queryClient: QueryClient;
-    mutationFn: (params: TParams) => Promise<TResult>;
+    mutationFn: (
+      params: TParams,
+      context?: MutationFunctionContext,
+    ) => Promise<TResult>;
   } & TanstackIdiomaticNativeOptions<TParams, TResult, TError>,
 ): ChimericMutation<TParams, TResult, TError>;
 
@@ -26,7 +32,10 @@ export function ChimericMutationFactory<
 >(
   config: {
     queryClient: QueryClient;
-    mutationFn: (params?: TParams) => Promise<TResult>;
+    mutationFn: (
+      params?: TParams,
+      context?: MutationFunctionContext,
+    ) => Promise<TResult>;
   } & TanstackIdiomaticNativeOptions<TParams | undefined, TResult, TError>,
 ): ChimericMutation<TParams | undefined, TResult, TError>;
 
@@ -37,7 +46,7 @@ export function ChimericMutationFactory<
 >(
   config: {
     queryClient: QueryClient;
-    mutationFn: () => Promise<TResult>;
+    mutationFn: (context?: MutationFunctionContext) => Promise<TResult>;
   } & TanstackIdiomaticNativeOptions<void, TResult, TError>,
 ): ChimericMutation<void, TResult, TError>;
 
@@ -52,7 +61,10 @@ export function ChimericMutationFactory<
   ...mutationOptions
 }: {
   queryClient: QueryClient;
-  mutationFn: (params: TParams) => Promise<TResult>;
+  mutationFn: (
+    params: TParams,
+    context?: MutationFunctionContext,
+  ) => Promise<TResult>;
 } & TanstackIdiomaticNativeOptions<TParams, TResult, TError>): ChimericMutation<
   TParams,
   TResult,

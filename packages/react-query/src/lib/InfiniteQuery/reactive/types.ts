@@ -197,7 +197,6 @@ export type TanstackInfiniteQueryReactiveNativeOptions<
     TPageData,
     TError,
     InfiniteData<TPageData, TPageParam>,
-    TPageData,
     TQueryKey,
     TPageParam
   >,
@@ -224,7 +223,6 @@ export type TanstackInfiniteQueryReactiveSuspenseNativeOptions<
     TPageData,
     TError,
     InfiniteData<TPageData, TPageParam>,
-    TPageData,
     TQueryKey,
     TPageParam
   >,

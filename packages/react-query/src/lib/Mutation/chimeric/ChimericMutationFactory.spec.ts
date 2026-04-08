@@ -6,6 +6,10 @@ import { ChimericMutationFactory } from './ChimericMutationFactory';
 import { MutationTestFixtures } from '../__tests__/mutationFixtures';
 
 describe('ChimericMutationFactory', () => {
+  const expectedContext = expect.objectContaining({
+    client: expect.any(QueryClient),
+  });
+
   // USAGE: REACTIVE
   it('USAGE: REACTIVE: no params', async () => {
     const { mutationFn } = MutationTestFixtures.withoutParams.getChimeric();
@@ -52,7 +56,10 @@ describe('ChimericMutationFactory', () => {
     });
 
     expect(result.current.data).toBe('Hello John');
-    expect(mutationFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(mutationFn).toHaveBeenCalledWith(
+      { name: 'John' },
+      expectedContext,
+    );
   });
 
   it('USAGE: REACTIVE: with optional params', async () => {
@@ -77,7 +84,7 @@ describe('ChimericMutationFactory', () => {
     });
 
     expect(result.current.data).toBe('Hello');
-    expect(mutationFn).toHaveBeenCalledWith(undefined);
+    expect(mutationFn).toHaveBeenCalledWith(undefined, expectedContext);
 
     await act(async () => result.current.invoke({ name: 'Jane' }));
 
@@ -86,7 +93,10 @@ describe('ChimericMutationFactory', () => {
     });
 
     expect(result.current.data).toBe('Hello Jane');
-    expect(mutationFn).toHaveBeenCalledWith({ name: 'Jane' });
+    expect(mutationFn).toHaveBeenCalledWith(
+      { name: 'Jane' },
+      expectedContext,
+    );
   });
 
   // USAGE: IDIOMATIC
@@ -104,7 +114,12 @@ describe('ChimericMutationFactory', () => {
 
     expect(result).toBe('test');
     expect(mutationFn).toHaveBeenCalled();
-    expect(onSuccessSpy).toHaveBeenCalledWith('test', undefined, undefined);
+    expect(onSuccessSpy).toHaveBeenCalledWith(
+      'test',
+      undefined,
+      undefined,
+      expectedContext,
+    );
   });
 
   it('USAGE: IDIOMATIC: with params', async () => {
@@ -121,11 +136,12 @@ describe('ChimericMutationFactory', () => {
     );
 
     expect(result).toBe('Hello John');
-    expect(mutationFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(mutationFn).toHaveBeenCalledWith({ name: 'John' }, expectedContext);
     expect(onSuccessSpy).toHaveBeenCalledWith(
       'Hello John',
       { name: 'John' },
       undefined,
+      expectedContext,
     );
   });
 
@@ -143,8 +159,13 @@ describe('ChimericMutationFactory', () => {
     });
 
     expect(result1).toBe('Hello');
-    expect(mutationFn).toHaveBeenCalledWith(undefined);
-    expect(onSuccessSpy).toHaveBeenCalledWith('Hello', undefined, undefined);
+    expect(mutationFn).toHaveBeenCalledWith(undefined, expectedContext);
+    expect(onSuccessSpy).toHaveBeenCalledWith(
+      'Hello',
+      undefined,
+      undefined,
+      expectedContext,
+    );
 
     const result2 = await chimericMutation(
       { name: 'Jane' },
@@ -154,11 +175,15 @@ describe('ChimericMutationFactory', () => {
     );
 
     expect(result2).toBe('Hello Jane');
-    expect(mutationFn).toHaveBeenCalledWith({ name: 'Jane' });
+    expect(mutationFn).toHaveBeenCalledWith(
+      { name: 'Jane' },
+      expectedContext,
+    );
     expect(onSuccessSpy).toHaveBeenCalledWith(
       'Hello Jane',
       { name: 'Jane' },
       undefined,
+      expectedContext,
     );
   });
 

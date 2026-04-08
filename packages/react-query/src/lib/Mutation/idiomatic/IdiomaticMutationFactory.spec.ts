@@ -3,6 +3,10 @@ import { IdiomaticMutationFactory } from './IdiomaticMutationFactory';
 import { MutationTestFixtures } from '../__tests__/mutationFixtures';
 
 describe('IdiomaticMutationFactory', () => {
+  const expectedContext = expect.objectContaining({
+    client: expect.any(QueryClient),
+  });
+
   // USAGE
   it('USAGE: no params', async () => {
     const { mutationFn } = MutationTestFixtures.withoutParams.getIdiomatic();
@@ -18,7 +22,12 @@ describe('IdiomaticMutationFactory', () => {
 
     expect(result).toBe('test');
     expect(mutationFn).toHaveBeenCalled();
-    expect(onSuccessSpy).toHaveBeenCalledWith('test', undefined, undefined);
+    expect(onSuccessSpy).toHaveBeenCalledWith(
+      'test',
+      undefined,
+      undefined,
+      expectedContext,
+    );
   });
 
   it('USAGE: with params', async () => {
@@ -35,11 +44,12 @@ describe('IdiomaticMutationFactory', () => {
     );
 
     expect(result).toBe('Hello John');
-    expect(mutationFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(mutationFn).toHaveBeenCalledWith({ name: 'John' }, expectedContext);
     expect(onSuccessSpy).toHaveBeenCalledWith(
       'Hello John',
       { name: 'John' },
       undefined,
+      expectedContext,
     );
   });
 
@@ -57,8 +67,13 @@ describe('IdiomaticMutationFactory', () => {
     });
 
     expect(result1).toBe('Hello');
-    expect(mutationFn).toHaveBeenCalledWith(undefined);
-    expect(onSuccessSpy).toHaveBeenCalledWith('Hello', undefined, undefined);
+    expect(mutationFn).toHaveBeenCalledWith(undefined, expectedContext);
+    expect(onSuccessSpy).toHaveBeenCalledWith(
+      'Hello',
+      undefined,
+      undefined,
+      expectedContext,
+    );
     const result2 = await idiomaticMutation(
       { name: 'Jane' },
       {
@@ -67,11 +82,12 @@ describe('IdiomaticMutationFactory', () => {
     );
 
     expect(result2).toBe('Hello Jane');
-    expect(mutationFn).toHaveBeenCalledWith({ name: 'Jane' });
+    expect(mutationFn).toHaveBeenCalledWith({ name: 'Jane' }, expectedContext);
     expect(onSuccessSpy).toHaveBeenCalledWith(
       'Hello Jane',
       { name: 'Jane' },
       undefined,
+      expectedContext,
     );
   });
 

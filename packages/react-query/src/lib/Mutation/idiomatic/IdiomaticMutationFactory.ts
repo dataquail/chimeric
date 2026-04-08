@@ -1,4 +1,7 @@
-import { type QueryClient } from '@tanstack/react-query';
+import {
+  type QueryClient,
+  type MutationFunctionContext,
+} from '@tanstack/react-query';
 import { IdiomaticMutation, TanstackIdiomaticNativeOptions } from './types';
 import { createIdiomaticMutation } from './createIdiomaticMutation';
 import { IdiomaticMutationOptions } from 'node_modules/@chimeric/core/src/lib/Mutation/idiomatic/types';
@@ -11,7 +14,10 @@ export function IdiomaticMutationFactory<
 >(
   config: {
     queryClient: QueryClient;
-    mutationFn: (params?: TParams) => Promise<TResult>;
+    mutationFn: (
+      params?: TParams,
+      context?: MutationFunctionContext,
+    ) => Promise<TResult>;
   } & TanstackIdiomaticNativeOptions<TParams | undefined, TResult, TError>,
 ): IdiomaticMutation<TParams | undefined, TResult, TError>;
 
@@ -22,7 +28,7 @@ export function IdiomaticMutationFactory<
 >(
   config: {
     queryClient: QueryClient;
-    mutationFn: () => Promise<TResult>;
+    mutationFn: (context?: MutationFunctionContext) => Promise<TResult>;
   } & TanstackIdiomaticNativeOptions<void, TResult, TError>,
 ): IdiomaticMutation<void, TResult, TError>;
 
@@ -34,7 +40,10 @@ export function IdiomaticMutationFactory<
 >(
   config: {
     queryClient: QueryClient;
-    mutationFn: (params: TParams) => Promise<TResult>;
+    mutationFn: (
+      params: TParams,
+      context?: MutationFunctionContext,
+    ) => Promise<TResult>;
   } & TanstackIdiomaticNativeOptions<TParams, TResult, TError>,
 ): IdiomaticMutation<TParams, TResult, TError>;
 
@@ -49,7 +58,10 @@ export function IdiomaticMutationFactory<
   ...mutationDefaultOptions
 }: {
   queryClient: QueryClient;
-  mutationFn: (params: TParams) => Promise<TResult>;
+  mutationFn: (
+    params: TParams,
+    context?: MutationFunctionContext,
+  ) => Promise<TResult>;
 } & TanstackIdiomaticNativeOptions<
   TParams,
   TResult,
@@ -85,7 +97,8 @@ export function IdiomaticMutationFactory<
       | TanstackIdiomaticNativeOptions<TParams, TResult, TError>
       | undefined;
     mutation.setOptions({
-      mutationFn: () => mutationFn(params as TParams),
+      mutationFn: (_variables, context) =>
+        mutationFn(params as TParams, context),
       ...mutationDefaultOptions,
       ...(options ?? {}),
       ...(nativeOptions ?? {}),
