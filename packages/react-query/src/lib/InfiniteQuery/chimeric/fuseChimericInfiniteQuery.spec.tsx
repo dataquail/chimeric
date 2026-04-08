@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { InfiniteQueryTestFixtures } from '../__tests__/infiniteQueryFixtures';
 import { fuseChimericInfiniteQuery } from './fuseChimericInfiniteQuery';
 

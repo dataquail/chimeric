@@ -13,6 +13,7 @@ import { createIdiomaticQuery, IdiomaticQueryOptions } from '@chimeric/core';
 import { isChimericAllOptions } from '../../utilities/isChimericAllOptions';
 import { IdiomaticQuery } from './types';
 
+/* eslint-disable @typescript-eslint/no-explicit-any -- RTK Query types require `any` for generic constraints and store dispatch */
 type RtkStore = {
   dispatch: ThunkDispatch<any, any, UnknownAction>;
 };

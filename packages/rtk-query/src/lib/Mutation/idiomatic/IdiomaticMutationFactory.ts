@@ -13,6 +13,7 @@ import {
   RtkMutationIdiomaticNativeOptions,
 } from './types';
 
+/* eslint-disable @typescript-eslint/no-explicit-any -- RTK Query types require `any` for generic constraints and store dispatch */
 export function IdiomaticMutationFactory<
   D extends MutationDefinition<any, any, any, any>,
   Definitions extends EndpointDefinitions,

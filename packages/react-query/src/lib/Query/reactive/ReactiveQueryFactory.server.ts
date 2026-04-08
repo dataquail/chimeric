@@ -39,7 +39,7 @@ export function ReactiveQueryFactory<
 
 // Implementation
 export function ReactiveQueryFactory(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   _config: { getQueryOptions: unknown },
 ): never {
   throwReactiveServerError('ReactiveQueryFactory');

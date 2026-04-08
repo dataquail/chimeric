@@ -57,6 +57,7 @@ export function ChimericQueryFactory<
   getQueryOptions,
 }: {
   queryClient: QueryClient;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getQueryOptions: any;
 }): ChimericQuery<TParams, TResult, TError, TQueryKey> {
   return fuseChimericQuery({

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { QueryTestFixtures } from '../__tests__/queryFixtures';
 import { fuseChimericQuery } from './fuseChimericQuery';
 

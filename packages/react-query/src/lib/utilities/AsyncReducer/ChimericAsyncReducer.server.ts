@@ -18,12 +18,12 @@ import { TanstackQueryReactiveNativeOptions } from '../../Query/reactive/types';
 // Same helper types as the client version
 type AnyServiceConfig = {
   service:
-    | ChimericSync<any, any>
-    | ChimericEagerAsync<any, any>
-    | ChimericQuery<any, any>;
-  getParams?: (params: any) => any;
-  getIdiomaticOptions?: (params: any) => any;
-  getReactiveOptions?: (params: any) => any;
+    | ChimericSync<unknown, unknown>
+    | ChimericEagerAsync<unknown, unknown>
+    | ChimericQuery<unknown, unknown>;
+  getParams?: (params: unknown) => unknown;
+  getIdiomaticOptions?: (params: unknown) => unknown;
+  getReactiveOptions?: (params: unknown) => unknown;
 };
 
 type AllIdiomaticQueryOptions<
@@ -72,7 +72,7 @@ type ExtractServiceResult<TConfig> = TConfig extends {
   ? TResult
   : never;
 
-type ExtractResults<T extends readonly any[]> = {
+type ExtractResults<T extends readonly unknown[]> = {
   [K in keyof T]: ExtractServiceResult<T[K]>;
 };
 
@@ -111,7 +111,7 @@ type InferService<TConfig, TServiceParams> =
       }
     : never;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export const ChimericAsyncReducer = <TServiceParams = void>() => ({
   build: <
     TServiceResult,
@@ -126,7 +126,7 @@ export const ChimericAsyncReducer = <TServiceParams = void>() => ({
       serviceParams: TServiceParams,
     ) => TServiceResult;
     initialValueReducer?: (
-      args: any[],
+      args: unknown[],
       serviceParams: TServiceParams,
     ) => TServiceResult;
   }): ChimericEagerAsync<TServiceParams, TServiceResult> => {
@@ -135,7 +135,9 @@ export const ChimericAsyncReducer = <TServiceParams = void>() => ({
         service: (service as AnyServiceConfig).service,
         getParams: (service as AnyServiceConfig).getParams,
         getOptions: (service as AnyServiceConfig).getIdiomaticOptions,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       })) as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       reducer: reducer as any,
     });
 

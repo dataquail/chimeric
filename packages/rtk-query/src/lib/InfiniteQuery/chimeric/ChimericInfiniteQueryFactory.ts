@@ -14,11 +14,11 @@ import { IdiomaticInfiniteQueryFactory } from '../idiomatic/IdiomaticInfiniteQue
 import { ReactiveInfiniteQueryFactory } from '../reactive/ReactiveInfiniteQueryFactory';
 import { type ChimericInfiniteQuery } from './types';
 
+/* eslint-disable @typescript-eslint/no-explicit-any -- RTK Query types require `any` for generic constraints and hook signatures */
 type InfiniteQueryEndpointWithHooks = {
   useInfiniteQuery: (arg: any, options?: any) => any;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ApiWithUsePrefetch = { usePrefetch: (...args: any[]) => any };
 
 export function ChimericInfiniteQueryFactory<
@@ -59,7 +59,7 @@ export function ChimericInfiniteQueryFactory<
 
   return fuseChimericInfiniteQuery({
     idiomatic,
-    reactive: reactive as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+    reactive: reactive as any,
   }) as ChimericInfiniteQuery<
     InfiniteQueryArgFrom<D>,
     ResultTypeFrom<D>,

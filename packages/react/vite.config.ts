@@ -43,7 +43,7 @@ export default defineConfig(() => ({
         }
         if (packageJson.exports) {
           // Transform exports paths recursively
-          const transformExports = (obj: any): any => {
+          const transformExports = (obj: unknown): unknown => {
             if (
               typeof obj === 'string' &&
               (obj.startsWith('dist/') || obj.startsWith('./dist/'))
@@ -51,7 +51,7 @@ export default defineConfig(() => ({
               return obj.replace(/^(\.\/)?dist\//, './');
             }
             if (typeof obj === 'object' && obj !== null) {
-              const result: any = {};
+              const result: Record<string, unknown> = {};
               for (const [key, value] of Object.entries(obj)) {
                 result[key] = transformExports(value);
               }

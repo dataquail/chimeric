@@ -29,7 +29,7 @@ export function ReactiveEagerAsyncFactory<
 
 // Implementation
 export function ReactiveEagerAsyncFactory(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   _config: { eagerAsyncFn: unknown },
 ): never {
   throwReactiveServerError('ReactiveEagerAsyncFactory');

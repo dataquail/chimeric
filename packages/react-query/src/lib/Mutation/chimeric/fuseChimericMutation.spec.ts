@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { MutationTestFixtures } from '../__tests__/mutationFixtures';
 import { fuseChimericMutation } from './fuseChimericMutation';
 
