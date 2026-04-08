@@ -7,6 +7,8 @@ import { ActiveTodoList } from './ActiveTodoList';
 import { AddNewActiveTodoForm } from './AddNewActiveTodoForm';
 import { EventHydration } from '@/providers/EventHydration';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ActiveTodoPage() {
   const container = getContainer();
   await container.activeTodoService.getAll.prefetch();

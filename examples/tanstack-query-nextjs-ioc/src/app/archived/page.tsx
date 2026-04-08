@@ -5,6 +5,8 @@ import { Title, Flex, Space, Loader } from '@mantine/core';
 import { AppShellWrapper } from '@/components/AppShellWrapper';
 import { ArchivedTodoList } from './ArchivedTodoList';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ArchivedPage() {
   const container = getContainer();
   await container.archivedTodoService.getAll.prefetch();
