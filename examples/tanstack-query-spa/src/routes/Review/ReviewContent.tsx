@@ -1,17 +1,4 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  Group,
-  Loader,
-  ScrollArea,
-  Space,
-  Stack,
-  Text,
-  Title,
-} from '@mantine/core';
-import { format } from 'date-fns';
-import { useViewportSize } from '@mantine/hooks';
+import { formatDate } from 'src/utils/formatDate';
 import { reviewRepository } from 'src/core/infrastructure/repositories/ReviewRepository';
 import { startReviewUseCase } from 'src/core/useCases/review/application/startReviewUseCase';
 import { getTodosUnderReviewUseCase } from 'src/core/useCases/review/application/getTodosUnderReviewUseCase';
@@ -24,42 +11,35 @@ const TodoUnderReviewCard = ({ todo }: { todo: TodoUnderReview }) => {
   const isExempted = !todo.completedAt;
 
   return (
-    <Box p="xs" pr="lg">
-      <Group wrap="nowrap" align="flex-start">
-        <Checkbox.Card
-          radius="md"
-          checked={!isExempted}
-          disabled={uncompleteOne.isPending}
-          onClick={() => {
-            if (!isExempted) {
-              uncompleteOne.invoke({ id: todo.id });
-            }
-          }}
-        >
-          <Group wrap="nowrap" align="flex-start">
-            {uncompleteOne.isPending ? (
-              <Loader p="xs" />
-            ) : (
-              <Checkbox.Indicator mt="sm" ml="sm" />
-            )}
-            <Stack p="xs" align="stretch" gap="xs">
-              <Title order={4} c={isExempted ? 'dimmed' : undefined}>
-                {todo.title}
-              </Title>
-              <Text size="sm">{`Created At: ${format(
-                todo.createdAt,
-                'M/d/yyyy h:m aaa',
-              )}`}</Text>
-              {isExempted && (
-                <Text size="sm" c="dimmed" fs="italic">
-                  Uncompleted — will not be archived
-                </Text>
-              )}
-            </Stack>
-          </Group>
-        </Checkbox.Card>
-      </Group>
-    </Box>
+    <div className="todo-card">
+      <div
+        className={`checkbox-card ${!isExempted ? 'checked' : ''} ${uncompleteOne.isPending ? 'disabled' : ''}`}
+        role="checkbox"
+        aria-checked={!isExempted}
+        onClick={() => {
+          if (!isExempted && !uncompleteOne.isPending) {
+            uncompleteOne.invoke({ id: todo.id });
+          }
+        }}
+      >
+        {uncompleteOne.isPending ? (
+          <div className="loader loader-sm" style={{ margin: '0.5rem' }} />
+        ) : (
+          <div
+            className={`checkbox-indicator ${!isExempted ? 'checked' : ''}`}
+          />
+        )}
+        <div className="todo-info">
+          <h4 className={isExempted ? 'dimmed' : ''}>{todo.title}</h4>
+          <span className="text-sm">{`Created At: ${formatDate(todo.createdAt)}`}</span>
+          {isExempted && (
+            <span className="text-sm text-dimmed text-italic">
+              Uncompleted — will not be archived
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -69,44 +49,55 @@ export const ReviewContent = () => {
   const startReview = startReviewUseCase.useHook();
   const finishReview = finishReviewUseCase.useHook();
   const todosUnderReview = getTodosUnderReviewUseCase.useHook();
-  const { height } = useViewportSize();
 
   return (
-    <Box>
-      <Group justify="space-between" align="center" h="60px">
-        <Title order={1}>Review Completed Todos</Title>
+    <div>
+      <div className="page-header">
+        <h1>Review Completed Todos</h1>
         {hasStartedReview ? (
-          <Button
+          <button
+            type="button"
+            className="btn"
             onClick={() => finishReview.invoke()}
-            loading={finishReview.isPending}
+            disabled={finishReview.isPending}
           >
-            Archive & Finish
-          </Button>
+            {finishReview.isPending ? (
+              <span className="loader loader-sm" />
+            ) : (
+              'Archive & Finish'
+            )}
+          </button>
         ) : (
-          <Button
+          <button
+            type="button"
+            className="btn"
             onClick={() => startReview.invoke()}
-            loading={startReview.isPending}
+            disabled={startReview.isPending}
           >
-            Start Review
-          </Button>
+            {startReview.isPending ? (
+              <span className="loader loader-sm" />
+            ) : (
+              'Start Review'
+            )}
+          </button>
         )}
-      </Group>
-      <Space h="lg" />
+      </div>
+      <div className="spacer-lg" />
       {!hasStartedReview && (
-        <Text c="dimmed">
+        <p className="text-dimmed">
           Start a review to see all completed todos. Uncheck any you want to
           keep active. The rest will be archived when you finish.
-        </Text>
+        </p>
       )}
       {startReview.isPending || todosUnderReview.isPending ? (
-        <Loader />
+        <div className="loader" />
       ) : (
-        <ScrollArea.Autosize mah={`calc(${height}px - 172px`}>
+        <div className="scroll-area">
           {todosUnderReview.data?.map((todo) => (
             <TodoUnderReviewCard key={todo.id} todo={todo} />
           ))}
-        </ScrollArea.Autosize>
+        </div>
       )}
-    </Box>
+    </div>
   );
 };

@@ -1,39 +1,45 @@
 'use client';
 
-import { Button, Group, TextInput } from '@mantine/core';
-import { hasLength, useForm } from '@mantine/form';
+import { useState } from 'react';
 import { getContainer } from '@/core/global/container';
 
 export const AddNewActiveTodoForm = () => {
   const { activeTodoService } = getContainer();
   const { invoke, isPending } = activeTodoService.createOne.useHook();
-  const form = useForm({
-    mode: 'uncontrolled',
-    initialValues: {
-      title: '',
-    },
-    validate: {
-      title: hasLength({ min: 1 }, 'Must be at least 1 character long'),
-    },
-  });
+  const [title, setTitle] = useState('');
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (title.length < 1) {
+      setError('Must be at least 1 character long');
+      return;
+    }
+    setError('');
+    await invoke({ title });
+    setTitle('');
+  };
 
   return (
-    <form
-      onSubmit={form.onSubmit(async (values) => {
-        await invoke({ title: values.title });
-        form.setFieldValue('title', '');
-      })}
-    >
-      <Group justify="space-between" align="start" h="100%" mt="md">
-        <TextInput
-          key={form.key('title')}
-          placeholder="Enter your todo"
-          {...form.getInputProps('title')}
-        />
-        <Button type="submit" loading={isPending} disabled={isPending}>
-          Add
-        </Button>
-      </Group>
+    <form onSubmit={handleSubmit}>
+      <div className="form-row">
+        <div>
+          <input
+            type="text"
+            className={`text-input ${error ? 'error' : ''}`}
+            placeholder="Enter your todo"
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              if (error) setError('');
+            }}
+          />
+          {error && <div className="input-error">{error}</div>}
+        </div>
+        <button className="btn" type="submit" disabled={isPending}>
+          {isPending ? <span className="loader loader-sm" /> : 'Add'}
+        </button>
+      </div>
     </form>
   );
 };

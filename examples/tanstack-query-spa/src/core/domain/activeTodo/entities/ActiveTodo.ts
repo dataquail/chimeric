@@ -1,4 +1,3 @@
-import { parseISO } from 'date-fns';
 import { TodoDto } from '../dtos/out/TodoDto';
 
 export type ActiveTodo = {
@@ -15,8 +14,8 @@ export const isActiveTodoCompleted = (activeTodo: ActiveTodo): boolean => {
 export const mapTodoDtoToActiveTodo = (todoDto: TodoDto): ActiveTodo => ({
   id: todoDto.id,
   title: todoDto.title,
-  createdAt: parseISO(todoDto.created_at),
+  createdAt: new Date(todoDto.created_at),
   completedAt: todoDto.completed_at
-    ? parseISO(todoDto.completed_at)
+    ? new Date(todoDto.completed_at)
     : undefined,
 });

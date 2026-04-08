@@ -1,17 +1,8 @@
 'use client';
 
-import {
-  Box,
-  Group,
-  Loader,
-  Menu,
-  Stack,
-  Text,
-  Title,
-  rem,
-} from '@mantine/core';
-import { format } from 'date-fns';
-import { IconDots, IconRestore, IconTrash } from '@tabler/icons-react';
+import { useState, useEffect, useRef } from 'react';
+import { formatDate } from '@/utils/formatDate';
+import { IconDots, IconRestore, IconTrash } from '@/components/icons';
 import { getContainer } from '@/core/global/container';
 import { ArchivedTodo } from '@/core/domain/archivedTodo/entities/ArchivedTodo';
 
@@ -24,51 +15,64 @@ export const ArchivedTodoCard = ({ archivedTodo }: Props) => {
 
   const unarchiveOne = archivedTodoService.unarchiveOne.useHook();
   const deleteOne = archivedTodoService.deleteOne.useHook();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handleClick = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [menuOpen]);
 
   return (
-    <Box key={archivedTodo.id} p="xs" pr="lg">
-      <Group wrap="nowrap" align="flex-start">
-        <Stack p="xs" align="stretch" gap="xs" style={{ flex: 1 }}>
-          {deleteOne.isPending || unarchiveOne.isPending ? (
-            <Loader size="sm" />
-          ) : null}
-          <Title order={4}>{archivedTodo.title}</Title>
-          <Text size="sm">{`Completed At: ${format(
-            archivedTodo.completedAt,
-            'M/d/yyyy h:m aaa',
-          )}`}</Text>
-          <Text size="sm">{`Archived At: ${format(
-            archivedTodo.archivedAt,
-            'M/d/yyyy h:m aaa',
-          )}`}</Text>
-        </Stack>
-        <Menu shadow="md" width={200}>
-          <Menu.Target>
-            <IconDots />
-          </Menu.Target>
-
-          <Menu.Dropdown>
-            <Menu.Label>Archived Todo Options</Menu.Label>
-            <Menu.Item
-              leftSection={
-                <IconRestore style={{ width: rem(14), height: rem(14) }} />
-              }
-              onClick={() => unarchiveOne.invoke({ id: archivedTodo.id })}
+    <div className="archived-card">
+      <div className="archived-card-info">
+        {(deleteOne.isPending || unarchiveOne.isPending) && (
+          <div className="loader loader-sm" />
+        )}
+        <h4>{archivedTodo.title}</h4>
+        <span className="text-sm">{`Completed At: ${formatDate(archivedTodo.completedAt)}`}</span>
+        <span className="text-sm">{`Archived At: ${formatDate(archivedTodo.archivedAt)}`}</span>
+      </div>
+      <div className="menu-wrapper" ref={menuRef}>
+        <button
+          type="button"
+          className="menu-trigger"
+          onClick={() => setMenuOpen((o) => !o)}
+        >
+          <IconDots />
+        </button>
+        {menuOpen && (
+          <div className="menu-dropdown">
+            <div className="menu-label">Archived Todo Options</div>
+            <button
+              type="button"
+              className="menu-item"
+              onClick={() => {
+                unarchiveOne.invoke({ id: archivedTodo.id });
+                setMenuOpen(false);
+              }}
             >
-              Unarchive
-            </Menu.Item>
-            <Menu.Item
-              color="red"
-              leftSection={
-                <IconTrash style={{ width: rem(14), height: rem(14) }} />
-              }
-              onClick={() => deleteOne.invoke({ id: archivedTodo.id })}
+              <IconRestore /> Unarchive
+            </button>
+            <button
+              type="button"
+              className="menu-item danger"
+              onClick={() => {
+                deleteOne.invoke({ id: archivedTodo.id });
+                setMenuOpen(false);
+              }}
             >
-              Delete
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
-      </Group>
-    </Box>
+              <IconTrash size="0.875rem" /> Delete
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };

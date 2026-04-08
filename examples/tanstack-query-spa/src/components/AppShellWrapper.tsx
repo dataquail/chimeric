@@ -1,90 +1,63 @@
-import { AppShell, Avatar, Box, Burger, NavLink, Flex } from '@mantine/core';
-import { useDisclosure, useViewportSize } from '@mantine/hooks';
-import { IconArchive, IconHome2, IconPencilBolt } from '@tabler/icons-react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { IconHome, IconArchive, IconPencil } from './icons';
 
 type Props = {
   children: React.ReactNode;
 };
 
 export const AppShellWrapper = ({ children }: Props) => {
-  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
-  const { width } = useViewportSize();
+  const [mobileOpened, setMobileOpened] = useState(false);
+  const location = useLocation();
+
+  const isActive = (path: string) => {
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.startsWith(path);
+  };
 
   return (
-    <AppShell
-      header={{ height: 60 }}
-      navbar={{
-        width: 300,
-        breakpoint: 'sm',
-        collapsed: { mobile: !mobileOpened },
-      }}
-      padding="md"
-    >
-      <AppShell.Header>
-        <Flex
-          direction="row"
-          align="center"
-          gap="md"
-          justify="space-between"
-          pl="sm"
-          pr="sm"
+    <div className="app-layout">
+      <header className="app-header">
+        <div className="avatar">
+          <IconPencil size="1.25rem" />
+        </div>
+        <button
+          type="button"
+          className={`burger-btn ${mobileOpened ? 'open' : ''}`}
+          onClick={() => setMobileOpened((o) => !o)}
+          aria-label="Toggle navigation"
         >
-          <Flex align="center" h="60px">
-            <Avatar color="blue" radius="xl">
-              <IconPencilBolt size="1.5rem" />
-            </Avatar>
-          </Flex>
-          <Burger
-            opened={mobileOpened}
-            onClick={toggleMobile}
-            hiddenFrom="sm"
-            size="sm"
-          />
-        </Flex>
-      </AppShell.Header>
+          <span />
+          <span />
+          <span />
+        </button>
+      </header>
 
-      <AppShell.Navbar p="md">
-        <>
-          <NavLink
-            to="/"
-            label="Active Todos"
-            active={window.location.pathname === '/tanstack-query-spa/'}
-            leftSection={<IconHome2 size="1rem" stroke={1.5} />}
-            component={Link}
-          />
-          <NavLink
-            to="/archived"
-            label="Archived Todos"
-            active={
-              window.location.pathname === '/tanstack-query-spa/archived'
-            }
-            leftSection={<IconArchive size="1rem" stroke={1.5} />}
-            component={Link}
-          />
-          <NavLink
-            to="/review"
-            label="Review Todos"
-            active={window.location.pathname === '/tanstack-query-spa/review'}
-            leftSection={<IconPencilBolt size="1rem" stroke={1.5} />}
-            component={Link}
-          />
-        </>
-      </AppShell.Navbar>
+      <nav className={`app-nav ${mobileOpened ? 'open' : ''}`}>
+        <Link
+          to="/"
+          className={`nav-link ${isActive('/') ? 'active' : ''}`}
+          onClick={() => setMobileOpened(false)}
+        >
+          <IconHome /> Active Todos
+        </Link>
+        <Link
+          to="/archived"
+          className={`nav-link ${isActive('/archived') ? 'active' : ''}`}
+          onClick={() => setMobileOpened(false)}
+        >
+          <IconArchive /> Archived Todos
+        </Link>
+        <Link
+          to="/review"
+          className={`nav-link ${isActive('/review') ? 'active' : ''}`}
+          onClick={() => setMobileOpened(false)}
+        >
+          <IconPencil /> Review Todos
+        </Link>
+      </nav>
 
-      <AppShell.Main>
-        <>
-          <Box visibleFrom="sm" w={`calc(${width}px - 350px)`}>
-            {children}
-          </Box>
-          <Box
-            hiddenFrom="sm"
-            w={mobileOpened ? `300px` : `calc(${width}px - 50px)`}
-          >
-            {children}
-          </Box>
-        </>
-      </AppShell.Main>
-    </AppShell>
+      <main className="app-main">{children}</main>
+    </div>
   );
 };

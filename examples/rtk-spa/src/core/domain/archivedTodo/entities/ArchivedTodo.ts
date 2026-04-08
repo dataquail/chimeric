@@ -1,4 +1,3 @@
-import { parseISO } from 'date-fns';
 import { ArchivedTodoDto } from 'src/core/domain/archivedTodo/dtos/out/ArchivedTodoDto';
 
 export type ArchivedTodo = {
@@ -13,6 +12,6 @@ export const mapArchivedTodoDtoToArchivedTodo = (
 ): ArchivedTodo => ({
   id: archivedTodoDto.id,
   title: archivedTodoDto.title,
-  completedAt: parseISO(archivedTodoDto.completed_at),
-  archivedAt: parseISO(archivedTodoDto.archived_at),
+  completedAt: new Date(archivedTodoDto.completed_at),
+  archivedAt: new Date(archivedTodoDto.archived_at),
 });
