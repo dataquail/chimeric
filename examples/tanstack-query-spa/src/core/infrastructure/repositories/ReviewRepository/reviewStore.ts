@@ -1,16 +1,15 @@
-import 'immer';
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
 import { Review } from 'src/core/domain/review/entities/Review';
-import { revertAll } from 'src/lib/features/revertAll';
+import { create } from 'zustand';
 
 export type ReviewRecord = {
   createdAt: string;
   todoIdList: string[];
 };
 
-const initialState: { record: ReviewRecord | undefined } = {
-  record: undefined,
+export type ReviewStore = {
+  record: ReviewRecord | undefined;
+  save: (review: Review) => void;
+  delete: () => void;
 };
 
 const toRecord = (review: Review): ReviewRecord => ({
@@ -18,19 +17,8 @@ const toRecord = (review: Review): ReviewRecord => ({
   todoIdList: review.todoIdList,
 });
 
-export const reviewSlice = createSlice({
-  name: 'review',
-  initialState,
-  reducers: {
-    saveReview: (state, action: PayloadAction<Review>) => {
-      state.record = toRecord(action.payload);
-    },
-    deleteReview: (state) => {
-      state.record = undefined;
-    },
-  },
-  extraReducers: (builder) => builder.addCase(revertAll, () => initialState),
-});
-
-export const { saveReview, deleteReview } = reviewSlice.actions;
-export const reviewReducer = reviewSlice.reducer;
+export const useReviewStore = create<ReviewStore>((set) => ({
+  record: undefined,
+  save: (review: Review) => set({ record: toRecord(review) }),
+  delete: () => set({ record: undefined }),
+}));

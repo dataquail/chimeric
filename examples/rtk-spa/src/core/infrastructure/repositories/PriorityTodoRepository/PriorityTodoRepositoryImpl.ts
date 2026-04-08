@@ -4,15 +4,12 @@ import {
 } from 'src/core/domain/priorityTodo/ports/IPriorityTodoRepository';
 import {
   PriorityTodoRecord,
-  PriorityTodoStore,
-  usePriorityTodoStore,
+  savePriorityTodo,
+  saveManyPriorityTodos,
+  deletePriorityTodo,
 } from './priorityTodoStore';
-import { CreateChimericSyncFactory } from '@chimeric/react';
-
-const ChimericSyncFactory = CreateChimericSyncFactory<PriorityTodoStore>({
-  getState: () => usePriorityTodoStore.getState(),
-  useSelector: usePriorityTodoStore,
-});
+import { ChimericSyncFactory } from 'src/utils/domain/ChimericSyncFactory';
+import { appStore } from 'src/core/global/appStore';
 
 const toDomain = (record: PriorityTodoRecord): PriorityTodo => ({
   id: record.id,
@@ -21,16 +18,17 @@ const toDomain = (record: PriorityTodoRecord): PriorityTodo => ({
 
 export const createPriorityTodoRepository = (): IPriorityTodoRepository => ({
   getOneById: ChimericSyncFactory({
-    selector: (args: { id: string }) => (state) => state.dict[args.id],
+    selector: (args: { id: string }) => (state) =>
+      state.todo.priorityTodo.dict[args.id],
     reducer: (record) => (record ? toDomain(record) : undefined),
   }),
   save: (priorityTodo: PriorityTodo) => {
-    usePriorityTodoStore.getState().save(priorityTodo);
+    appStore.dispatch(savePriorityTodo(priorityTodo));
   },
   saveMany: (priorityTodos: PriorityTodo[]) => {
-    usePriorityTodoStore.getState().saveMany(priorityTodos);
+    appStore.dispatch(saveManyPriorityTodos(priorityTodos));
   },
   delete: (args: { id: string }) => {
-    usePriorityTodoStore.getState().deletePriorityTodo(args);
+    appStore.dispatch(deletePriorityTodo(args));
   },
 });

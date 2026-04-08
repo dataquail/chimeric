@@ -1,9 +1,9 @@
 import 'src/core/global/registerEventHandlers';
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
-import { revertAll } from 'src/lib/features/revertAll';
-import { appStore } from 'src/core/global/appStore';
 import { queryClient } from 'src/core/global/queryClient';
+import { usePriorityTodoStore } from 'src/core/infrastructure/repositories/PriorityTodoRepository/priorityTodoStore';
+import { useReviewStore } from 'src/core/infrastructure/repositories/ReviewRepository/reviewStore';
 
 const { getComputedStyle } = window;
 window.getComputedStyle = (elt) => getComputedStyle(elt);
@@ -35,5 +35,6 @@ window.HTMLElement.prototype.scrollTo = vi.fn().mockReturnValue({ x: 0, y: 0 });
 
 beforeEach(() => {
   queryClient.clear();
-  appStore.dispatch(revertAll());
+  usePriorityTodoStore.setState({ dict: {} });
+  useReviewStore.setState({ record: undefined });
 });

@@ -1,6 +1,5 @@
 import { cache } from 'react';
 // Globals
-import { AppStoreProviderImpl } from '@/core/global/appStoreProvider/AppStoreProviderImpl';
 import { QueryClientProviderImpl } from '@/core/global/queryClientProvider/QueryClientProviderImpl';
 import { ApplicationEventEmitterImpl } from '@/core/global/ApplicationEventEmitter/ApplicationEventEmitterImpl';
 // Services
@@ -23,14 +22,13 @@ import { deserializeActiveTodoEvents } from '@/core/domain/activeTodo/events/des
 
 function createContainer() {
   // 1. Singletons (within this container instance)
-  const appStoreProvider = new AppStoreProviderImpl();
   const queryClientProvider = new QueryClientProviderImpl();
   const applicationEventEmitter = new ApplicationEventEmitterImpl([
     deserializeActiveTodoEvents,
   ]);
 
   // 2. Repositories
-  const reviewRepository = createReviewRepository(appStoreProvider);
+  const reviewRepository = createReviewRepository();
   const priorityTodoRepository = createPriorityTodoRepository();
 
   // 3. Services
@@ -74,7 +72,6 @@ function createContainer() {
   );
 
   return {
-    appStoreProvider,
     queryClientProvider,
     applicationEventEmitter,
     activeTodoService,
@@ -90,7 +87,7 @@ function createContainer() {
 }
 
 // Server: per-request singleton via React cache()
-// Each request gets its own container with ephemeral QueryClient and Redux store,
+// Each request gets its own container with ephemeral QueryClient,
 // preventing cross-user session leakage.
 const getServerContainer = cache(createContainer);
 

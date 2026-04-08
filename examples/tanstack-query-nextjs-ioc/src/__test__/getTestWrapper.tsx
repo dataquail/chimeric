@@ -1,6 +1,5 @@
 import { ReactNode, JSX } from 'react';
 import { getThemeWrapper } from '@/__test__/getThemeWrapper';
-import { ReduxTestWrapper } from './ReduxTestWrapper';
 import { ReactQueryTestWrapper } from './ReactQueryTestWrapper';
 
 export const getTestWrapper = (): (({
@@ -11,10 +10,8 @@ export const getTestWrapper = (): (({
   const { ThemeWrapper } = getThemeWrapper();
 
   return ({ children }: { children: ReactNode }) => (
-    <ReduxTestWrapper>
-      <ThemeWrapper>
-        <ReactQueryTestWrapper>{children}</ReactQueryTestWrapper>
-      </ThemeWrapper>
-    </ReduxTestWrapper>
+    <ThemeWrapper>
+      <ReactQueryTestWrapper>{children}</ReactQueryTestWrapper>
+    </ThemeWrapper>
   );
 };
