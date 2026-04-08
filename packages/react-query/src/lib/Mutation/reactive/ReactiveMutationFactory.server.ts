@@ -1,3 +1,4 @@
+import { type MutationFunctionContext } from '@tanstack/react-query';
 import { type ReactiveMutation } from './types';
 import { TanstackMutationReactiveNativeOptions } from './types';
 import { throwReactiveServerError } from '../../serverErrors';
@@ -9,7 +10,10 @@ export function ReactiveMutationFactory<
   TError extends Error = Error,
 >(
   config: {
-    mutationFn: (params: TParams) => Promise<TResult>;
+    mutationFn: (
+      params: TParams,
+      context?: MutationFunctionContext,
+    ) => Promise<TResult>;
   } & TanstackMutationReactiveNativeOptions<TParams, TResult, TError>,
 ): ReactiveMutation<TParams, TResult, TError>;
 
@@ -20,7 +24,10 @@ export function ReactiveMutationFactory<
   TError extends Error = Error,
 >(
   config: {
-    mutationFn: (params?: TParams) => Promise<TResult>;
+    mutationFn: (
+      params?: TParams,
+      context?: MutationFunctionContext,
+    ) => Promise<TResult>;
   } & TanstackMutationReactiveNativeOptions<
     TParams | undefined,
     TResult,
@@ -34,7 +41,7 @@ export function ReactiveMutationFactory<
   TError extends Error = Error,
 >(
   config: {
-    mutationFn: () => Promise<TResult>;
+    mutationFn: (context?: MutationFunctionContext) => Promise<TResult>;
   } & TanstackMutationReactiveNativeOptions<void, TResult, TError>,
 ): ReactiveMutation<void, TResult, TError>;
 

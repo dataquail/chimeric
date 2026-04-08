@@ -6,6 +6,10 @@ import { ReactiveMutationFactory } from './ReactiveMutationFactory';
 import { MutationTestFixtures } from '../__tests__/mutationFixtures';
 
 describe('ReactiveMutationFactory', () => {
+  const expectedContext = expect.objectContaining({
+    client: expect.any(QueryClient),
+  });
+
   // USAGE
   it('USAGE: no params', async () => {
     const { mutationFn } = MutationTestFixtures.withoutParams.getReactive();
@@ -46,7 +50,10 @@ describe('ReactiveMutationFactory', () => {
     });
 
     expect(result.current.data).toBe('Hello John');
-    expect(mutationFn).toHaveBeenCalledWith({ name: 'John' });
+    expect(mutationFn).toHaveBeenCalledWith(
+      { name: 'John' },
+      expectedContext,
+    );
   });
 
   it('USAGE: with optional params', async () => {
@@ -68,7 +75,7 @@ describe('ReactiveMutationFactory', () => {
     });
 
     expect(result.current.data).toBe('Hello');
-    expect(mutationFn).toHaveBeenCalledWith(undefined);
+    expect(mutationFn).toHaveBeenCalledWith(undefined, expectedContext);
 
     await act(async () => result.current.invoke({ name: 'Jane' }));
 
@@ -77,7 +84,10 @@ describe('ReactiveMutationFactory', () => {
     });
 
     expect(result.current.data).toBe('Hello Jane');
-    expect(mutationFn).toHaveBeenCalledWith({ name: 'Jane' });
+    expect(mutationFn).toHaveBeenCalledWith(
+      { name: 'Jane' },
+      expectedContext,
+    );
   });
 
   // TYPE ERRORS

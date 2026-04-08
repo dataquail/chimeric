@@ -1,5 +1,6 @@
 import {
   MutateOptions,
+  type MutationFunctionContext,
   useMutation,
   UseMutationResult,
 } from '@tanstack/react-query';
@@ -21,7 +22,10 @@ export function ReactiveMutationFactory<
   TError extends Error = Error,
 >(
   config: {
-    mutationFn: (params: TParams) => Promise<TResult>;
+    mutationFn: (
+      params: TParams,
+      context?: MutationFunctionContext,
+    ) => Promise<TResult>;
   } & TanstackMutationReactiveNativeOptions<TParams, TResult, TError>,
 ): ReactiveMutation<TParams, TResult, TError>;
 
@@ -32,7 +36,10 @@ export function ReactiveMutationFactory<
   TError extends Error = Error,
 >(
   config: {
-    mutationFn: (params?: TParams) => Promise<TResult>;
+    mutationFn: (
+      params?: TParams,
+      context?: MutationFunctionContext,
+    ) => Promise<TResult>;
   } & TanstackMutationReactiveNativeOptions<
     TParams | undefined,
     TResult,
@@ -46,7 +53,7 @@ export function ReactiveMutationFactory<
   TError extends Error = Error,
 >(
   config: {
-    mutationFn: () => Promise<TResult>;
+    mutationFn: (context?: MutationFunctionContext) => Promise<TResult>;
   } & TanstackMutationReactiveNativeOptions<void, TResult, TError>,
 ): ReactiveMutation<void, TResult, TError>;
 
@@ -57,14 +64,17 @@ export function ReactiveMutationFactory<
   TError extends Error = Error,
 >(
   config: {
-    mutationFn: (params: TParams) => Promise<TResult>;
+    mutationFn: (
+      params: TParams,
+      context?: MutationFunctionContext,
+    ) => Promise<TResult>;
   } & TanstackMutationReactiveNativeOptions<TParams, TResult, TError>,
 ): ReactiveMutation<TParams, TResult, TError> {
   const { mutationFn, ...initialDefaultNativeOptions } = config;
   validateMaxArgLength({
     fn: mutationFn,
     fnName: 'mutationFn',
-    maximumLength: 1,
+    maximumLength: 2,
   });
   const mutationCandidate = (
     allInitialOptions: Parameters<
