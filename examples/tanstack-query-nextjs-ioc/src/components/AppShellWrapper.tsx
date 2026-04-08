@@ -1,92 +1,65 @@
 'use client';
 
-import { AppShell, Avatar, Box, Burger, NavLink, Flex } from '@mantine/core';
-import { useDisclosure, useViewportSize } from '@mantine/hooks';
-import { IconArchive, IconHome2, IconPencilBolt } from '@tabler/icons-react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { IconHome, IconArchive, IconPencil } from './icons';
 
 type Props = {
   children: React.ReactNode;
 };
 
 export const AppShellWrapper = ({ children }: Props) => {
-  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
-  const { width } = useViewportSize();
+  const [mobileOpened, setMobileOpened] = useState(false);
   const pathname = usePathname();
 
+  const isActive = (path: string) => {
+    return pathname === path;
+  };
+
   return (
-    <AppShell
-      header={{ height: 60 }}
-      navbar={{
-        width: 300,
-        breakpoint: 'sm',
-        collapsed: { mobile: !mobileOpened },
-      }}
-      padding="md"
-    >
-      <AppShell.Header>
-        <Flex
-          direction="row"
-          align="center"
-          gap="md"
-          justify="space-between"
-          pl="sm"
-          pr="sm"
+    <div className="app-layout">
+      <header className="app-header">
+        <div className="avatar">
+          <IconPencil size="1.25rem" />
+        </div>
+        <button
+          type="button"
+          className={`burger-btn ${mobileOpened ? 'open' : ''}`}
+          onClick={() => setMobileOpened((o) => !o)}
+          aria-label="Toggle navigation"
         >
-          <Flex align="center" h="60px">
-            <Avatar color="blue" radius="xl">
-              <IconPencilBolt size="1.5rem" />
-            </Avatar>
-          </Flex>
-          <Burger
-            opened={mobileOpened}
-            onClick={toggleMobile}
-            hiddenFrom="sm"
-            size="sm"
-          />
-        </Flex>
-      </AppShell.Header>
+          <span />
+          <span />
+          <span />
+        </button>
+      </header>
 
-      <AppShell.Navbar p="md">
-        <>
-          <NavLink
-            href="/active-todo"
-            label="Active Todos"
-            active={pathname === '/active-todo'}
-            leftSection={<IconHome2 size="1rem" stroke={1.5} />}
-            component={Link}
-          />
-          <NavLink
-            href="/archived"
-            label="Archived Todos"
-            active={pathname === '/archived'}
-            leftSection={<IconArchive size="1rem" stroke={1.5} />}
-            component={Link}
-          />
-          <NavLink
-            href="/review"
-            label="Review Todos"
-            active={pathname === '/review'}
-            leftSection={<IconPencilBolt size="1rem" stroke={1.5} />}
-            component={Link}
-          />
-        </>
-      </AppShell.Navbar>
+      <nav className={`app-nav ${mobileOpened ? 'open' : ''}`}>
+        <Link
+          href="/active-todo"
+          className={`nav-link ${isActive('/active-todo') ? 'active' : ''}`}
+          onClick={() => setMobileOpened(false)}
+        >
+          <IconHome /> Active Todos
+        </Link>
+        <Link
+          href="/archived"
+          className={`nav-link ${isActive('/archived') ? 'active' : ''}`}
+          onClick={() => setMobileOpened(false)}
+        >
+          <IconArchive /> Archived Todos
+        </Link>
+        <Link
+          href="/review"
+          className={`nav-link ${isActive('/review') ? 'active' : ''}`}
+          onClick={() => setMobileOpened(false)}
+        >
+          <IconPencil /> Review Todos
+        </Link>
+      </nav>
 
-      <AppShell.Main>
-        <>
-          <Box visibleFrom="sm" w={`calc(${width}px - 350px)`}>
-            {children}
-          </Box>
-          <Box
-            hiddenFrom="sm"
-            w={mobileOpened ? `300px` : `calc(${width}px - 50px)`}
-          >
-            {children}
-          </Box>
-        </>
-      </AppShell.Main>
-    </AppShell>
+      <main className="app-main">{children}</main>
+    </div>
   );
 };

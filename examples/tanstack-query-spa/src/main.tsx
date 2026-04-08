@@ -1,5 +1,4 @@
 import 'src/core/global/registerEventHandlers';
-import '@mantine/core/styles.css';
 import './styles.css';
 import { StrictMode } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';

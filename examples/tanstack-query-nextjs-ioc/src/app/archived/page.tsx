@@ -1,7 +1,6 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Suspense } from 'react';
 import { getContainer } from '@/core/global/container';
-import { Title, Flex, Space, Loader } from '@mantine/core';
 import { AppShellWrapper } from '@/components/AppShellWrapper';
 import { ArchivedTodoList } from './ArchivedTodoList';
 
@@ -14,21 +13,19 @@ export default async function ArchivedPage() {
   return (
     <HydrationBoundary state={dehydrate(container.queryClientProvider.get())}>
       <AppShellWrapper>
-        <>
-          <Flex justify="flex-start" align="center" direction="row" h="60px">
-            <Title order={1}>Archived Todo List</Title>
-          </Flex>
-          <Space h="lg" />
-          <Suspense
-            fallback={
-              <Flex justify="center" align="center" w="100%" h="100%">
-                <Loader />
-              </Flex>
-            }
-          >
-            <ArchivedTodoList />
-          </Suspense>
-        </>
+        <div className="page-header">
+          <h1>Archived Todo List</h1>
+        </div>
+        <div className="spacer-lg" />
+        <Suspense
+          fallback={
+            <div className="loader-container">
+              <div className="loader" />
+            </div>
+          }
+        >
+          <ArchivedTodoList />
+        </Suspense>
       </AppShellWrapper>
     </HydrationBoundary>
   );

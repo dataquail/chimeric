@@ -1,5 +1,3 @@
-import { Button, Flex, Loader, ScrollArea } from '@mantine/core';
-import { useViewportSize } from '@mantine/hooks';
 import { archivedTodoService } from 'src/core/infrastructure/services/ArchivedTodoService';
 import { ArchivedTodoCard } from './ArchivedTodoCard';
 import { mapArchivedTodoDtoToArchivedTodo } from 'src/core/domain/archivedTodo/entities/ArchivedTodo';
@@ -7,13 +5,12 @@ import { mapArchivedTodoDtoToArchivedTodo } from 'src/core/domain/archivedTodo/e
 export const ArchivedTodoList = () => {
   const { data, isPending, hasNextPage, isFetchingNextPage, fetchNextPage } =
     archivedTodoService.getAll.useHook();
-  const { height } = useViewportSize();
 
   if (isPending) {
     return (
-      <Flex justify="center" align="center" w="100%" h="100%">
-        <Loader />
-      </Flex>
+      <div className="loader-container">
+        <div className="loader" />
+      </div>
     );
   }
 
@@ -23,7 +20,7 @@ export const ArchivedTodoList = () => {
     ) ?? [];
 
   return (
-    <ScrollArea.Autosize mah={`calc(${height}px - 172px`}>
+    <div className="scroll-area">
       {archivedTodos.map((archivedTodo) => (
         <ArchivedTodoCard
           key={archivedTodo.id}
@@ -31,16 +28,21 @@ export const ArchivedTodoList = () => {
         />
       ))}
       {hasNextPage && (
-        <Flex justify="center" p="md">
-          <Button
+        <div className="flex-center">
+          <button
+            type="button"
+            className="btn btn-light"
             onClick={() => fetchNextPage()}
-            loading={isFetchingNextPage}
-            variant="light"
+            disabled={isFetchingNextPage}
           >
-            {isFetchingNextPage ? <Loader size="sm" /> : 'Load More'}
-          </Button>
-        </Flex>
+            {isFetchingNextPage ? (
+              <span className="loader loader-sm" />
+            ) : (
+              'Load More'
+            )}
+          </button>
+        </div>
       )}
-    </ScrollArea.Autosize>
+    </div>
   );
 };

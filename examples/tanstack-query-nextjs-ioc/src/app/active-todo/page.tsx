@@ -1,7 +1,6 @@
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { Suspense } from 'react';
 import { getContainer } from '@/core/global/container';
-import { Title, Flex, Space, Loader } from '@mantine/core';
 import { AppShellWrapper } from '@/components/AppShellWrapper';
 import { ActiveTodoList } from './ActiveTodoList';
 import { AddNewActiveTodoForm } from './AddNewActiveTodoForm';
@@ -19,22 +18,20 @@ export default async function ActiveTodoPage() {
         events={container.applicationEventEmitter.getDeferredEvents()}
       />
       <AppShellWrapper>
-        <>
-          <Flex justify="space-between" align="center" direction="row" h="60px">
-            <Title order={1}>Active Todo List</Title>
-            <AddNewActiveTodoForm />
-          </Flex>
-          <Space h="lg" />
-          <Suspense
-            fallback={
-              <Flex justify="center" align="center" w="100%" h="100%">
-                <Loader />
-              </Flex>
-            }
-          >
-            <ActiveTodoList />
-          </Suspense>
-        </>
+        <div className="page-header">
+          <h1>Active Todo List</h1>
+          <AddNewActiveTodoForm />
+        </div>
+        <div className="spacer-lg" />
+        <Suspense
+          fallback={
+            <div className="loader-container">
+              <div className="loader" />
+            </div>
+          }
+        >
+          <ActiveTodoList />
+        </Suspense>
       </AppShellWrapper>
     </HydrationBoundary>
   );
