@@ -47,7 +47,7 @@ export function ReactiveMutationFactory<
 
 // Implementation
 export function ReactiveMutationFactory(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   _config: { mutationFn: unknown },
 ): never {
   throwReactiveServerError('ReactiveMutationFactory');

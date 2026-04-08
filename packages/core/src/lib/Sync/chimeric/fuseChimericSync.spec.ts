@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { SyncTestFixtures } from '../__tests__/syncFixtures';
 import { fuseChimericSync } from './fuseChimericSync';
 

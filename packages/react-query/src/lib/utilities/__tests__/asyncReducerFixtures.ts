@@ -63,7 +63,7 @@ export const AsyncReducerTestFixtures = {
     },
     withParams: {
       getIdiomatic: () => {
-        const fn = vi.fn((params: { value: string }, _options?: any) => `sync-${params?.value ?? 'undefined'}`);
+        const fn = vi.fn((params: { value: string }, _options?: Record<string, unknown>) => `sync-${params?.value ?? 'undefined'}`);
         return {
           fn,
           idiomaticSync: createIdiomaticSync(fn),
@@ -71,7 +71,7 @@ export const AsyncReducerTestFixtures = {
         };
       },
       getReactive: () => {
-        const fn = vi.fn((params: { value: string }, _options?: any) => `sync-${params?.value ?? 'undefined'}`);
+        const fn = vi.fn((params: { value: string }, _options?: Record<string, unknown>) => `sync-${params?.value ?? 'undefined'}`);
         const reactiveSync = createReactiveSync(fn);
         return {
           fn,

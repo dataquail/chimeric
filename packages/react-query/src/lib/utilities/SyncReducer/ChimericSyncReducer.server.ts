@@ -12,7 +12,7 @@ type ExtractServiceResult<TConfig> = TConfig extends {
   ? TResult
   : never;
 
-type ExtractResults<T extends readonly any[]> = {
+type ExtractResults<T extends readonly unknown[]> = {
   [K in keyof T]: ExtractServiceResult<T[K]>;
 };
 
@@ -25,7 +25,7 @@ type InferService<TConfig, TServiceParams> = TConfig extends {
     }
   : never;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export const ChimericSyncReducer = <TServiceParams = void>() => ({
   build: <
     TConfigList extends
@@ -115,7 +115,9 @@ export const ChimericSyncReducer = <TServiceParams = void>() => ({
   }): ChimericSync<TServiceParams, TServiceResult> => {
     return fuseChimericSync({
       idiomatic: IdiomaticSyncReducer<TServiceParams>().build({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         serviceList: serviceList as any,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         reducer: reducer as any,
       }),
       reactive: (() => {

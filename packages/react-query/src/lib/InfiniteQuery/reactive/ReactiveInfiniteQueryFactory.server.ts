@@ -74,7 +74,7 @@ export function ReactiveInfiniteQueryFactory<
 
 // Implementation
 export function ReactiveInfiniteQueryFactory(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   _config: { getInfiniteQueryOptions: unknown },
 ): never {
   throwReactiveServerError('ReactiveInfiniteQueryFactory');

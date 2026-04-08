@@ -124,8 +124,8 @@ export function createReactiveInfiniteQuery<
   TNativeReturnType = unknown,
   TNativePrefetchOptions = unknown,
 >(
-  reactiveFn: any,
-  usePrefetchHookFn: any,
+  reactiveFn: unknown,
+  usePrefetchHookFn: unknown,
 ): ReactiveInfiniteQuery<
   TParams,
   TPageData,

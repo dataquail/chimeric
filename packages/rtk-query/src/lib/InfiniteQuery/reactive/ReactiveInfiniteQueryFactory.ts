@@ -18,11 +18,11 @@ import { wrapRtkError } from '../../utilities/wrapRtkError';
 import { isChimericAllOptions } from '../../utilities/isChimericAllOptions';
 import { ReactiveInfiniteQuery } from './types';
 
+/* eslint-disable @typescript-eslint/no-explicit-any -- RTK Query types require `any` for generic constraints and hook signatures */
 type InfiniteQueryEndpointWithHooks = {
   useInfiniteQuery: (arg: any, options?: any) => any;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ApiWithUsePrefetch = { usePrefetch: (...args: any[]) => any };
 
 export function ReactiveInfiniteQueryFactory<

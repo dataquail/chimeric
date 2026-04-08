@@ -43,7 +43,9 @@ export function fuseChimericQuery<
   TError extends Error = Error,
   TQueryKey extends QueryKey = QueryKey,
 >(args: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   idiomatic: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   reactive: any;
 }): ChimericQuery<TParams, TResult, TError, TQueryKey> {
   const chimeric = coreFuseChimericQuery(args) as ChimericQuery<
@@ -54,7 +56,7 @@ export function fuseChimericQuery<
   >;
 
   if (args.reactive.useSuspenseHook) {
-    (chimeric as any).useSuspenseHook = args.reactive.useSuspenseHook;
+    Object.assign(chimeric, { useSuspenseHook: args.reactive.useSuspenseHook });
   }
 
   return chimeric;

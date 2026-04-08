@@ -77,7 +77,7 @@ export function createIdiomaticQuery<
   ) => Promise<void>,
 ): IdiomaticQuery<TParams, TResult, TNativeOptions> {
   if (isEligibleIdiomatic(idiomaticFn)) {
-    (idiomaticFn as any).prefetch = prefetchFn;
+    Object.assign(idiomaticFn, { prefetch: prefetchFn });
     return markIdiomatic(
       idiomaticFn,
       TYPE_MARKERS.IDIOMATIC_QUERY,

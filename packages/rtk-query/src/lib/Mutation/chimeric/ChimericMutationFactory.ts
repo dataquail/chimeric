@@ -11,6 +11,7 @@ import { IdiomaticMutationFactory } from '../idiomatic/IdiomaticMutationFactory'
 import { ReactiveMutationFactory } from '../reactive/ReactiveMutationFactory';
 import { type ChimericMutation } from './types';
 
+/* eslint-disable @typescript-eslint/no-explicit-any -- RTK Query types require `any` for generic constraints and hook signatures */
 type MutationEndpointWithHooks = {
   useMutation: (options?: any) => readonly [any, any];
 };

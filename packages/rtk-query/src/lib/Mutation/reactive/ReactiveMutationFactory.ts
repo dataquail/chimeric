@@ -12,6 +12,7 @@ import {
   RtkMutationReactiveNativeOptions,
 } from './types';
 
+/* eslint-disable @typescript-eslint/no-explicit-any -- RTK Query types require `any` for generic constraints and hook signatures */
 type MutationEndpointWithHooks = {
   useMutation: (options?: any) => readonly [any, any];
 };

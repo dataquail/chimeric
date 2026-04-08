@@ -93,7 +93,7 @@ export function createIdiomaticInfiniteQuery<
   ) => Promise<void>,
 ): IdiomaticInfiniteQuery<TParams, TPageData, TPageParam, TNativeOptions> {
   if (isEligibleIdiomatic(idiomaticFn)) {
-    (idiomaticFn as any).prefetch = prefetchFn;
+    Object.assign(idiomaticFn, { prefetch: prefetchFn });
     return markIdiomatic(
       idiomaticFn,
       TYPE_MARKERS.IDIOMATIC_INFINITE_QUERY,

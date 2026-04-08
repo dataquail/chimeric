@@ -92,6 +92,11 @@
     "test": {
       "dependsOn": ["^build"]
     },
+    "lint": {
+      "options": {
+        "command": "eslint . --max-warnings=0"
+      }
+    },
     "nx-release-publish": {
       "options": {
         "packageRoot": "{projectRoot}/dist"

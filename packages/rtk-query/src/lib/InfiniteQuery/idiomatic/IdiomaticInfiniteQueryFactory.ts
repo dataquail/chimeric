@@ -20,6 +20,7 @@ import {
   RtkInfiniteQueryIdiomaticNativeOptions,
 } from './types';
 
+/* eslint-disable @typescript-eslint/no-explicit-any -- RTK Query types require `any` for generic constraints and store dispatch */
 export function IdiomaticInfiniteQueryFactory<
   D extends InfiniteQueryDefinition<any, any, any, any, any>,
   Definitions extends EndpointDefinitions,

@@ -57,6 +57,7 @@ export function IdiomaticQueryFactory<
   getQueryOptions,
 }: {
   queryClient: QueryClient;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getQueryOptions: any;
 }): IdiomaticQuery<TParams, TResult, TError, TQueryKey> {
   validateMaxArgLength({

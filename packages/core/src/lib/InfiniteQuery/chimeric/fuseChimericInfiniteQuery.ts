@@ -128,8 +128,8 @@ export function fuseChimericInfiniteQuery<
   TNativeReactiveResult = unknown,
   TNativeReactivePrefetchOptions = unknown,
 >(args: {
-  idiomatic: any;
-  reactive: any;
+  idiomatic: unknown;
+  reactive: unknown;
 }): ChimericInfiniteQuery<
   TParams,
   TPageData,
@@ -154,8 +154,10 @@ export function fuseChimericInfiniteQuery<
       TNativeReactiveResult,
       TNativeReactivePrefetchOptions
     >;
-    (chimericFn.useHook as any) = args.reactive.useHook;
-    (chimericFn.usePrefetchHook as any) = args.reactive.usePrefetchHook;
+    Object.assign(chimericFn, {
+      useHook: args.reactive.useHook,
+      usePrefetchHook: args.reactive.usePrefetchHook,
+    });
     markReactive(chimericFn, TYPE_MARKERS.REACTIVE_INFINITE_QUERY);
     markIdiomatic(chimericFn, TYPE_MARKERS.IDIOMATIC_INFINITE_QUERY);
 

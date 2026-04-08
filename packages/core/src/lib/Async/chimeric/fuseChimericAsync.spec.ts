@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 import { fuseChimericAsync } from './fuseChimericAsync';
 import { AsyncTestFixtures } from '../__tests__/asyncFixtures';
 

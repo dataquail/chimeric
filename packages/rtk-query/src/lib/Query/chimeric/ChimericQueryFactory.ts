@@ -13,11 +13,11 @@ import { IdiomaticQueryFactory } from '../idiomatic/IdiomaticQueryFactory';
 import { ReactiveQueryFactory } from '../reactive/ReactiveQueryFactory';
 import { type ChimericQuery } from './types';
 
+/* eslint-disable @typescript-eslint/no-explicit-any -- RTK Query types require `any` for generic constraints and hook signatures */
 type QueryEndpointWithHooks = {
   useQuery: (arg: any, options?: any) => any;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ApiWithUsePrefetch = { usePrefetch: (...args: any[]) => any };
 
 export function ChimericQueryFactory<
