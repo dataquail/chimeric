@@ -15,6 +15,7 @@ import {
   ReactiveInfiniteQueryOptions,
 } from '@chimeric/core';
 import { wrapRtkError } from '../../utilities/wrapRtkError';
+import { isChimericAllOptions } from '../../utilities/isChimericAllOptions';
 import { ReactiveInfiniteQuery } from './types';
 
 type InfiniteQueryEndpointWithHooks = {
@@ -49,8 +50,9 @@ export function ReactiveInfiniteQueryFactory<
     ...args: unknown[]
   ) => {
     const [first, second] = args;
-    const params = first as InfiniteQueryArgFrom<D>;
-    const allOptions = second as
+    const firstIsOptions = second === undefined && isChimericAllOptions(first);
+    const params = firstIsOptions ? (undefined as InfiniteQueryArgFrom<D>) : (first as InfiniteQueryArgFrom<D>);
+    const allOptions = (firstIsOptions ? first : second) as
       | {
           options?: ReactiveInfiniteQueryOptions;
           nativeOptions?: SubscriptionOptions & Record<string, unknown>;
@@ -111,8 +113,9 @@ export function ReactiveInfiniteQueryFactory<
     ...args: unknown[]
   ) => {
     const [first, second] = args;
-    const params = first as InfiniteQueryArgFrom<D>;
-    const allOptions = second as
+    const firstIsOptions = second === undefined && isChimericAllOptions(first);
+    const params = firstIsOptions ? (undefined as InfiniteQueryArgFrom<D>) : (first as InfiniteQueryArgFrom<D>);
+    const allOptions = (firstIsOptions ? first : second) as
       | { nativeOptions?: PrefetchOptions }
       | undefined;
     const nativeOptions = allOptions?.nativeOptions;

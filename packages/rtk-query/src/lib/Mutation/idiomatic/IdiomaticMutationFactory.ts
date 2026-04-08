@@ -7,6 +7,7 @@ import type {
   ResultTypeFrom,
 } from '@reduxjs/toolkit/query';
 import { createIdiomaticMutation, IdiomaticMutationOptions } from '@chimeric/core';
+import { isChimericAllOptions } from '../../utilities/isChimericAllOptions';
 import {
   IdiomaticMutation,
   RtkMutationIdiomaticNativeOptions,
@@ -26,8 +27,9 @@ export function IdiomaticMutationFactory<
     ...args: unknown[]
   ) => {
     const [first, second] = args;
-    const params = first as QueryArgFrom<D>;
-    const allOptions = second as
+    const firstIsOptions = second === undefined && isChimericAllOptions(first);
+    const params = firstIsOptions ? (undefined as QueryArgFrom<D>) : (first as QueryArgFrom<D>);
+    const allOptions = (firstIsOptions ? first : second) as
       | {
           options?: IdiomaticMutationOptions;
           nativeOptions?: RtkMutationIdiomaticNativeOptions;

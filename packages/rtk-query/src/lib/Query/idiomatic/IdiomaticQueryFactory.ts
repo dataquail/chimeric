@@ -10,6 +10,7 @@ import type {
   StartQueryActionCreatorOptions,
 } from '@reduxjs/toolkit/query';
 import { createIdiomaticQuery, IdiomaticQueryOptions } from '@chimeric/core';
+import { isChimericAllOptions } from '../../utilities/isChimericAllOptions';
 import { IdiomaticQuery } from './types';
 
 type RtkStore = {
@@ -36,8 +37,9 @@ export function IdiomaticQueryFactory<
     ...args: unknown[]
   ) => {
     const [first, second] = args;
-    const params = first as QueryArgFrom<D>;
-    const allOptions = second as
+    const firstIsOptions = second === undefined && isChimericAllOptions(first);
+    const params = firstIsOptions ? (undefined as QueryArgFrom<D>) : (first as QueryArgFrom<D>);
+    const allOptions = (firstIsOptions ? first : second) as
       | {
           options?: IdiomaticQueryOptions;
           nativeOptions?: StartQueryActionCreatorOptions;
@@ -66,8 +68,9 @@ export function IdiomaticQueryFactory<
     ...args: unknown[]
   ) => {
     const [first, second] = args;
-    const params = first as QueryArgFrom<D>;
-    const allOptions = second as
+    const firstIsOptions = second === undefined && isChimericAllOptions(first);
+    const params = firstIsOptions ? (undefined as QueryArgFrom<D>) : (first as QueryArgFrom<D>);
+    const allOptions = (firstIsOptions ? first : second) as
       | { nativeOptions?: StartQueryActionCreatorOptions }
       | undefined;
     const nativeOptions = allOptions?.nativeOptions;
