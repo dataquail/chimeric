@@ -1,35 +1,24 @@
 # @chimeric/core
 
-The core types and utilities for the chimeric library - a React TypeScript library that provides unified patterns for synchronous, asynchronous, query, and mutation interfaces for idiomatic and reactive paradigms.
+Core types and utilities for the chimeric library — a TypeScript library that provides dual-interface patterns where every operation works both as a direct function call (idiomatic) and as a React hook (reactive).
 
 ## Installation
 
 ```bash
-# Using npm
 npm install @chimeric/core
-
-# Using yarn
-yarn add @chimeric/core
-
-# Using pnpm
-pnpm add @chimeric/core
 ```
 
 ## Core Concepts
 
-The chimeric library provides three main paradigms for handling operations:
+Chimeric provides three paradigms for every operation:
 
-- **Idiomatic**: Traditional function-based approach
-- **Reactive**: Hook-based approach with state management
-- **Chimeric**: Fusion of both idiomatic and reactive patterns
+- **Idiomatic**: Direct function calls for orchestration, scripts, tests, and server-side logic
+- **Reactive**: Hook-based interface (`.useHook()`) for use inside React components
+- **Chimeric**: Fusion of both — one object, two execution paths
 
-Each paradigm supports different operation types: `Sync`, `Async`, `EagerAsync`, `Query`, and `Mutation`.
+Each paradigm supports six operation types: `Sync`, `Async`, `EagerAsync`, `Query`, `Mutation`, and `InfiniteQuery`.
 
-## Core Types
-
-### Reactive<T, E>
-
-The foundational reactive state type used across all reactive operations:
+## Reactive Base Type
 
 ```typescript
 type Reactive<T, E extends Error> = {
@@ -44,221 +33,123 @@ type Reactive<T, E extends Error> = {
 
 ## Operation Types
 
-### 1. Sync Operations
+### Sync
 
-Synchronous operations that execute immediately and return results.
+Synchronous operations that execute immediately and return a result.
 
-#### Idiomatic Sync
+```tsx
+import { createIdiomaticSync, createReactiveSync, fuseChimericSync } from '@chimeric/core';
 
-```typescript
-import { createIdiomaticSync, IdiomaticSync } from '@chimeric/core';
-
-// Example usage
-const findNewUsers = createIdiomaticSync(() => {
-  return store.getState().users.filter((user) => user.isNew);
+const getNewUsers = fuseChimericSync({
+  idiomatic: createIdiomaticSync(() => {
+    return store.getState().users.filter((user) => user.isNew);
+  }),
+  reactive: createReactiveSync(() => {
+    return useSelector((state) => state.users.filter((user) => user.isNew));
+  }),
 });
 
-const result = findNewUsers(); // [{ isNew: true, name: 'Harry', id: 123 }]
+// Idiomatic
+const users = getNewUsers();
+
+// Reactive (in a React component)
+const users = getNewUsers.useHook();
 ```
 
-#### Reactive Sync
+### Async
+
+Asynchronous operations with manual invocation and loading states.
 
 ```tsx
-import { createReactiveSync, ReactiveSync } from '@chimeric/core';
+import { fuseChimericAsync } from '@chimeric/core';
 
-// Example usage
-const reactiveFindNewUsers = createReactiveSync(() => {
-  return useSelector((state) => state.users.filter((user) => user.isNew));
-});
+// Idiomatic
+const user = await fetchUser({ id: userId });
 
-// In a React component
-const MyComponent = () => {
-  const result = reactiveFindNewUsers.useSync();
-  return (
-    <div>
-      {result.map((newUser) => {
-        <div key={newUser.id}>{newUser.name}</div>;
-      })}
-    </div>
-  );
-};
+// Reactive (in a React component)
+const { invoke, data, isPending, isError, error } = fetchUser.useHook();
+
+const handleFetch = () => invoke({ id: userId });
 ```
 
-#### Chimeric Sync
+### EagerAsync
+
+Asynchronous operations that execute immediately when parameters change.
 
 ```tsx
-import { fuseChimericSync, ChimericSync } from '@chimeric/core';
-
-// Example usage
-const chimericFindNewUsers = fuseChimericSync(
-  createIdiomaticSync(
-    () => store.getState().users.filter((user) => user.isNew);,
-  ),
-  createReactiveSync(() => useSelector((state) => state.users.filter((user) => user.isNew))),
-);
-
-// Use idiomatically
-const result1 = chimericFindNewUsers();
-
-// Use reactively in component
-const MyComponent = () => {
-  const result2 = chimericFindNewUsers.useSync();
-  return (
-    <div>
-      {result2.map((newUser) => {
-        <div key={newUser.id}>{newUser.name}</div>;
-      })}
-    </div>
-  );
-};
+// Reactive — executes immediately on mount and when params change
+const { data, isPending, isError, error } = fetchUser.useHook({ id: userId });
 ```
 
-### 2. Async Operations
+### Query
 
-Asynchronous operations that return promises and provide loading states.
-
-#### Reactive Async
+Cached read operations. Requires an integration library (`@chimeric/react-query` or `@chimeric/rtk-query`).
 
 ```tsx
-// In a React component
-const UserProfile = ({ userId }: { userId: string }) => {
-  const { call, data, isPending, isError, error } = fetchUser.useAsync();
+// Idiomatic
+const user = await userQuery({ id: userId });
 
-  const handleFetch = () => call({ id: userId });
-
-  if (isPending) return <div>Loading...</div>;
-  if (isError) return <div>Error: {error?.message}</div>;
-
-  return (
-    <div>
-      {data ? (
-        <div>{data.name}</div>
-      ) : (
-        <button onClick={handleFetch}>Load User Profile</button>
-      )}
-    </div>
-  );
-};
+// Reactive (in a React component)
+const { data, isPending, isError, error, refetch } = userQuery.useHook({ id: userId });
 ```
 
-### 3. EagerAsync Operations
+### Mutation
 
-Asynchronous operations that execute immediately when called.
-
-#### Reactive EagerAsync
+Write operations. Requires an integration library.
 
 ```tsx
-// In a React component - executes immediately
-const UserProfile = ({ userId }: { userId: string }) => {
-  const { data, isPending, isError, error } = eagerFetchUser.useEagerAsync({
-    id: userId,
-  });
+// Idiomatic
+const result = await updateUser({ id: userId, name: 'New Name' });
 
-  if (isPending) return <div>Loading...</div>;
-  if (isError) return <div>Error: {error?.message}</div>;
+// Reactive (in a React component)
+const { invoke, isPending, isError, error, reset } = updateUser.useHook();
 
-  return <div>{data?.name}</div>;
-};
+const handleSubmit = () => invoke({ id: userId, name: 'New Name' });
 ```
 
-### 4. Query Operations
+### InfiniteQuery
 
-Query operations. Needs to be implemented via a query library like Tanstack Query.
-
-#### Chimeric Query
+Paginated read operations. Requires an integration library.
 
 ```tsx
-// Idiomatically
-const user = await userQuery();
+// Idiomatic
+const { pages, pageParams } = await archivedTodos();
 
-// In a React component
-const UserProfile = ({ userId }: { userId: string }) => {
-  const { data, isPending, isError, error, refetch } = userQuery.useQuery({
-    id: userId,
-  });
-
-  return (
-    <div>
-      {isPending && <div>Loading...</div>}
-      {isError && <div>Error: {error?.message}</div>}
-      {data && <div>{data.name}</div>}
-      <button onClick={() => refetch()}>Refresh</button>
-    </div>
-  );
-};
+// Reactive (in a React component)
+const { data, hasNextPage, fetchNextPage, isPending } = archivedTodos.useHook();
 ```
 
-### 5. Mutation Operations
+## Fusion Functions
 
-Mutation operations. Needs to be implemented via a mutation library like Tanstack Query.
+Combine idiomatic and reactive implementations into a chimeric object:
 
-#### Chimeric Mutation
+| Function | Operation Type |
+|----------|---------------|
+| `fuseChimericSync` | Synchronous |
+| `fuseChimericAsync` | Asynchronous (manual invoke) |
+| `fuseChimericEagerAsync` | Asynchronous (auto-execute) |
+| `fuseChimericQuery` | Cached queries |
+| `fuseChimericMutation` | Mutations |
+| `fuseChimericInfiniteQuery` | Paginated queries |
 
-```tsx
-// Idiomatically
-const result = await updateUser();
-
-// In a React component
-const EditUser = ({ user }: { user: User }) => {
-  const { call, isPending, isSuccess, isError, error, reset } =
-    updateUser.useMutation();
-
-  const handleSubmit = (formData: { name: string }) => {
-    call({ id: user.id, name: formData.name });
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input name="name" defaultValue={user.name} />
-      <button type="submit" disabled={isPending}>
-        {isPending ? 'Saving...' : 'Save'}
-      </button>
-      {isSuccess && <div>Saved successfully!</div>}
-      {isError && <div>Error: {error?.message}</div>}
-      <button type="button" onClick={reset}>
-        Reset
-      </button>
-    </form>
-  );
-};
-```
+All take a `{ idiomatic, reactive }` config object.
 
 ## Type Guards
 
-Each operation type includes type guard functions for runtime type checking:
+Runtime type checking for each operation type:
 
 ```typescript
-import {
-  isReactiveSync,
-  isReactiveAsync,
-  isReactiveQuery,
-  isReactiveMutation,
-  isChimericSync,
-} from '@chimeric/core';
+import { isChimericQuery, isReactiveSync, isIdiomaticAsync } from '@chimeric/core';
 
-// Example usage
-if (isReactiveSync(someObject)) {
-  // TypeScript now knows someObject is ReactiveSync
-  const result = someObject.useSync(params);
-}
-
-if (isChimericSync(someObject)) {
-  // Can be used both ways
-  const result1 = someObject(params); // Idiomatic
-  const result2 = someObject.useSync(params); // Reactive
+if (isChimericQuery(operation)) {
+  const result = await operation({ id: '123' });       // idiomatic
+  const { data } = operation.useHook({ id: '123' });   // reactive
 }
 ```
 
 ## Development
 
-### Building
-
 ```bash
-nx build core
-```
-
-### Running Tests
-
-```bash
-nx test core
+npx nx build @chimeric/core
+npx nx test @chimeric/core
 ```

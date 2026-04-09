@@ -1,0 +1,82 @@
+---
+title: Installation
+description: How to install Chimeric in your project.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Choose Your Integration
+
+Install the package that matches your data-fetching library. You do **not** need to install `@chimeric/core` separately — it is included as a dependency.
+
+### For Sync, Async, and EagerAsync only
+
+If you only need `ChimericSync`, `ChimericAsync`, or `ChimericEagerAsync` (no queries, mutations, or caching):
+
+<Tabs>
+  <TabItem label="npm">
+    ```bash
+    npm install @chimeric/react
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm add @chimeric/react
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```bash
+    yarn add @chimeric/react
+    ```
+  </TabItem>
+</Tabs>
+
+### TanStack React Query
+
+For queries, mutations, infinite queries, and reducers backed by TanStack Query:
+
+<Tabs>
+  <TabItem label="npm">
+    ```bash
+    npm install @chimeric/react-query @tanstack/react-query
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm add @chimeric/react-query @tanstack/react-query
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```bash
+    yarn add @chimeric/react-query @tanstack/react-query
+    ```
+  </TabItem>
+</Tabs>
+
+### RTK Query
+
+For queries, mutations, infinite queries, and reducers backed by Redux Toolkit Query:
+
+<Tabs>
+  <TabItem label="npm">
+    ```bash
+    npm install @chimeric/rtk-query @reduxjs/toolkit react-redux
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm add @chimeric/rtk-query @reduxjs/toolkit react-redux
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```bash
+    yarn add @chimeric/rtk-query @reduxjs/toolkit react-redux
+    ```
+  </TabItem>
+</Tabs>
+
+## Peer Dependencies
+
+- **@chimeric/react-query** requires `@tanstack/react-query` v5+
+- **@chimeric/rtk-query** requires `@reduxjs/toolkit` v2+ and `react-redux` v9+
+- All packages require React 18+

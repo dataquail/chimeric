@@ -52,12 +52,6 @@ export * from './lib/InfiniteQuery/chimeric/fuseChimericInfiniteQuery';
 export { ChimericInfiniteQueryFactory } from './lib/InfiniteQuery/chimeric/ChimericInfiniteQueryFactory.server';
 export { ReactiveInfiniteQueryFactory } from './lib/InfiniteQuery/reactive/ReactiveInfiniteQueryFactory.server';
 
-// SyncReducer - idiomatic (safe)
-export * from './lib/utilities/SyncReducer/IdiomaticSyncReducer';
-// SyncReducer - server replacements
-export { ChimericSyncReducer } from './lib/utilities/SyncReducer/ChimericSyncReducer.server';
-export { ReactiveSyncReducer } from './lib/utilities/SyncReducer/ReactiveSyncReducer.server';
-
 // AsyncReducer - idiomatic (safe)
 export * from './lib/utilities/AsyncReducer/IdiomaticAsyncReducer';
 // AsyncReducer - server replacements

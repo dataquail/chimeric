@@ -1,0 +1,74 @@
+---
+title: Suspense
+description: Using Chimeric with React Suspense.
+---
+
+## Overview
+
+Chimeric supports React Suspense via `.useSuspenseHook()` on Query and InfiniteQuery types. When using suspense, `data` is guaranteed to be defined (not `undefined`) and `isPending` is always `false`.
+
+**Suspense is currently only supported by `@chimeric/react-query`**, since TanStack Query provides native suspense integration. RTK Query does not support suspense at this time.
+
+## Query with Suspense
+
+```tsx
+import { Suspense } from 'react';
+
+function UserProfile({ userId }: { userId: string }) {
+  // data is guaranteed non-undefined — no loading state to handle
+  const { data } = getUser.useSuspenseHook({ id: userId });
+
+  return <div>{data.name}</div>;
+}
+
+function App() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <UserProfile userId="123" />
+    </Suspense>
+  );
+}
+```
+
+### Return value differences
+
+| Property | `useHook` | `useSuspenseHook` |
+|----------|-----------|-------------------|
+| `data` | `TResult \| undefined` | `TResult` (guaranteed) |
+| `isPending` | `boolean` | `false` (always) |
+| `error` | `TError \| null` | `null` (always — errors are thrown to error boundary) |
+
+## InfiniteQuery with Suspense
+
+```tsx
+function ArchivedTodoList() {
+  const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
+    getArchivedTodos.useSuspenseHook();
+
+  // data.pages is guaranteed to exist
+  return (
+    <div>
+      {data.pages.flat().map((todo) => (
+        <div key={todo.id}>{todo.title}</div>
+      ))}
+      {hasNextPage && (
+        <button onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
+          Load More
+        </button>
+      )}
+    </div>
+  );
+}
+```
+
+## Combining with Server-Side Prefetching
+
+Suspense works best when combined with server-side prefetching (see [Next.js guide](/chimeric/guides/nextjs/)). When data is already in the cache from a server prefetch, the suspense boundary doesn't actually suspend — the component renders immediately with cached data.
+
+```tsx
+// Server component
+await userService.getAll.prefetch();
+
+// Client component — renders immediately, no suspend
+const { data } = userService.getAll.useSuspenseHook();
+```

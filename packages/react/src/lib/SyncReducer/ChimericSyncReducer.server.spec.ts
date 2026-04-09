@@ -140,7 +140,7 @@ describe('ChimericSyncReducerServer', () => {
       });
 
       expect(() => TestChimericSyncReducer.useHook(0)).toThrow(
-        "@chimeric/react-query: useHook() cannot be called in a server component. Hooks are only available in client components marked with 'use client'.",
+        "@chimeric/react: useHook() cannot be called in a server component. Hooks are only available in client components marked with 'use client'.",
       );
     });
   });

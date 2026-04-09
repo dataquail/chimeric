@@ -1,0 +1,66 @@
+---
+title: QueryFactory
+description: Instantiating query factories with TanStack React Query.
+---
+
+For usage after instantiation, see [Query](/chimeric/api/query/).
+
+## ChimericQueryFactory
+
+Creates a `ChimericQuery` backed by TanStack Query's cache.
+
+```typescript
+import { ChimericQueryFactory } from '@chimeric/react-query';
+import { QueryClient, queryOptions } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+
+const getUser = ChimericQueryFactory<{ id: string }, User>({
+  queryClient,
+  getQueryOptions: (params) =>
+    queryOptions({
+      queryKey: ['user', params.id],
+      queryFn: () => fetch(`/api/users/${params.id}`).then((r) => r.json()),
+    }),
+});
+
+// Without params
+const getAllTodos = ChimericQueryFactory<void, Todo[]>({
+  queryClient,
+  getQueryOptions: () =>
+    queryOptions({
+      queryKey: ['todos'],
+      queryFn: () => fetch('/api/todos').then((r) => r.json()),
+    }),
+});
+```
+
+### Config
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `queryClient` | `QueryClient` | TanStack Query client instance |
+| `getQueryOptions` | `(params) => ReturnType<typeof queryOptions>` | Returns TanStack query options for given params |
+
+### Suspense
+
+In addition to the standard `.useHook()`, the TanStack Query integration provides `.useSuspenseHook()` for use with React Suspense:
+
+```tsx
+const { data } = getUser.useSuspenseHook({ id: userId });
+// data is guaranteed non-undefined
+```
+
+See [Suspense](/chimeric/guides/suspense/) for details.
+
+---
+
+## IdiomaticQueryFactory
+
+Same config as `ChimericQueryFactory`. Returns only the idiomatic path — a callable async function with `.prefetch()`. No hooks.
+
+---
+
+## ReactiveQueryFactory
+
+Same config **without `queryClient`** — uses the `QueryClient` from React context. Returns only the reactive path (`.useHook()`, `.useSuspenseHook()`, `.usePrefetchHook()`).

@@ -1,0 +1,51 @@
+---
+title: MutationFactory
+description: Instantiating mutation factories with TanStack React Query.
+---
+
+For usage after instantiation, see [Mutation](/chimeric/api/mutation/).
+
+## ChimericMutationFactory
+
+Creates a `ChimericMutation` backed by TanStack Query.
+
+```typescript
+import { ChimericMutationFactory } from '@chimeric/react-query';
+import { QueryClient } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+
+const updateUser = ChimericMutationFactory<{ id: string; name: string }, User>({
+  queryClient,
+  mutationFn: async (params) => {
+    const res = await fetch(`/api/users/${params.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ name: params.name }),
+    });
+    return res.json();
+  },
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['user'] });
+  },
+});
+```
+
+### Config
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `queryClient` | `QueryClient` | TanStack Query client instance |
+| `mutationFn` | `(params, context?) => Promise<TResult>` | The mutation function |
+| `onSuccess`, `onError`, `onSettled`, etc. | TanStack mutation options | Passed through to `useMutation` / `mutateAsync` |
+
+---
+
+## IdiomaticMutationFactory
+
+Same config. Returns only the idiomatic callable.
+
+---
+
+## ReactiveMutationFactory
+
+Same config **without `queryClient`**. Returns only the reactive `.useHook()`.

@@ -1,0 +1,46 @@
+---
+title: ChimericSyncReducer
+description: API reference for combining multiple ChimericSync services.
+---
+
+Available from `@chimeric/react`.
+
+Combines up to 10 `ChimericSync` services into a single `ChimericSync`.
+
+```typescript
+import { ChimericSyncReducer } from '@chimeric/react';
+
+const getDashboardCounts = ChimericSyncReducer<void>().build({
+  serviceList: [
+    { service: getActiveCount },
+    { service: getArchivedCount },
+  ],
+  reducer: ([active, archived]) => ({
+    active,
+    archived,
+    total: active + archived,
+  }),
+});
+
+// Idiomatic
+const counts = getDashboardCounts();
+
+// Reactive
+const counts = getDashboardCounts.useHook();
+```
+
+## Config
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `serviceList` | Array of `{ service, getParams? }` | Up to 10 `ChimericSync` services |
+| `reducer` | `(results[], params) => TResult` | Combines all service results |
+
+Each service config:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `service` | `ChimericSync<TParams, TResult>` | The sync service |
+| `getParams` | `(serviceParams) => TParams` | Optional param transformer. Omit if the service takes `void`. |
+
+`IdiomaticSyncReducer` and `ReactiveSyncReducer` are also available for single-path usage.

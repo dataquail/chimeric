@@ -1,502 +1,204 @@
 # @chimeric/react-query
 
-TanStack Query integration for the chimeric library - providing seamless integration between chimeric patterns and TanStack Query's powerful caching, synchronization, and server state management capabilities.
+TanStack Query integration for the chimeric library — providing dual-interface patterns (idiomatic function calls + reactive hooks) on top of TanStack Query's caching and server state management.
 
 ## Installation
 
 ```bash
-# Using npm
-npm install @chimeric/react-query
-
-# Using yarn
-yarn add @chimeric/react-query
-
-# Using pnpm
-pnpm add @chimeric/react-query
+npm install @chimeric/react-query @tanstack/react-query
 ```
 
-**Note**: This package requires `@tanstack/react-query` v5 or higher as a peer dependency.
+Requires `@tanstack/react-query` v5+.
 
 ## Overview
 
-`@chimeric/react-query` bridges the gap between chimeric patterns and TanStack Query, providing:
+`@chimeric/react-query` provides factory functions that create chimeric queries, mutations, and infinite queries backed by TanStack Query. Each factory produces an object that can be called idiomatically (async/await) or reactively (`.useHook()` inside a React component), sharing the same underlying TanStack Query cache.
 
-- ✅ **Query Operations**: Full TanStack Query integration with caching, background updates, and stale-while-revalidate
-- ✅ **Mutation Operations**: Optimistic updates, rollback, and mutation state management
-- ✅ **Managed Store Queries**: Queries that sync with external state management (Redux, Zustand, etc.)
-- ✅ **All Chimeric Patterns**: Idiomatic, Reactive, and Chimeric implementations
-- ✅ **TypeScript Integration**: Full type safety with TanStack Query types
-- ✅ **Native TanStack Features**: Access to all native TanStack Query options and return values
-
-## Core Exports
-
-```typescript
-import {
-  // Query Factory Functions
-  ReactiveQueryFactory,
-  IdiomaticQueryFactory,
-  ChimericQueryFactory,
-
-  // Mutation Factory Functions
-  ReactiveMutationFactory,
-  IdiomaticMutationFactory,
-  ChimericMutationFactory,
-
-  // Types
-  type ReactiveQuery,
-  type IdiomaticQuery,
-  type ChimericQuery,
-  type ReactiveMutation,
-  type IdiomaticMutation,
-  type ChimericMutation,
-
-  // TanStack Query re-exports
-  type QueryKey,
-
-  // Type guards and utilities
-  isReactiveQuery,
-  isIdiomaticQuery,
-  isChimericQuery,
-  isReactiveMutation,
-  isIdiomaticMutation,
-  isChimericMutation,
-} from '@chimeric/react-query';
-```
-
-## Query Operations
-
-### ReactiveQueryFactory
-
-Creates reactive queries with TanStack Query hooks and full caching capabilities.
-
-```tsx
-import { ReactiveQueryFactory } from '@chimeric/react-query';
-import { queryOptions } from '@tanstack/react-query';
-
-// Create a reactive query
-const fetchUser = ReactiveQueryFactory((params: { id: string }) =>
-  queryOptions({
-    queryKey: ['user', params.id],
-    queryFn: async () => {
-      const response = await fetch(`/api/users/${params.id}`);
-      if (!response.ok) throw new Error('Failed to fetch user');
-      return response.json();
-    },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
-  }),
-);
-
-// Use in React component
-const UserProfile = ({ userId }: { userId: string }) => {
-  const {
-    data,
-    isPending,
-    isError,
-    error,
-    refetch,
-    native, // Full TanStack Query result
-  } = fetchUser.useQuery({
-    id: userId,
-    options: { enabled: !!userId }, // Chimeric options
-    nativeOptions: { retry: 3 }, // Native TanStack Query options
-  });
-
-  if (isPending) return <div>Loading user...</div>;
-  if (isError) return <div>Error: {error?.message}</div>;
-
-  return (
-    <div>
-      <h2>{data?.name}</h2>
-      <p>{data?.email}</p>
-      <button onClick={() => refetch()}>Refresh</button>
-
-      {/* Access native TanStack Query features */}
-      <small>
-        Last updated:{' '}
-        {native.dataUpdatedAt
-          ? new Date(native.dataUpdatedAt).toLocaleString()
-          : 'Never'}
-      </small>
-    </div>
-  );
-};
-```
-
-### IdiomaticQueryFactory
-
-Creates promise-based queries that integrate with TanStack Query's cache.
-
-```tsx
-import { IdiomaticQueryFactory } from '@chimeric/react-query';
-import { QueryClient, queryOptions } from '@tanstack/react-query';
-
-const queryClient = new QueryClient();
-
-// Create an idiomatic query
-const fetchUserPosts = IdiomaticQueryFactory(
-  queryClient,
-  (params: { userId: string; limit?: number }) =>
-    queryOptions({
-      queryKey: ['user-posts', params.userId, params.limit],
-      queryFn: async () => {
-        const response = await fetch(
-          `/api/users/${params.userId}/posts?limit=${params.limit || 10}`,
-        );
-        return response.json();
-      },
-    }),
-);
-
-// Use idiomatically
-const loadUserPosts = async (userId: string) => {
-  try {
-    const posts = await fetchUserPosts({
-      userId,
-      limit: 20,
-      options: { forceRefetch: true }, // Chimeric options
-      nativeOptions: { staleTime: 0 }, // Native TanStack Query options
-    });
-
-    console.log('Posts loaded:', posts);
-    return posts;
-  } catch (error) {
-    console.error('Failed to load posts:', error);
-    throw error;
-  }
-};
-
-// The query result is automatically cached by TanStack Query
-const handleLoadPosts = async () => {
-  const posts = await loadUserPosts('user-123');
-  // Subsequent calls may return cached data
-};
-```
+## Query Factories
 
 ### ChimericQueryFactory
 
-Creates queries that work both idiomatically and reactively with shared TanStack Query cache.
-
-```tsx
-import {
-  ChimericQueryFactory,
-  DefineChimericQuery,
-} from '@chimeric/react-query';
+```typescript
+import { ChimericQueryFactory } from '@chimeric/react-query';
 import { QueryClient, queryOptions } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
 
-// Define the type for separate interfaces (IOC)
-type UserDataQuery = DefineChimericQuery<
-  (params: { id: string; includeProfile: boolean }) => Promise<UserWithProfile>
->;
-
-// Create a chimeric query
-const fetchUserData: UserDataQuery = ChimericQueryFactory(
+const getUser = ChimericQueryFactory<{ id: string }, User>({
   queryClient,
-  (params: { id: string; includeProfile: boolean }) =>
+  getQueryOptions: (params) =>
     queryOptions({
-      queryKey: ['user-data', params.id, params.includeProfile],
-      queryFn: async () => {
-        const [user, profile] = await Promise.all([
-          fetch(`/api/users/${params.id}`).then((r) => r.json()),
-          params.includeProfile
-            ? fetch(`/api/users/${params.id}/profile`).then((r) => r.json())
-            : Promise.resolve(null),
-        ]);
-
-        return { user, profile };
-      },
-      staleTime: 2 * 60 * 1000, // 2 minutes
+      queryKey: ['user', params.id],
+      queryFn: () => fetch(`/api/users/${params.id}`).then((r) => r.json()),
     }),
-);
-
-// Use idiomatically
-const loadUserData = async (userId: string) => {
-  const userData = await fetchUserData({
-    id: userId,
-    includeProfile: true,
-    nativeOptions: { retry: 2 },
-  });
-
-  return userData;
-};
-
-// Use reactively in component
-const UserDashboard = ({ userId }: { userId: string }) => {
-  const { data, isPending, isError, error, native } = fetchUserData.useQuery({
-    id: userId,
-    includeProfile: true,
-    options: { enabled: !!userId },
-  });
-
-  // Both idiomatic and reactive calls share the same cache!
-  const handleRefreshData = async () => {
-    await loadUserData(userId); // This will update the reactive query too
-  };
-
-  if (isPending) return <div>Loading...</div>;
-  if (isError) return <div>Error: {error?.message}</div>;
-
-  return (
-    <div>
-      <h1>{data?.user.name}</h1>
-      {data?.profile && <p>Bio: {data.profile.bio}</p>}
-
-      <button onClick={handleRefreshData}>Refresh Data</button>
-
-      {/* Show cache status */}
-      <div>
-        Cache Status: {native.isStale ? 'Stale' : 'Fresh'}
-        {native.isFetching && ' (Updating...)'}
-      </div>
-    </div>
-  );
-};
+});
 ```
 
-## Mutation Operations
+**Idiomatic usage:**
 
-### ReactiveMutationFactory
+```typescript
+const user = await getUser({ id: '123' });
 
-Creates reactive mutations with TanStack Query's mutation capabilities.
+// Force a fresh fetch, ignoring cache
+const user = await getUser({ id: '123' }, { options: { forceRefetch: true } });
+
+// Prefetch into cache without returning
+await getUser.prefetch({ id: '123' });
+```
+
+**Reactive usage (in a React component):**
 
 ```tsx
-import { ReactiveMutationFactory } from '@chimeric/react-query';
+const { data, isPending, isError, error, refetch, native } = getUser.useHook(
+  { id: userId },
+  { options: { enabled: !!userId } },
+);
 
-// Create a reactive mutation
-const updateUser = ReactiveMutationFactory({
-  mutationFn: async (params: { id: string; name: string; email: string }) => {
-    const response = await fetch(`/api/users/${params.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: params.name, email: params.email }),
-    });
+// Suspense variant — data is guaranteed non-undefined
+const { data } = getUser.useSuspenseHook({ id: userId });
 
-    if (!response.ok) throw new Error('Failed to update user');
-    return response.json();
-  },
-  // Native TanStack Query mutation options
-  onSuccess: (data, variables) => {
-    console.log('User updated successfully:', data);
-  },
-  onError: (error, variables) => {
-    console.error('Failed to update user:', error);
-  },
-});
-
-// Use in React component
-const EditUserForm = ({ user }: { user: User }) => {
-  const [formData, setFormData] = React.useState({
-    name: user.name,
-    email: user.email,
-  });
-
-  const {
-    call,
-    isPending,
-    isSuccess,
-    isError,
-    error,
-    data,
-    reset,
-    native, // Full TanStack Query mutation result
-  } = updateUser.useMutation();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try {
-      await call({
-        id: user.id,
-        name: formData.name,
-        email: formData.email,
-        nativeOptions: {
-          onSuccess: () => {
-            // Additional success handling
-            setFormData({ name: '', email: '' });
-          },
-        },
-      });
-    } catch (error) {
-      // Error is already handled by the mutation
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input
-        value={formData.name}
-        onChange={(e) =>
-          setFormData((prev) => ({ ...prev, name: e.target.value }))
-        }
-        placeholder="Name"
-        disabled={isPending}
-      />
-
-      <input
-        value={formData.email}
-        onChange={(e) =>
-          setFormData((prev) => ({ ...prev, email: e.target.value }))
-        }
-        placeholder="Email"
-        disabled={isPending}
-      />
-
-      <button type="submit" disabled={isPending}>
-        {isPending ? 'Updating...' : 'Update User'}
-      </button>
-
-      {isSuccess && <div>✅ User updated successfully!</div>}
-      {isError && <div>❌ Error: {error?.message}</div>}
-
-      <button type="button" onClick={reset}>
-        Reset Status
-      </button>
-
-      {/* Access native TanStack Query mutation features */}
-      <div>
-        Mutation Status: {native.status}
-        {native.submittedAt && (
-          <small>
-            {' '}
-            (Last attempt: {new Date(native.submittedAt).toLocaleString()})
-          </small>
-        )}
-      </div>
-    </form>
-  );
-};
+// Prefetch hook
+getUser.usePrefetchHook({ id: userId });
 ```
+
+`IdiomaticQueryFactory` and `ReactiveQueryFactory` are also available if you only need one path.
+
+## Mutation Factories
 
 ### ChimericMutationFactory
 
-Creates mutations that work both idiomatically and reactively.
-
-```tsx
+```typescript
 import { ChimericMutationFactory } from '@chimeric/react-query';
 
-// Create a chimeric mutation
-const deleteUser = ChimericMutationFactory({
-  mutationFn: async (params: { id: string }) => {
+const updateUser = ChimericMutationFactory<{ id: string; name: string }, User>({
+  queryClient,
+  mutationFn: async (params) => {
     const response = await fetch(`/api/users/${params.id}`, {
-      method: 'DELETE',
+      method: 'PUT',
+      body: JSON.stringify({ name: params.name }),
     });
-
-    if (!response.ok) throw new Error('Failed to delete user');
-    return { success: true, deletedId: params.id };
+    return response.json();
   },
-  onSuccess: (data) => {
-    console.log('User deleted:', data.deletedId);
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['user'] });
   },
 });
-
-// Use idiomatically
-const handleDeleteUser = async (userId: string) => {
-  try {
-    const result = await deleteUser({
-      id: userId,
-      nativeOptions: {
-        onSuccess: () => {
-          // Navigate away or update UI
-          window.location.href = '/users';
-        },
-      },
-    });
-
-    return result;
-  } catch (error) {
-    console.error('Delete failed:', error);
-    throw error;
-  }
-};
-
-// Use reactively in component
-const DeleteUserButton = ({ userId }: { userId: string }) => {
-  const { call, isPending, isError, error } = deleteUser.useMutation();
-
-  const handleDelete = async () => {
-    if (confirm('Are you sure you want to delete this user?')) {
-      await call({ id: userId });
-    }
-  };
-
-  return (
-    <div>
-      <button
-        onClick={handleDelete}
-        disabled={isPending}
-        style={{ backgroundColor: 'red', color: 'white' }}
-      >
-        {isPending ? 'Deleting...' : 'Delete User'}
-      </button>
-
-      {isError && <div>Error: {error?.message}</div>}
-    </div>
-  );
-};
 ```
 
-### TypeScript Integration
+**Idiomatic usage:**
 
-Full type safety with automatic inference:
+```typescript
+const updatedUser = await updateUser({ id: '123', name: 'New Name' });
+```
+
+**Reactive usage:**
 
 ```tsx
-import {
-  DefineChimericQuery,
-  DefineChimericMutation,
-} from '@chimeric/react-query';
+const { invoke, isPending, isError, error, data, reset, native } =
+  updateUser.useHook();
 
-// Define types for better TypeScript support
-type UserQuery = DefineChimericQuery<
-  (params: { id: string; includeProfile: boolean }) => Promise<UserWithProfile>
->;
-
-type UpdateUserMutation = DefineChimericMutation<
-  (params: { id: string; updates: Partial<User> }) => Promise<User>
->;
-
-// TypeScript will enforce correct parameter types
-const userQuery: UserQuery = ChimericQueryFactory(/* ... */);
-const updateUserMutation: UpdateUserMutation =
-  ChimericMutationFactory(/* ... */);
-
-// Usage is fully typed
-const MyComponent = () => {
-  // TypeScript knows the exact parameter shape
-  const { data } = userQuery.useQuery({
-    id: '123', // ✅ string required
-    includeProfile: true, // ✅ boolean required
-    // includeProfile: "yes", // ❌ TypeScript error
-  });
-
-  const { call } = updateUserMutation.useMutation();
-
-  const handleUpdate = () => {
-    call({
-      id: '123', // ✅ string required
-      updates: { name: 'New Name' }, // ✅ Partial<User> required
-      // updates: { invalidField: true }, // ❌ TypeScript error
-    });
-  };
-
-  // data is properly typed as UserWithProfile | undefined
-  return <div>{data?.user.name}</div>;
+const handleSubmit = async () => {
+  await invoke({ id: '123', name: 'New Name' });
 };
 ```
+
+`IdiomaticMutationFactory` and `ReactiveMutationFactory` are also available.
+
+## InfiniteQuery Factories
+
+### ChimericInfiniteQueryFactory
+
+```typescript
+import { ChimericInfiniteQueryFactory } from '@chimeric/react-query';
+import { infiniteQueryOptions } from '@tanstack/react-query';
+
+const getArchivedTodos = ChimericInfiniteQueryFactory<void, Todo[], number>({
+  queryClient,
+  getInfiniteQueryOptions: () =>
+    infiniteQueryOptions({
+      queryKey: ['archived-todos'],
+      queryFn: ({ pageParam }) =>
+        fetch(`/api/archived-todos?page=${pageParam}`).then((r) => r.json()),
+      initialPageParam: 0,
+      getNextPageParam: (lastPage, allPages) => allPages.length,
+    }),
+});
+```
+
+**Idiomatic usage:**
+
+```typescript
+const { pages, pageParams } = await getArchivedTodos();
+```
+
+**Reactive usage:**
+
+```tsx
+const { data, isPending, hasNextPage, fetchNextPage, isFetchingNextPage } =
+  getArchivedTodos.useHook();
+
+// Suspense variant
+const { data } = getArchivedTodos.useSuspenseHook();
+```
+
+## Reducers
+
+Reducers combine multiple chimeric services into a single derived value.
+
+### ChimericSyncReducer
+
+Combines multiple `ChimericSync` services synchronously. Provided by `@chimeric/react`.
+
+```typescript
+import { ChimericSyncReducer } from '@chimeric/react';
+
+const getDashboardData = ChimericSyncReducer<void>().build({
+  serviceList: [{ service: getCurrentUser }, { service: getNotificationCount }],
+  reducer: ([user, count]) => ({ user, unread: count }),
+});
+```
+
+### ChimericAsyncReducer
+
+Combines queries, eager async, and sync services into a `ChimericEagerAsync`.
+
+```typescript
+import { ChimericAsyncReducer } from '@chimeric/react-query';
+
+const getDashboard = ChimericAsyncReducer<{ userId: string }>().build({
+  serviceList: [
+    { service: getUser, getParams: (p) => ({ id: p.userId }) },
+    { service: getUserPosts, getParams: (p) => ({ userId: p.userId }) },
+  ],
+  reducer: ([user, posts]) => ({ user, posts, totalPosts: posts.length }),
+});
+```
+
+## Options Pattern
+
+All factories accept a two-level options structure as a second argument:
+
+```typescript
+// Idiomatic
+await query(params, {
+  options: { forceRefetch: true }, // chimeric options
+  nativeOptions: { staleTime: 0 }, // TanStack Query options
+});
+
+// Reactive
+query.useHook(params, {
+  options: { enabled: true }, // chimeric options
+  nativeOptions: { refetchInterval: 5000 }, // TanStack Query options
+});
+```
+
+## Server Components
+
+This package uses the `react-server` export condition. When your bundler resolves imports for a server component, it automatically uses a server-safe build where hooks throw descriptive errors if accidentally called. No separate import path is needed — the same `import { ... } from '@chimeric/react-query'` works in both server and client contexts.
 
 ## Development
 
-### Building
-
 ```bash
-nx build react-query
+npx nx build @chimeric/react-query
+npx nx test @chimeric/react-query
 ```
-
-### Running Tests
-
-```bash
-nx test react-query
-```
-
-The tests demonstrate integration patterns with TanStack Query and can serve as additional examples for implementation.

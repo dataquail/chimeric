@@ -4,7 +4,7 @@ import {
   createReactiveSync,
 } from '@chimeric/core';
 import { IdiomaticSyncReducer } from './IdiomaticSyncReducer';
-import { throwHookServerError } from '../../serverErrors';
+import { throwHookServerError } from '../serverErrors';
 
 type ExtractServiceResult<TConfig> = TConfig extends {
   service: ChimericSync<infer _TParams, infer TResult>;

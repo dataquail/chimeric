@@ -1,0 +1,106 @@
+---
+title: InfiniteQuery
+description: Usage reference for ChimericInfiniteQuery after instantiation.
+---
+
+A `ChimericInfiniteQuery` represents a paginated read operation. Once instantiated via a [React Query](/chimeric/api/react-query/infinite-query-factory/) or [RTK Query](/chimeric/api/rtk-query/infinite-query-factory/) factory, usage is identical regardless of the backing library.
+
+## Idiomatic Path
+
+Call the infinite query as an async function:
+
+```typescript
+// Without params
+const { pages, pageParams } = await getArchivedTodos();
+
+// With params
+const { pages, pageParams } = await getArchivedTodos({ userId: '123' });
+
+// Force a fresh fetch
+const result = await getArchivedTodos({ options: { forceRefetch: true } });
+
+// Fetch a specific page
+const result = await getArchivedTodos({ options: { pageParam: 5 } });
+```
+
+**Return value:** `{ pages: TPageData[]; pageParams: TPageParam[] }`
+
+**Idiomatic options:**
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `options.forceRefetch` | `boolean` | Bypass cache staleness |
+| `options.pageParam` | `TPageParam` | Override the initial page param |
+| `nativeOptions` | library-specific | Passed directly to the underlying library |
+
+### Prefetch
+
+```typescript
+await getArchivedTodos.prefetch();
+await getArchivedTodos.prefetch({ userId: '123' });
+```
+
+## Reactive Path
+
+Use `.useHook()` inside a React component:
+
+```tsx
+function ArchivedTodoList() {
+  const {
+    data,
+    isPending,
+    isError,
+    error,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+    refetch,
+    native,
+  } = getArchivedTodos.useHook();
+
+  if (isPending) return <div>Loading...</div>;
+  if (isError) return <div>Error: {error?.message}</div>;
+
+  return (
+    <div>
+      {data?.pages.flat().map((todo) => (
+        <div key={todo.id}>{todo.title}</div>
+      ))}
+      {hasNextPage && (
+        <button onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
+          {isFetchingNextPage ? 'Loading more...' : 'Load More'}
+        </button>
+      )}
+    </div>
+  );
+}
+```
+
+**Return value** (in addition to standard query fields):
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `data` | `{ pages: TPageData[]; pageParams: TPageParam[] } \| undefined` | All fetched pages |
+| `hasNextPage` | `boolean` | More pages available forward |
+| `hasPreviousPage` | `boolean` | More pages available backward |
+| `fetchNextPage` | `() => Promise<...>` | Fetch the next page |
+| `fetchPreviousPage` | `() => Promise<...>` | Fetch the previous page |
+| `isFetchingNextPage` | `boolean` | Currently fetching next page |
+| `isFetchingPreviousPage` | `boolean` | Currently fetching previous page |
+| `refetch` | `() => Promise<...>` | Refetch all pages |
+| `native` | library-specific | Full result from the underlying library |
+
+**Reactive options:**
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `options.enabled` | `boolean` | Conditionally enable the query (default: `true`) |
+| `nativeOptions` | library-specific | Passed directly to the underlying library |
+
+### Prefetch Hook
+
+```tsx
+getArchivedTodos.usePrefetchHook({ userId: nextUserId });
+```
+
+See also: [Suspense](/chimeric/guides/suspense/) for `useSuspenseHook`.

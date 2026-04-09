@@ -37,10 +37,6 @@ export * from './lib/InfiniteQuery/reactive/types';
 export * from './lib/InfiniteQuery/reactive/ReactiveInfiniteQueryFactory';
 export * from './lib/InfiniteQuery/reactive/isReactiveInfiniteQuery';
 export * from './lib/InfiniteQuery/reactive/createReactiveInfiniteQuery';
-// SyncReducer
-export * from './lib/utilities/SyncReducer/ChimericSyncReducer';
-export * from './lib/utilities/SyncReducer/IdiomaticSyncReducer';
-export * from './lib/utilities/SyncReducer/ReactiveSyncReducer';
 // AsyncReducer
 export * from './lib/utilities/AsyncReducer/ChimericAsyncReducer';
 export * from './lib/utilities/AsyncReducer/IdiomaticAsyncReducer';

@@ -28,6 +28,9 @@
     "prettier": "prettier --ignore-unknown '**/*'",
     "prettier:write": "pnpm run prettier --write",
     "serve:tanstack-query-spa": "pnpm run build:examples && npx nx serve examples/tanstack-query-spa --base=/tanstack-query-spa",
+    "dev:website": "pnpm --filter @chimeric/website dev",
+    "build:website": "pnpm --filter @chimeric/website build",
+    "preview:website": "pnpm --filter @chimeric/website preview",
     "troubleshoot:ci": "act -W .github/workflows/ci.yml workflow_dispatch",
     "prepare": "husky"
   },

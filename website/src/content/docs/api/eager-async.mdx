@@ -1,0 +1,61 @@
+---
+title: ChimericEagerAsyncFactory
+description: API reference for ChimericEagerAsyncFactory from @chimeric/react.
+---
+
+Provided by `@chimeric/react`.
+
+Creates an async operation that **auto-executes** when the component mounts or when parameters change. No manual `invoke` needed. Useful when dealing with promises that you want to invoke immediately, and caching is not necessary.
+
+```typescript
+import { ChimericEagerAsyncFactory } from '@chimeric/react';
+
+const fetchUser = ChimericEagerAsyncFactory({
+  eagerAsyncFn: async (params: { id: string }) => {
+    const response = await fetch(`/api/users/${params.id}`);
+    return response.json();
+  },
+});
+```
+
+## Idiomatic Path
+
+```typescript
+const user = await fetchUser({ id: '123' });
+```
+
+## Reactive Path
+
+Auto-executes immediately. Re-executes when params change.
+
+```tsx
+function UserProfile({ userId }: { userId: string }) {
+  const { data, isPending, isError, error } = fetchUser.useHook(
+    { id: userId },
+    { options: { enabled: !!userId } },
+  );
+
+  if (isPending) return <div>Loading...</div>;
+  if (isError) return <div>Error: {error?.message}</div>;
+  return <div>{data?.name}</div>;
+}
+```
+
+**Return value:**
+
+| Property    | Type                   |
+| ----------- | ---------------------- |
+| `data`      | `TResult \| undefined` |
+| `isPending` | `boolean`              |
+| `isIdle`    | `boolean`              |
+| `isSuccess` | `boolean`              |
+| `isError`   | `boolean`              |
+| `error`     | `TError \| null`       |
+
+**Reactive options:**
+
+| Option            | Type      | Description                                      |
+| ----------------- | --------- | ------------------------------------------------ |
+| `options.enabled` | `boolean` | Conditionally enable execution (default: `true`) |
+
+`IdiomaticEagerAsyncFactory` and `ReactiveEagerAsyncFactory` are also available for single-path usage.

@@ -1,0 +1,62 @@
+---
+title: Introduction
+description: What is Chimeric and why does it exist?
+---
+
+Chimeric provides dual-interface patterns for React. Every operation you create with Chimeric works two ways:
+
+1. **Idiomatic** — call it as a regular async function for orchestration, server-side logic, scripts, or testing.
+2. **Reactive** — call `.useHook()` inside a React component for declarative, hook-based usage.
+
+```typescript
+// Idiomatic: direct function call
+const todos = await getTodos({ limit: 10 });
+
+// Reactive: React hook
+const { data, isPending } = getTodos.useHook({ limit: 10 });
+```
+
+Both interfaces share the same types, the same cache, and the same behavior — you never have to choose between convenience and control.
+
+## Why Chimeric?
+
+Most React applications couple hooks directly into components — `useQuery` for data fetching, `useSelector` for store access, `useState` for local state. This works for simple cases, but it makes it hard to:
+
+- **Reuse operations outside of React** — scripts, tests, server-side logic, and complex orchestration flows all need a non-hook path.
+- **Swap out the underlying library** — migrating from React Query to RTK Query, or from Redux to Zustand, means rewriting every call site that touches those hooks.
+- **Orchestrate complex flows** — composing several operations in a single flow is awkward with hooks, and using reactive values inside async callbacks introduces stale closures.
+- **Isolate your application from reactive data stores** — without chimeric, your code is either peppered with direct calls to your store library (`useSelector`, `useStore`, `useQuery`), or you abstract behind custom hooks but still need raw `store.getState()` calls for just-in-time reads — rebuilding chimeric's dual interface ad hoc.
+
+Chimeric solves this by wrapping your data-fetching and state management libraries with factory functions that produce objects with both interfaces:
+
+```typescript
+import { ChimericQueryFactory } from '@chimeric/react-query';
+import { queryOptions, QueryClient } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+
+const getTodos = ChimericQueryFactory<{ limit: number }, Todo[]>({
+  queryClient,
+  getQueryOptions: (params) =>
+    queryOptions({
+      queryKey: ['todos', params.limit],
+      queryFn: () =>
+        fetch(`/api/todos?limit=${params.limit}`).then((r) => r.json()),
+    }),
+});
+
+// Now you can do both:
+await getTodos({ limit: 10 }); // idiomatic
+const { data } = getTodos.useHook({ limit: 10 }); // reactive
+```
+
+## Package Structure
+
+| Package                   | Purpose                                                          |
+| ------------------------- | ---------------------------------------------------------------- |
+| **@chimeric/core**        | Core types, fusion functions, and type guards                    |
+| **@chimeric/react**       | React-specific factory implementations (Async, EagerAsync, Sync) |
+| **@chimeric/react-query** | TanStack React Query integration                                 |
+| **@chimeric/rtk-query**   | Redux Toolkit Query integration                                  |
+
+You'll typically use **@chimeric/react** + one integration package.

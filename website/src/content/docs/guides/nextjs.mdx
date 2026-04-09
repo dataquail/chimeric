@@ -1,0 +1,80 @@
+---
+title: Next.js
+description: Using Chimeric with Next.js and React Server Components.
+---
+
+## Recommended Setup
+
+For Next.js applications, **`@chimeric/react-query`** is the recommended integration. TanStack Query supports serializing and deserializing the query cache across the server/client hydration boundary, which is essential for React Server Components.
+
+While `@chimeric/rtk-query` can be used with Next.js, RTK Query does not currently support server-side rendering with RSCs in the same way. If your application needs server-side prefetching with hydration, use `@chimeric/react-query`.
+
+## How Server/Client Imports Work
+
+`@chimeric/react-query` uses the `react-server` export condition in its `package.json`. When your code is bundled for a server component, the bundler automatically resolves imports to a server-safe build where reactive hooks throw descriptive errors if accidentally called. When bundled for a client component, the full implementation with hooks is used.
+
+**You do not need to use a separate import path.** The same import works in both contexts:
+
+```typescript
+import { ChimericQueryFactory } from '@chimeric/react-query';
+```
+
+The bundler handles the rest automatically.
+
+## Server Component Pattern
+
+The typical pattern is:
+
+1. **Server component** — prefetch data idiomatically and dehydrate the cache
+2. **HydrationBoundary** — serialize the cache to the client
+3. **Client component** — consume data reactively via `.useSuspenseHook()`, wrapped in `Suspense`
+
+```tsx
+// app/users/page.tsx (server component)
+import { Suspense } from 'react';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+
+export default async function UsersPage() {
+  const container = getContainer();
+
+  // Prefetch on the server — uses the idiomatic path
+  await container.userService.getAll.prefetch();
+
+  return (
+    <HydrationBoundary state={dehydrate(container.queryClient)}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <UserList />
+      </Suspense>
+    </HydrationBoundary>
+  );
+}
+```
+
+```tsx
+// components/UserList.tsx (client component)
+'use client';
+
+export function UserList() {
+  // Data is already in the cache from the server prefetch.
+  // Because it was prefetched, the Suspense boundary does not suspend.
+  const { data } = container.userService.getAll.useSuspenseHook();
+
+  return (
+    <ul>
+      {data.map((user) => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+## Real-World Example
+
+See the [tanstack-query-nextjs-ioc](https://github.com/dataquail/chimeric/tree/main/examples/tanstack-query-nextjs-ioc) example for a complete Next.js application using chimeric with:
+
+- Per-request container via React `cache()`
+- Server-side prefetching with `HydrationBoundary`
+- IoC with Define types
+- Domain event serialization across the hydration boundary
+- Zustand-based sync operations via `CreateChimericSyncFactory`

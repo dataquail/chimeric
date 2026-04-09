@@ -1,0 +1,80 @@
+---
+title: InfiniteQueryFactory
+description: Instantiating infinite query factories with RTK Query.
+---
+
+For usage after instantiation, see [InfiniteQuery](/chimeric/api/infinite-query/).
+
+## ChimericInfiniteQueryFactory
+
+Creates a `ChimericInfiniteQuery` wrapping an RTK Query endpoint with infinite query support.
+
+```typescript
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { ChimericInfiniteQueryFactory } from '@chimeric/rtk-query';
+
+// 1. Define your RTK Query API with an infinite query endpoint
+const api = createApi({
+  reducerPath: 'api',
+  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
+  endpoints: (builder) => ({
+    getArchivedTodos: builder.infiniteQuery<ArchivedTodoPage, void, number>({
+      infiniteQueryOptions: {
+        initialPageParam: 0,
+        getNextPageParam: (lastPage) => lastPage.next_cursor ?? undefined,
+      },
+      queryFn: async ({ pageParam }) => {
+        const data = await fetch(
+          `/api/archived-todo?page=${pageParam}&limit=10`,
+        ).then((r) => r.json());
+        return { data };
+      },
+    }),
+  }),
+});
+
+// 2. Wrap the endpoint with a chimeric factory
+const getArchivedTodos = ChimericInfiniteQueryFactory({
+  store,
+  endpoint: api.endpoints.getArchivedTodos,
+  endpointName: 'getArchivedTodos',
+  api,
+});
+```
+
+### Config
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `store` | Redux store | Store with `dispatch` and `getState` |
+| `endpoint` | `ApiEndpointQuery` | RTK Query endpoint with infinite query options |
+| `endpointName` | `string` | Name of the endpoint |
+| `api` | RTK Query API | The `createApi` result |
+
+### RTK-Specific Native Options
+
+**Reactive path:**
+
+| Native Option | Type | Description |
+|---------------|------|-------------|
+| `skip` | `boolean` | RTK Query skip option |
+| `refetchOnMountOrArgChange` | `boolean \| number` | RTK refetch behavior |
+
+**Idiomatic path:**
+
+| Native Option | Type | Description |
+|---------------|------|-------------|
+| `direction` | `'forward' \| 'backward'` | Pagination direction |
+| (inherits from) | `StartQueryActionCreatorOptions` | RTK Query initiate options |
+
+---
+
+## IdiomaticInfiniteQueryFactory
+
+Same config. Returns only the idiomatic callable + `.prefetch()`.
+
+---
+
+## ReactiveInfiniteQueryFactory
+
+Config without `store`. Returns only `.useHook()`.

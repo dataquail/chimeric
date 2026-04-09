@@ -1,0 +1,64 @@
+---
+title: Mutation
+description: Usage reference for ChimericMutation after instantiation.
+---
+
+A `ChimericMutation` represents a write operation. Once instantiated via a [React Query](/chimeric/api/react-query/mutation-factory/) or [RTK Query](/chimeric/api/rtk-query/mutation-factory/) factory, usage is identical regardless of the backing library.
+
+## Idiomatic Path
+
+Call the mutation as an async function:
+
+```typescript
+// With params
+const updatedUser = await updateUser({ id: '123', name: 'New Name' });
+
+// Without params
+const result = await clearCache();
+
+// With native library options
+const result = await updateUser(
+  { id: '123', name: 'New Name' },
+  { nativeOptions: { onSuccess: () => console.log('done') } },
+);
+```
+
+## Reactive Path
+
+Use `.useHook()` inside a React component. Unlike queries, mutations are not auto-executed — you trigger them via `invoke`.
+
+```tsx
+function EditUserForm({ userId }: { userId: string }) {
+  const { invoke, isPending, isSuccess, isError, error, data, reset, native } =
+    updateUser.useHook();
+
+  const handleSubmit = async (name: string) => {
+    await invoke({ id: userId, name });
+  };
+
+  return (
+    <form onSubmit={(e) => { e.preventDefault(); handleSubmit('New Name'); }}>
+      <button type="submit" disabled={isPending}>
+        {isPending ? 'Saving...' : 'Save'}
+      </button>
+      {isSuccess && <div>Saved!</div>}
+      {isError && <div>Error: {error?.message}</div>}
+      <button type="button" onClick={reset}>Reset</button>
+    </form>
+  );
+}
+```
+
+**Return value:**
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `invoke` | `(params, allOptions?) => Promise<TResult>` | Trigger the mutation |
+| `data` | `TResult \| undefined` | Last successful result |
+| `isPending` | `boolean` | Mutation in progress |
+| `isIdle` | `boolean` | No mutation attempted |
+| `isSuccess` | `boolean` | Last mutation succeeded |
+| `isError` | `boolean` | Last mutation errored |
+| `error` | `TError \| null` | Error object |
+| `reset` | `() => void` | Reset state back to idle |
+| `native` | library-specific | Full result from the underlying mutation library |

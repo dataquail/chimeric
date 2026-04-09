@@ -9,7 +9,7 @@ describe('ReactiveSyncReducerServer', () => {
     const reactiveReducer = ReactiveSyncReducer().build<string>();
 
     expect(() => reactiveReducer.useHook()).toThrow(
-      "@chimeric/react-query: useHook() cannot be called in a server component. Hooks are only available in client components marked with 'use client'.",
+      "@chimeric/react: useHook() cannot be called in a server component. Hooks are only available in client components marked with 'use client'.",
     );
   });
 
@@ -19,7 +19,7 @@ describe('ReactiveSyncReducerServer', () => {
       ReactiveSyncReducer<Params>().build<string>();
 
     expect(() => reactiveReducer.useHook({ value: 'test' })).toThrow(
-      "@chimeric/react-query: useHook() cannot be called in a server component. Hooks are only available in client components marked with 'use client'.",
+      "@chimeric/react: useHook() cannot be called in a server component. Hooks are only available in client components marked with 'use client'.",
     );
   });
 });

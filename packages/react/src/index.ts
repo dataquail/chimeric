@@ -48,5 +48,9 @@ export * from './lib/Async/ReactiveAsyncFactory';
 export * from './lib/EagerAsync/ChimericEagerAsyncFactory';
 export * from './lib/EagerAsync/IdiomaticEagerAsyncFactory';
 export * from './lib/EagerAsync/ReactiveEagerAsyncFactory';
-export * from './Sync/CreateChimericSyncFactory';
-export * from './Sync/createChimericSync';
+export * from './lib/Sync/CreateChimericSyncFactory';
+export * from './lib/Sync/createChimericSync';
+// SyncReducer
+export * from './lib/SyncReducer/ChimericSyncReducer';
+export * from './lib/SyncReducer/IdiomaticSyncReducer';
+export * from './lib/SyncReducer/ReactiveSyncReducer';

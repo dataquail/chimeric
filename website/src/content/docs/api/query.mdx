@@ -1,0 +1,89 @@
+---
+title: Query
+description: Usage reference for ChimericQuery after instantiation.
+---
+
+A `ChimericQuery` represents a cached read operation. Once instantiated via a [React Query](/chimeric/api/react-query/query-factory/) or [RTK Query](/chimeric/api/rtk-query/query-factory/) factory, usage is identical regardless of the backing library.
+
+## Idiomatic Path
+
+Call the query as an async function:
+
+```typescript
+// With params
+const user = await getUser({ id: '123' });
+
+// Without params
+const todos = await getAllTodos();
+
+// With chimeric options
+const user = await getUser({ id: '123' }, { options: { forceRefetch: true } });
+
+// With native library options
+const user = await getUser({ id: '123' }, { nativeOptions: { staleTime: 0 } });
+```
+
+**Idiomatic options:**
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `options.forceRefetch` | `boolean` | Bypass cache staleness and force a fresh fetch |
+| `nativeOptions` | library-specific | Passed directly to the underlying query library |
+
+### Prefetch
+
+Populate the cache without returning the result. Useful for warming the cache ahead of navigation.
+
+```typescript
+await getUser.prefetch({ id: '123' });
+
+// Without params
+await getAllTodos.prefetch();
+```
+
+## Reactive Path
+
+Use `.useHook()` inside a React component:
+
+```tsx
+function UserProfile({ userId }: { userId: string }) {
+  const { data, isPending, isError, error, refetch, native } = getUser.useHook(
+    { id: userId },
+    { options: { enabled: !!userId } },
+  );
+
+  if (isPending) return <div>Loading...</div>;
+  if (isError) return <div>Error: {error?.message}</div>;
+  return <div>{data?.name}</div>;
+}
+```
+
+**Return value:**
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `data` | `TResult \| undefined` | Query result |
+| `isPending` | `boolean` | Initial loading state |
+| `isIdle` | `boolean` | No query has been made |
+| `isSuccess` | `boolean` | Query succeeded |
+| `isError` | `boolean` | Query errored |
+| `error` | `TError \| null` | Error object |
+| `refetch` | `() => Promise<TResult>` | Manually trigger a refetch |
+| `native` | library-specific | Full result from the underlying query library |
+
+**Reactive options:**
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `options.enabled` | `boolean` | Conditionally enable the query (default: `true`) |
+| `nativeOptions` | library-specific | Passed directly to the underlying query library |
+
+### Prefetch Hook
+
+Prefetch data during render, before the subscribing component mounts:
+
+```tsx
+getUser.usePrefetchHook({ id: nextUserId });
+```
+
+See also: [Suspense](/chimeric/guides/suspense/) for `useSuspenseHook`.

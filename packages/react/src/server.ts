@@ -45,11 +45,17 @@ export {
 export * from './lib/ChimericEagerAsync/MetaAggregatorFactory';
 export * from './lib/Async/IdiomaticAsyncFactory';
 export * from './lib/EagerAsync/IdiomaticEagerAsyncFactory';
-export * from './Sync/CreateChimericSyncFactory';
-export * from './Sync/createChimericSync';
+export * from './lib/Sync/CreateChimericSyncFactory';
+export * from './lib/Sync/createChimericSync';
 
 // Server replacements (hook-using → server-safe)
 export { ChimericAsyncFactory } from './lib/Async/ChimericAsyncFactory.server';
 export { ReactiveAsyncFactory } from './lib/Async/ReactiveAsyncFactory.server';
 export { ChimericEagerAsyncFactory } from './lib/EagerAsync/ChimericEagerAsyncFactory.server';
 export { ReactiveEagerAsyncFactory } from './lib/EagerAsync/ReactiveEagerAsyncFactory.server';
+
+// SyncReducer - idiomatic (safe)
+export * from './lib/SyncReducer/IdiomaticSyncReducer';
+// SyncReducer - server replacements
+export { ChimericSyncReducer } from './lib/SyncReducer/ChimericSyncReducer.server';
+export { ReactiveSyncReducer } from './lib/SyncReducer/ReactiveSyncReducer.server';

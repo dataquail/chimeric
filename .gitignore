@@ -52,5 +52,10 @@ vitest.config.*.timestamp*
 # Next.js
 .next
 
+# Astro
+website/.astro
+website/dist
+*.tsbuildinfo
+
 # Notes
 /docs/scratch
