@@ -1,0 +1,67 @@
+---
+title: Interfaces
+description: Why interface abstraction in React is fundamentally broken, and how Chimeric addresses it.
+---
+
+## The Polymorphism Problem
+
+Reactive frameworks create a fundamental polymorphism: every operation in your application has two execution contexts — the reactive context (hooks, subscriptions, render cycles) and the idiomatic context (plain function calls, async/await, sequential logic). These two contexts have different semantics, different timing, and different constraints.
+
+Every reactive framework resolves this polymorphism differently, and each resolution introduces its own domain-specific language that permeates the codebase:
+
+- **Redux** — reducers, actions, thunks, middleware, selectors, dispatch
+- **MobX** — observables, proxies, reactions, computed values — effectively ejecting from React's render lifecycle, trading React's performance model for a proxy-based one
+- **RxJS / observable frameworks** — streams, operators, subjects, subscriptions — a powerful but esoteric orchestration model that few teams can maintain
+- **React hooks** — `useState`, `useEffect`, `useMemo`, `useCallback`, dependency arrays, cleanup functions
+
+Each of these is a different vocabulary for the same underlying problem: reactive state changes need to reach the UI, and imperative logic needs to read and write that state.
+
+## Hooks: Non-Idiomatic Code in Sheep's Clothing
+
+React hooks were a significant improvement for abstraction. Before hooks, the choices were class component lifecycle methods, higher-order components, or render props — all cumbersome. Hooks made it possible to extract and compose stateful logic in a way that felt natural.
+
+But that feeling is misleading. Hooks look like regular function calls, but they are governed by rules that no other JavaScript function follows: they must be called in the same order every render, they cannot be called conditionally, their values are snapshots from the last render, and their closures silently go stale across async boundaries. This is non-idiomatic code that lulls developers into a false sense that they can manage complexity with it the same way they manage complexity with plain functions.
+
+For simple cases, this works fine. A component that fetches a list and renders it is well served by a `useQuery` hook. But hooks are a fundamentally poor model for managing complex processes — multi-step workflows, conditional orchestration, error recovery, and cross-cutting concerns that span multiple data sources. See [Orchestration](/chimeric/philosophy/orchestration/) for concrete examples of where this breaks down.
+
+## Why Interfaces Matter
+
+Interfaces are one of the most powerful mechanisms for managing complexity. They hide implementation details behind abstractions, define contracts between components, and make it possible for a newcomer to quickly understand the domain of responsibilities and how things compose together.
+
+Good interfaces are:
+
+- **Composable** — they can be combined to build higher-level operations
+- **Expressive** — they reveal intent, not mechanics
+- **Intention-revealing** — a newcomer can read the interface and understand what the system does without knowing how
+
+When interfaces form the backbone of your application's core business logic, orchestration code becomes readable: you can see how services compose to make new and interesting things happen.
+
+But in React, interface abstraction is broken. If you define an interface for a service, what does its implementation look like? If it's hooks, it can only be called in a component. If it's plain functions, it can't subscribe to reactive state. You end up with two implementations — one for each context — or you accept tight coupling to the specific state library and call `store.getState()` alongside `useSelector` wherever you need both.
+
+## What Teams Actually Build
+
+In practice, many teams end up hacking together their own version of this dual interface:
+
+- A custom hook that wraps `useQuery` for components
+- A plain function that calls `queryClient.fetchQuery` for orchestration
+- A selector hook for reactive store access
+- A `getState()` call for imperative store access
+
+These pairs are informally maintained. They share no type contract. When one changes, the other drifts. Testing is split between React Testing Library for the hook paths and plain assertions for the function paths. The "service layer" is an ad-hoc collection of these parallel implementations scattered across the codebase.
+
+## How Chimeric Is Different
+
+Chimeric doesn't try to eject from React hooks. It doesn't introduce an observable framework. It doesn't ask you to learn a new orchestration DSL with its own operators and composition primitives.
+
+The idea is simple: **one interface, two execution paths**. Every chimeric operation is both an idiomatic function and a reactive hook. The factory functions produce objects that work both ways, backed by the same underlying state and cache.
+
+```typescript
+// One interface
+const getTodos: DefineChimericQuery<() => Promise<Todo[]>>;
+
+// Two paths — same types, same cache, same behavior
+await getTodos();                    // idiomatic
+const { data } = getTodos.useHook(); // reactive
+```
+
+By building your application logic from these primitives, chimeric formalizes the service layer that many teams end up building anyway. But instead of ad-hoc pairs of hooks and functions, you get a single typed interface that guarantees parity between both paths — and when complexity demands it, you can express your logic idiomatically without fighting the reactive model.

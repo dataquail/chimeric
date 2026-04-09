@@ -1,0 +1,87 @@
+---
+title: RTK Query Overview
+description: Overview of the @chimeric/rtk-query Redux Toolkit Query integration.
+sidebar:
+  label: Overview
+---
+
+`@chimeric/rtk-query` wraps existing [RTK Query](https://redux-toolkit.js.org/rtk-query/overview) endpoints with chimeric factories. Each factory produces an object with both an **idiomatic** path (async/await, dispatching thunks) and a **reactive** path (`.useHook()` inside React components), using RTK Query's built-in caching and subscription model.
+
+## Installation
+
+```bash
+npm install @chimeric/rtk-query @reduxjs/toolkit react-redux
+```
+
+Requires `@reduxjs/toolkit` v2+ and `react-redux` v9+.
+
+## Setup
+
+Define your RTK Query API as usual, then wrap endpoints with chimeric factories:
+
+```typescript
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+const api = createApi({
+  reducerPath: 'api',
+  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
+  endpoints: (builder) => ({
+    getUser: builder.query<User, { id: string }>({
+      query: (params) => `users/${params.id}`,
+    }),
+    updateUser: builder.mutation<User, { id: string; name: string }>({
+      query: (params) => ({
+        url: `users/${params.id}`,
+        method: 'PUT',
+        body: { name: params.name },
+      }),
+    }),
+  }),
+});
+```
+
+## Factories at a Glance
+
+| Factory                        | Creates             | Idiomatic                | Reactive                  |
+| ------------------------------ | ------------------- | ------------------------ | ------------------------- |
+| `ChimericQueryFactory`         | Cached query        | `await query(params)`    | `query.useHook(params)`   |
+| `ChimericMutationFactory`      | Mutation            | `await mutation(params)` | `mutation.useHook()`      |
+| `ChimericInfiniteQueryFactory` | Paginated query     | `await query(params)`    | `query.useHook(params)`   |
+| `ChimericAsyncReducer`         | Derived async value | `await reducer(params)`  | `reducer.useHook(params)` |
+
+Each chimeric factory also has **Idiomatic-only** and **Reactive-only** variants.
+
+## Options Pattern
+
+All factories accept a two-level options structure as a second argument:
+
+```typescript
+// Idiomatic
+await query(params, {
+  options: { forceRefetch: true },   // chimeric options
+  nativeOptions: { ... },            // RTK Query native options
+});
+
+// Reactive
+query.useHook(params, {
+  options: { enabled: true },        // chimeric options
+  nativeOptions: { skip: false },    // RTK Query native options
+});
+```
+
+## Error Handling
+
+RTK Query errors are wrapped in `RtkQueryError` for consistent handling:
+
+```typescript
+import { RtkQueryError } from '@chimeric/rtk-query';
+
+try {
+  await getUser({ id: '123' });
+} catch (error) {
+  if (error instanceof RtkQueryError) {
+    console.log(error.message); // human-readable message
+    console.log(error.rtkError); // original RTK error shape
+  }
+}
+```

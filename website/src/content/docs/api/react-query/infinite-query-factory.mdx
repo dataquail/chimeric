@@ -1,0 +1,75 @@
+---
+title: InfiniteQueryFactory
+description: Instantiating infinite query factories with TanStack React Query.
+---
+
+For usage after instantiation, see [InfiniteQuery](/chimeric/api/infinite-query/).
+
+## ChimericInfiniteQueryFactory
+
+Creates a `ChimericInfiniteQuery` backed by TanStack Query's infinite query cache.
+
+```typescript
+import { ChimericInfiniteQueryFactory } from '@chimeric/react-query';
+import { QueryClient, infiniteQueryOptions } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+
+const getArchivedTodos = ChimericInfiniteQueryFactory<void, Todo[], number>({
+  queryClient,
+  getInfiniteQueryOptions: () =>
+    infiniteQueryOptions({
+      queryKey: ['archived-todos'],
+      queryFn: ({ pageParam }) =>
+        fetch(`/api/archived?page=${pageParam}`).then((r) => r.json()),
+      initialPageParam: 0,
+      getNextPageParam: (lastPage, allPages) =>
+        lastPage.length > 0 ? allPages.length : undefined,
+    }),
+});
+
+// With params
+const getUserPosts = ChimericInfiniteQueryFactory<{ userId: string }, Post[], number>({
+  queryClient,
+  getInfiniteQueryOptions: (params) =>
+    infiniteQueryOptions({
+      queryKey: ['user-posts', params.userId],
+      queryFn: ({ pageParam }) =>
+        fetch(`/api/users/${params.userId}/posts?page=${pageParam}`).then((r) => r.json()),
+      initialPageParam: 0,
+      getNextPageParam: (lastPage, allPages) =>
+        lastPage.length > 0 ? allPages.length : undefined,
+    }),
+});
+```
+
+### Config
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `queryClient` | `QueryClient` | TanStack Query client instance |
+| `getInfiniteQueryOptions` | `(params) => ReturnType<typeof infiniteQueryOptions>` | Returns TanStack infinite query options |
+
+### Suspense
+
+Like queries, the TanStack Query integration provides `.useSuspenseHook()`:
+
+```tsx
+const { data, hasNextPage, fetchNextPage } =
+  getArchivedTodos.useSuspenseHook();
+// data is guaranteed non-undefined
+```
+
+See [Suspense](/chimeric/guides/suspense/) for details.
+
+---
+
+## IdiomaticInfiniteQueryFactory
+
+Same config. Returns only the idiomatic callable + `.prefetch()`.
+
+---
+
+## ReactiveInfiniteQueryFactory
+
+Same config **without `queryClient`**. Returns only `.useHook()`, `.useSuspenseHook()`, and `.usePrefetchHook()`.

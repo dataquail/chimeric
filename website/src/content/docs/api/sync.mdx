@@ -1,0 +1,73 @@
+---
+title: CreateChimericSyncFactory
+description: API reference for CreateChimericSyncFactory from @chimeric/react.
+---
+
+Provided by `@chimeric/react`.
+
+Creates a reusable factory bound to a state management library (Redux, Zustand, etc.) via an adapter. This is the recommended way to create `ChimericSync` instances.
+
+```typescript
+import { CreateChimericSyncFactory } from '@chimeric/react';
+```
+
+## With Zustand
+
+```typescript
+import { create } from 'zustand';
+
+const useTodoStore = create<TodoStore>((set) => ({ ... }));
+
+const ChimericSyncFactory = CreateChimericSyncFactory<TodoStore>({
+  getState: () => useTodoStore.getState(),
+  useSelector: useTodoStore,
+});
+
+// Create sync operations from the factory
+const getTodoById = ChimericSyncFactory({
+  selector: (params: { id: string }) => (state) => state.dict[params.id],
+  reducer: (record) => (record ? toDomain(record) : undefined),
+});
+```
+
+## With Redux
+
+```typescript
+import { useAppSelector } from './hooks';
+import { appStore } from './store';
+
+const ChimericSyncFactory = CreateChimericSyncFactory({
+  getState: () => appStore.getState(),
+  useSelector: useAppSelector,
+});
+
+const getActiveCount = ChimericSyncFactory({
+  selector: () => (state) => state.todos.filter((t) => !t.completed).length,
+});
+```
+
+## Adapter Config
+
+| Property      | Type                                       | Description                         |
+| ------------- | ------------------------------------------ | ----------------------------------- |
+| `getState`    | `() => TState`                             | Synchronous state accessor          |
+| `useSelector` | `<T>(selector: (state: TState) => T) => T` | React hook for subscribing to state |
+
+## Factory Config
+
+| Property   | Type                               | Description                                               |
+| ---------- | ---------------------------------- | --------------------------------------------------------- |
+| `selector` | `(params) => (state) => TSelected` | Selector factory — takes params, returns a state selector |
+| `reducer`  | `(selected, params) => TResult`    | Optional. Transform the selected value before returning.  |
+
+## Usage
+
+```typescript
+// Idiomatic — reads directly from the store
+const todo = getTodoById({ id: '123' });
+
+// Reactive — subscribes to store updates via the hook
+const todo = getTodoById.useHook({ id: '123' });
+```
+
+See the [RTK SPA example](https://github.com/dataquail/chimeric/tree/main/examples/rtk-spa) and [Next.js example](https://github.com/dataquail/chimeric/tree/main/examples/tanstack-query-nextjs-ioc) for real-world usage.

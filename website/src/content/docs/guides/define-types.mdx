@@ -1,0 +1,114 @@
+---
+title: Define Types (IoC)
+description: Using Define types to separate interface from implementation.
+---
+
+Chimeric provides `Define` types that let you declare the shape of a chimeric operation **without specifying its implementation**. This is the foundation for Inversion of Control (IoC) in chimeric applications.
+
+## Why Define Types?
+
+In a well-structured application, your domain and application layers should not depend on specific data-fetching libraries. Define types let you:
+
+1. Declare interfaces in your domain layer
+2. Implement them with any backing library (TanStack Query, RTK Query, etc.)
+3. Swap implementations without changing consumers
+
+## Usage
+
+Every chimeric type has a corresponding `Define` variant. They infer `TParams` and `TResult` from a function signature:
+
+```typescript
+import type {
+  DefineChimericQuery,
+  DefineChimericMutation,
+  DefineChimericSync,
+} from '@chimeric/react-query'; // or '@chimeric/rtk-query' or '@chimeric/core'
+
+// Define the interface
+type IUserService = {
+  getUser: DefineChimericQuery<(params: { id: string }) => Promise<User>>;
+  updateUser: DefineChimericMutation<(params: { id: string; name: string }) => Promise<User>>;
+};
+
+// No params
+type ITodoService = {
+  getAll: DefineChimericQuery<() => Promise<Todo[]>>;
+};
+
+// Optional params
+type ISearchService = {
+  search: DefineChimericQuery<(params?: { query: string }) => Promise<Result[]>>;
+};
+```
+
+## Available Define Types
+
+| Define Type | Creates Interface For |
+|---|---|
+| `DefineChimericQuery` | Cached read operations |
+| `DefineIdiomaticQuery` | Idiomatic-only cached reads |
+| `DefineReactiveQuery` | Reactive-only cached reads |
+| `DefineChimericMutation` | Write operations |
+| `DefineIdiomaticMutation` | Idiomatic-only writes |
+| `DefineReactiveMutation` | Reactive-only writes |
+| `DefineChimericInfiniteQuery` | Paginated reads |
+| `DefineIdiomaticInfiniteQuery` | Idiomatic-only paginated reads |
+| `DefineReactiveInfiniteQuery` | Reactive-only paginated reads |
+| `DefineChimericSync` | Synchronous operations |
+| `DefineIdiomaticSync` | Idiomatic-only sync |
+| `DefineReactiveSync` | Reactive-only sync |
+| `DefineChimericAsync` | Async operations (manual invoke) |
+| `DefineIdiomaticAsync` | Idiomatic-only async |
+| `DefineReactiveAsync` | Reactive-only async |
+| `DefineChimericEagerAsync` | Eager async operations |
+| `DefineIdiomaticEagerAsync` | Idiomatic-only eager async |
+| `DefineReactiveEagerAsync` | Reactive-only eager async |
+
+## Example: IoC Pattern
+
+```typescript
+// domain/interfaces/IActiveTodoService.ts
+import type { DefineChimericQuery, DefineChimericMutation } from '@chimeric/react-query';
+import type { ActiveTodo } from '../entities/ActiveTodo';
+
+export type IActiveTodoService = {
+  getAll: DefineChimericQuery<() => Promise<ActiveTodo[]>>;
+  getOneById: DefineChimericQuery<(params: { id: string }) => Promise<ActiveTodo>>;
+  createOne: DefineChimericMutation<(params: { title: string }) => Promise<ActiveTodo>>;
+  deleteOne: DefineChimericMutation<(params: { id: string }) => Promise<void>>;
+};
+
+// infrastructure/services/ActiveTodoServiceImpl.ts
+import { ChimericQueryFactory, ChimericMutationFactory } from '@chimeric/react-query';
+import type { IActiveTodoService } from '../../domain/interfaces/IActiveTodoService';
+
+export const createActiveTodoService = (queryClient: QueryClient): IActiveTodoService => ({
+  getAll: ChimericQueryFactory({
+    queryClient,
+    getQueryOptions: () => queryOptions({ ... }),
+  }),
+  getOneById: ChimericQueryFactory({
+    queryClient,
+    getQueryOptions: (params) => queryOptions({ ... }),
+  }),
+  createOne: ChimericMutationFactory({
+    queryClient,
+    mutationFn: async (params) => { ... },
+  }),
+  deleteOne: ChimericMutationFactory({
+    queryClient,
+    mutationFn: async (params) => { ... },
+  }),
+});
+```
+
+Consumers only depend on `IActiveTodoService`, not on `@chimeric/react-query` or `@tanstack/react-query`. This makes it straightforward to swap to RTK Query or mock for tests.
+
+## Import Paths
+
+Define types are exported from all packages. Use the one that matches your implementation:
+
+- `@chimeric/core` — base types (no library-specific native options)
+- `@chimeric/react` — re-exports from core
+- `@chimeric/react-query` — includes TanStack Query native option types
+- `@chimeric/rtk-query` — includes RTK Query native option types

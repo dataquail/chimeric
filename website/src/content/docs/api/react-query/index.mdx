@@ -1,0 +1,51 @@
+---
+title: React Query Overview
+description: Overview of the @chimeric/react-query TanStack Query integration.
+sidebar:
+  label: Overview
+---
+
+`@chimeric/react-query` provides factory functions that create chimeric queries, mutations, and infinite queries backed by [TanStack Query](https://tanstack.com/query) v5+.
+
+Each factory produces an object with both an **idiomatic** path (async/await) and a **reactive** path (`.useHook()` inside React components), sharing the same underlying TanStack Query cache.
+
+## Installation
+
+```bash
+npm install @chimeric/react-query @tanstack/react-query
+```
+
+## Factories at a Glance
+
+| Factory                        | Creates             | Idiomatic                | Reactive                  |
+| ------------------------------ | ------------------- | ------------------------ | ------------------------- |
+| `ChimericQueryFactory`         | Cached query        | `await query(params)`    | `query.useHook(params)`   |
+| `ChimericMutationFactory`      | Mutation            | `await mutation(params)` | `mutation.useHook()`      |
+| `ChimericInfiniteQueryFactory` | Paginated query     | `await query(params)`    | `query.useHook(params)`   |
+| `ChimericAsyncReducer`         | Derived async value | `await reducer(params)`  | `reducer.useHook(params)` |
+
+Each chimeric factory also has **Idiomatic-only** and **Reactive-only** variants (e.g., `IdiomaticQueryFactory`, `ReactiveQueryFactory`) if you only need one execution path.
+
+## Options Pattern
+
+All factories accept a two-level options structure as a second argument:
+
+```typescript
+// Idiomatic
+await query(params, {
+  options: { forceRefetch: true }, // chimeric options
+  nativeOptions: { staleTime: 0 }, // TanStack Query options
+});
+
+// Reactive
+query.useHook(params, {
+  options: { enabled: true }, // chimeric options
+  nativeOptions: { refetchInterval: 5000 }, // TanStack Query options
+});
+```
+
+## Server Components
+
+`@chimeric/react-query` uses the `react-server` export condition. When your bundler resolves imports for a server component, it automatically uses a server-safe build where hooks throw descriptive errors if accidentally called. No separate import path is needed — the same `import { ... } from '@chimeric/react-query'` works in both contexts.
+
+See the [Next.js guide](/chimeric/guides/nextjs/) for the full pattern.

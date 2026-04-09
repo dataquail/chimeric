@@ -1,0 +1,159 @@
+---
+title: Core Concepts
+description: The key ideas behind Chimeric's dual-interface pattern.
+---
+
+## The Dual Interface
+
+Every Chimeric operation has two execution paths:
+
+| Path          | How you call it                   | When to use it                             |
+| ------------- | --------------------------------- | ------------------------------------------ |
+| **Idiomatic** | `getTodos({ limit: 10 })`         | Orchestration, tests, scripts, server-side |
+| **Reactive**  | `getTodos.useHook({ limit: 10 })` | Inside React components                    |
+
+Both paths share the same TypeScript types, so refactoring between them is safe and mechanical.
+
+## Operation Types
+
+Chimeric defines six operation types, each designed for a different kind of work:
+
+### Sync
+
+Synchronous operations that return a value immediately. Useful for reading from a state store.
+
+```typescript
+// Idiomatic: reads directly from the store
+const todo = getTodoById({ id: '123' });
+
+// Reactive: subscribes to store changes via a hook
+const todo = getTodoById.useHook({ id: '123' });
+```
+
+### Async
+
+Asynchronous operations with manual invocation. The reactive path provides an `invoke` function and tracks loading state. Useful when dealing with promises and caching is not necessary.
+
+```tsx
+// Idiomatic
+const user = await fetchUser({ id: '123' });
+
+// Reactive
+const { invoke, data, isPending, isError, error } = fetchUser.useHook();
+const handleClick = () => invoke({ id: '123' });
+```
+
+### EagerAsync
+
+Like Async, but auto-executes when the component mounts or when parameters change. No manual `invoke` needed. Useful when dealing with promises that you want to invoke immediately, and caching is not necessary.
+
+```tsx
+// Reactive — runs immediately
+const { data, isPending } = fetchUser.useHook(
+  { id: userId },
+  { options: { enabled: !!userId } },
+);
+```
+
+### Query
+
+Cached read operations backed by a query library (TanStack Query or RTK Query). Provides caching, background refetching, stale-while-revalidate, and more.
+
+```tsx
+// Idiomatic — reads from or populates the cache
+const user = await getUser({ id: '123' });
+
+// Reactive — subscribes to cached data
+const { data, isPending, refetch } = getUser.useHook({ id: '123' });
+```
+
+### Mutation
+
+Write operations that modify server state. The reactive path provides `invoke`, loading state, and a `reset` function.
+
+```tsx
+// Idiomatic
+const result = await updateUser({ id: '123', name: 'New Name' });
+
+// Reactive
+const { invoke, isPending, reset } = updateUser.useHook();
+await invoke({ id: '123', name: 'New Name' });
+```
+
+### InfiniteQuery
+
+Paginated read operations. The reactive path provides pagination helpers like `fetchNextPage` and `hasNextPage`.
+
+```tsx
+// Idiomatic — fetches all available pages
+const { pages, pageParams } = await getArchivedTodos();
+
+// Reactive
+const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
+  getArchivedTodos.useHook();
+```
+
+## Options Pattern
+
+All query and mutation operations accept a two-level options structure as a second argument, keeping chimeric options separate from native library options:
+
+```typescript
+// Idiomatic
+await getUser(
+  { id: '123' },
+  {
+    options: { forceRefetch: true }, // chimeric options
+    nativeOptions: { staleTime: 0 }, // library-specific options
+  },
+);
+
+// Reactive
+getUser.useHook(
+  { id: '123' },
+  {
+    options: { enabled: !!userId }, // chimeric options
+    nativeOptions: { refetchInterval: 5000 }, // library-specific options
+  },
+);
+```
+
+**Chimeric options** are consistent across all integrations:
+
+- **Query idiomatic**: `forceRefetch` — bypass cache staleness
+- **Query reactive**: `enabled` — conditionally enable the query
+- **InfiniteQuery idiomatic**: `forceRefetch`, `pageParam` — specify which page to fetch
+
+## Reducers
+
+`@chimeric/react` provides sync reducer utilities for combining multiple services, and both `@chimeric/react-query` and `@chimeric/rtk-query` provide async reducer utilities:
+
+- **ChimericSyncReducer** — combines multiple `ChimericSync` services into a single derived `ChimericSync`
+- **ChimericAsyncReducer** — combines queries, eager async, and sync services into a `ChimericEagerAsync`
+
+```typescript
+const getDashboard = ChimericAsyncReducer<{ userId: string }>().build({
+  serviceList: [
+    { service: getUser, getParams: (p) => ({ id: p.userId }) },
+    { service: getUserPosts, getParams: (p) => ({ userId: p.userId }) },
+  ],
+  reducer: ([user, posts]) => ({ user, posts, totalPosts: posts.length }),
+});
+
+// Idiomatic
+const dashboard = await getDashboard({ userId: '123' });
+
+// Reactive
+const { data, isPending } = getDashboard.useHook({ userId: '123' });
+```
+
+## Type Guards
+
+Every operation type has runtime type guards for dynamic dispatch:
+
+```typescript
+import { isChimericQuery, isChimericMutation } from '@chimeric/core';
+
+if (isChimericQuery(operation)) {
+  await operation.prefetch({ id: '123' });
+}
+```

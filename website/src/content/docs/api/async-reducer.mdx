@@ -1,0 +1,69 @@
+---
+title: ChimericAsyncReducer
+description: API reference for combining multiple async services into a single derived value.
+---
+
+Available from both `@chimeric/react-query` and `@chimeric/rtk-query`.
+
+Combines queries, eager async, and sync services into a `ChimericEagerAsync`. The resulting object auto-executes reactively when parameters change and provides aggregated loading/error states.
+
+```typescript
+import { ChimericAsyncReducer } from '@chimeric/react-query'; // or '@chimeric/rtk-query'
+
+const getDashboard = ChimericAsyncReducer<{ userId: string }>().build({
+  serviceList: [
+    { service: getUser, getParams: (p) => ({ id: p.userId }) },
+    { service: getUserPosts, getParams: (p) => ({ userId: p.userId }) },
+    { service: getNotificationCount },
+  ],
+  reducer: ([user, posts, notifications]) => ({
+    user,
+    posts,
+    notifications,
+    totalPosts: posts.length,
+  }),
+  initialValueReducer: ([user, posts, notifications]) => ({
+    user: user ?? null,
+    posts: posts ?? [],
+    notifications: notifications ?? 0,
+    totalPosts: 0,
+  }),
+});
+
+// Idiomatic
+const dashboard = await getDashboard({ userId: '123' });
+
+// Reactive
+const { data, isPending, isError } = getDashboard.useHook({ userId: '123' });
+```
+
+## Config
+
+| Property              | Type                                          | Description                                          |
+| --------------------- | --------------------------------------------- | ---------------------------------------------------- |
+| `serviceList`         | Array of `{ service, getParams?, ... }`       | Up to 10 services (Query, EagerAsync, or Sync)       |
+| `reducer`             | `(results[], params) => TResult`              | Combines all service results when all are loaded     |
+| `initialValueReducer` | `(resultsWithUndefined[], params) => TResult` | Optional. Called while any service is still pending. |
+
+Each service config:
+
+| Property              | Type                                                  | Description                                   |
+| --------------------- | ----------------------------------------------------- | --------------------------------------------- |
+| `service`             | `ChimericQuery \| ChimericEagerAsync \| ChimericSync` | The service to include                        |
+| `getParams`           | `(serviceParams) => TParams`                          | Optional param transformer                    |
+| `getIdiomaticOptions` | `() => AllIdiomaticOptions`                           | Optional. Idiomatic-path options for queries. |
+| `getReactiveOptions`  | `() => AllReactiveOptions`                            | Optional. Reactive-path options for queries.  |
+
+## Aggregated State
+
+The reactive path aggregates state across all services:
+
+| State       | Rule                    |
+| ----------- | ----------------------- |
+| `isIdle`    | All services are idle   |
+| `isPending` | Any service is pending  |
+| `isSuccess` | All services succeeded  |
+| `isError`   | Any service errored     |
+| `error`     | First error encountered |
+
+`IdiomaticAsyncReducer` and `ReactiveAsyncReducer` are also available for single-path usage.

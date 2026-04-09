@@ -1,0 +1,117 @@
+---
+title: Orchestration
+description: How Chimeric enables idiomatic orchestration with concrete examples.
+---
+
+The [Interfaces](/chimeric/philosophy/interfaces/) page covers why React's reactive model breaks interface abstraction. This page shows what that looks like in practice — and how chimeric's idiomatic path resolves it.
+
+## The Stale Closure Trap
+
+Consider completing a todo — the mutation marks it as done on the server and invalidates the todo list cache. Afterward, we want to show a congratulatory toast if the user has completed all their todos:
+
+```typescript
+const useCompleteTodo = () => {
+  const { data: todos } = useTodosQuery();
+
+  return async (todoId: string) => {
+    await completeTodo({ id: todoId }); // invalidates the todos cache
+
+    // BUG: todos is stale — captured at render time, before
+    // completeTodo() invalidated the query cache.
+    if (todos.every((t) => t.isCompleted)) {
+      showToast('All caught up!');
+    }
+  };
+};
+```
+
+This code looks correct. It reads top to bottom. But `todos` was captured by the closure at render time. The `await completeTodo()` call resolves the mutation, triggers `onSuccess`, and invalidates the todos cache — but the closure still holds the pre-mutation list where the just-completed todo is still marked incomplete. The toast never fires.
+
+One might suggest that the server could return whether all todos are now completed. But this couples a write command to a read concern — the mutation's job is to complete a todo, not to answer queries about the state of the entire list. In a CQRS-oriented architecture, commands and queries are separate responsibilities.
+
+Other workarounds exist: use a ref, read from the store directly inside the callback, or optimistically compute the answer from the stale data. But every workaround is reaching for idiomatic access in an ad-hoc way — manually working around the reactive execution model rather than stepping outside of it.
+
+## The Chimeric Solution
+
+With chimeric, the idiomatic path reads current state at call time — no stale closure:
+
+```typescript
+const completeTodoAndNotify = ChimericAsyncFactory(async (todoId: string) => {
+  await completeTodo({ id: todoId }); // invalidates the todos cache
+  // Reads fresh data — the mutation resolved and invalidated
+  // the cache before this line executes
+  const todos = await getTodos();
+  if (todos.every((t) => t.isCompleted)) {
+    showToast('All caught up!');
+  }
+});
+```
+
+The bug is gone. `await completeTodo()` resolves the mutation and invalidates the cache. Then `await getTodos()` fetches fresh data from the invalidated cache. The sequencing is strict — each `await` creates a happens-before guarantee.
+
+## Composability Across Contexts
+
+Because `completeTodoAndNotify` is itself a chimeric operation, it works in both contexts. Complex orchestration uses the idiomatic path — for example, checking if this was the user's first completed todo and unlocking an achievement:
+
+```typescript
+const completeTodoWithAchievements = async (todoId: string) => {
+  await completeTodoAndNotify(todoId);
+  const achievements = await getAchievements();
+  if (!achievements.firstCompleted) {
+    await unlockAchievement({ key: 'firstCompleted' });
+    showToast('Achievement unlocked: First Todo Completed!');
+  }
+};
+```
+
+Simple components use the reactive path:
+
+```tsx
+const CompleteButton = ({ todoId }: { todoId: string }) => {
+  const { invoke, isPending } = completeTodoAndNotify.useHook();
+  return (
+    <button onClick={() => invoke(todoId)} disabled={isPending}>
+      {isPending ? 'Completing...' : 'Complete'}
+    </button>
+  );
+};
+```
+
+The same operation. No duplication. No stale closure risk in the orchestration layer. And the component gets loading state for free.
+
+## Idiomatic Testing
+
+When your business logic lives in plain async functions rather than hooks, your tests are plain async functions too:
+
+```typescript
+it('should show all-caught-up toast when last todo is completed', async () => {
+  await completeTodoAndNotify('last-remaining-todo');
+  expect(showToast).toHaveBeenCalledWith('All caught up!');
+});
+
+it('should unlock achievement on first completion', async () => {
+  await completeTodoWithAchievements('my-first-todo');
+  expect(unlockAchievement).toHaveBeenCalledWith({ key: 'firstCompleted' });
+});
+```
+
+No `renderHook`. No `waitFor`. No `act`. Just call and assert.
+
+## When to Reach for Each Path
+
+**Idiomatic** — orchestration logic that runs at a point in time:
+
+- Multi-step workflows that compose several operations
+- Business logic that reads current state (avoiding stale closures)
+- Error recovery — retry strategies, fallback chains, compensating actions
+- Server-side prefetching
+- Testing complex business logic
+
+**Reactive** — UI that should stay in sync with changing data:
+
+- Displaying the result of a single query
+- Forms backed by a mutation
+- Derived views that update when upstream data changes
+- Loading and error states tied directly to UI
+
+For many use cases, either path works. Chimeric's role is ensuring you always have the choice.

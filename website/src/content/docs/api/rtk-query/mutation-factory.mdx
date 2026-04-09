@@ -1,0 +1,84 @@
+---
+title: MutationFactory
+description: Instantiating mutation factories with RTK Query.
+---
+
+For usage after instantiation, see [Mutation](/chimeric/api/mutation/).
+
+## ChimericMutationFactory
+
+Creates a `ChimericMutation` wrapping an RTK Query mutation endpoint.
+
+```typescript
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { ChimericMutationFactory } from '@chimeric/rtk-query';
+
+// 1. Define your RTK Query API
+const api = createApi({
+  reducerPath: 'api',
+  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
+  tagTypes: ['User'],
+  endpoints: (builder) => ({
+    updateUser: builder.mutation<User, { id: string; name: string }>({
+      query: (params) => ({
+        url: `users/${params.id}`,
+        method: 'PUT',
+        body: { name: params.name },
+      }),
+      invalidatesTags: ['User'],
+    }),
+    deleteUser: builder.mutation<void, { id: string }>({
+      query: (params) => ({
+        url: `users/${params.id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['User'],
+    }),
+  }),
+});
+
+// 2. Wrap endpoints with chimeric factories
+const updateUser = ChimericMutationFactory({
+  store,
+  endpoint: api.endpoints.updateUser,
+});
+
+const deleteUser = ChimericMutationFactory({
+  store,
+  endpoint: api.endpoints.deleteUser,
+});
+```
+
+### Config
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `store` | Redux store | Store with `dispatch` |
+| `endpoint` | `ApiEndpointMutation` | RTK Query mutation endpoint |
+
+### RTK-Specific Native Options
+
+**Idiomatic path:**
+
+| Native Option | Type | Description |
+|---------------|------|-------------|
+| `track` | `boolean` | Whether to track the mutation in the store |
+| `fixedCacheKey` | `string` | Fixed cache key for the mutation |
+
+**Reactive path:**
+
+| Native Option | Type | Description |
+|---------------|------|-------------|
+| `fixedCacheKey` | `string` | Shared cache key across components |
+
+---
+
+## IdiomaticMutationFactory
+
+Same config. Returns only the idiomatic callable.
+
+---
+
+## ReactiveMutationFactory
+
+Config without `store`. Returns only the reactive `.useHook()`.

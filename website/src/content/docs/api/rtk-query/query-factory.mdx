@@ -1,0 +1,80 @@
+---
+title: QueryFactory
+description: Instantiating query factories with RTK Query.
+---
+
+For usage after instantiation, see [Query](/chimeric/api/query/).
+
+## ChimericQueryFactory
+
+Creates a `ChimericQuery` wrapping an RTK Query endpoint.
+
+```typescript
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { ChimericQueryFactory } from '@chimeric/rtk-query';
+
+// 1. Define your RTK Query API
+const api = createApi({
+  reducerPath: 'api',
+  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
+  endpoints: (builder) => ({
+    getUser: builder.query<User, { id: string }>({
+      query: (params) => `users/${params.id}`,
+    }),
+    getAllTodos: builder.query<Todo[], void>({
+      query: () => 'todos',
+    }),
+  }),
+});
+
+// 2. Wrap endpoints with chimeric factories
+const getUser = ChimericQueryFactory({
+  store,
+  endpoint: api.endpoints.getUser,
+  endpointName: 'getUser',
+  api,
+});
+
+const getAllTodos = ChimericQueryFactory({
+  store,
+  endpoint: api.endpoints.getAllTodos,
+  endpointName: 'getAllTodos',
+  api,
+});
+```
+
+### Config
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `store` | Redux store | Store with `dispatch` and `getState` |
+| `endpoint` | `ApiEndpointQuery` | RTK Query endpoint (e.g., `api.endpoints.getUser`) |
+| `endpointName` | `string` | Name of the endpoint |
+| `api` | RTK Query API | The `createApi` result (needed for `usePrefetch`) |
+
+### RTK-Specific Native Options
+
+**Reactive path:**
+
+| Native Option | Type | Description |
+|---------------|------|-------------|
+| `skip` | `boolean` | RTK Query skip option |
+| `refetchOnMountOrArgChange` | `boolean \| number` | RTK refetch behavior |
+
+**Idiomatic path:**
+
+| Native Option | Type | Description |
+|---------------|------|-------------|
+| (inherits from) | `StartQueryActionCreatorOptions` | RTK Query initiate options |
+
+---
+
+## IdiomaticQueryFactory
+
+Same config. Returns only the idiomatic callable + `.prefetch()`.
+
+---
+
+## ReactiveQueryFactory
+
+Config without `store`. Returns only `.useHook()` and `.usePrefetchHook()`.

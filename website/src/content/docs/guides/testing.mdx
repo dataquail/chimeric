@@ -1,0 +1,53 @@
+---
+title: Testing
+description: Testing strategies for Chimeric applications.
+---
+
+## Idiomatic-First Testing
+
+Every chimeric operation can be tested idiomatically — as a plain async function call — without any React rendering or hook testing utilities. This is the recommended approach for most tests.
+
+```typescript
+// No React, no render, no act() — just async/await
+it('should return the user', async () => {
+  const user = await getUser({ id: '123' });
+  expect(user.name).toBe('Alice');
+});
+
+it('should create a todo', async () => {
+  const todo = await createTodo({ title: 'Buy milk' });
+  expect(todo.id).toBeDefined();
+  expect(todo.title).toBe('Buy milk');
+});
+
+it('should return paginated results', async () => {
+  const { pages } = await getArchivedTodos();
+  expect(pages).toHaveLength(1);
+  expect(pages[0]).toHaveLength(10);
+});
+```
+
+The benefit is avoiding the complexity of `@testing-library/react`, `renderHook`, `waitFor`, `act()`, and other React testing utilities for the majority of your test suite.
+
+## When to Test Reactively
+
+You can also test the reactive path using `@testing-library/react` if desired:
+
+```tsx
+import { renderHook, waitFor } from '@testing-library/react';
+
+it('should return user data via hook', async () => {
+  const { result } = renderHook(() => getUser.useHook({ id: '123' }));
+
+  await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  expect(result.current.data?.name).toBe('Alice');
+});
+```
+
+However, chimeric guarantees parity between the idiomatic and reactive paths. As long as you are using the standard factory functions (not defining custom chimeric implementations), both paths will behave identically. Testing both is effectively testing chimeric itself rather than your own application code.
+
+## Recommendation
+
+- **Test idiomatically by default.** It's simpler, faster, and avoids React testing boilerplate.
+- **Test reactively** only when your component logic around the hook matters (e.g., conditional rendering, error boundaries, loading states).
+- **Don't test both paths to verify they match.** That is chimeric's responsibility, and the library has its own test suites for this guarantee.
