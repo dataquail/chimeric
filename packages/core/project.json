@@ -4,6 +4,13 @@
   "sourceRoot": "packages/core/src",
   "projectType": "library",
   "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --build --emitDeclarationOnly tsconfig.lib.json",
+        "cwd": "packages/core"
+      }
+    },
     "build": {
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
