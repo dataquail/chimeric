@@ -484,10 +484,10 @@ importers:
       '@chimeric/core':
         specifier: workspace:*
         version: link:../core
+    devDependencies:
       '@chimeric/react':
         specifier: workspace:*
         version: link:../react
-    devDependencies:
       '@tanstack/react-query':
         specifier: ^5.96.2
         version: 5.96.2(react@19.0.0)
@@ -518,10 +518,10 @@ importers:
       '@chimeric/core':
         specifier: workspace:*
         version: link:../core
+    devDependencies:
       '@chimeric/react':
         specifier: workspace:*
         version: link:../react
-    devDependencies:
       '@reduxjs/toolkit':
         specifier: ^2.6.0
         version: 2.6.1(react-redux@9.2.0(@types/react@19.0.12)(react@19.0.0)(redux@5.0.1))(react@19.0.0)
