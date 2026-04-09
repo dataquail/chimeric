@@ -49,6 +49,9 @@ vitest.config.*.timestamp*
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
 
+# Astro
+.astro
+
 # Next.js
 .next
 
@@ -59,3 +62,5 @@ website/dist
 
 # Notes
 /docs/scratch
+.claude/worktrees
+.claude/settings.local.json
