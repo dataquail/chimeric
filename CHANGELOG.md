@@ -1,3 +1,45 @@
+# 2.0.0 (2026-04-09)
+
+### 🚀 Features
+
+- improve testing for reducers ([fbd13b5](https://github.com/dataquail/chimeric/commit/fbd13b5))
+- ⚠️  rename all hooks from `use` to `useHook` for React compiler compatibility ([3d5e12e](https://github.com/dataquail/chimeric/commit/3d5e12e))
+- ⚠️  remove testing packages and refactor examples to idiomatic-only tests ([d2c27a5](https://github.com/dataquail/chimeric/commit/d2c27a5))
+- ⚠️  replace MSW browser runtime with todo-api express server ([0179245](https://github.com/dataquail/chimeric/commit/0179245))
+- ⚠️  add prefetch support to chimeric queries ([9ba401a](https://github.com/dataquail/chimeric/commit/9ba401a))
+- ⚠️  add prefetch support to chimeric infinite queries ([e5e0fc2](https://github.com/dataquail/chimeric/commit/e5e0fc2))
+- ⚠️  add useSuspenseHook to chimeric queries via useSuspenseQuery ([675f0b3](https://github.com/dataquail/chimeric/commit/675f0b3))
+- ⚠️  add react-server export conditions for isomorphic chimeric usage ([ed6ca4f](https://github.com/dataquail/chimeric/commit/ed6ca4f))
+- ⚠️  remove QueryWithManagedStore, replace with PriorityTodoRepository pattern ([c41e881](https://github.com/dataquail/chimeric/commit/c41e881))
+- ⚠️  add @chimeric/rtk-query package with RTK Query integration and redux-todo-app example ([155e71f](https://github.com/dataquail/chimeric/commit/155e71f))
+- ⚠️  replace SavedForLaterTodos with ArchivedTodos, add useSuspenseHook to InfiniteQuery ([2fc743e](https://github.com/dataquail/chimeric/commit/2fc743e))
+- ⚠️  upgrade @tanstack/react-query to ^5.96.2, expose MutationFunctionContext ([a56f860](https://github.com/dataquail/chimeric/commit/a56f860))
+- add behavior-driven integration tests, fix rtk-query void-params options routing ([73b0413](https://github.com/dataquail/chimeric/commit/73b0413))
+- ⚠️  add documentation site and relocate SyncReducer to @chimeric/react ([9a1570e](https://github.com/dataquail/chimeric/commit/9a1570e))
+
+### 🩹 Fixes
+
+- sync pnpm-lock.yaml with package.json dependency changes ([1001e32](https://github.com/dataquail/chimeric/commit/1001e32))
+
+### ⚠️  Breaking Changes
+
+- SyncReducer (ChimericSyncReducer, IdiomaticSyncReducer,
+- mutationFn now receives a second MutationFunctionContext
+- ⚠️  replace SavedForLaterTodos with ArchivedTodos, add useSuspenseHook to InfiniteQuery ([2fc743e](https://github.com/dataquail/chimeric/commit/2fc743e))
+- ⚠️  add @chimeric/rtk-query package with RTK Query integration and redux-todo-app example ([155e71f](https://github.com/dataquail/chimeric/commit/155e71f))
+- ChimericQueryWithManagedStoreFactory,
+- ⚠️  add react-server export conditions for isomorphic chimeric usage ([ed6ca4f](https://github.com/dataquail/chimeric/commit/ed6ca4f))
+- ReactiveQuery and ChimericQuery types now include
+- `createIdiomaticInfiniteQuery` and
+- `createIdiomaticQuery` and `createReactiveQuery` now
+- basic-todo-app and todo-app now require the todo-api
+- @chimeric/testing-core, @chimeric/testing-react, and
+- All `.use()` calls on chimeric interfaces must be updated to `.useHook()`.
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 1.1.0 (2025-10-17)
 
 ### 🚀 Features

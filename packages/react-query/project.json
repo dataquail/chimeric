@@ -4,6 +4,14 @@
   "sourceRoot": "packages/react-query/src",
   "projectType": "library",
   "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^typecheck"],
+      "options": {
+        "command": "tsc --build --emitDeclarationOnly tsconfig.lib.json",
+        "cwd": "packages/react-query"
+      }
+    },
     "build": {
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],

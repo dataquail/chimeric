@@ -10,6 +10,7 @@ export default [
       '**/out-tsc',
       '**/vite.config.*.timestamp*',
       '**/vitest.config.*.timestamp*',
+      '**/.astro',
     ],
   },
   {

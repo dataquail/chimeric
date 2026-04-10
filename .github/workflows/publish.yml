@@ -23,7 +23,7 @@ jobs:
           private-key: ${{ secrets.VERSION_BUMPER_SECRET }}
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
@@ -34,10 +34,10 @@ jobs:
           echo "PACKAGE_NAME=$(echo $TAG_NAME | cut -d "@" -f 1)" >> $GITHUB_ENV
           echo "APP_VERSION=$(echo $TAG_NAME | cut -d "@" -f 2)" >> $GITHUB_ENV
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
 
       - name: Install Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
           cache: 'pnpm'
