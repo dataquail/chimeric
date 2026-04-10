@@ -6,6 +6,7 @@
   "targets": {
     "typecheck": {
       "executor": "nx:run-commands",
+      "dependsOn": ["^typecheck"],
       "options": {
         "command": "tsc --build --emitDeclarationOnly tsconfig.lib.json",
         "cwd": "packages/react-query"
