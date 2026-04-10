@@ -22,7 +22,7 @@ jobs:
           private-key: ${{ secrets.VERSION_BUMPER_SECRET }}
 
       - name: Checkout the main branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
