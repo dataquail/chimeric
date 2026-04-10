@@ -22,6 +22,9 @@
     "directory": "packages/rtk-query"
   },
   "homepage": "https://dataquail.github.io/chimeric",
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "typings": "dist/index.d.ts",
