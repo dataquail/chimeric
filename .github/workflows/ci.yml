@@ -19,7 +19,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4.3.0
+      - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
 
@@ -52,7 +52,7 @@ jobs:
       - uses: pnpm/action-setup@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4.3.0
+        uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
           cache: 'pnpm'
