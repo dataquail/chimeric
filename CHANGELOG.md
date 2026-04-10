@@ -1,3 +1,13 @@
+## 2.0.2 (2026-04-10)
+
+### 🩹 Fixes
+
+- **deps:** patch all 19 high severity CVEs via overrides and dependency bumps ([e80ba4a](https://github.com/dataquail/chimeric/commit/e80ba4a))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 2.0.1 (2026-04-10)
 
 ### 🩹 Fixes
