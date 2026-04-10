@@ -111,6 +111,12 @@
       }
     }
   },
+  "pnpm": {
+    "overrides": {
+      "axios": ">=1.15.0",
+      "form-data": ">=4.0.4"
+    }
+  },
   "dependencies": {
     "axios": "^1.15.0",
     "express": "^4.21.2",
