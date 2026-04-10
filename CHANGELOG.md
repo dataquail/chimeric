@@ -1,3 +1,15 @@
+## 2.0.1 (2026-04-10)
+
+### 🩹 Fixes
+
+- **ci:** use pull_request_target for dependabot auto-merge workflow ([899efcf](https://github.com/dataquail/chimeric/commit/899efcf))
+- **ci:** use rebase merge strategy for dependabot auto-merge ([1efcfbc](https://github.com/dataquail/chimeric/commit/1efcfbc))
+- **deps:** patch critical CVEs in axios and form-data transitive deps ([40243e7](https://github.com/dataquail/chimeric/commit/40243e7))
+
+### ❤️ Thank You
+
+- Zachary Weidenbach @zacharyweidenbach
+
 # 2.0.0 (2026-04-09)
 
 ### 🚀 Features
