@@ -15,7 +15,6 @@
       "{workspaceRoot}/.nvmrc"
     ]
   },
-  "nxCloudId": "67d91bc583f8dd52ce0b5474",
   "plugins": [
     {
       "plugin": "@nx/js/typescript",
