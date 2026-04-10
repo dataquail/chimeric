@@ -108,7 +108,7 @@
     }
   },
   "release": {
-    "projectsRelationship": "fixed",
+    "projectsRelationship": "independent",
     "projects": ["packages/*"],
     "git": {
       "commitMessage": "chore: updated version [no ci]"
