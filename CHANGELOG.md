@@ -1,3 +1,14 @@
+## 2.0.4 (2026-04-11)
+
+### 🚀 Features
+
+- **release:** switch to per-package independent versioning and publishing ([6a90a5a](https://github.com/dataquail/chimeric/commit/6a90a5a))
+
+### ❤️ Thank You
+
+- Claude Sonnet 4.6
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 2.0.3 (2026-04-11)
 
 ### 🩹 Fixes
