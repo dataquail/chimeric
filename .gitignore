@@ -64,3 +64,6 @@ website/dist
 /docs/scratch
 .claude/worktrees
 .claude/settings.local.json
+
+#DevPod
+.devcontainer/.env

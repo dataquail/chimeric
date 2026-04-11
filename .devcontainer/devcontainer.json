@@ -1,0 +1,12 @@
+{
+  "name": "Claude Code Agent - Chimeric",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "devcontainer",
+  "remoteUser": "node",
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/node/.claude",
+    "DEVCONTAINER": "true"
+  },
+  "workspaceFolder": "/workspace",
+  "postCreateCommand": "bash /usr/local/bin/post_create.sh"
+}
