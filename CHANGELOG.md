@@ -1,3 +1,14 @@
+## 2.0.3 (2026-04-11)
+
+### 🩹 Fixes
+
+- remove NX Cloud to unblock CI pipeline ([8de6436](https://github.com/dataquail/chimeric/commit/8de6436))
+
+### ❤️ Thank You
+
+- Claude Sonnet 4.6
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 2.0.2 (2026-04-10)
 
 ### 🩹 Fixes
