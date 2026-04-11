@@ -1,8 +1,10 @@
 import {
-  DefineChimericEagerAsync,
   DefineIdiomaticEagerAsync,
-  DefineReactiveEagerAsync,
 } from '@chimeric/core';
+import {
+  VueDefineReactiveEagerAsync,
+  VueDefineChimericEagerAsync,
+} from '../EagerAsync/types';
 
 export const EagerAsyncTestFixtures = {
   withoutParams: {
@@ -17,14 +19,14 @@ export const EagerAsyncTestFixtures = {
       const fn = vi.fn(async () => 'test');
       return {
         fn,
-        annotation: {} as DefineReactiveEagerAsync<() => Promise<string>>,
+        annotation: {} as VueDefineReactiveEagerAsync<() => Promise<string>>,
       };
     },
     getChimeric: () => {
       const fn = vi.fn(async () => 'test');
       return {
         fn,
-        annotation: {} as DefineChimericEagerAsync<() => Promise<string>>,
+        annotation: {} as VueDefineChimericEagerAsync<() => Promise<string>>,
       };
     },
   },
@@ -46,7 +48,7 @@ export const EagerAsyncTestFixtures = {
       );
       return {
         fn,
-        annotation: {} as DefineReactiveEagerAsync<
+        annotation: {} as VueDefineReactiveEagerAsync<
           (params: { name: string }) => Promise<string>
         >,
       };
@@ -57,7 +59,7 @@ export const EagerAsyncTestFixtures = {
       );
       return {
         fn,
-        annotation: {} as DefineChimericEagerAsync<
+        annotation: {} as VueDefineChimericEagerAsync<
           (params: { name: string }) => Promise<string>
         >,
       };
@@ -81,7 +83,7 @@ export const EagerAsyncTestFixtures = {
       );
       return {
         fn,
-        annotation: {} as DefineReactiveEagerAsync<
+        annotation: {} as VueDefineReactiveEagerAsync<
           (params?: { name: string }) => Promise<string>
         >,
       };
@@ -92,7 +94,7 @@ export const EagerAsyncTestFixtures = {
       );
       return {
         fn,
-        annotation: {} as DefineChimericEagerAsync<
+        annotation: {} as VueDefineChimericEagerAsync<
           (params?: { name: string }) => Promise<string>
         >,
       };

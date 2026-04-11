@@ -19,7 +19,7 @@ export function withSetup<T>(
 
   const wrapper = mount(TestComponent, {
     global: {
-      plugins: plugins as Plugin[],
+      plugins: plugins as unknown as Plugin[],
     },
   });
 

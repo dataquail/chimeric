@@ -41,6 +41,23 @@ export {
   createIdiomaticSync,
 } from '@chimeric/core';
 
+// Vue-specific types
+export type {
+  VueReactiveAsyncReturn,
+  VueReactiveAsync,
+  VueDefineReactiveAsync,
+  VueChimericAsync,
+  VueDefineChimericAsync,
+} from './lib/Async/types';
+
+export type {
+  VueReactiveEagerAsyncReturn,
+  VueReactiveEagerAsync,
+  VueDefineReactiveEagerAsync,
+  VueChimericEagerAsync,
+  VueDefineChimericEagerAsync,
+} from './lib/EagerAsync/types';
+
 // Vue-specific factories
 export { IdiomaticAsyncFactory } from './lib/Async/IdiomaticAsyncFactory';
 export { ReactiveAsyncFactory } from './lib/Async/ReactiveAsyncFactory';

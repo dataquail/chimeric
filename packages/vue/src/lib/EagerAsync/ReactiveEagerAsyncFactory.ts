@@ -1,10 +1,10 @@
 import { ref, readonly, onMounted, watch } from 'vue';
 import {
   createReactiveEagerAsync,
-  ReactiveEagerAsync,
   ReactiveEagerAsyncOptions,
   validateMaxArgLength,
 } from '@chimeric/core';
+import { VueReactiveEagerAsync } from './types';
 
 // Required params
 export function ReactiveEagerAsyncFactory<
@@ -13,7 +13,7 @@ export function ReactiveEagerAsyncFactory<
   TError extends Error = Error,
 >(config: {
   eagerAsyncFn: (params: TParams) => Promise<TResult>;
-}): ReactiveEagerAsync<TParams, TResult, TError>;
+}): VueReactiveEagerAsync<TParams, TResult, TError>;
 
 // Optional params
 export function ReactiveEagerAsyncFactory<
@@ -22,7 +22,7 @@ export function ReactiveEagerAsyncFactory<
   TError extends Error = Error,
 >(config: {
   eagerAsyncFn: (params?: TParams) => Promise<TResult>;
-}): ReactiveEagerAsync<TParams | undefined, TResult, TError>;
+}): VueReactiveEagerAsync<TParams | undefined, TResult, TError>;
 
 // No params
 export function ReactiveEagerAsyncFactory<
@@ -30,7 +30,7 @@ export function ReactiveEagerAsyncFactory<
   TError extends Error = Error,
 >(config: {
   eagerAsyncFn: () => Promise<TResult>;
-}): ReactiveEagerAsync<void, TResult, TError>;
+}): VueReactiveEagerAsync<void, TResult, TError>;
 
 // Implementation
 export function ReactiveEagerAsyncFactory<
@@ -41,7 +41,7 @@ export function ReactiveEagerAsyncFactory<
   eagerAsyncFn,
 }: {
   eagerAsyncFn: (params: TParams) => Promise<TResult>;
-}): ReactiveEagerAsync<TParams, TResult, TError> {
+}): VueReactiveEagerAsync<TParams, TResult, TError> {
   validateMaxArgLength({
     fn: eagerAsyncFn,
     fnName: 'eagerAsyncFn',
@@ -49,12 +49,8 @@ export function ReactiveEagerAsyncFactory<
   });
 
   const eagerAsyncCandidate = (
-    paramsOrOptions?: Parameters<
-      ReactiveEagerAsync<TParams, TResult, TError>['useHook']
-    >[0],
-    maybeOptions?: Parameters<
-      ReactiveEagerAsync<TParams, TResult, TError>['useHook']
-    >[1],
+    paramsOrOptions?: TParams | ReactiveEagerAsyncOptions,
+    maybeOptions?: ReactiveEagerAsyncOptions,
   ) => {
     const params =
       eagerAsyncFn.length === 0
@@ -123,10 +119,6 @@ export function ReactiveEagerAsyncFactory<
 
   return createReactiveEagerAsync(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    eagerAsyncCandidate as unknown as ReactiveEagerAsync<
-      TParams,
-      TResult,
-      TError
-    >['useHook'],
-  ) as ReactiveEagerAsync<TParams, TResult, TError>;
+    eagerAsyncCandidate as any,
+  ) as unknown as VueReactiveEagerAsync<TParams, TResult, TError>;
 }

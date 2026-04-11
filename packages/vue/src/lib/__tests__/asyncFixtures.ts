@@ -1,8 +1,10 @@
 import {
-  DefineChimericAsync,
   DefineIdiomaticAsync,
-  DefineReactiveAsync,
 } from '@chimeric/core';
+import {
+  VueDefineReactiveAsync,
+  VueDefineChimericAsync,
+} from '../Async/types';
 
 export const AsyncTestFixtures = {
   withoutParams: {
@@ -17,14 +19,14 @@ export const AsyncTestFixtures = {
       const fn = vi.fn(async () => 'test');
       return {
         fn,
-        annotation: {} as DefineReactiveAsync<() => Promise<string>>,
+        annotation: {} as VueDefineReactiveAsync<() => Promise<string>>,
       };
     },
     getChimeric: () => {
       const fn = vi.fn(async () => 'test');
       return {
         fn,
-        annotation: {} as DefineChimericAsync<() => Promise<string>>,
+        annotation: {} as VueDefineChimericAsync<() => Promise<string>>,
       };
     },
   },
@@ -46,7 +48,7 @@ export const AsyncTestFixtures = {
       );
       return {
         fn,
-        annotation: {} as DefineReactiveAsync<
+        annotation: {} as VueDefineReactiveAsync<
           (params: { name: string }) => Promise<string>
         >,
       };
@@ -57,7 +59,7 @@ export const AsyncTestFixtures = {
       );
       return {
         fn,
-        annotation: {} as DefineChimericAsync<
+        annotation: {} as VueDefineChimericAsync<
           (params: { name: string }) => Promise<string>
         >,
       };
@@ -81,7 +83,7 @@ export const AsyncTestFixtures = {
       );
       return {
         fn,
-        annotation: {} as DefineReactiveAsync<
+        annotation: {} as VueDefineReactiveAsync<
           (params?: { name: string }) => Promise<string>
         >,
       };
@@ -92,7 +94,7 @@ export const AsyncTestFixtures = {
       );
       return {
         fn,
-        annotation: {} as DefineChimericAsync<
+        annotation: {} as VueDefineChimericAsync<
           (params?: { name: string }) => Promise<string>
         >,
       };

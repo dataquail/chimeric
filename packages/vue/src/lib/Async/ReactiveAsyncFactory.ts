@@ -1,11 +1,11 @@
 import { ref, readonly } from 'vue';
 import {
   createReactiveAsync,
-  ReactiveAsync,
   ReactiveAsyncInvokeOptions,
   ReactiveAsyncOptions,
 } from '@chimeric/core';
 import { executeWithRetry } from './utils';
+import { VueReactiveAsync } from './types';
 
 // Optional params
 export function ReactiveAsyncFactory<
@@ -14,13 +14,13 @@ export function ReactiveAsyncFactory<
   TError extends Error = Error,
 >(
   asyncFn: (params?: TParams) => Promise<TResult>,
-): ReactiveAsync<TParams | undefined, TResult, TError>;
+): VueReactiveAsync<TParams | undefined, TResult, TError>;
 
 // No params
 export function ReactiveAsyncFactory<
   TResult = unknown,
   TError extends Error = Error,
->(asyncFn: () => Promise<TResult>): ReactiveAsync<void, TResult, TError>;
+>(asyncFn: () => Promise<TResult>): VueReactiveAsync<void, TResult, TError>;
 
 // Required params
 export function ReactiveAsyncFactory<
@@ -29,7 +29,7 @@ export function ReactiveAsyncFactory<
   TError extends Error = Error,
 >(
   asyncFn: (params: TParams) => Promise<TResult>,
-): ReactiveAsync<TParams, TResult, TError>;
+): VueReactiveAsync<TParams, TResult, TError>;
 
 // Implementation
 export function ReactiveAsyncFactory<
@@ -38,7 +38,7 @@ export function ReactiveAsyncFactory<
   TError extends Error = Error,
 >(
   asyncFn: (params: TParams) => Promise<TResult>,
-): ReactiveAsync<TParams, TResult, TError> {
+): VueReactiveAsync<TParams, TResult, TError> {
   const reactiveAsync = (hookOptions?: ReactiveAsyncOptions) => {
     const isIdle = ref(true);
     const isPending = ref(false);
@@ -94,8 +94,9 @@ export function ReactiveAsyncFactory<
     };
   };
 
+  // Use createReactiveAsync for runtime marker but cast to Vue-specific type
   return createReactiveAsync(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    reactiveAsync as unknown as ReactiveAsync<TParams, TResult, TError>['useHook'],
-  );
+    reactiveAsync as any,
+  ) as unknown as VueReactiveAsync<TParams, TResult, TError>;
 }

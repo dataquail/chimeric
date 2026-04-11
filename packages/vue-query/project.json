@@ -8,7 +8,11 @@
       "executor": "nx:run-commands",
       "dependsOn": ["^typecheck"],
       "options": {
-        "command": "tsc --build --emitDeclarationOnly tsconfig.lib.json",
+        "commands": [
+          "tsc --build --emitDeclarationOnly tsconfig.lib.json",
+          "tsc -p tsconfig.spec.json --noEmit"
+        ],
+        "parallel": false,
         "cwd": "packages/vue-query"
       }
     },

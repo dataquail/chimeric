@@ -1,6 +1,7 @@
-import { ChimericEagerAsync, fuseChimericEagerAsync } from '@chimeric/core';
+import { fuseChimericEagerAsync, type ReactiveEagerAsync } from '@chimeric/core';
 import { IdiomaticEagerAsyncFactory } from './IdiomaticEagerAsyncFactory';
 import { ReactiveEagerAsyncFactory } from './ReactiveEagerAsyncFactory';
+import { VueChimericEagerAsync } from './types';
 
 // Required params
 export function ChimericEagerAsyncFactory<
@@ -9,7 +10,7 @@ export function ChimericEagerAsyncFactory<
   TError extends Error = Error,
 >(config: {
   eagerAsyncFn: (params: TParams) => Promise<TResult>;
-}): ChimericEagerAsync<TParams, TResult, TError>;
+}): VueChimericEagerAsync<TParams, TResult, TError>;
 
 // Optional params
 export function ChimericEagerAsyncFactory<
@@ -18,7 +19,7 @@ export function ChimericEagerAsyncFactory<
   TError extends Error = Error,
 >(config: {
   eagerAsyncFn: (params?: TParams) => Promise<TResult>;
-}): ChimericEagerAsync<TParams | undefined, TResult, TError>;
+}): VueChimericEagerAsync<TParams | undefined, TResult, TError>;
 
 // No params
 export function ChimericEagerAsyncFactory<
@@ -26,7 +27,7 @@ export function ChimericEagerAsyncFactory<
   TError extends Error = Error,
 >(config: {
   eagerAsyncFn: () => Promise<TResult>;
-}): ChimericEagerAsync<void, TResult, TError>;
+}): VueChimericEagerAsync<void, TResult, TError>;
 
 // Implementation
 export function ChimericEagerAsyncFactory<
@@ -37,9 +38,10 @@ export function ChimericEagerAsyncFactory<
   eagerAsyncFn,
 }: {
   eagerAsyncFn: (params: TParams) => Promise<TResult>;
-}): ChimericEagerAsync<TParams, TResult, TError> {
+}): VueChimericEagerAsync<TParams, TResult, TError> {
   return fuseChimericEagerAsync({
     idiomatic: IdiomaticEagerAsyncFactory({ eagerAsyncFn }),
-    reactive: ReactiveEagerAsyncFactory({ eagerAsyncFn }),
-  });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    reactive: ReactiveEagerAsyncFactory({ eagerAsyncFn }) as unknown as ReactiveEagerAsync<TParams, TResult, TError>,
+  }) as unknown as VueChimericEagerAsync<TParams, TResult, TError>;
 }
