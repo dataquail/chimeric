@@ -28,21 +28,11 @@ jobs:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
 
-      - name: Get Package from Tag
+      - name: Get Version
         run: |
-          TAG_NAME="${{ github.event.release.tag_name }}"
-          # Independent release tags are in the format @scope/package@version (e.g. @chimeric/core@2.0.3)
-          # Use parameter expansion to split on the last @ to handle scoped package names correctly
-          if [[ "$TAG_NAME" == @*@* ]]; then
-            PACKAGE_NAME="${TAG_NAME%@*}"
-            APP_VERSION="${TAG_NAME##*@}"
-          else
-            # Fallback for legacy v-prefixed tags (e.g. v2.0.2): publish all packages
-            PACKAGE_NAME=""
-            APP_VERSION="${TAG_NAME#v}"
-          fi
-          echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
-          echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
+          TAG_NAME=${{github.event.release.tag_name}}
+          echo "PACKAGE_NAME=$(echo $TAG_NAME | cut -d "@" -f 1)" >> $GITHUB_ENV
+          echo "APP_VERSION=$(echo $TAG_NAME | cut -d "@" -f 2)" >> $GITHUB_ENV
 
       - uses: pnpm/action-setup@v5
 
@@ -65,5 +55,3 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           # We need to set provenance to true in order to generate provenance statement
           NPM_CONFIG_PROVENANCE: true
-          # When set, only build and publish this specific package (derived from the release tag)
-          PROJECT_NAME: ${{ env.PACKAGE_NAME }}
