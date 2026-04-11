@@ -1,0 +1,52 @@
+{
+  "name": "@chimeric/vue-query",
+  "version": "2.0.4",
+  "description": "Vue Query utilities for chimeric interfaces",
+  "author": "zacharyweidenbach",
+  "license": "MIT",
+  "keywords": [
+    "vue",
+    "vue3",
+    "vue-query",
+    "tanstack-query",
+    "typescript",
+    "caching",
+    "mutation",
+    "interface",
+    "ioc",
+    "di",
+    "dependency injection"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dataquail/chimeric.git",
+    "directory": "packages/vue-query"
+  },
+  "homepage": "https://dataquail.github.io/chimeric",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "typings": "dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.js",
+      "default": "./dist/index.esm.js"
+    }
+  },
+  "dependencies": {
+    "@chimeric/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@tanstack/vue-query": "^5.0.0",
+    "vue": "^3"
+  },
+  "devDependencies": {
+    "@chimeric/vue": "workspace:*",
+    "@tanstack/vue-query": "^5.97.0",
+    "@testing-library/vue": "^8.1.0",
+    "@vue/test-utils": "^2.4.6",
+    "vue": "^3.5.13"
+  }
+}
