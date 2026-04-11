@@ -155,7 +155,9 @@
       "typecheck-core",
       "typecheck-react",
       "typecheck-react-query",
-      "typecheck-rtk-query"
+      "typecheck-rtk-query",
+      "typecheck-svelte",
+      "typecheck-svelte-query"
     ]
   },
   "typecheck-core": {
@@ -180,6 +182,18 @@
     "executor": "nx:run-commands",
     "options": {
       "command": "tsc --noEmit -p {projectRoot}/packages/rtk-query/tsconfig.spec.json"
+    }
+  },
+  "typecheck-svelte": {
+    "executor": "nx:run-commands",
+    "options": {
+      "command": "tsc --noEmit -p {projectRoot}/packages/svelte/tsconfig.spec.json"
+    }
+  },
+  "typecheck-svelte-query": {
+    "executor": "nx:run-commands",
+    "options": {
+      "command": "tsc --noEmit -p {projectRoot}/packages/svelte-query/tsconfig.spec.json"
     }
   }
 }

@@ -26,6 +26,15 @@
     },
     {
       "path": "./packages/rtk-query"
+    },
+    {
+      "path": "./examples/tanstack-query-svelte-spa"
+    },
+    {
+      "path": "./packages/svelte-query"
+    },
+    {
+      "path": "./packages/svelte"
     }
   ]
 }

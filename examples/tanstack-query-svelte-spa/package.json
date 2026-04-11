@@ -1,0 +1,25 @@
+{
+  "name": "@chimeric/tanstack-query-svelte-spa",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --base=/tanstack-query-svelte-spa",
+    "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@chimeric/svelte": "workspace:*",
+    "@chimeric/svelte-query": "workspace:*",
+    "@tanstack/svelte-query": "^6.1.16",
+    "svelte": "^5.0.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^5.0.0",
+    "@types/uuid": "^9.0.8",
+    "svelte-check": "^4.0.0",
+    "typescript": "^5.8.2",
+    "vite": "^6.4.2"
+  }
+}

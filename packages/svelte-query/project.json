@@ -1,0 +1,33 @@
+{
+  "name": "@chimeric/svelte-query",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/svelte-query/src",
+  "projectType": "library",
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^typecheck"],
+      "options": {
+        "command": "tsc --build --emitDeclarationOnly tsconfig.lib.json",
+        "cwd": "packages/svelte-query"
+      }
+    },
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "packages/svelte-query/dist"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      }
+    }
+  },
+  "tags": []
+}
