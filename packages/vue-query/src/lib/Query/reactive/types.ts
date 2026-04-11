@@ -23,7 +23,7 @@ export type ReactiveQuery<
   TParams = void,
   TResult = unknown,
   TError extends Error = Error,
-  TQueryKey extends QueryKey = QueryKey,
+  _TQueryKey extends QueryKey = QueryKey,
 > = [TParams] extends [void]
   ? {
       useHook: (allOptions?: {

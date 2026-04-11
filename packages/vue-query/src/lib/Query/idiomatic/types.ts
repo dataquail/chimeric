@@ -5,7 +5,7 @@ export type IdiomaticQuery<
   TParams = void,
   TResult = unknown,
   TError extends Error = Error,
-  TQueryKey extends QueryKey = QueryKey,
+  _TQueryKey extends QueryKey = QueryKey,
 > = CoreIdiomaticQuery<
   TParams,
   TResult,

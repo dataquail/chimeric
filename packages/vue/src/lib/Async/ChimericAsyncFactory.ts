@@ -37,7 +37,6 @@ export function ChimericAsyncFactory<
 ): VueChimericAsync<TParams, TResult, TError> {
   return fuseChimericAsync({
     idiomatic: IdiomaticAsyncFactory(asyncFn),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     reactive: ReactiveAsyncFactory(asyncFn) as unknown as ReactiveAsync<TParams, TResult, TError>,
   }) as unknown as VueChimericAsync<TParams, TResult, TError>;
 }
