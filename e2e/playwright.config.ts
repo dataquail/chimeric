@@ -19,7 +19,7 @@ const EXAMPLE_CONFIGS: Record<string, ExampleConfig> = {
   },
   'tanstack-query-nextjs-ioc': {
     url: 'http://localhost:3000/',
-    command: 'pnpm --filter @chimeric/tanstack-query-nextjs-ioc dev',
+    command: 'npx nx dev @chimeric/tanstack-query-nextjs-ioc',
   },
 };
 
