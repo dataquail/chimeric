@@ -31,7 +31,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Sets the base and head SHAs for the nx affected commands in CI
-        uses: nrwl/nx-set-shas@v4
+        uses: nrwl/nx-set-shas@v5
 
       - name: Lint affected projects
         run: pnpm exec nx affected -t lint --base=origin/main --head=${{ github.event.pull_request.head.sha || github.sha }}
@@ -55,7 +55,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Sets the base and head SHAs for the nx affected commands in CI
-        uses: nrwl/nx-set-shas@v4
+        uses: nrwl/nx-set-shas@v5
 
       - name: Test affected projects
         run: pnpm exec nx affected -t test --base=origin/main --head=${{ github.event.pull_request.head.sha || github.sha }}
