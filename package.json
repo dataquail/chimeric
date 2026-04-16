@@ -55,7 +55,7 @@
     "@nx/vitest": "22.6.4",
     "@nx/web": "22.6.4",
     "@nx/webpack": "22.6.4",
-    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.6.2",
     "@reduxjs/toolkit": "^2.6.0",
     "@svgr/webpack": "^8.0.1",
     "@swc-node/register": "1.11.1",
