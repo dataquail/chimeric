@@ -2,9 +2,7 @@ name: E2E Tests
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+  workflow_call:
 
 jobs:
   e2e:
@@ -31,6 +29,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm exec nx run-many -t build --projects=packages/*
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
