@@ -96,6 +96,9 @@
     "test": {
       "dependsOn": ["^build"]
     },
+    "typecheck": {
+      "dependsOn": ["build"]
+    },
     "lint": {
       "options": {
         "command": "eslint . --max-warnings=0"

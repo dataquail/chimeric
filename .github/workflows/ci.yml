@@ -82,7 +82,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Test affected projects
-        run: pnpm exec nx affected -t test --exclude=@chimeric/e2e --base=origin/main --head=${{ github.event.pull_request.head.sha || github.sha }}
+        run: pnpm exec nx affected -t test --base=origin/main --head=${{ github.event.pull_request.head.sha || github.sha }}
 
   typecheck:
     runs-on: ubuntu-latest
