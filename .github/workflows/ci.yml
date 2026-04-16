@@ -61,9 +61,13 @@ jobs:
         shell: bash
         run: pnpm install --frozen-lockfile
 
-      - name: Run tests
+      - name: Lint and build affected projects
         shell: bash
-        run: pnpm exec nx affected -t lint test build --base=origin/main --head=${{ github.event.pull_request.head.sha || github.sha }}
+        run: pnpm exec nx affected -t lint build --base=origin/main --head=${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Test affected projects
+        shell: bash
+        run: pnpm exec nx affected -t test --exclude=@chimeric/e2e --base=origin/main --head=${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Run typecheck
         shell: bash

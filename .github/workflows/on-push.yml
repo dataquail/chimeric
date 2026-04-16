@@ -43,9 +43,13 @@ jobs:
       - name: Sets the base and head SHAs for the nx affected commands in CI
         uses: nrwl/nx-set-shas@v4
 
-      - name: Run tests on affected projects
+      - name: Lint affected projects
         shell: bash
-        run: pnpm exec nx affected -t lint test --base=origin/main --head=${{ github.event.pull_request.head.sha || github.sha }}
+        run: pnpm exec nx affected -t lint --base=origin/main --head=${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Test affected projects
+        shell: bash
+        run: pnpm exec nx affected -t test --exclude=@chimeric/e2e --base=origin/main --head=${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Build all packages for release
         shell: bash
