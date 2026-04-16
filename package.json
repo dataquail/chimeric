@@ -10,7 +10,7 @@
   "type": "module",
   "scripts": {
     "build:all": "nx run-many --target=build",
-    "build:packages": "nx run-many --target=build --exclude=examples/** --exclude=@chimeric/website",
+    "build:packages": "nx run-many --target=build --exclude=examples/** --exclude=@chimeric/website --exclude=@chimeric/e2e",
     "build:examples": "nx run-many --target=build --projects=examples/tanstack-query-spa",
     "test:all": "nx run-many --target=test --exclude=@chimeric/e2e",
     "test:packages": "nx run-many --target=test --exclude=examples/** --exclude=@chimeric/website --exclude=@chimeric/e2e",
@@ -19,7 +19,7 @@
     "lint:packages": "nx run-many --target=lint --exclude=examples/** --exclude=@chimeric/website",
     "lint:examples": "nx run-many --target=lint --projects=examples/tanstack-query-spa",
     "watch:all": "pnpm run build:all && nx watch --all -- pnpm run build:all",
-    "watch:packages": "pnpm run build:packages && nx watch --exclude=examples/** --exclude=@chimeric/website -- pnpm run build:packages",
+    "watch:packages": "pnpm run build:packages && nx watch --exclude=examples/** --exclude=@chimeric/website --exclude=@chimeric/e2e -- pnpm run build:packages",
     "watch:examples": "pnpm run build:examples && nx watch --projects=examples/tanstack-query-spa -- pnpm run build:examples",
     "dev:all": "pnpm run watch:all",
     "dev:examples": "pnpm run watch:examples",
