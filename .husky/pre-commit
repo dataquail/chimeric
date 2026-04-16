@@ -1,1 +1,1 @@
-pnpm test:packages
+pnpm precommit
