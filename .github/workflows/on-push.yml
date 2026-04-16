@@ -81,8 +81,11 @@ jobs:
       - name: Run typecheck
         run: pnpm run typecheck:all
 
+  e2e:
+    uses: ./.github/workflows/e2e.yml
+
   release:
-    needs: [lint, test, typecheck]
+    needs: [lint, test, typecheck, e2e]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/create-github-app-token@v1
