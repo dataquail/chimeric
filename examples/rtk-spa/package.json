@@ -15,7 +15,7 @@
   "dependencies": {
     "@chimeric/react": "workspace:*",
     "@chimeric/rtk-query": "workspace:*",
-    "@reduxjs/toolkit": "^2.6.1",
+    "@reduxjs/toolkit": "^2.11.2",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-redux": "^9.2.0",
