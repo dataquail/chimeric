@@ -181,5 +181,6 @@
     "options": {
       "command": "tsc --noEmit -p {projectRoot}/packages/rtk-query/tsconfig.spec.json"
     }
-  }
+  },
+  "analytics": false
 }

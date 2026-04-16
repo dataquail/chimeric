@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://github.com/dataquail/chimeric.git"
   },
-  "packageManager": "pnpm@10.7.0",
+  "packageManager": "pnpm@10.33.0",
   "type": "module",
   "scripts": {
     "build:all": "nx run-many --target=build",
@@ -32,7 +32,10 @@
     "build:website": "pnpm --filter @chimeric/website build",
     "preview:website": "pnpm --filter @chimeric/website preview",
     "troubleshoot:ci": "act -W .github/workflows/ci.yml workflow_dispatch",
-    "prepare": "husky"
+    "prepare": "husky",
+    "inject-token": "bash .devcontainer/inject-token.sh",
+    "devpod:up": "pnpm run inject-token && bash -c 'devpod up . --id=\"$1\"' --",
+    "devpod:delete": "bash -c 'devpod delete \"$1\"' --"
   },
   "private": true,
   "devDependencies": {
