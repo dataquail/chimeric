@@ -12,7 +12,77 @@ permissions:
   pull-requests: write
 
 jobs:
-  main:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Sets the base and head SHAs for the nx affected commands in CI
+        uses: nrwl/nx-set-shas@v4
+
+      - name: Lint affected projects
+        run: pnpm exec nx affected -t lint --base=origin/main --head=${{ github.event.pull_request.head.sha || github.sha }}
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Sets the base and head SHAs for the nx affected commands in CI
+        uses: nrwl/nx-set-shas@v4
+
+      - name: Test affected projects
+        run: pnpm exec nx affected -t test --exclude=@chimeric/e2e --base=origin/main --head=${{ github.event.pull_request.head.sha || github.sha }}
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run typecheck
+        run: pnpm run typecheck:all
+
+  release:
+    needs: [lint, test, typecheck]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/create-github-app-token@v1
@@ -40,19 +110,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Sets the base and head SHAs for the nx affected commands in CI
-        uses: nrwl/nx-set-shas@v4
-
-      - name: Lint affected projects
-        shell: bash
-        run: pnpm exec nx affected -t lint --base=origin/main --head=${{ github.event.pull_request.head.sha || github.sha }}
-
-      - name: Test affected projects
-        shell: bash
-        run: pnpm exec nx affected -t test --exclude=@chimeric/e2e --base=origin/main --head=${{ github.event.pull_request.head.sha || github.sha }}
-
       - name: Build all packages for release
-        shell: bash
         run: pnpm exec nx run-many -t build --projects=packages/*
 
       - name: Run nx release
