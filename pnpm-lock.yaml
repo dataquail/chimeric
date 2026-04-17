@@ -517,6 +517,9 @@ importers:
 
   examples/tanstack-query-vue-spa:
     dependencies:
+      '@chimeric/vue':
+        specifier: workspace:*
+        version: link:../../packages/vue
       '@chimeric/vue-query':
         specifier: workspace:*
         version: link:../../packages/vue-query

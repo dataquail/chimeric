@@ -1,24 +1,42 @@
 <template>
-  <div>
-    <header>
-      <h1>Chimeric Vue Query SPA</h1>
-      <p class="subtitle">
-        Demonstrating <code>@chimeric/vue-query</code> with the chimeric pattern
-      </p>
+  <div class="app-layout">
+    <header class="app-header">
+      <div class="avatar">C</div>
     </header>
 
-    <div class="info-box" style="margin-bottom: 1.5rem">
-      <strong>Chimeric Pattern:</strong> Every service method supports both
-      <code>service.method.useHook()</code> (reactive, for components) and
-      <code>await service.method()</code> (idiomatic, for orchestration).
-    </div>
+    <nav class="app-nav">
+      <RouterLink to="/" class="nav-link" :class="{ active: isActive('/') }">
+        Active Todos
+      </RouterLink>
+      <RouterLink
+        to="/archived"
+        class="nav-link"
+        :class="{ active: isActive('/archived') }"
+      >
+        Archived Todos
+      </RouterLink>
+      <RouterLink
+        to="/review"
+        class="nav-link"
+        :class="{ active: isActive('/review') }"
+      >
+        Review Todos
+      </RouterLink>
+    </nav>
 
-    <AddTodoForm />
-    <TodoList />
+    <main class="app-main">
+      <RouterView />
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import AddTodoForm from './components/AddTodoForm.vue';
-import TodoList from './components/TodoList.vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+
+const isActive = (path: string): boolean => {
+  if (path === '/') return route.path === '/';
+  return route.path.startsWith(path);
+};
 </script>

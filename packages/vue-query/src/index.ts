@@ -6,6 +6,8 @@ export * from './lib/Mutation/idiomatic/types';
 export * from './lib/Mutation/idiomatic/IdiomaticMutationFactory';
 export * from './lib/Mutation/reactive/types';
 export * from './lib/Mutation/reactive/ReactiveMutationFactory';
+// InfiniteQuery
+export * from './lib/InfiniteQuery/ChimericInfiniteQueryFactory';
 // Query
 export * from './lib/Query/chimeric/types';
 export * from './lib/Query/chimeric/ChimericQueryFactory';
