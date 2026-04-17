@@ -63,3 +63,6 @@ export * from './lib/Sync/reactive/createReactiveSync';
 export * from './lib/Sync/reactive/isReactiveSync';
 // Utilities
 export * from './lib/utilities/validateMaxArgLength';
+export * from './lib/utilities/typeMarkers';
+export * from './lib/utilities/markReactive';
+export * from './lib/utilities/markIdiomatic';

@@ -26,6 +26,9 @@
     },
     {
       "path": "./packages/rtk-query"
+    },
+    {
+      "path": "./examples/tanstack-query-vue-spa"
     }
   ]
 }

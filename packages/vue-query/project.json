@@ -1,0 +1,37 @@
+{
+  "name": "@chimeric/vue-query",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/vue-query/src",
+  "projectType": "library",
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^typecheck"],
+      "options": {
+        "commands": [
+          "tsc --build --emitDeclarationOnly tsconfig.lib.json",
+          "tsc -p tsconfig.spec.json --noEmit"
+        ],
+        "parallel": false,
+        "cwd": "packages/vue-query"
+      }
+    },
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "packages/vue-query/dist"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      }
+    }
+  },
+  "tags": []
+}
