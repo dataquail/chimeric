@@ -1,0 +1,54 @@
+name: E2E Tests
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  e2e:
+    name: E2E - ${{ matrix.example }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        example:
+          - tanstack-query-spa
+          - rtk-spa
+          - tanstack-query-nextjs-ioc
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm exec nx run-many -t build --projects=packages/*
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+        working-directory: e2e
+
+      - name: Run E2E tests
+        run: pnpm exec playwright test --project=chromium
+        working-directory: e2e
+        env:
+          CI: true
+          EXAMPLE: ${{ matrix.example }}
+          NX_NO_CLOUD: true
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: playwright-report-${{ matrix.example }}
+          path: e2e/playwright-report/
+          retention-days: 30

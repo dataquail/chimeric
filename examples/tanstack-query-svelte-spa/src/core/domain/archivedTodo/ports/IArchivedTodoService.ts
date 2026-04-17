@@ -1,12 +1,18 @@
 import {
   DefineChimericMutation,
-  DefineChimericQuery,
+  DefineChimericInfiniteQuery,
 } from '@chimeric/svelte-query';
-import { ArchivedTodo } from '../entities/ArchivedTodo';
+import { ArchivedTodoPageDto } from '../dtos/out/ArchivedTodoPageDto';
 import { ArchiveBody } from '../dtos/in/ArchiveBody';
 
 export type IArchivedTodoService = {
-  getAll: DefineChimericQuery<() => Promise<ArchivedTodo[]>, Error, string[]>;
+  getAll: DefineChimericInfiniteQuery<
+    () => Promise<ArchivedTodoPageDto>,
+    ArchivedTodoPageDto,
+    number,
+    Error,
+    string[]
+  >;
   archiveCompleted: DefineChimericMutation<
     (body: ArchiveBody) => Promise<{ ids: string[] }>,
     Error

@@ -96,6 +96,9 @@
     "test": {
       "dependsOn": ["^build"]
     },
+    "typecheck": {
+      "dependsOn": ["build"]
+    },
     "lint": {
       "options": {
         "command": "eslint . --max-warnings=0"
@@ -195,5 +198,6 @@
     "options": {
       "command": "tsc --noEmit -p {projectRoot}/packages/svelte-query/tsconfig.spec.json"
     }
-  }
+  },
+  "analytics": false
 }

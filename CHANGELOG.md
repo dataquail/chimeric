@@ -1,3 +1,19 @@
+## 2.1.0 (2026-04-16)
+
+### 🚀 Features
+
+- add Playwright E2E test infrastructure ([3976c1b](https://github.com/dataquail/chimeric/commit/3976c1b))
+
+### 🩹 Fixes
+
+- exclude e2e project from CI test targets ([d27dea5](https://github.com/dataquail/chimeric/commit/d27dea5))
+- rename e2e test script and fix typecheck ordering ([6b48604](https://github.com/dataquail/chimeric/commit/6b48604))
+
+### ❤️ Thank You
+
+- Claude Sonnet 4.6
+- Zachary Weidenbach @zacharyweidenbach
+
 ## 2.0.4 (2026-04-11)
 
 ### 🚀 Features

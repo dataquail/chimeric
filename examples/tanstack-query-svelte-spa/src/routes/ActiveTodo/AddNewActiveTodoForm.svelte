@@ -22,7 +22,7 @@
   <input
     class="text-input"
     type="text"
-    placeholder="Add a new todo..."
+    placeholder="Enter your todo"
     bind:value={title}
     disabled={isSubmitting}
   />

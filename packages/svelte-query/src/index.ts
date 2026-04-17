@@ -59,3 +59,34 @@ export type {
   ChimericMutation,
   DefineChimericMutation,
 } from './lib/Mutation/chimeric/types';
+
+// InfiniteQuery - Idiomatic
+export { IdiomaticInfiniteQueryFactory } from './lib/InfiniteQuery/idiomatic/IdiomaticInfiniteQueryFactory';
+export { createIdiomaticInfiniteQuery } from './lib/InfiniteQuery/idiomatic/createIdiomaticInfiniteQuery';
+export { isIdiomaticInfiniteQuery } from './lib/InfiniteQuery/idiomatic/isIdiomaticInfiniteQuery';
+export type {
+  IdiomaticInfiniteQuery,
+  DefineIdiomaticInfiniteQuery,
+  SvelteInfiniteQueryIdiomaticNativeOptions,
+} from './lib/InfiniteQuery/idiomatic/types';
+
+// InfiniteQuery - Reactive
+export { ReactiveInfiniteQueryFactory } from './lib/InfiniteQuery/reactive/ReactiveInfiniteQueryFactory.svelte';
+export { createReactiveInfiniteQuery } from './lib/InfiniteQuery/reactive/createReactiveInfiniteQuery';
+export { isReactiveInfiniteQuery } from './lib/InfiniteQuery/reactive/isReactiveInfiniteQuery';
+export type {
+  ReactiveInfiniteQuery,
+  DefineReactiveInfiniteQuery,
+  SvelteInfiniteQueryReactiveNativeOptions,
+  SvelteInfiniteQueryReactiveReturnType,
+  SvelteInfiniteQueryReactivePrefetchNativeOptions,
+} from './lib/InfiniteQuery/reactive/types';
+
+// InfiniteQuery - Chimeric
+export { ChimericInfiniteQueryFactory } from './lib/InfiniteQuery/chimeric/ChimericInfiniteQueryFactory';
+export { fuseChimericInfiniteQuery } from './lib/InfiniteQuery/chimeric/fuseChimericInfiniteQuery';
+export { isChimericInfiniteQuery } from './lib/InfiniteQuery/chimeric/isChimericInfiniteQuery';
+export type {
+  ChimericInfiniteQuery,
+  DefineChimericInfiniteQuery,
+} from './lib/InfiniteQuery/chimeric/types';

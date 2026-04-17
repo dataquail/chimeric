@@ -3,8 +3,9 @@
   import { queryClient } from 'src/core/global/queryClient';
   import ActiveTodo from './routes/ActiveTodo/ActiveTodo.svelte';
   import ArchivedTodo from './routes/ArchivedTodo/ArchivedTodo.svelte';
+  import Review from './routes/Review/Review.svelte';
 
-  type Route = 'active' | 'archived';
+  type Route = 'active' | 'archived' | 'review';
 
   let currentRoute = $state<Route>('active');
 
@@ -20,18 +21,27 @@
     </header>
 
     <nav class="app-nav">
-      <button
+      <a
+        href="#active"
         class="nav-link {currentRoute === 'active' ? 'active' : ''}"
-        onclick={() => navigate('active')}
+        onclick={(e) => { e.preventDefault(); navigate('active'); }}
       >
         Active Todos
-      </button>
-      <button
+      </a>
+      <a
+        href="#archived"
         class="nav-link {currentRoute === 'archived' ? 'active' : ''}"
-        onclick={() => navigate('archived')}
+        onclick={(e) => { e.preventDefault(); navigate('archived'); }}
       >
         Archived Todos
-      </button>
+      </a>
+      <a
+        href="#review"
+        class="nav-link {currentRoute === 'review' ? 'active' : ''}"
+        onclick={(e) => { e.preventDefault(); navigate('review'); }}
+      >
+        Review Todos
+      </a>
     </nav>
 
     <main class="app-main">
@@ -39,6 +49,8 @@
         <ActiveTodo />
       {:else if currentRoute === 'archived'}
         <ArchivedTodo />
+      {:else if currentRoute === 'review'}
+        <Review />
       {/if}
     </main>
   </div>

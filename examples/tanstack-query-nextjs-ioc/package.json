@@ -5,7 +5,7 @@
   "dependencies": {
     "@chimeric/react": "workspace:^",
     "@chimeric/react-query": "workspace:^",
-    "@tanstack/react-query": "^5.97.0",
+    "@tanstack/react-query": "^5.99.0",
     "next": "~16.1.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
