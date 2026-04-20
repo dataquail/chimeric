@@ -1,6 +1,6 @@
 import { ChimericAsyncFactory } from '@chimeric/svelte';
 import { activeTodoService } from 'src/core/infrastructure/services/ActiveTodoService';
-import { reviewStore } from 'src/core/infrastructure/repositories/ReviewRepository/index.svelte';
+import { reviewRepository } from 'src/core/infrastructure/repositories/ReviewRepository/index.svelte';
 import { createReview } from 'src/core/domain/review/entities/Review';
 
 export const startReviewUseCase = ChimericAsyncFactory(async () => {
@@ -11,5 +11,5 @@ export const startReviewUseCase = ChimericAsyncFactory(async () => {
     .map((activeTodo) => activeTodo.id);
 
   const review = createReview(todosToReviewIdList);
-  reviewStore.save(review);
+  reviewRepository.save(review);
 });

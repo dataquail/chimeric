@@ -22,7 +22,8 @@
     "src/**/__tests__/**/*.tsx",
     "src/**/__tests__/**/*.ts",
     "src/**/*.svelte.ts",
-    "src/**/*.spec.svelte.ts"
+    "src/**/*.spec.svelte.ts",
+    "src/**/*.svelte"
   ],
   "references": [
     {

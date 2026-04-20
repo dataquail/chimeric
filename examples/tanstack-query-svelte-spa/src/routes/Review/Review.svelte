@@ -2,19 +2,20 @@
   import { activeTodoService } from 'src/core/infrastructure/services/ActiveTodoService';
   import { startReviewUseCase } from 'src/core/useCases/review/startReviewUseCase';
   import { finishReviewUseCase } from 'src/core/useCases/review/finishReviewUseCase';
-  import { reviewStore } from 'src/core/infrastructure/repositories/ReviewRepository/index.svelte';
+  import { reviewRepository } from 'src/core/infrastructure/repositories/ReviewRepository/index.svelte';
   import { formatDate } from 'src/utils/formatDate';
 
   const activeTodosQuery = activeTodoService.getAll.useHook();
   const startReview = startReviewUseCase.useHook();
   const finishReview = finishReviewUseCase.useHook();
   const uncompleteOne = activeTodoService.uncompleteOne.useHook();
+  const review = reviewRepository.get.useHook();
 
-  const hasStartedReview = $derived(!!reviewStore.review);
+  const hasStartedReview = $derived(!!review.current);
 
   const todosUnderReview = $derived(
-    reviewStore.review
-      ? reviewStore.review.todoIdList.reduce(
+    review.current
+      ? review.current.todoIdList.reduce(
           (acc: typeof activeTodosQuery.data, todoId: string) => {
             const todo = activeTodosQuery.data?.find((t) => t.id === todoId);
             if (todo) {
