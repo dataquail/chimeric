@@ -1,0 +1,45 @@
+{
+  "name": "@chimeric/svelte",
+  "version": "1.0.0",
+  "description": "Svelte utilities for chimeric interfaces",
+  "author": "zacharyweidenbach",
+  "license": "MIT",
+  "keywords": [
+    "svelte",
+    "typescript",
+    "interface",
+    "ioc",
+    "di",
+    "dependency injection"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dataquail/chimeric.git",
+    "directory": "packages/svelte"
+  },
+  "homepage": "https://dataquail.github.io/chimeric",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "typings": "dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.js",
+      "default": "./dist/index.esm.js"
+    }
+  },
+  "dependencies": {
+    "@chimeric/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/svelte": "^5.0.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "svelte": "^5.0.0",
+    "@sveltejs/vite-plugin-svelte": "^5.0.0"
+  }
+}

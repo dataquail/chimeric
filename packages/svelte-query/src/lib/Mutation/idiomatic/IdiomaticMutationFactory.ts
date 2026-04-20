@@ -1,0 +1,112 @@
+import {
+  type QueryClient,
+  type MutationFunctionContext,
+} from '@tanstack/svelte-query';
+import { IdiomaticMutation, SvelteIdiomaticMutationNativeOptions } from './types';
+import { createIdiomaticMutation } from './createIdiomaticMutation';
+import { IdiomaticMutationOptions } from '@chimeric/core';
+
+// Optional params
+export function IdiomaticMutationFactory<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+>(
+  config: {
+    queryClient: QueryClient;
+    mutationFn: (
+      params?: TParams,
+      context?: MutationFunctionContext,
+    ) => Promise<TResult>;
+  } & SvelteIdiomaticMutationNativeOptions<TParams | undefined, TResult, TError>,
+): IdiomaticMutation<TParams | undefined, TResult, TError>;
+
+// No params
+export function IdiomaticMutationFactory<
+  TResult = unknown,
+  TError extends Error = Error,
+>(
+  config: {
+    queryClient: QueryClient;
+    mutationFn: (context?: MutationFunctionContext) => Promise<TResult>;
+  } & SvelteIdiomaticMutationNativeOptions<void, TResult, TError>,
+): IdiomaticMutation<void, TResult, TError>;
+
+// Required params
+export function IdiomaticMutationFactory<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+>(
+  config: {
+    queryClient: QueryClient;
+    mutationFn: (
+      params: TParams,
+      context?: MutationFunctionContext,
+    ) => Promise<TResult>;
+  } & SvelteIdiomaticMutationNativeOptions<TParams, TResult, TError>,
+): IdiomaticMutation<TParams, TResult, TError>;
+
+// Implementation
+export function IdiomaticMutationFactory<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+>({
+  queryClient,
+  mutationFn,
+  ...mutationDefaultOptions
+}: {
+  queryClient: QueryClient;
+  mutationFn: (
+    params: TParams,
+    context?: MutationFunctionContext,
+  ) => Promise<TResult>;
+} & SvelteIdiomaticMutationNativeOptions<
+  TParams,
+  TResult,
+  TError
+>): IdiomaticMutation<TParams, TResult, TError> {
+  const mutation = queryClient
+    .getMutationCache()
+    .build(queryClient, mutationDefaultOptions);
+
+  const idiomaticMutation = (
+    paramsOrOptions?: Parameters<
+      IdiomaticMutation<TParams, TResult, TError>
+    >[0],
+    maybeOptions?: Parameters<IdiomaticMutation<TParams, TResult, TError>>[1],
+  ) => {
+    const params =
+      mutationFn.length === 0
+        ? (undefined as TParams)
+        : (paramsOrOptions as TParams);
+    const allOptions =
+      mutationFn.length === 0
+        ? (paramsOrOptions as {
+            options?: IdiomaticMutationOptions;
+            nativeOptions?: SvelteIdiomaticMutationNativeOptions<
+              TParams,
+              TResult,
+              TError
+            >;
+          })
+        : maybeOptions;
+    const options = allOptions?.options as IdiomaticMutationOptions | undefined;
+    const nativeOptions = allOptions?.nativeOptions as
+      | SvelteIdiomaticMutationNativeOptions<TParams, TResult, TError>
+      | undefined;
+    mutation.setOptions({
+      mutationFn: (_variables, context) =>
+        mutationFn(params as TParams, context),
+      ...mutationDefaultOptions,
+      ...(options ?? {}),
+      ...(nativeOptions ?? {}),
+    });
+    return mutation.execute(params as TParams);
+  };
+
+  return createIdiomaticMutation<TParams, TResult, TError>(
+    idiomaticMutation,
+  ) as IdiomaticMutation<TParams, TResult, TError>;
+}

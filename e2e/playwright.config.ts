@@ -21,6 +21,10 @@ const EXAMPLE_CONFIGS: Record<string, ExampleConfig> = {
     url: 'http://localhost:3000/',
     command: 'npx nx dev @chimeric/tanstack-query-nextjs-ioc',
   },
+  'tanstack-query-svelte-spa': {
+    url: 'http://localhost:4400/tanstack-query-svelte-spa/',
+    command: 'pnpm --filter @chimeric/tanstack-query-svelte-spa dev',
+  },
 };
 
 const exampleName = process.env.EXAMPLE ?? 'tanstack-query-spa';

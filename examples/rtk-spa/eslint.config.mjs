@@ -8,6 +8,7 @@ export default [
     ignores: [
       '**/eslint.config.mjs',
       '**/vite.config.ts',
+      '**/vite.config.mts',
       '**/vitest.config.ts',
       '**/mockServiceWorker.js',
     ],

@@ -41,6 +41,11 @@ Thumbs.db
 .nx/cache
 .nx/workspace-data
 
+# Nx graph output
+output.html
+output.json
+/static/
+
 vite.config.*.timestamp*
 vitest.config.*.timestamp*
 

@@ -1,0 +1,67 @@
+import {
+  queryOptions,
+  type QueryKey,
+  type QueryClient,
+} from '@tanstack/svelte-query';
+import { IdiomaticQueryFactory } from '../idiomatic/IdiomaticQueryFactory';
+import { ReactiveQueryFactory } from '../reactive/ReactiveQueryFactory.svelte';
+import { fuseChimericQuery } from './fuseChimericQuery';
+import { type ChimericQuery } from './types';
+
+// Required params
+export function ChimericQueryFactory<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
+>(config: {
+  queryClient: QueryClient;
+  getQueryOptions: (
+    params: TParams,
+  ) => ReturnType<typeof queryOptions<TResult, TError, TResult, TQueryKey>>;
+}): ChimericQuery<TParams, TResult, TError, TQueryKey>;
+
+// Optional params
+export function ChimericQueryFactory<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
+>(config: {
+  queryClient: QueryClient;
+  getQueryOptions: (
+    params?: TParams,
+  ) => ReturnType<typeof queryOptions<TResult, TError, TResult, TQueryKey>>;
+}): ChimericQuery<TParams | undefined, TResult, TError, TQueryKey>;
+
+// No params
+export function ChimericQueryFactory<
+  TResult = unknown,
+  TError extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
+>(config: {
+  queryClient: QueryClient;
+  getQueryOptions: () => ReturnType<
+    typeof queryOptions<TResult, TError, TResult, TQueryKey>
+  >;
+}): ChimericQuery<void, TResult, TError, TQueryKey>;
+
+// Implementation
+export function ChimericQueryFactory<
+  TParams = void,
+  TResult = unknown,
+  TError extends Error = Error,
+  TQueryKey extends QueryKey = QueryKey,
+>({
+  queryClient,
+  getQueryOptions,
+}: {
+  queryClient: QueryClient;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getQueryOptions: any;
+}): ChimericQuery<TParams, TResult, TError, TQueryKey> {
+  return fuseChimericQuery({
+    idiomatic: IdiomaticQueryFactory({ queryClient, getQueryOptions }),
+    reactive: ReactiveQueryFactory({ getQueryOptions, queryClient }),
+  }) as ChimericQuery<TParams, TResult, TError, TQueryKey>;
+}
