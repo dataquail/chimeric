@@ -1,32 +1,18 @@
 <script lang="ts">
-  import { activeTodoService } from 'src/core/infrastructure/services/ActiveTodoService';
   import { startReviewUseCase } from 'src/core/useCases/review/startReviewUseCase';
   import { finishReviewUseCase } from 'src/core/useCases/review/finishReviewUseCase';
+  import { activeTodoService } from 'src/core/infrastructure/services/ActiveTodoService';
   import { reviewRepository } from 'src/core/infrastructure/repositories/ReviewRepository/index.svelte';
+  import { getTodosUnderReviewUseCase } from 'src/core/useCases/review/getTodosUnderReviewUseCase.svelte';
   import { formatDate } from 'src/utils/formatDate';
 
-  const activeTodosQuery = activeTodoService.getAll.useHook();
   const startReview = startReviewUseCase.useHook();
   const finishReview = finishReviewUseCase.useHook();
   const uncompleteOne = activeTodoService.uncompleteOne.useHook();
   const review = reviewRepository.get.useHook();
+  const todosUnderReview = getTodosUnderReviewUseCase.useHook();
 
   const hasStartedReview = $derived(!!review.current);
-
-  const todosUnderReview = $derived(
-    review.current
-      ? review.current.todoIdList.reduce(
-          (acc: typeof activeTodosQuery.data, todoId: string) => {
-            const todo = activeTodosQuery.data?.find((t) => t.id === todoId);
-            if (todo) {
-              acc = [...(acc ?? []), todo];
-            }
-            return acc;
-          },
-          [],
-        )
-      : [],
-  );
 </script>
 
 <div>
@@ -68,11 +54,11 @@
     </p>
   {/if}
 
-  {#if startReview.isPending || activeTodosQuery.isPending}
+  {#if startReview.isPending || todosUnderReview.isPending}
     <div class="loader"></div>
   {:else}
     <div class="scroll-area">
-      {#each todosUnderReview ?? [] as todo (todo.id)}
+      {#each todosUnderReview.data ?? [] as todo (todo.id)}
         {@const isExempted = !todo.completedAt}
         <div class="todo-card">
           <div

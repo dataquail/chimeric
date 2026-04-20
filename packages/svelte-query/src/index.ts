@@ -90,3 +90,6 @@ export type {
   ChimericInfiniteQuery,
   DefineChimericInfiniteQuery,
 } from './lib/InfiniteQuery/chimeric/types';
+
+// Utilities
+export { ReactiveAsyncReducer } from './lib/utilities/AsyncReducer/ReactiveAsyncReducer.svelte';

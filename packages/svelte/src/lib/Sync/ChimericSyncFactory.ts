@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { fuseChimericSync } from '@chimeric/core';
 import { IdiomaticSyncFactory } from './IdiomaticSyncFactory';
 import { ReactiveSyncFactory } from './ReactiveSyncFactory.svelte';
 import type { ChimericSyncSvelte } from './types';
@@ -23,7 +25,11 @@ export function ChimericSyncFactory<TParams = void, TResult = unknown>(
 ): ChimericSyncSvelte<TParams, TResult> {
   const idiomatic = IdiomaticSyncFactory(syncFn);
   const reactive = ReactiveSyncFactory(syncFn);
-  const chimeric = idiomatic as ChimericSyncSvelte<TParams, TResult>;
-  chimeric.useHook = reactive.useHook;
-  return chimeric;
+  // fuseChimericSync properly marks the result with REACTIVE_SYNC and IDIOMATIC_SYNC
+  // so that isReactiveSync() recognises it. We cast reactive's useHook (which returns
+  // ReactiveSyncBox<TResult>) to satisfy the core's TResult generic.
+  return fuseChimericSync({
+    idiomatic,
+    reactive: reactive as any,
+  }) as unknown as ChimericSyncSvelte<TParams, TResult>;
 }
