@@ -71,9 +71,9 @@
     "@types/react-dom": "19.0.0",
     "@types/uuid": "^9.0.8",
     "@vitejs/plugin-react": "^5.2.0",
-    "@vitest/coverage-v8": "4.1.4",
-    "@vitest/spy": "4.1.4",
-    "@vitest/ui": "4.1.4",
+    "@vitest/coverage-v8": "4.1.5",
+    "@vitest/spy": "4.1.5",
+    "@vitest/ui": "4.1.5",
     "autoprefixer": "10.4.13",
     "eslint": "^9.23.0",
     "eslint-config-next": "16.2.3",
@@ -98,7 +98,7 @@
     "verdaccio": "6.5.1",
     "vite": "7.3.2",
     "vite-plugin-dts": "~4.5.3",
-    "vitest": "4.1.4",
+    "vitest": "4.1.5",
     "webpack-cli": "^5.1.4"
   },
   "nx": {
