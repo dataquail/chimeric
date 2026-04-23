@@ -7,7 +7,7 @@
     "@chimeric/react-query": "workspace:^",
     "@tanstack/react-query": "^5.100.1",
     "next": "~16.1.7",
-    "react": "^19.0.0",
+    "react": "^19.2.5",
     "react-dom": "^19.0.0",
     "uuid": "^9.0.1",
     "zustand": "^5.0.12"
