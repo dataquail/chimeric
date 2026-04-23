@@ -15,7 +15,7 @@
   "dependencies": {
     "@chimeric/react": "workspace:*",
     "@chimeric/react-query": "workspace:*",
-    "@tanstack/react-query": "^5.99.0",
+    "@tanstack/react-query": "^5.100.1",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-router-dom": "7.14.0",
