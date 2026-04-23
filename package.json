@@ -60,7 +60,7 @@
     "@svgr/webpack": "^8.0.1",
     "@swc-node/register": "1.11.1",
     "@swc/cli": "0.7.10",
-    "@swc/core": "1.15.26",
+    "@swc/core": "1.15.30",
     "@swc/helpers": "0.5.21",
     "@tanstack/react-query": "^5.99.0",
     "@testing-library/dom": "^10.4.1",
