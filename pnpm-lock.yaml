@@ -265,8 +265,8 @@ importers:
         specifier: ^4.21.2
         version: 4.21.2
       uuid:
-        specifier: ^9.0.1
-        version: 9.0.1
+        specifier: ^14.0.1
+        version: 14.0.1
     devDependencies:
       '@types/cors':
         specifier: ^2.8.19
@@ -302,8 +302,8 @@ importers:
         specifier: ^5.0.1
         version: 5.0.1
       uuid:
-        specifier: ^9.0.1
-        version: 9.0.1
+        specifier: ^14.0.1
+        version: 14.0.1
     devDependencies:
       '@testing-library/dom':
         specifier: ^10.4.1
@@ -393,8 +393,8 @@ importers:
         specifier: ^19.0.0
         version: 19.0.0(react@19.0.0)
       uuid:
-        specifier: ^9.0.1
-        version: 9.0.1
+        specifier: ^14.0.1
+        version: 14.0.1
       zustand:
         specifier: ^5.0.12
         version: 5.0.12(@types/react@19.0.12)(immer@11.1.4)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
@@ -433,8 +433,8 @@ importers:
         specifier: 7.14.0
         version: 7.14.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       uuid:
-        specifier: ^9.0.1
-        version: 9.0.1
+        specifier: ^14.0.1
+        version: 14.0.1
       zustand:
         specifier: ^5.0.12
         version: 5.0.12(@types/react@19.0.12)(immer@11.1.4)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
@@ -10563,6 +10563,7 @@ packages:
   tsconfck@3.1.6:
     resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
     engines: {node: ^18 || >=20}
+    deprecated: unmaintained
     hasBin: true
     peerDependencies:
       typescript: ^5.0.0
@@ -10891,12 +10892,13 @@ packages:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
 
-  uuid@8.3.2:
-    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+  uuid@14.0.1:
+    resolution: {integrity: sha512-6ZxzVpzDXDa3bJWaHilVayA+BH/1zmxCJoVgvmqJnid/gPoKHxUrS/aC/T6LGQtNHT+XHG9fXPJB4d+IrU30Ew==}
     hasBin: true
 
-  uuid@9.0.1:
-    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+  uuid@8.3.2:
+    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   v8-to-istanbul@9.3.0:
@@ -24783,9 +24785,9 @@ snapshots:
 
   utils-merge@1.0.1: {}
 
-  uuid@8.3.2: {}
+  uuid@14.0.1: {}
 
-  uuid@9.0.1: {}
+  uuid@8.3.2: {}
 
   v8-to-istanbul@9.3.0:
     dependencies:
